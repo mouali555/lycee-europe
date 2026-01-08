@@ -22,7 +22,6 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
-    /* Conteneurs */
     #access-container, #chat-container {
       max-width: 900px;
       margin: 30px auto;
@@ -32,7 +31,6 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
-    /* Zone messages */
     #messages {
       height: 550px;
       overflow-y: auto;
@@ -42,7 +40,6 @@
       margin-bottom: 15px;
     }
 
-    /* Message */
     .message {
       display: flex;
       align-items: flex-start;
@@ -55,7 +52,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Avatar */
     .avatar {
       width: 45px;
       height: 45px;
@@ -68,9 +64,9 @@
       font-weight: bold;
       margin-right: 12px;
       font-size: 20px;
+      flex-shrink: 0;
     }
 
-    /* Bulle */
     .bubble {
       background: white;
       padding: 12px 16px;
@@ -78,6 +74,8 @@
       max-width: 75%;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       font-size: 15px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
     }
 
     .bubble strong {
@@ -91,7 +89,6 @@
       margin-top: 4px;
     }
 
-    /* Inputs */
     input, button {
       padding: 12px;
       width: 100%;
@@ -111,14 +108,25 @@
       transition: 0.2s;
     }
 
-    button:hover {
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
       background: #084a8f;
     }
 
-    #error {
+    #error, #chat-error {
       color: #b91c1c;
       margin-top: 8px;
       font-size: 14px;
+    }
+
+    #status {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
     }
   </style>
 </head>
@@ -131,16 +139,18 @@
   <h2>Accès réservé</h2>
   <p>Entrez le code d’accès pour utiliser le chat.</p>
   <input type="password" id="access-code" placeholder="Code d’accès">
-  <button onclick="checkAccess()">Valider</button>
+  <button id="access-btn" onclick="checkAccess()">Valider</button>
   <div id="error"></div>
 </div>
 
 <!-- Chat (caché au début) -->
 <div id="chat-container" style="display:none;">
+  <p id="status">Chargement des messages…</p>
   <input type="text" id="pseudo" placeholder="Votre prénom ou pseudo">
   <div id="messages"></div>
-  <input type="text" id="message" placeholder="Votre message...">
-  <button onclick="sendMessage()">Envoyer</button>
+  <input type="text" id="message" placeholder="Votre message... (Entrée pour envoyer)">
+  <button id="send-btn" onclick="sendMessage()">Envoyer</button>
+  <div id="chat-error"></div>
 </div>
 
 <!-- Firebase SDK -->
@@ -148,20 +158,39 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-  /* ========= CODE D’ACCES ========= */
+  /* ========= CONFIG GLOBALE ========= */
   const ACCESS_CODE = "C1EL2025"; // change ici si tu veux
+  const MAX_MESSAGE_LENGTH = 500;
 
+  /* ========= CODE D’ACCES ========= */
   function checkAccess() {
     const input = document.getElementById("access-code").value.trim();
     const errorDiv = document.getElementById("error");
 
+    if (!input) {
+      errorDiv.textContent = "Veuillez entrer un code.";
+      return;
+    }
+
     if (input === ACCESS_CODE) {
       document.getElementById("access-container").style.display = "none";
       document.getElementById("chat-container").style.display = "block";
+
+      const savedPseudo = localStorage.getItem("pseudo");
+      if (savedPseudo) {
+        document.getElementById("pseudo").value = savedPseudo;
+      }
+
+      document.getElementById("message").focus();
     } else {
       errorDiv.textContent = "Code incorrect.";
     }
   }
+
+  const accessInput = document.getElementById("access-code");
+  accessInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") checkAccess();
+  });
 
   /* ========= FIREBASE ========= */
   const firebaseConfig = {
@@ -180,53 +209,125 @@
 
   /* ========= ENVOI MESSAGE ========= */
   async function sendMessage() {
-    const pseudo = document.getElementById("pseudo").value.trim();
-    const message = document.getElementById("message").value.trim();
+    const pseudoInput = document.getElementById("pseudo");
+    const messageInput = document.getElementById("message");
+    const errorDiv = document.getElementById("chat-error");
+    const sendBtn = document.getElementById("send-btn");
 
-    if (!pseudo || !message) return;
+    const pseudo = pseudoInput.value.trim();
+    const message = messageInput.value.trim();
 
-    await messagesRef.add({
-      pseudo,
-      message,
-      timestamp: new Date()
-    });
+    errorDiv.textContent = "";
 
-    document.getElementById("message").value = "";
+    if (!pseudo) {
+      errorDiv.textContent = "Veuillez entrer un pseudo.";
+      pseudoInput.focus();
+      return;
+    }
+
+    if (!message) {
+      return;
+    }
+
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      errorDiv.textContent = "Message trop long (max " + MAX_MESSAGE_LENGTH + " caractères).";
+      return;
+    }
+
+    try {
+      sendBtn.disabled = true;
+
+      await messagesRef.add({
+        pseudo,
+        message,
+        timestamp: new Date()
+      });
+
+      localStorage.setItem("pseudo", pseudo);
+      messageInput.value = "";
+    } catch (err) {
+      console.error("Erreur envoi message :", err);
+      errorDiv.textContent = "Impossible d’envoyer le message. Réessayez.";
+    } finally {
+      sendBtn.disabled = false;
+      messageInput.focus();
+    }
   }
+
+  const messageInput = document.getElementById("message");
+  messageInput.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
 
   /* ========= AFFICHAGE MESSAGES ========= */
   const messagesDiv = document.getElementById("messages");
+  const statusText = document.getElementById("status");
+  const chatError = document.getElementById("chat-error");
 
-  messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
-    messagesDiv.innerHTML = "";
+  messagesRef.orderBy("timestamp").onSnapshot(
+    snapshot => {
+      messagesDiv.innerHTML = "";
+      statusText.textContent = "Messages chargés.";
 
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const avatarLetter = data.pseudo.charAt(0).toUpperCase();
-      const time = data.timestamp?.toDate().toLocaleTimeString("fr-FR", {
-        hour: "2-digit",
-        minute: "2-digit"
+      if (snapshot.empty) {
+        messagesDiv.innerHTML = "<p style='color:#6b7280;'>Aucun message pour l’instant. Soyez le premier à écrire.</p>";
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const pseudo = data.pseudo || "Anonyme";
+        const message = data.message || "";
+        const avatarLetter = pseudo.charAt(0).toUpperCase();
+        let time = "";
+
+        if (data.timestamp && data.timestamp.toDate) {
+          time = data.timestamp.toDate().toLocaleTimeString("fr-FR", {
+            hour: "2-digit",
+            minute: "2-digit"
+          });
+        }
+
+        const msg = document.createElement("div");
+        msg.classList.add("message");
+
+        msg.innerHTML = `
+          <div class="avatar">${avatarLetter}</div>
+          <div>
+            <div class="bubble">
+              <strong>${pseudo}</strong><br>
+              ${escapeHtml(message)}
+            </div>
+            <div class="timestamp">${time}</div>
+          </div>
+        `;
+
+        messagesDiv.appendChild(msg);
       });
 
-      const msg = document.createElement("div");
-      msg.classList.add("message");
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    },
+    error => {
+      console.error("Erreur Firestore :", error);
+      statusText.textContent = "Erreur lors du chargement des messages.";
+      chatError.textContent = "Impossible de récupérer les messages. Vérifiez la connexion ou les règles Firestore.";
+    }
+  );
 
-      msg.innerHTML = `
-        <div class="avatar">${avatarLetter}</div>
-        <div>
-          <div class="bubble">
-            <strong>${data.pseudo}</strong><br>
-            ${data.message}
-          </div>
-          <div class="timestamp">${time}</div>
-        </div>
-      `;
-
-      messagesDiv.appendChild(msg);
-    });
-
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  });
+  /* ========= PROTECTION XSS SIMPLE ========= */
+  function escapeHtml(text) {
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+  }
 </script>
 
 </body>
