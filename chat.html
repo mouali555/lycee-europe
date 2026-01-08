@@ -1,315 +1,387 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Chat – Lycée Europe</title>
+  <meta charset="UTF-8">
+  <title>Chat – Lycée Europe</title>
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body{
-  font-family:"Segoe UI",system-ui,sans-serif;
-  background:radial-gradient(circle at top left,#4f46e5,#0ea5e9,#020617);
-  color:#e5e7eb;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-}
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(circle at top left, #4f46e5, #0ea5e9, #020617);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
 
-/* ===== HEADER ===== */
-header.global-header{
-  padding:18px 40px;
-  background:rgba(15,23,42,.8);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid rgba(255,255,255,.15);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+    /* HEADER */
+    header.global-header {
+      width: 100%;
+      padding: 14px 34px;
+      background: rgba(15,23,42,0.78);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
 
-header .left{
-  display:flex;
-  align-items:center;
-  gap:26px;
-}
+    header .left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
 
-header img.logo{
-  height:72px;
-  border-radius:14px;
-}
+    header img.logo {
+      height: 54px;
+      border-radius: 10px;
+    }
 
-header nav a{
-  margin-left:22px;
-  color:#e5e7eb;
-  text-decoration:none;
-  font-size:16px;
-  font-weight:500;
-}
+    header nav a {
+      margin-left: 22px;
+      color: #e5e7eb;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: 0.2s;
+    }
 
-header nav a:hover{color:#93c5fd}
+    header nav a:hover {
+      color: #93c5fd;
+      text-shadow: 0 0 6px rgba(147,197,253,0.4);
+    }
 
-header img.home-btn{
-  height:64px;
-  cursor:pointer;
-  transition:.2s;
-}
+    header img.home-btn {
+      height: 48px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-header img.home-btn:hover{
-  transform:scale(1.08);
-}
+    header img.home-btn:hover {
+      transform: scale(1.07);
+    }
 
-/* ===== MAIN ===== */
-main{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:40px 20px;
-}
+    /* MAIN */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
 
-/* ===== ACCÈS ===== */
-#access-screen{
-  width:100%;
-  max-width:420px;
-  background:rgba(15,23,42,.7);
-  padding:32px;
-  border-radius:22px;
-  border:1px solid rgba(148,163,184,.4);
-  box-shadow:0 20px 50px rgba(0,0,0,.5);
-}
+    /* ÉCRAN D’ACCÈS */
+    #access-screen {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(15,23,42,0.72);
+      padding: 32px;
+      border-radius: 22px;
+      border: 1px solid rgba(148,163,184,0.35);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+      animation: fadeIn 0.4s ease-out;
+    }
 
-#access-screen h2{
-  font-size:22px;
-  margin-bottom:10px;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-input,button{
-  width:100%;
-  border-radius:999px;
-  padding:14px 18px;
-  margin-top:12px;
-  background:rgba(15,23,42,.7);
-  color:#e5e7eb;
-  border:1px solid rgba(148,163,184,.6);
-  font-size:15px;
-}
+    #access-screen h2 {
+      margin-bottom: 10px;
+      font-size: 22px;
+      font-weight: 600;
+    }
 
-button{
-  background:linear-gradient(135deg,#38bdf8,#6366f1);
-  border:none;
-  font-weight:600;
-  cursor:pointer;
-  box-shadow:0 10px 30px rgba(37,99,235,.6);
-}
+    #access-screen p {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 15px;
+    }
 
-button:hover{transform:translateY(-1px)}
+    input, button {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: 13px 18px;
+      font-size: 15px;
+      background: rgba(15, 23, 42, 0.7);
+      color: #e5e7eb;
+      margin-top: 12px;
+      outline: none;
+      transition: 0.2s;
+    }
 
-#error{color:#f87171;margin-top:10px}
+    input:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 10px rgba(96,165,250,0.4);
+    }
 
-/* ===== CHAT ===== */
-.chat-app{
-  width:100%;
-  max-width:900px;
-  height:80vh;
-  background:rgba(15,23,42,.65);
-  border-radius:26px;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  box-shadow:0 25px 70px rgba(15,23,42,.9);
-}
+    button {
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(37,99,235,0.55);
+    }
 
-.chat-header{
-  padding:18px 26px;
-  font-size:20px;
-  font-weight:600;
-  display:flex;
-  justify-content:space-between;
-  border-bottom:1px solid rgba(148,163,184,.3);
-}
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(37,99,235,0.7);
+    }
 
-#messages{
-  flex:1;
-  overflow-y:auto;
-  padding:22px;
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
+    #error {
+      margin-top: 10px;
+      color: #f87171;
+      font-size: 14px;
+      min-height: 18px;
+    }
 
-.message-row{display:flex;gap:12px}
+    /* CHAT */
+    .chat-app {
+      width: 100%;
+      max-width: 900px;
+      height: 80vh;
+      background: rgba(15,23,42,0.65);
+      border-radius: 26px;
+      border: 1px solid rgba(148,163,184,0.35);
+      backdrop-filter: blur(22px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 70px rgba(15,23,42,0.9);
+      animation: fadeIn 0.4s ease-out;
+    }
 
-.avatar{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#38bdf8,#2563eb);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-}
+    .chat-header {
+      padding: 18px 26px;
+      font-size: 20px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(148,163,184,0.3);
+      background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,64,175,0.7));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.message-card{
-  background:rgba(15,23,42,.8);
-  padding:12px 16px;
-  border-radius:20px;
-  max-width:80%;
-}
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      scroll-behavior: smooth;
+    }
 
-#bottom-bar{
-  display:flex;
-  gap:12px;
-  padding:16px 22px;
-  border-top:1px solid rgba(148,163,184,.3);
-}
+    .message-row {
+      display: flex;
+      gap: 12px;
+      animation: fadeUp 0.22s ease-out;
+    }
 
-/* Nouvelle zone de texte améliorée */
-#bottom-bar textarea{
-  flex:1;
-  resize:none;
-  padding:14px 18px;
-  font-size:16px;
-  border-radius:18px;
-  background:rgba(15,23,42,.7);
-  border:1px solid rgba(148,163,184,.6);
-  color:#e5e7eb;
-  height:55px;
-}
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-/* ===== FOOTER ===== */
-footer{
-  text-align:center;
-  padding:16px;
-  background:rgba(15,23,42,.6);
-  border-top:1px solid rgba(255,255,255,.1);
-}
-</style>
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .message-card {
+      background: rgba(15,23,42,0.78);
+      border-radius: 18px;
+      padding: 12px 16px;
+      border: 1px solid rgba(148,163,184,0.4);
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    #bottom-bar {
+      padding: 16px 22px;
+      background: rgba(15,23,42,0.9);
+      border-top: 1px solid rgba(148,163,184,0.3);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    #bottom-bar input {
+      flex: 1;
+      margin: 0;
+      padding: 14px 18px;
+      font-size: 15px;
+      border-radius: 14px;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(148,163,184,0.6);
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      color: #cbd5e1;
+      background: rgba(15,23,42,0.6);
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+  </style>
 </head>
 
 <body>
 
 <header class="global-header">
   <div class="left">
-    <img src="logo.png" class="logo">
+    <img src="logo.png" class="logo" alt="Logo Lycée Europe">
     <nav>
       <a href="index.html">Accueil</a>
       <a href="#">Chat</a>
+      <a href="#">Contact</a>
       <a href="#">Infos</a>
     </nav>
   </div>
-  <img src="bouton.png" class="home-btn" onclick="window.location='index.html'">
+  <img src="bouton.png" class="home-btn" alt="Accueil" onclick="window.location='index.html'">
 </header>
 
 <main>
-<div id="access-screen">
-  <h2>Connexion au chat</h2>
-  <input type="password" id="access-code" placeholder="Code d’accès">
-  <input type="text" id="pseudo" placeholder="Pseudo (20 caractères max)">
-  <button onclick="enterChat()">Entrer</button>
-  <p id="error"></p>
-</div>
+  <div id="access-screen">
+    <h2>Connexion au chat</h2>
+    <p>Entrez le code d’accès et choisissez votre pseudo.</p>
+    <input type="password" id="access-code" placeholder="Code d’accès">
+    <input type="text" id="pseudo" placeholder="Votre pseudo">
+    <button onclick="enterChat()">Entrer</button>
+    <p id="error"></p>
+  </div>
 </main>
 
-<footer>© 2026 Lycée Europe</footer>
+<footer>
+  © 2026 Lycée Europe — Tous droits réservés
+</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-firebase.initializeApp({
-  apiKey:"AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
-  authDomain:"lycee-europe.firebaseapp.com",
-  projectId:"lycee-europe"
-});
+const firebaseConfig = {
+  apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
+  authDomain: "lycee-europe.firebaseapp.com",
+  projectId: "lycee-europe"
+};
 
-const db=firebase.firestore();
-const messagesRef=db.collection("messages");
-let ACCESS_CODE=null;
-let currentPseudo=null;
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-async function loadAccessCode(){
-  const doc=await db.collection("config").doc("access").get();
-  ACCESS_CODE=doc.data().code;
+let ACCESS_CODE = null;
+let messagesRef = db.collection("messages");
+let currentPseudo = null;
+
+async function loadAccessCode() {
+  const doc = await db.collection("config").doc("access").get();
+  ACCESS_CODE = doc.data().code;
 }
 
-async function enterChat(){
-  const code=document.getElementById("access-code").value.trim();
-  const pseudo=document.getElementById("pseudo").value.trim();
-  const error=document.getElementById("error");
+async function enterChat() {
+  const code = document.getElementById("access-code").value.trim();
+  const pseudo = document.getElementById("pseudo").value.trim();
+  const error = document.getElementById("error");
 
-  if(!code||!pseudo){error.textContent="Champs manquants";return;}
-  if(pseudo.length>20){error.textContent="Pseudo trop long";return;}
+  if (!code || !pseudo) {
+    error.textContent = "Veuillez remplir tous les champs.";
+    return;
+  }
 
   await loadAccessCode();
-  if(code!==ACCESS_CODE){error.textContent="Code incorrect";return;}
 
-  currentPseudo=pseudo;
+  if (code !== ACCESS_CODE) {
+    error.textContent = "Code incorrect.";
+    return;
+  }
+
+  currentPseudo = pseudo;
   document.getElementById("access-screen").remove();
-  loadChat();
+  loadChatUI();
   listenMessages();
 }
 
-function loadChat(){
-  const app=document.createElement("div");
-  app.className="chat-app";
-  app.innerHTML=`
+function loadChatUI() {
+  const main = document.querySelector("main");
+
+  const app = document.createElement("div");
+  app.className = "chat-app";
+
+  app.innerHTML = `
     <div class="chat-header">
       <div>💬 Chat – Lycée Europe</div>
-      <div>${currentPseudo}</div>
+      <div class="pseudo-display">Connecté en tant que : ${currentPseudo}</div>
     </div>
     <div id="messages"></div>
     <div id="bottom-bar">
-      <textarea id="message" maxlength="500" placeholder="Votre message…"></textarea>
+      <input type="text" id="message" placeholder="Votre message…">
       <button onclick="sendMessage()">Envoyer</button>
-    </div>`;
-  document.querySelector("main").appendChild(app);
-}
+    </div>
+  `;
 
-function listenMessages(){
-  messagesRef.orderBy("timestamp").limit(100).onSnapshot(snap=>{
-    const box=document.getElementById("messages");
-    box.innerHTML="";
-    snap.forEach(doc=>{
-      const d=doc.data();
+  main.appendChild(app);
 
-      const row=document.createElement("div");
-      row.className="message-row";
-
-      const avatar=document.createElement("div");
-      avatar.className="avatar";
-      avatar.textContent=d.pseudo[0].toUpperCase();
-
-      const card=document.createElement("div");
-      card.className="message-card";
-
-      const head=document.createElement("div");
-      head.textContent=d.pseudo+" • "+
-        (d.timestamp?
-        new Date(d.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}):"");
-
-      const body=document.createElement("div");
-      body.textContent=d.message;
-
-      card.append(head,body);
-      row.append(avatar,card);
-      box.appendChild(row);
-    });
-    box.scrollTop=box.scrollHeight;
+  document.getElementById("message").addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
   });
 }
 
-async function sendMessage(){
-  const input=document.getElementById("message");
-  const text=input.value.trim();
-  if(!text)return;
+function listenMessages() {
+  messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+    const messagesDiv = document.getElementById("messages");
+    messagesDiv.innerHTML = "";
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const row = document.createElement("div");
+      row.className = "message-row";
+
+      row.innerHTML = `
+        <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
+        <div class="message-card">
+          <div class="message-header">
+            <span>${data.pseudo}</span>
+            <span>${new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</span>
+          </div>
+          <div class="message-body">${data.message}</div>
+        </div>
+      `;
+
+      messagesDiv.appendChild(row);
+    });
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+}
+
+async function sendMessage() {
+  const input = document.getElementById("message");
+  const text = input.value.trim();
+  if (!text) return;
 
   await messagesRef.add({
-    pseudo:currentPseudo,
-    message:text,
-    timestamp:firebase.firestore.FieldValue.serverTimestamp()
+    pseudo: currentPseudo,
+    message: text,
+    timestamp: new Date()
   });
-  input.value="";
+
+  input.value = "";
 }
 </script>
 
