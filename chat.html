@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Chat – Lycée Europe</title>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -19,41 +21,51 @@
     /* HEADER */
     header.global-header {
       width: 100%;
-      padding: 14px 30px;
-      background: rgba(15,23,42,0.75);
+      padding: 12px 20px;
+      background: rgba(15,23,42,0.85);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     header .left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     header img.logo {
-      height: 52px;
+      height: 44px;
       border-radius: 8px;
     }
 
+    header nav {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
     header nav a {
-      margin-left: 20px;
       color: #e5e7eb;
       text-decoration: none;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
       transition: 0.2s;
+      opacity: 0.9;
     }
 
     header nav a:hover {
       color: #93c5fd;
+      opacity: 1;
     }
 
     header img.home-btn {
-      height: 44px;
+      height: 38px;
       cursor: pointer;
       transition: 0.2s;
     }
@@ -62,21 +74,21 @@
       transform: scale(1.05);
     }
 
-    /* MAIN */
+    /* LAYOUT PRINCIPAL */
     main {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
+      padding: 30px 16px;
     }
 
     /* ÉCRAN D’ACCÈS */
     #access-screen {
       width: 100%;
       max-width: 420px;
-      background: rgba(15,23,42,0.7);
-      padding: 30px;
+      background: rgba(15,23,42,0.8);
+      padding: 26px;
       border-radius: 20px;
       border: 1px solid rgba(148,163,184,0.4);
       backdrop-filter: blur(18px);
@@ -84,15 +96,15 @@
     }
 
     #access-screen h2 {
-      margin-bottom: 10px;
-      font-size: 22px;
+      margin-bottom: 8px;
+      font-size: 20px;
       font-weight: 600;
     }
 
     #access-screen p {
-      font-size: 14px;
+      font-size: 13px;
       color: #9ca3af;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
     }
 
     #access-screen input,
@@ -100,12 +112,17 @@
       width: 100%;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.6);
-      padding: 13px 16px;
-      font-size: 15px;
-      background: rgba(15, 23, 42, 0.7);
+      padding: 11px 14px;
+      font-size: 14px;
+      background: rgba(15, 23, 42, 0.8);
       color: #e5e7eb;
       margin-top: 10px;
       outline: none;
+    }
+
+    #access-screen input:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 1px rgba(96,165,250,0.4);
     }
 
     #access-screen button {
@@ -113,29 +130,30 @@
       border: none;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 10px 25px rgba(37,99,235,0.55);
-      transition: 0.2s;
+      box-shadow: 0 8px 20px rgba(37,99,235,0.55);
+      transition: 0.18s;
     }
 
     #access-screen button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(37,99,235,0.7);
+      box-shadow: 0 10px 26px rgba(37,99,235,0.7);
     }
 
     #error {
       margin-top: 10px;
       color: #f87171;
-      font-size: 14px;
+      font-size: 13px;
       min-height: 18px;
     }
 
     /* CHAT */
     .chat-app {
       width: 100%;
-      max-width: 900px;
-      height: 80vh;
-      background: rgba(15,23,42,0.65);
-      border-radius: 24px;
+      max-width: 960px;
+      height: 78vh;
+      max-height: 720px;
+      background: rgba(15,23,42,0.75);
+      border-radius: 22px;
       border: 1px solid rgba(148,163,184,0.35);
       backdrop-filter: blur(22px);
       overflow: hidden;
@@ -145,28 +163,28 @@
     }
 
     .chat-header {
-      padding: 16px 24px;
-      font-size: 20px;
+      padding: 14px 18px;
+      font-size: 17px;
       font-weight: 600;
       border-bottom: 1px solid rgba(148,163,184,0.3);
-      background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,64,175,0.7));
+      background: linear-gradient(to right, rgba(15,23,42,0.96), rgba(30,64,175,0.7));
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .chat-header .pseudo-display {
-      font-size: 13px;
+      font-size: 12px;
       color: #cbd5f5;
     }
 
     #messages {
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       scroll-behavior: smooth;
     }
 
@@ -176,65 +194,95 @@
     }
 
     .avatar {
-      width: 34px;
-      height: 34px;
+      width: 30px;
+      height: 30px;
       border-radius: 999px;
       background: radial-gradient(circle at 30% 30%, #38bdf8, #1d4ed8);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 600;
+      font-size: 13px;
       color: white;
       flex-shrink: 0;
     }
 
     .message-card {
-      background: rgba(15,23,42,0.78);
-      border-radius: 18px;
-      padding: 10px 14px;
+      background: rgba(15,23,42,0.9);
+      border-radius: 16px;
+      padding: 8px 12px;
       border: 1px solid rgba(148,163,184,0.4);
-      backdrop-filter: blur(14px);
       max-width: 80%;
       word-wrap: break-word;
+      font-size: 14px;
+    }
+
+    .message-header {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 3px;
+    }
+
+    .message-header strong {
+      color: #e5e7eb;
+    }
+
+    .message-body {
+      font-size: 14px;
+      color: #e5e7eb;
     }
 
     /* BARRE STYLE GPT EN BAS */
     .smart-input-bar {
       display: flex;
       align-items: center;
-      background: rgba(15,23,42,0.85);
-      border: 1px solid rgba(148,163,184,0.4);
-      border-radius: 999px;
-      padding: 10px 16px;
-      gap: 12px;
-      margin: 14px 18px 18px 18px;
+      background: rgba(15,23,42,0.95);
+      border-top: 1px solid rgba(148,163,184,0.35);
+      padding: 10px 10px;
+      gap: 8px;
     }
 
-    .smart-input-bar input {
+    .smart-input-inner {
+      display: flex;
+      align-items: center;
+      background: rgba(15,23,42,0.9);
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 8px 12px;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .smart-input-inner input {
       flex: 1;
       background: transparent;
       border: none;
       color: #e5e7eb;
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
+      min-width: 0;
     }
 
-    .smart-input-bar .right-tools {
+    .smart-input-inner input::placeholder {
+      color: #6b7280;
+    }
+
+    .right-tools {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .smart-input-bar .mode {
-      font-size: 12px;
+    .mode {
+      font-size: 11px;
       color: #93c5fd;
-      background: rgba(30,64,175,0.3);
+      background: rgba(30,64,175,0.4);
       padding: 3px 8px;
       border-radius: 999px;
       white-space: nowrap;
     }
 
-    .smart-input-bar button.icon-btn {
+    .icon-btn {
       background: none;
       border: none;
       cursor: pointer;
@@ -242,28 +290,90 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 999px;
     }
 
-    .smart-input-bar svg {
-      width: 18px;
-      height: 18px;
+    .icon-btn svg {
+      width: 17px;
+      height: 17px;
       fill: #e5e7eb;
       opacity: 0.85;
-      transition: 0.2s;
+      transition: 0.18s;
     }
 
-    .smart-input-bar button.icon-btn:hover svg {
+    .icon-btn:hover svg {
       opacity: 1;
       transform: scale(1.1);
     }
 
+    /* BOUTON ENVOYER (FLÈCHE) */
+    #send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+      box-shadow: 0 4px 14px rgba(37,99,235,0.5);
+    }
+
+    #send-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: #fff;
+    }
+
     footer {
       text-align: center;
-      padding: 15px;
-      font-size: 14px;
+      padding: 12px;
+      font-size: 12px;
       color: #cbd5e1;
-      background: rgba(15,23,42,0.6);
-      border-top: 1px solid rgba(255,255,255,0.1);
+      background: rgba(15,23,42,0.7);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* RESPONSIVE MOBILE */
+    @media (max-width: 768px) {
+      header.global-header {
+        padding: 10px 12px;
+      }
+
+      header nav {
+        display: none;
+      }
+
+      header img.logo {
+        height: 38px;
+      }
+
+      main {
+        padding: 16px 8px;
+      }
+
+      .chat-app {
+        height: calc(100vh - 140px);
+        max-height: none;
+        border-radius: 16px;
+      }
+
+      .chat-header {
+        padding: 10px 12px;
+        font-size: 15px;
+      }
+
+      #messages {
+        padding: 10px;
+      }
+
+      .smart-input-bar {
+        padding: 8px 6px;
+      }
+
+      .smart-input-inner {
+        padding: 6px 10px;
+      }
+
+      .mode {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -361,32 +471,29 @@ function loadChatUI() {
     <div id="messages"></div>
 
     <div class="smart-input-bar">
-      <input type="text" id="message" placeholder="Demandez ce que vous voulez">
-      <div class="right-tools">
-        <span class="mode">Chat (Lycée)</span>
-        <button class="icon-btn" id="send-plus" title="Envoyer">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-        </button>
-        <button class="icon-btn" title="Accessibilité">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 4a2 2 0 012 2v1h3a2 2 0 012 2v1h-2v7a2 2 0 01-2 2H9a2 2 0 01-2-2v-7H5V9a2 2 0 012-2h3V6a2 2 0 012-2z"/>
-          </svg>
-        </button>
-        <button class="icon-btn" title="Micro (non actif)">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 3a3 3 0 013 3v6a3 3 0 11-6 0V6a3 3 0 013-3zm5 9a5 5 0 01-10 0H5a7 7 0 0014 0h-2zM11 19h2v3h-2z"/>
-          </svg>
-        </button>
+      <div class="smart-input-inner">
+        <input type="text" id="message" placeholder="Demandez ce que vous voulez">
+        <div class="right-tools">
+          <span class="mode">Chat (Lycée)</span>
+          <button class="icon-btn" title="Pièce jointe (désactivé)">
+            <svg viewBox="0 0 24 24">
+              <path d="M16.5 6.5l-6.8 6.8a2.5 2.5 0 11-3.5-3.5l7.4-7.4a4 4 0 115.7 5.7l-7.9 7.9a5.5 5.5 0 11-7.8-7.8l7.1-7.1"/>
+            </svg>
+          </button>
+        </div>
       </div>
+      <button class="icon-btn" id="send-btn" title="Envoyer">
+        <svg viewBox="0 0 24 24">
+          <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+        </svg>
+      </button>
     </div>
   `;
 
   main.appendChild(app);
 
   const input = document.getElementById("message");
-  const sendBtn = document.getElementById("send-plus");
+  const sendBtn = document.getElementById("send-btn");
 
   input.addEventListener("keydown", e => {
     if (e.key === "Enter") {
