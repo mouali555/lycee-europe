@@ -17,57 +17,8 @@
       color: #e5e7eb;
     }
 
-    /* APP SHELL */
-    .app-shell {
-      width: 100%;
-      max-width: 980px;
-      min-height: 640px;
-      display: none; /* CACHÉ AVANT LE CODE */
-      grid-template-rows: auto 1fr;
-      background: rgba(15, 23, 42, 0.65);
-      border-radius: 24px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      backdrop-filter: blur(22px);
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.85);
-    }
-
-    /* HEADER */
-    header {
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
-      background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,64,175,0.7));
-    }
-
-    header h1 {
-      font-size: 19px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    header h1 span.icon {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #38bdf8, #1d4ed8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* LAYOUT */
-    main {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-    }
-
-    /* PANELS */
-    #access-container {
+    /* ÉCRAN D’ACCÈS */
+    #access-screen {
       width: 100%;
       max-width: 420px;
       background: rgba(15,23,42,0.7);
@@ -78,15 +29,18 @@
       box-shadow: 0 10px 40px rgba(0,0,0,0.4);
     }
 
-    #chat-left, #chat-right {
-      display: none; /* CACHÉS AVANT LE CODE */
-      padding: 20px;
-      border-right: 1px solid rgba(148,163,184,0.2);
+    #access-screen h2 {
+      margin-bottom: 10px;
+      font-size: 22px;
+      font-weight: 600;
     }
 
-    #chat-right { border-right: none; }
+    #access-screen p {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 15px;
+    }
 
-    /* INPUTS */
     input, button {
       width: 100%;
       border-radius: 999px;
@@ -106,14 +60,44 @@
       box-shadow: 0 10px 25px rgba(37,99,235,0.55);
     }
 
-    /* MESSAGES */
+    #error {
+      margin-top: 10px;
+      color: #f87171;
+      font-size: 14px;
+    }
+
+    /* APP CHAT */
+    #chat-app {
+      width: 100%;
+      max-width: 900px;
+      height: 90vh;
+      display: none; /* caché avant le code */
+      background: rgba(15,23,42,0.65);
+      border-radius: 24px;
+      border: 1px solid rgba(148,163,184,0.35);
+      backdrop-filter: blur(22px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(15,23,42,0.85);
+    }
+
+    header {
+      padding: 16px 24px;
+      font-size: 20px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(148,163,184,0.3);
+      background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,64,175,0.7));
+    }
+
+    /* ZONE MESSAGES */
     #messages {
-      height: 520px;
+      flex: 1;
       overflow-y: auto;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      padding-right: 6px;
     }
 
     .message-row {
@@ -145,7 +129,7 @@
       padding: 10px 14px;
       border: 1px solid rgba(148,163,184,0.4);
       backdrop-filter: blur(14px);
-      max-width: 100%;
+      max-width: 80%;
     }
 
     .message-header {
@@ -162,48 +146,54 @@
       white-space: pre-wrap;
     }
 
+    /* BARRE EN BAS (STYLE MESSENGER) */
+    #bottom-bar {
+      padding: 14px 20px;
+      background: rgba(15,23,42,0.8);
+      border-top: 1px solid rgba(148,163,184,0.3);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #bottom-bar input {
+      flex: 1;
+      margin: 0;
+    }
+
+    #bottom-bar button {
+      width: auto;
+      padding: 12px 20px;
+      border-radius: 999px;
+    }
   </style>
 </head>
 <body>
 
 <!-- ÉCRAN D’ACCÈS -->
-<div id="access-container">
-  <h2 style="margin-bottom:10px;">Accès au chat</h2>
-  <p style="font-size:14px;color:#9ca3af;margin-bottom:15px;">
-    Entrez le code d’accès pour rejoindre le chat.
-  </p>
+<div id="access-screen">
+  <h2>Connexion au chat</h2>
+  <p>Entrez le code d’accès et choisissez votre pseudo.</p>
 
   <input type="password" id="access-code" placeholder="Code d’accès">
-  <button onclick="checkAccess()">Valider</button>
-  <p id="error" style="color:#f87171;margin-top:10px;"></p>
+  <input type="text" id="pseudo" placeholder="Votre pseudo">
+
+  <button onclick="enterChat()">Entrer</button>
+
+  <p id="error"></p>
 </div>
 
 <!-- APP CHAT -->
-<div class="app-shell" id="app">
+<div id="chat-app">
 
-  <header>
-    <h1><span class="icon">💬</span> Chat – Lycée Europe</h1>
-  </header>
+  <header>💬 Chat – Lycée Europe</header>
 
-  <main>
-    <!-- COLONNE GAUCHE -->
-    <section id="chat-left">
-      <h3>Votre pseudo</h3>
-      <input type="text" id="pseudo" placeholder="Votre prénom ou pseudo">
+  <div id="messages"></div>
 
-      <h3 style="margin-top:20px;">Message</h3>
-      <input type="text" id="message" placeholder="Votre message… (Entrée pour envoyer)">
-      <button onclick="sendMessage()">Envoyer</button>
-
-      <p id="chat-error" style="color:#f87171;margin-top:10px;"></p>
-    </section>
-
-    <!-- COLONNE DROITE -->
-    <section id="chat-right">
-      <h3 style="margin-bottom:10px;">Messages</h3>
-      <div id="messages"></div>
-    </section>
-  </main>
+  <div id="bottom-bar">
+    <input type="text" id="message" placeholder="Votre message…">
+    <button onclick="sendMessage()">Envoyer</button>
+  </div>
 
 </div>
 
@@ -214,22 +204,28 @@
 <script>
   const ACCESS_CODE = "C1EL2025";
 
-  function checkAccess() {
+  function enterChat() {
     const code = document.getElementById("access-code").value.trim();
+    const pseudo = document.getElementById("pseudo").value.trim();
     const error = document.getElementById("error");
+
+    if (!code || !pseudo) {
+      error.textContent = "Veuillez remplir tous les champs.";
+      return;
+    }
 
     if (code !== ACCESS_CODE) {
       error.textContent = "Code incorrect.";
       return;
     }
 
-    // CACHER L’ÉCRAN D’ACCÈS
-    document.getElementById("access-container").style.display = "none";
+    // cacher l'écran d'accès
+    document.getElementById("access-screen").style.display = "none";
 
-    // AFFICHER TOUT LE CHAT
-    document.getElementById("app").style.display = "grid";
-    document.getElementById("chat-left").style.display = "block";
-    document.getElementById("chat-right").style.display = "block";
+    // afficher le chat
+    document.getElementById("chat-app").style.display = "flex";
+
+    localStorage.setItem("pseudo", pseudo);
   }
 
   /* FIREBASE */
@@ -243,11 +239,9 @@
   const messagesRef = db.collection("messages");
 
   async function sendMessage() {
-    const pseudo = document.getElementById("pseudo").value.trim();
+    const pseudo = localStorage.getItem("pseudo");
     const message = document.getElementById("message").value.trim();
-    const error = document.getElementById("chat-error");
 
-    if (!pseudo) { error.textContent = "Pseudo requis."; return; }
     if (!message) return;
 
     await messagesRef.add({
@@ -265,6 +259,7 @@
 
     snapshot.forEach(doc => {
       const data = doc.data();
+
       const row = document.createElement("div");
       row.className = "message-row";
 
