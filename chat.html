@@ -53,10 +53,6 @@
       outline: none;
     }
 
-    input::placeholder {
-      color: #6b7280;
-    }
-
     button {
       background: linear-gradient(135deg, #38bdf8, #6366f1);
       border: none;
@@ -228,22 +224,18 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-  const ACCESS_CODE = "C1EL2025";
-
+  let ACCESS_CODE = null;
   let db = null;
   let messagesRef = null;
   let unsubscribe = null;
   let currentPseudo = null;
 
-  // Entrée avec Enter sur les champs d'accès
-  document.getElementById("access-code").addEventListener("keydown", e => {
-    if (e.key === "Enter") enterChat();
-  });
-  document.getElementById("pseudo").addEventListener("keydown", e => {
-    if (e.key === "Enter") enterChat();
-  });
+  async function loadAccessCode() {
+    const doc = await firebase.firestore().collection("config").doc("access").get();
+    ACCESS_CODE = doc.data().code;
+  }
 
-  function enterChat() {
+  async function enterChat() {
     const code = document.getElementById("access-code").value.trim();
     const pseudo = document.getElementById("pseudo").value.trim();
     const error = document.getElementById("error");
@@ -255,6 +247,8 @@
       return;
     }
 
+    await loadAccessCode();
+
     if (code !== ACCESS_CODE) {
       error.textContent = "Code incorrect.";
       return;
@@ -263,16 +257,10 @@
     currentPseudo = pseudo;
     localStorage.setItem("pseudo", pseudo);
 
-    // On enlève totalement l'écran d'accès du DOM
     document.getElementById("access-screen").remove();
 
-    // On crée le chat dans la page
     createChatUI();
-
-    // On initialise Firebase seulement maintenant
     initFirebase();
-
-    // On commence à écouter les messages seulement maintenant
     startListening();
   }
 
@@ -329,12 +317,10 @@
         const data = doc.data();
         const pseudo = data.pseudo || "Anonyme";
         const message = data.message || "";
-        const time = data.timestamp && data.timestamp.toDate
-          ? data.timestamp.toDate().toLocaleTimeString("fr-FR", {
-              hour: "2-digit",
-              minute: "2-digit"
-            })
-          : "";
+        const time = data.timestamp?.toDate().toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit"
+        }) || "";
 
         const row = document.createElement("div");
         row.className = "message-row";
@@ -354,8 +340,6 @@
       });
 
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }, err => {
-      console.error("Erreur Firestore :", err);
     });
   }
 
@@ -366,16 +350,13 @@
     const text = input.value.trim();
     if (!text) return;
 
-    try {
-      await messagesRef.add({
-        pseudo: currentPseudo,
-        message: text,
-        timestamp: new Date()
-      });
-      input.value = "";
-    } catch (e) {
-      console.error("Erreur envoi message :", e);
-    }
+    await messagesRef.add({
+      pseudo: currentPseudo,
+      message: text,
+      timestamp: new Date()
+    });
+
+    input.value = "";
   }
 
   function escapeHtml(text) {
