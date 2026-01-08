@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <title>Chat – Lycée Europe</title>
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -15,6 +16,7 @@
       flex-direction: column;
     }
 
+    /* HEADER */
     header.global-header {
       width: 100%;
       padding: 14px 30px;
@@ -29,18 +31,18 @@
       z-index: 50;
     }
 
-    header.global-header .left {
+    header .left {
       display: flex;
       align-items: center;
       gap: 16px;
     }
 
-    header.global-header img.logo {
+    header img.logo {
       height: 52px;
       border-radius: 8px;
     }
 
-    header.global-header nav a {
+    header nav a {
       margin-left: 20px;
       color: #e5e7eb;
       text-decoration: none;
@@ -49,20 +51,21 @@
       transition: 0.2s;
     }
 
-    header.global-header nav a:hover {
+    header nav a:hover {
       color: #93c5fd;
     }
 
-    header.global-header img.home-btn {
+    header img.home-btn {
       height: 44px;
       cursor: pointer;
       transition: 0.2s;
     }
 
-    header.global-header img.home-btn:hover {
+    header img.home-btn:hover {
       transform: scale(1.05);
     }
 
+    /* MAIN */
     main {
       flex: 1;
       display: flex;
@@ -71,6 +74,7 @@
       padding: 40px 20px;
     }
 
+    /* ÉCRAN D’ACCÈS */
     #access-screen {
       width: 100%;
       max-width: 420px;
@@ -127,6 +131,7 @@
       min-height: 18px;
     }
 
+    /* CHAT */
     .chat-app {
       width: 100%;
       max-width: 900px;
@@ -150,11 +155,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .chat-header .pseudo-display {
-      font-size: 13px;
-      color: #cbd5f5;
     }
 
     #messages {
@@ -268,7 +268,131 @@
   © 2026 Lycée Europe — Tous droits réservés
 </footer>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<script>
+/* CONFIG FIREBASE */
+firebase.initializeApp({
+  apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
+  authDomain: "lycee-europe.firebaseapp.com",
+  projectId: "lycee-europe"
+});
+
+const db = firebase.firestore();
+const messagesRef = db.collection("messages");
+
+let ACCESS_CODE = null;
+let currentPseudo = null;
+
+/* CHARGER LE CODE D’ACCÈS */
+async function loadAccessCode() {
+  const doc = await db.collection("config").doc("access").get();
+  ACCESS_CODE = doc.data().code;
+}
+
+/* CONNEXION */
+async function enterChat() {
+  const code = document.getElementById("access-code").value.trim();
+  const pseudo = document.getElementById("pseudo").value.trim();
+  const error = document.getElementById("error");
+
+  if (!code || !pseudo) {
+    error.textContent = "Veuillez remplir tous les champs.";
+    return;
+  }
+
+  await loadAccessCode();
+
+  if (code !== ACCESS_CODE) {
+    error.textContent = "Code incorrect.";
+    return;
+  }
+
+  currentPseudo = pseudo;
+  document.getElementById("access-screen").remove();
+  loadChatUI();
+  listenMessages();
+}
+
+/* CHARGER L’INTERFACE DU CHAT */
+function loadChatUI() {
+  const main = document.querySelector("main");
+
+  const app = document.createElement("div");
+  app.className = "chat-app";
+
+  app.innerHTML = `
+    <div class="chat-header">
+      <div>💬 Chat – Lycée Europe</div>
+      <div class="pseudo-display">Connecté en tant que : ${currentPseudo}</div>
+    </div>
+
+    <div id="messages"></div>
+
+    <div id="bottom-bar">
+      <input type="text" id="message" placeholder="Votre message…">
+      <button onclick="sendMessage()">Envoyer</button>
+    </div>
+  `;
+
+  main.appendChild(app);
+
+  document.getElementById("message").addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
+  });
+}
+
+/* ÉCOUTER LES MESSAGES EN TEMPS RÉEL */
+function listenMessages() {
+  messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+    const messagesDiv = document.getElementById("messages");
+    messagesDiv.innerHTML = "";
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+
+      const row = document.createElement("div");
+      row.className = "message-row";
+
+      row.innerHTML = `
+        <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
+        <div class="message-card">
+          <div class="message-header">
+            <span>${data.pseudo}</span>
+            <span>${
+              data.timestamp
+                ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})
+                : "—"
+            }</span>
+          </div>
+          <div class="message-body">${data.message}</div>
+        </div>
+      `;
+
+      messagesDiv.appendChild(row);
+    });
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+}
+
+/* ENVOYER UN MESSAGE */
+async function sendMessage() {
+  const input = document.getElementById("message");
+  const text = input.value.trim();
+  if (!text) return;
+
+  await messagesRef.add({
+    pseudo: currentPseudo,
+    message: text,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  });
+
+  input.value = "";
+}
+</script>
 
 </body>
 </html>
