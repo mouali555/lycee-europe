@@ -8,6 +8,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* Mise en forme du header pour ajouter le bouton Accueil */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-inline: 1.5rem;
+        }
+
+        .home-link {
+            background: #ffffff;
+            color: #0f172a;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(15,23,42,0.2);
+            box-shadow: 0 4px 10px rgba(15,23,42,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .home-link i {
+            font-size: 13px;
+        }
+
+        .home-link:hover {
+            background: #e5e7eb;
+        }
+
         /* Zone du chat (au centre) */
         .chat-container {
             background: rgba(15,23,42,0.75);
@@ -117,14 +148,27 @@
             cursor: pointer;
             font-weight: bold;
         }
+
+        #error {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #f87171;
+            min-height: 18px;
+        }
     </style>
 </head>
 
 <body>
 
     <header>
-        <h1>Lycée de l'Europe – Dunkerque</h1>
-        <p>Chat officiel du lycée 💬</p>
+        <div>
+            <h1>Lycée de l'Europe – Dunkerque</h1>
+            <p>Chat officiel du lycée 💬</p>
+        </div>
+        <a href="index.html" class="home-link">
+            <i class="fas fa-house"></i>
+            Accueil
+        </a>
     </header>
 
     <div class="container">
@@ -253,6 +297,8 @@
         function listenMessages() {
             messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
                 const messagesDiv = document.getElementById("messages");
+                if (!messagesDiv) return;
+
                 messagesDiv.innerHTML = "";
 
                 snapshot.forEach(doc => {
