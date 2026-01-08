@@ -220,3 +220,61 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.4);
 }
+
+/* =========================================
+   VERSION MOBILE (Pour écrans < 768px)
+   ========================================= */
+@media screen and (max-width: 768px) {
+
+    /* 1. On empile tout verticalement */
+    .container {
+        flex-direction: column; /* La magie opère ici : ligne -> colonne */
+        padding: 0 15px; /* Marges plus petites sur les côtés */
+        margin-top: 20px;
+    }
+
+    /* 2. Les colonnes prennent toute la largeur */
+    aside, main {
+        width: 100%;
+        min-width: 0; /* On annule la largeur minimale du PC */
+    }
+
+    /* 3. On remet le contenu principal EN PREMIER (Optionnel) */
+    /* Si tu veux que l'article s'affiche avant le menu, décommente les lignes ci-dessous : */
+    /*
+    main { order: 1; }
+    aside:first-child { order: 2; } 
+    aside:last-child { order: 3; }
+    */
+
+    /* 4. Ajustements du Header */
+    header {
+        flex-direction: column; /* Le titre au-dessus, la date en dessous */
+        text-align: center;
+        gap: 10px;
+    }
+    header h1 {
+        font-size: 1.2rem; /* Titre plus petit pour pas qu'il déborde */
+    }
+
+    /* 5. On enlève l'effet "Sticky" du menu */
+    /* Sur mobile, on ne veut pas que le menu reste collé en haut quand on scrolle */
+    .menu-box {
+        position: static; 
+        margin-bottom: 20px; /* Un peu d'espace entre les blocs */
+    }
+
+    /* 6. La galerie photo passe en 1 seule colonne */
+    .gallery-grid {
+        grid-template-columns: 1fr; /* 1 seule image par ligne */
+    }
+
+    /* 7. Vidéo et Cartes */
+    .card {
+        padding: 20px; /* Moins d'espace intérieur pour gagner de la place */
+    }
+    
+    h2 {
+        font-size: 1.4rem; /* Titres un peu plus petits */
+    }
+}
