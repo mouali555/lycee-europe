@@ -1,55 +1,68 @@
-/* 1. Police moderne (Type App/Gaming) */
+/* 1. Police et Variables de couleurs (Palette "Chat App") */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
 :root {
-    /* Le dégradé du fond d'écran (Bleu clair vers Bleu nuit) */
-    --bg-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
-    /* Alternative plus sombre comme ton image : */
-    --bg-gradient-dark: linear-gradient(135deg, #2b5876 0%, #4428ab 100%);
+    /* Le fond exact du Chat : Bleu Royal vibrant vers Bleu Nuit profond */
+    --chat-bg-gradient: linear-gradient(100deg, #2563eb 0%, #0f172a 100%);
     
-    /* L'effet Verre (Glassmorphism) */
-    --glass-bg: rgba(15, 23, 42, 0.75); /* Bleu nuit très transparent */
-    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    /* Le fond des boites (Glassmorphism) : Plus sombre et bleuté que l'ancien */
+    --glass-bg: rgba(13, 20, 35, 0.85); /* C'est beaucoup plus foncé, comme le chat */
+    --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); /* Ombre plus marquée */
     
-    /* Couleurs Texte et Accents */
+    /* Couleurs Texte */
     --text-color: #ffffff;
-    --text-muted: #94a3b8; /* Gris clair pour les textes secondaires */
-    --accent-color: #3b82f6; /* Bleu électrique pour les boutons */
+    --text-muted: #cbd5e1; /* Gris bleuté plus lisible sur fond sombre */
+    
+    /* Le Bouton bleu brillant du chat ("Entrer") */
+    --accent-gradient: linear-gradient(90deg, #235683 0%, 
+#0015fe76 100%);
 }
 
 /* 2. Configuration de la page */
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    /* On applique le dégradé sur tout l'écran */
-    background: linear-gradient(to right top, #2e7593, #20bff4, #2c5364); /* Style sombre profond */
-    background-attachment: fixed; /* Le fond ne bouge pas quand on scroll */
+    
+    /* Application du nouveau fond */
+    background: var(--chat-bg-gradient);
+    background-attachment: fixed;
+    
     color: var(--text-color);
     min-height: 100vh;
 }
 
-/* 3. Le Container principal */
+/* 3. Layout Principal */
 .container {
     display: flex;
-    max-width: 1400px; /* Plus large pour faire moderne */
+    max-width: 1400px;
     margin: 40px auto;
     gap: 30px;
     padding: 0 20px;
 }
 
-/* 4. LE STYLE MAGIQUE "GLASS" (Appliqué au Header, Menu, Cartes) */
+/* 4. LE STYLE GLASSMORPHISM (Header, Menu, Cartes) */
 header, .menu-box, .card, footer {
     background: var(--glass-bg);
-    backdrop-filter: blur(12px); /* C'est ça qui crée le flou derrière */
-    -webkit-backdrop-filter: blur(12px); /* Pour Safari */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: var(--glass-border);
-    border-radius: 20px; /* Bords très arrondis comme sur ton image */
+    border-radius: 20px;
     box-shadow: var(--glass-shadow);
     color: var(--text-color);
+    
+    /* Animation au survol pour donner vie au site */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* HEADER SPÉCIFIQUE */
+/* Effet de levitation au survol des blocs */
+.card:hover, .menu-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* HEADER */
 header {
     margin: 20px 20px 0 20px;
     padding: 20px;
@@ -77,28 +90,39 @@ aside {
     top: 20px;
 }
 
+.menu-box h3 {
+    margin-top: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+    font-size: 1.1rem;
+    color: var(--accent-color);
+}
+
 .menu-box ul {
     list-style: none;
     padding: 0;
 }
 
 .menu-box li {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .menu-box a {
     text-decoration: none;
-    color: var(--text-muted); /* Gris clair par défaut */
+    color: var(--text-muted);
     font-weight: 500;
     display: block;
     padding: 10px 15px;
     border-radius: 12px;
     transition: all 0.3s ease;
+    display: flex; /* Pour aligner icone et texte */
+    align-items: center;
+    gap: 10px; /* Espace entre icone et texte */
 }
 
-/* Effet survol type "Chat" */
+/* Effet survol des liens */
 .menu-box a:hover {
-    background: rgba(59, 130, 246, 0.2); /* Fond bleu transparent */
+    background: rgba(59, 130, 246, 0.2);
     color: #fff;
     transform: translateX(5px);
 }
@@ -113,15 +137,8 @@ main {
     margin-bottom: 30px;
 }
 
-h2 {
-    margin-top: 0;
-    font-size: 1.8rem;
-    background: -webkit-linear-gradient(#fff, #94a3b8); /* Dégradé sur le texte */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
 
-/* Vidéo style "Widget" */
+/* Vidéo */
 .video-container {
     position: relative;
     padding-bottom: 56.25%;
@@ -141,17 +158,43 @@ h2 {
     height: 100%;
 }
 
-/* BOUTON / ALERTE style "Gradient" */
+/* TITRES */
+h2 {
+    margin-top: 0;
+    font-size: 1.8rem;
+    color: #ffffff; /* Blanc pur, plus clean comme sur le chat */
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+}
+
+/* LE BOUTON / ALERTE (Style identique au bouton "Entrer" ou "Envoyer") */
 .alert-box {
     margin-top: 30px;
-    background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%); /* Bouton bleu brillant */
-    color: white;
+    background: var(--accent-gradient); /* Le dégradé bleu clair électrique */
+    color: #fff;
     padding: 15px;
-    border-radius: 50px; /* Forme de pilule */
+    border-radius: 12px; /* Un peu moins rond pour faire "Tech" */
     text-align: center;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 100, 255, 0.4); /* Lueur bleue */
     border: none;
+}
+
+/* GALERIE PHOTO (Grid) */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+.gallery-grid img {
+    width: 100%;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+.gallery-grid img:hover {
+    transform: scale(1.05);
 }
 
 /* FOOTER */
@@ -161,4 +204,19 @@ footer {
     margin: 20px;
     font-size: 0.8rem;
     color: var(--text-muted);
+}
+
+/* PERSONNALISATION DE LA BARRE DE SCROLL (Scrollbar) */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
 }
