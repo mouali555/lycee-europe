@@ -1,63 +1,164 @@
+/* 1. Police moderne (Type App/Gaming) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+    /* Le dégradé du fond d'écran (Bleu clair vers Bleu nuit) */
+    --bg-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+    /* Alternative plus sombre comme ton image : */
+    --bg-gradient-dark: linear-gradient(135deg, #2b5876 0%, #4428ab 100%);
+    
+    /* L'effet Verre (Glassmorphism) */
+    --glass-bg: rgba(15, 23, 42, 0.75); /* Bleu nuit très transparent */
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    /* Couleurs Texte et Accents */
+    --text-color: #ffffff;
+    --text-muted: #94a3b8; /* Gris clair pour les textes secondaires */
+    --accent-color: #3b82f6; /* Bleu électrique pour les boutons */
+}
+
+/* 2. Configuration de la page */
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    /* On applique le dégradé sur tout l'écran */
+    background: linear-gradient(to right top, #2e7593, #20bff4, #2c5364); /* Style sombre profond */
+    background-attachment: fixed; /* Le fond ne bouge pas quand on scroll */
+    color: var(--text-color);
+    min-height: 100vh;
 }
 
+/* 3. Le Container principal */
+.container {
+    display: flex;
+    max-width: 1400px; /* Plus large pour faire moderne */
+    margin: 40px auto;
+    gap: 30px;
+    padding: 0 20px;
+}
+
+/* 4. LE STYLE MAGIQUE "GLASS" (Appliqué au Header, Menu, Cartes) */
+header, .menu-box, .card, footer {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px); /* C'est ça qui crée le flou derrière */
+    -webkit-backdrop-filter: blur(12px); /* Pour Safari */
+    border: var(--glass-border);
+    border-radius: 20px; /* Bords très arrondis comme sur ton image */
+    box-shadow: var(--glass-shadow);
+    color: var(--text-color);
+}
+
+/* HEADER SPÉCIFIQUE */
 header {
-  background: #003366;
-  color: white;
-  padding: 20px;
-  text-align: center;
+    margin: 20px 20px 0 20px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.layout {
-  display: grid;
-  grid-template-columns: 220px 1fr 220px;
-  gap: 20px;
-  padding: 20px;
+header h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    font-weight: 600;
 }
 
-.sidebar, .rightbar {
-  background: #e0e0e0;
-  padding: 20px;
-  border-radius: 8px;
+/* MENUS (Aside) */
+aside {
+    flex: 1;
+    min-width: 220px;
 }
 
-.sidebar ul, .rightbar ul {
-  list-style: none;
-  padding: 0;
+.menu-box {
+    padding: 25px;
+    position: sticky;
+    top: 20px;
 }
 
-.sidebar li, .rightbar li {
-  margin-bottom: 10px;
+.menu-box ul {
+    list-style: none;
+    padding: 0;
 }
 
-.sidebar a, .rightbar a {
-  text-decoration: none;
-  color: #003366;
-  font-weight: bold;
+.menu-box li {
+    margin-bottom: 15px;
 }
 
-.content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+.menu-box a {
+    text-decoration: none;
+    color: var(--text-muted); /* Gris clair par défaut */
+    font-weight: 500;
+    display: block;
+    padding: 10px 15px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
 }
 
-.banner {
-  background: #ffcc00;
-  padding: 15px;
-  margin-top: 20px;
-  text-align: center;
-  font-weight: bold;
-  border-radius: 8px;
+/* Effet survol type "Chat" */
+.menu-box a:hover {
+    background: rgba(59, 130, 246, 0.2); /* Fond bleu transparent */
+    color: #fff;
+    transform: translateX(5px);
 }
 
+/* CONTENU PRINCIPAL */
+main {
+    flex: 3;
+}
+
+.card {
+    padding: 40px;
+    margin-bottom: 30px;
+}
+
+h2 {
+    margin-top: 0;
+    font-size: 1.8rem;
+    background: -webkit-linear-gradient(#fff, #94a3b8); /* Dégradé sur le texte */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Vidéo style "Widget" */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    margin-top: 25px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* BOUTON / ALERTE style "Gradient" */
+.alert-box {
+    margin-top: 30px;
+    background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%); /* Bouton bleu brillant */
+    color: white;
+    padding: 15px;
+    border-radius: 50px; /* Forme de pilule */
+    text-align: center;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    border: none;
+}
+
+/* FOOTER */
 footer {
-  background: #003366;
-  color: white;
-  text-align: center;
-  padding: 15px;
-  margin-top: 40px;
+    text-align: center;
+    padding: 20px;
+    margin: 20px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
 }
