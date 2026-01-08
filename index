@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lycée Europe – Accueil</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+        }
+
+        header {
+            background: #003366;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background: #0055a5;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero {
+            background: url('https://via.placeholder.com/1600x500') center/cover no-repeat;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px black;
+        }
+
+        .content {
+            padding: 30px;
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            margin-top: -40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            background: #003366;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Lycée Europe</h1>
+        <p>Bienvenue sur la page d’accueil</p>
+    </header>
+
+    <nav>
+        <a href="#">Accueil</a>
+        <a href="#">Actualités</a>
+        <a href="#">Formations</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <div class="hero">
+        Bienvenue au Lycée Europe
+    </div>
+
+    <div class="content">
+        <h2>Présentation</h2>
+        <p>
+            Le Lycée Europe est un établissement moderne et dynamique situé à Dunkerque.
+            Nous proposons des formations générales, technologiques et professionnelles,
+            ainsi qu’un accompagnement personnalisé pour chaque élève.
+        </p>
+
+        <h2>Actualités</h2>
+        <p>
+            Retrouvez ici les dernières informations, événements et projets du lycée.
+        </p>
+    </div>
+
+    <footer>
+        © 2026 Lycée Europe – Tous droits réservés
+    </footer>
+
+</body>
+</html>
