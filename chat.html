@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Lycée Europe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #003366;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    #chat-container {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #messages {
+      height: 300px;
+      overflow-y: scroll;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 15px;
+      background: #fafafa;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+    .message strong {
+      color: #003366;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #pseudo {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>💬 Chat Public – Lycée Europe</h1>
+  </header>
+
+  <div id="chat-container">
+    <input type="text" id="pseudo" placeholder="Entrez votre prénom ou pseudo">
+    <div id="messages"></div>
+    <input type="text" id="message" placeholder="Votre message...">
+    <button onclick="sendMessage()">Envoyer</button>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
+      authDomain: "lycee-europe.firebaseapp.com",
+      projectId: "lycee-europe",
+      storageBucket: "lycee-europe.appspot.com",
+      messagingSenderId: "836743969706",
+      appId: "1:836743969706:web:4f07c577d8a9d24afc09d3",
+      measurementId: "G-Q89GM7Q0TX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const messagesRef = collection(db, "messages");
+
+    async function sendMessage() {
+      const pseudo = document.getElementById("pseudo").value.trim();
+      const message = document.getElementById("message").value.trim();
+      if (!pseudo || !message) return;
+
+      await addDoc(messagesRef, {
+        pseudo: pseudo,
+        message: message,
+        timestamp: new Date()
+      });
+
+      document.getElementById("message").value = "";
+    }
+
+    const messagesDiv = document.getElementById("messages");
+    const q = query(messagesRef, orderBy("timestamp"));
+
+    onSnapshot(q, (snapshot) => {
+      messagesDiv.innerHTML = "";
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const msg = document.createElement("div");
+        msg.classList.add("message");
+        msg.innerHTML = `<strong>${data.pseudo}:</strong> ${data.message}`;
+        messagesDiv.appendChild(msg);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+  </script>
+
+</body>
+</html>
