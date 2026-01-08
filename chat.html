@@ -50,6 +50,11 @@
       background: rgba(15, 23, 42, 0.7);
       color: #e5e7eb;
       margin-top: 10px;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #6b7280;
     }
 
     button {
@@ -58,6 +63,11 @@
       font-weight: 600;
       cursor: pointer;
       box-shadow: 0 10px 25px rgba(37,99,235,0.55);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(37,99,235,0.7);
     }
 
     #error {
@@ -71,7 +81,7 @@
       width: 100%;
       max-width: 900px;
       height: 90vh;
-      display: none; /* caché avant le code */
+      display: none; /* très important : caché tant que pas connecté */
       background: rgba(15,23,42,0.65);
       border-radius: 24px;
       border: 1px solid rgba(148,163,184,0.35);
@@ -88,6 +98,14 @@
       font-weight: 600;
       border-bottom: 1px solid rgba(148,163,184,0.3);
       background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,64,175,0.7));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header span.pseudo-display {
+      font-size: 13px;
+      color: #cbd5f5;
     }
 
     /* ZONE MESSAGES */
@@ -121,10 +139,11 @@
       justify-content: center;
       font-weight: 600;
       color: white;
+      flex-shrink: 0;
     }
 
     .message-card {
-      background: rgba(15,23,42,0.75);
+      background: rgba(15,23,42,0.78);
       border-radius: 18px;
       padding: 10px 14px;
       border: 1px solid rgba(148,163,184,0.4);
@@ -144,12 +163,13 @@
       font-size: 14px;
       color: #d1d5db;
       white-space: pre-wrap;
+      word-wrap: break-word;
     }
 
     /* BARRE EN BAS (STYLE MESSENGER) */
     #bottom-bar {
       padding: 14px 20px;
-      background: rgba(15,23,42,0.8);
+      background: rgba(15,23,42,0.9);
       border-top: 1px solid rgba(148,163,184,0.3);
       display: flex;
       gap: 10px;
@@ -178,36 +198,55 @@
   <input type="password" id="access-code" placeholder="Code d’accès">
   <input type="text" id="pseudo" placeholder="Votre pseudo">
 
-  <button onclick="enterChat()">Entrer</button>
+  <button id="access-btn" onclick="enterChat()">Entrer</button>
 
   <p id="error"></p>
 </div>
 
-<!-- APP CHAT -->
+<!-- APP CHAT (CACHÉE AU DÉBUT) -->
 <div id="chat-app">
 
-  <header>💬 Chat – Lycée Europe</header>
+  <header>
+    <div>💬 Chat – Lycée Europe</div>
+    <span class="pseudo-display" id="header-pseudo"></span>
+  </header>
 
   <div id="messages"></div>
 
   <div id="bottom-bar">
-    <input type="text" id="message" placeholder="Votre message…">
+    <input type="text" id="message" placeholder="Votre message… (Entrée pour envoyer)">
     <button onclick="sendMessage()">Envoyer</button>
   </div>
 
 </div>
 
-<!-- FIREBASE -->
+<!-- FIREBASE SDK (chargé, mais PAS utilisé tant que le code n’est pas validé) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
   const ACCESS_CODE = "C1EL2025";
+  let db = null;
+  let messagesRef = null;
+  let unsubscribe = null;
+  let currentPseudo = null;
+  let firebaseInitialized = false;
+
+  // Entrée avec Entrée sur le clavier
+  document.getElementById("access-code").addEventListener("keydown", e => {
+    if (e.key === "Enter") enterChat();
+  });
+  document.getElementById("pseudo").addEventListener("keydown", e => {
+    if (e.key === "Enter") enterChat();
+  });
 
   function enterChat() {
     const code = document.getElementById("access-code").value.trim();
-    const pseudo = document.getElementById("pseudo").value.trim();
+    const pseudoInput = document.getElementById("pseudo");
+    const pseudo = pseudoInput.value.trim();
     const error = document.getElementById("error");
+
+    error.textContent = "";
 
     if (!code || !pseudo) {
       error.textContent = "Veuillez remplir tous les champs.";
@@ -219,66 +258,105 @@
       return;
     }
 
-    // cacher l'écran d'accès
-    document.getElementById("access-screen").style.display = "none";
-
-    // afficher le chat
-    document.getElementById("chat-app").style.display = "flex";
-
+    currentPseudo = pseudo;
     localStorage.setItem("pseudo", pseudo);
+
+    document.getElementById("access-screen").style.display = "none";
+    document.getElementById("chat-app").style.display = "flex";
+    document.getElementById("header-pseudo").textContent = "Connecté en tant que : " + pseudo;
+
+    initFirebaseAndChat();
   }
 
-  /* FIREBASE */
-  firebase.initializeApp({
-    apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
-    authDomain: "lycee-europe.firebaseapp.com",
-    projectId: "lycee-europe"
-  });
+  function initFirebaseAndChat() {
+    // On initialise Firebase UNIQUEMENT après le bon code
+    if (!firebaseInitialized) {
+      firebase.initializeApp({
+        apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
+        authDomain: "lycee-europe.firebaseapp.com",
+        projectId: "lycee-europe"
+      });
+      db = firebase.firestore();
+      messagesRef = db.collection("messages");
+      firebaseInitialized = true;
+    }
 
-  const db = firebase.firestore();
-  const messagesRef = db.collection("messages");
+    // On écoute les messages seulement maintenant
+    unsubscribe = messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+      const messagesDiv = document.getElementById("messages");
+      messagesDiv.innerHTML = "";
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const pseudo = data.pseudo || "Anonyme";
+        const message = data.message || "";
+        const time = data.timestamp && data.timestamp.toDate
+          ? data.timestamp.toDate().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
+          : "";
+
+        const row = document.createElement("div");
+        row.className = "message-row";
+
+        row.innerHTML = `
+          <div class="avatar">${pseudo.charAt(0).toUpperCase()}</div>
+          <div class="message-card">
+            <div class="message-header">
+              <span>${escapeHtml(pseudo)}</span>
+              <span>${time}</span>
+            </div>
+            <div class="message-body">${escapeHtml(message)}</div>
+          </div>
+        `;
+
+        messagesDiv.appendChild(row);
+      });
+
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }, err => {
+      console.error("Erreur Firestore :", err);
+    });
+
+    // focus sur le champ message
+    document.getElementById("message").focus();
+  }
 
   async function sendMessage() {
-    const pseudo = localStorage.getItem("pseudo");
-    const message = document.getElementById("message").value.trim();
+    if (!messagesRef || !currentPseudo) return;
 
-    if (!message) return;
+    const input = document.getElementById("message");
+    const text = input.value.trim();
+    if (!text) return;
 
-    await messagesRef.add({
-      pseudo,
-      message,
-      timestamp: new Date()
-    });
-
-    document.getElementById("message").value = "";
+    try {
+      await messagesRef.add({
+        pseudo: currentPseudo,
+        message: text,
+        timestamp: new Date()
+      });
+      input.value = "";
+    } catch (e) {
+      console.error("Erreur envoi message :", e);
+    }
   }
 
-  messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
-    const messagesDiv = document.getElementById("messages");
-    messagesDiv.innerHTML = "";
-
-    snapshot.forEach(doc => {
-      const data = doc.data();
-
-      const row = document.createElement("div");
-      row.className = "message-row";
-
-      row.innerHTML = `
-        <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
-        <div class="message-card">
-          <div class="message-header">
-            <span>${data.pseudo}</span>
-            <span>${data.timestamp.toDate().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</span>
-          </div>
-          <div class="message-body">${data.message}</div>
-        </div>
-      `;
-
-      messagesDiv.appendChild(row);
-    });
-
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  // Envoi avec Entrée
+  document.getElementById("message").addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
   });
+
+  function escapeHtml(text) {
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+  }
 </script>
 
 </body>
