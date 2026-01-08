@@ -1,392 +1,305 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Chat – Lycée Europe</title>
+<meta charset="UTF-8">
+<title>Chat – Lycée Europe</title>
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
 
-    body {
-      font-family: "Segoe UI", system-ui, sans-serif;
-      background: radial-gradient(circle at top left, #4f46e5, #0ea5e9, #020617);
-      color: #e5e7eb;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+body{
+  font-family:"Segoe UI",system-ui,sans-serif;
+  background:radial-gradient(circle at top left,#4f46e5,#0ea5e9,#020617);
+  color:#e5e7eb;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
 
-    /* HEADER GLOBAL */
-    header.global-header {
-      width: 100%;
-      padding: 12px 30px;
-      background: rgba(15,23,42,0.75);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
+/* ===== HEADER ===== */
+header.global-header{
+  padding:18px 40px;
+  background:rgba(15,23,42,.8);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.15);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    header.global-header .left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+header .left{
+  display:flex;
+  align-items:center;
+  gap:26px;
+}
 
-    header.global-header img.logo {
-      height: 48px;
-      border-radius: 8px;
-    }
+header img.logo{
+  height:72px;                 /* GROS LOGO */
+  border-radius:14px;
+}
 
-    header.global-header nav a {
-      margin-left: 20px;
-      color: #e5e7eb;
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 500;
-      transition: 0.2s;
-    }
+header nav a{
+  margin-left:22px;
+  color:#e5e7eb;
+  text-decoration:none;
+  font-size:16px;
+  font-weight:500;
+}
 
-    header.global-header nav a:hover {
-      color: #93c5fd;
-    }
+header nav a:hover{color:#93c5fd}
 
-    header.global-header img.home-btn {
-      height: 42px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+header img.home-btn{
+  height:64px;                 /* GROS BOUTON */
+  cursor:pointer;
+  transition:.2s;
+}
 
-    header.global-header img.home-btn:hover {
-      transform: scale(1.05);
-    }
+header img.home-btn:hover{
+  transform:scale(1.08);
+}
 
-    /* CONTENU PRINCIPAL */
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-    }
+/* ===== MAIN ===== */
+main{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+}
 
-    /* ÉCRAN D’ACCÈS */
-    #access-screen {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(15,23,42,0.7);
-      padding: 30px;
-      border-radius: 20px;
-      border: 1px solid rgba(148,163,184,0.4);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    }
+/* ===== ACCÈS ===== */
+#access-screen{
+  width:100%;
+  max-width:420px;
+  background:rgba(15,23,42,.7);
+  padding:32px;
+  border-radius:22px;
+  border:1px solid rgba(148,163,184,.4);
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+}
 
-    #access-screen h2 {
-      margin-bottom: 10px;
-      font-size: 22px;
-      font-weight: 600;
-    }
+#access-screen h2{
+  font-size:22px;
+  margin-bottom:10px;
+}
 
-    #access-screen p {
-      font-size: 14px;
-      color: #9ca3af;
-      margin-bottom: 15px;
-    }
+input,button{
+  width:100%;
+  border-radius:999px;
+  padding:14px 18px;
+  margin-top:12px;
+  background:rgba(15,23,42,.7);
+  color:#e5e7eb;
+  border:1px solid rgba(148,163,184,.6);
+  font-size:15px;
+}
 
-    input, button {
-      width: 100%;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      padding: 12px 16px;
-      font-size: 14px;
-      background: rgba(15, 23, 42, 0.7);
-      color: #e5e7eb;
-      margin-top: 10px;
-      outline: none;
-    }
+button{
+  background:linear-gradient(135deg,#38bdf8,#6366f1);
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 10px 30px rgba(37,99,235,.6);
+}
 
-    button {
-      background: linear-gradient(135deg, #38bdf8, #6366f1);
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(37,99,235,0.55);
-      transition: 0.2s;
-    }
+button:hover{transform:translateY(-1px)}
 
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(37,99,235,0.7);
-    }
+#error{color:#f87171;margin-top:10px}
 
-    #error {
-      margin-top: 10px;
-      color: #f87171;
-      font-size: 14px;
-    }
+/* ===== CHAT ===== */
+.chat-app{
+  width:100%;
+  max-width:900px;
+  height:80vh;
+  background:rgba(15,23,42,.65);
+  border-radius:26px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  box-shadow:0 25px 70px rgba(15,23,42,.9);
+}
 
-    /* CHAT APP */
-    .chat-app {
-      width: 100%;
-      max-width: 900px;
-      height: 80vh;
-      background: rgba(15,23,42,0.65);
-      border-radius: 24px;
-      border: 1px solid rgba(148,163,184,0.35);
-      backdrop-filter: blur(22px);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 20px 60px rgba(15,23,42,0.85);
-    }
+.chat-header{
+  padding:18px 26px;
+  font-size:20px;
+  font-weight:600;
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid rgba(148,163,184,.3);
+}
 
-    .chat-header {
-      padding: 16px 24px;
-      font-size: 20px;
-      font-weight: 600;
-      border-bottom: 1px solid rgba(148,163,184,0.3);
-      background: linear-gradient(to right, rgba(15,23,42,0.9), rgba(30,64,175,0.7));
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+#messages{
+  flex:1;
+  overflow-y:auto;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
 
-    .chat-header .pseudo-display {
-      font-size: 13px;
-      color: #cbd5f5;
-    }
+.message-row{display:flex;gap:12px}
 
-    #messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+.avatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#38bdf8,#2563eb);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+}
 
-    .message-row {
-      display: flex;
-      gap: 10px;
-      animation: fadeUp 0.22s ease-out;
-    }
+.message-card{
+  background:rgba(15,23,42,.8);
+  padding:12px 16px;
+  border-radius:20px;
+  max-width:80%;
+}
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+#bottom-bar{
+  display:flex;
+  gap:12px;
+  padding:16px 22px;
+  border-top:1px solid rgba(148,163,184,.3);
+}
 
-    .avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #38bdf8, #1d4ed8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      color: white;
-      flex-shrink: 0;
-    }
+#bottom-bar input{flex:1;margin:0}
 
-    .message-card {
-      background: rgba(15,23,42,0.78);
-      border-radius: 18px;
-      padding: 10px 14px;
-      border: 1px solid rgba(148,163,184,0.4);
-      backdrop-filter: blur(14px);
-      max-width: 80%;
-    }
-
-    #bottom-bar {
-      padding: 14px 20px;
-      background: rgba(15,23,42,0.9);
-      border-top: 1px solid rgba(148,163,184,0.3);
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    #bottom-bar input {
-      flex: 1;
-      margin: 0;
-    }
-
-    #bottom-bar button {
-      width: auto;
-      padding: 12px 20px;
-      border-radius: 999px;
-    }
-
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 15px;
-      font-size: 14px;
-      color: #cbd5e1;
-      background: rgba(15,23,42,0.6);
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-  </style>
+/* ===== FOOTER ===== */
+footer{
+  text-align:center;
+  padding:16px;
+  background:rgba(15,23,42,.6);
+  border-top:1px solid rgba(255,255,255,.1);
+}
+</style>
 </head>
 
 <body>
 
-<!-- HEADER GLOBAL -->
 <header class="global-header">
   <div class="left">
-    <img src="logo.png" class="logo" alt="Logo Lycée Europe">
+    <img src="logo.png" class="logo">
     <nav>
       <a href="index.html">Accueil</a>
       <a href="#">Chat</a>
-      <a href="#">Contact</a>
       <a href="#">Infos</a>
     </nav>
   </div>
-
-  <img src="bouton.png" class="home-btn" alt="Accueil" onclick="window.location='index.html'">
+  <img src="bouton.png" class="home-btn" onclick="window.location='index.html'">
 </header>
 
 <main>
-
-<!-- ÉCRAN D’ACCÈS -->
 <div id="access-screen">
   <h2>Connexion au chat</h2>
-  <p>Entrez le code d’accès et choisissez votre pseudo.</p>
-
   <input type="password" id="access-code" placeholder="Code d’accès">
-  <input type="text" id="pseudo" placeholder="Votre pseudo">
-
+  <input type="text" id="pseudo" placeholder="Pseudo (20 caractères max)">
   <button onclick="enterChat()">Entrer</button>
-
   <p id="error"></p>
 </div>
-
 </main>
 
-<footer>
-  © 2026 Lycée Europe — Tous droits réservés
-</footer>
+<footer>© 2026 Lycée Europe</footer>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
-    authDomain: "lycee-europe.firebaseapp.com",
-    projectId: "lycee-europe"
-  };
+firebase.initializeApp({
+  apiKey:"AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
+  authDomain:"lycee-europe.firebaseapp.com",
+  projectId:"lycee-europe"
+});
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+const db=firebase.firestore();
+const messagesRef=db.collection("messages");
+let ACCESS_CODE=null;
+let currentPseudo=null;
 
-  let ACCESS_CODE = null;
-  let messagesRef = db.collection("messages");
-  let currentPseudo = null;
+async function loadAccessCode(){
+  const doc=await db.collection("config").doc("access").get();
+  ACCESS_CODE=doc.data().code;
+}
 
-  async function loadAccessCode() {
-    const doc = await db.collection("config").doc("access").get();
-    ACCESS_CODE = doc.data().code;
-  }
+async function enterChat(){
+  const code=document.getElementById("access-code").value.trim();
+  const pseudo=document.getElementById("pseudo").value.trim();
+  const error=document.getElementById("error");
 
-  async function enterChat() {
-    const code = document.getElementById("access-code").value.trim();
-    const pseudo = document.getElementById("pseudo").value.trim();
-    const error = document.getElementById("error");
+  if(!code||!pseudo){error.textContent="Champs manquants";return;}
+  if(pseudo.length>20){error.textContent="Pseudo trop long";return;}
 
-    if (!code || !pseudo) {
-      error.textContent = "Veuillez remplir tous les champs.";
-      return;
-    }
+  await loadAccessCode();
+  if(code!==ACCESS_CODE){error.textContent="Code incorrect";return;}
 
-    await loadAccessCode();
+  currentPseudo=pseudo;
+  document.getElementById("access-screen").remove();
+  loadChat();
+  listenMessages();
+}
 
-    if (code !== ACCESS_CODE) {
-      error.textContent = "Code incorrect.";
-      return;
-    }
+function loadChat(){
+  const app=document.createElement("div");
+  app.className="chat-app";
+  app.innerHTML=`
+    <div class="chat-header">
+      <div>💬 Chat – Lycée Europe</div>
+      <div>${currentPseudo}</div>
+    </div>
+    <div id="messages"></div>
+    <div id="bottom-bar">
+      <input id="message" maxlength="500" placeholder="Votre message…">
+      <button onclick="sendMessage()">Envoyer</button>
+    </div>`;
+  document.querySelector("main").appendChild(app);
+}
 
-    currentPseudo = pseudo;
-    document.getElementById("access-screen").remove();
-    loadChatUI();
-    listenMessages();
-  }
+function listenMessages(){
+  messagesRef.orderBy("timestamp").limit(100).onSnapshot(snap=>{
+    const box=document.getElementById("messages");
+    box.innerHTML="";
+    snap.forEach(doc=>{
+      const d=doc.data();
 
-  function loadChatUI() {
-    const main = document.querySelector("main");
+      const row=document.createElement("div");
+      row.className="message-row";
 
-    const app = document.createElement("div");
-    app.className = "chat-app";
+      const avatar=document.createElement("div");
+      avatar.className="avatar";
+      avatar.textContent=d.pseudo[0].toUpperCase();
 
-    app.innerHTML = `
-      <div class="chat-header">
-        <div>💬 Chat – Lycée Europe</div>
-        <div class="pseudo-display">Connecté en tant que : ${currentPseudo}</div>
-      </div>
+      const card=document.createElement("div");
+      card.className="message-card";
 
-      <div id="messages"></div>
+      const head=document.createElement("div");
+      head.textContent=d.pseudo+" • "+
+        (d.timestamp?
+        new Date(d.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}):"");
 
-      <div id="bottom-bar">
-        <input type="text" id="message" placeholder="Votre message…">
-        <button onclick="sendMessage()">Envoyer</button>
-      </div>
-    `;
+      const body=document.createElement("div");
+      body.textContent=d.message;
 
-    main.appendChild(app);
-
-    document.getElementById("message").addEventListener("keydown", e => {
-      if (e.key === "Enter") sendMessage();
+      card.append(head,body);
+      row.append(avatar,card);
+      box.appendChild(row);
     });
-  }
+    box.scrollTop=box.scrollHeight;
+  });
+}
 
-  function listenMessages() {
-    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
-      const messagesDiv = document.getElementById("messages");
-      messagesDiv.innerHTML = "";
+async function sendMessage(){
+  const input=document.getElementById("message");
+  const text=input.value.trim();
+  if(!text)return;
 
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const row = document.createElement("div");
-        row.className = "message-row";
-
-        row.innerHTML = `
-          <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
-          <div class="message-card">
-            <div class="message-header">
-              <span>${data.pseudo}</span>
-              <span>${new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</span>
-            </div>
-            <div class="message-body">${data.message}</div>
-          </div>
-        `;
-
-        messagesDiv.appendChild(row);
-      });
-
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    });
-  }
-
-  async function sendMessage() {
-    const input = document.getElementById("message");
-    const text = input.value.trim();
-    if (!text) return;
-
-    await messagesRef.add({
-      pseudo: currentPseudo,
-      message: text,
-      timestamp: new Date()
-    });
-
-    input.value = "";
-  }
+  await messagesRef.add({
+    pseudo:currentPseudo,
+    message:text,
+    timestamp:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  input.value="";
+}
 </script>
 
 </body>
