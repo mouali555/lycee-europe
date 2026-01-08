@@ -5,16 +5,73 @@
   <title>Chat – Lycée Europe</title>
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(circle at top left, #4f46e5, #0ea5e9, #020617);
+      color: #e5e7eb;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER GLOBAL */
+    header.global-header {
+      width: 100%;
+      padding: 12px 30px;
+      background: rgba(15,23,42,0.75);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    header.global-header .left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    header.global-header img.logo {
+      height: 48px;
+      border-radius: 8px;
+    }
+
+    header.global-header nav a {
+      margin-left: 20px;
+      color: #e5e7eb;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+
+    header.global-header nav a:hover {
+      color: #93c5fd;
+    }
+
+    header.global-header img.home-btn {
+      height: 42px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    header.global-header img.home-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* CONTENU PRINCIPAL */
+    main {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at top left, #4f46e5, #0ea5e9, #020617);
-      color: #e5e7eb;
+      padding: 40px 20px;
     }
 
     /* ÉCRAN D’ACCÈS */
@@ -77,7 +134,7 @@
     .chat-app {
       width: 100%;
       max-width: 900px;
-      height: 90vh;
+      height: 80vh;
       background: rgba(15,23,42,0.65);
       border-radius: 24px;
       border: 1px solid rgba(148,163,184,0.35);
@@ -88,7 +145,7 @@
       box-shadow: 0 20px 60px rgba(15,23,42,0.85);
     }
 
-    header {
+    .chat-header {
       padding: 16px 24px;
       font-size: 20px;
       font-weight: 600;
@@ -99,31 +156,9 @@
       align-items: center;
     }
 
-    header .pseudo-display {
+    .chat-header .pseudo-display {
       font-size: 13px;
       color: #cbd5f5;
-    }
-
-    header .right-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    header a.home-btn {
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 999px;
-      color: #e5e7eb;
-      text-decoration: none;
-      font-size: 14px;
-      backdrop-filter: blur(10px);
-      transition: 0.2s;
-    }
-
-    header a.home-btn:hover {
-      background: rgba(255,255,255,0.25);
     }
 
     #messages {
@@ -168,21 +203,6 @@
       max-width: 80%;
     }
 
-    .message-header {
-      display: flex;
-      gap: 6px;
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 2px;
-    }
-
-    .message-body {
-      font-size: 14px;
-      color: #d1d5db;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-    }
-
     #bottom-bar {
       padding: 14px 20px;
       background: rgba(15,23,42,0.9);
@@ -203,16 +223,36 @@
       border-radius: 999px;
     }
 
-    @media (max-width: 700px) {
-      .chat-app {
-        height: 100vh;
-        border-radius: 0;
-        border: none;
-      }
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 14px;
+      color: #cbd5e1;
+      background: rgba(15,23,42,0.6);
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
   </style>
 </head>
+
 <body>
+
+<!-- HEADER GLOBAL -->
+<header class="global-header">
+  <div class="left">
+    <img src="logo.png" class="logo" alt="Logo Lycée Europe">
+    <nav>
+      <a href="index.html">Accueil</a>
+      <a href="#">Chat</a>
+      <a href="#">Contact</a>
+      <a href="#">Infos</a>
+    </nav>
+  </div>
+
+  <img src="bouton.png" class="home-btn" alt="Accueil" onclick="window.location='index.html'">
+</header>
+
+<main>
 
 <!-- ÉCRAN D’ACCÈS -->
 <div id="access-screen">
@@ -222,17 +262,22 @@
   <input type="password" id="access-code" placeholder="Code d’accès">
   <input type="text" id="pseudo" placeholder="Votre pseudo">
 
-  <button id="access-btn" onclick="enterChat()">Entrer</button>
+  <button onclick="enterChat()">Entrer</button>
 
   <p id="error"></p>
 </div>
 
-<!-- Firebase SDK -->
+</main>
+
+<footer>
+  © 2026 Lycée Europe — Tous droits réservés
+</footer>
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-  // === CONFIG FIREBASE ===
   const firebaseConfig = {
     apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
     authDomain: "lycee-europe.firebaseapp.com",
@@ -244,15 +289,10 @@
 
   let ACCESS_CODE = null;
   let messagesRef = db.collection("messages");
-  let unsubscribe = null;
   let currentPseudo = null;
 
   async function loadAccessCode() {
     const doc = await db.collection("config").doc("access").get();
-    if (!doc.exists) {
-      console.error("Document /config/access introuvable");
-      throw new Error("Code d'accès non configuré");
-    }
     ACCESS_CODE = doc.data().code;
   }
 
@@ -261,19 +301,12 @@
     const pseudo = document.getElementById("pseudo").value.trim();
     const error = document.getElementById("error");
 
-    error.textContent = "";
-
     if (!code || !pseudo) {
       error.textContent = "Veuillez remplir tous les champs.";
       return;
     }
 
-    try {
-      await loadAccessCode();
-    } catch (e) {
-      error.textContent = "Erreur de configuration du code d’accès.";
-      return;
-    }
+    await loadAccessCode();
 
     if (code !== ACCESS_CODE) {
       error.textContent = "Code incorrect.";
@@ -281,74 +314,56 @@
     }
 
     currentPseudo = pseudo;
-    localStorage.setItem("pseudo", pseudo);
-
     document.getElementById("access-screen").remove();
-
-    createChatUI();
-    startListening();
+    loadChatUI();
+    listenMessages();
   }
 
-  function createChatUI() {
+  function loadChatUI() {
+    const main = document.querySelector("main");
+
     const app = document.createElement("div");
     app.className = "chat-app";
 
     app.innerHTML = `
-      <header>
+      <div class="chat-header">
         <div>💬 Chat – Lycée Europe</div>
-        <div class="right-header">
-          <span class="pseudo-display">Connecté en tant que : ${escapeHtml(currentPseudo)}</span>
-          <a href="index.html" class="home-btn">Accueil</a>
-        </div>
-      </header>
+        <div class="pseudo-display">Connecté en tant que : ${currentPseudo}</div>
+      </div>
 
       <div id="messages"></div>
 
       <div id="bottom-bar">
-        <input type="text" id="message" placeholder="Votre message… (Entrée pour envoyer)">
+        <input type="text" id="message" placeholder="Votre message…">
         <button onclick="sendMessage()">Envoyer</button>
       </div>
     `;
 
-    document.body.appendChild(app);
+    main.appendChild(app);
 
-    const messageInput = document.getElementById("message");
-    messageInput.addEventListener("keydown", e => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        sendMessage();
-      }
+    document.getElementById("message").addEventListener("keydown", e => {
+      if (e.key === "Enter") sendMessage();
     });
-    messageInput.focus();
   }
 
-  function startListening() {
-    unsubscribe = messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+  function listenMessages() {
+    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
       const messagesDiv = document.getElementById("messages");
-      if (!messagesDiv) return;
-
       messagesDiv.innerHTML = "";
 
       snapshot.forEach(doc => {
         const data = doc.data();
-        const pseudo = data.pseudo || "Anonyme";
-        const message = data.message || "";
-        const time = data.timestamp?.toDate().toLocaleTimeString("fr-FR", {
-          hour: "2-digit",
-          minute: "2-digit"
-        }) || "";
-
         const row = document.createElement("div");
         row.className = "message-row";
 
         row.innerHTML = `
-          <div class="avatar">${escapeHtml(pseudo.charAt(0).toUpperCase())}</div>
+          <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
           <div class="message-card">
             <div class="message-header">
-              <span>${escapeHtml(pseudo)}</span>
-              <span>${time}</span>
+              <span>${data.pseudo}</span>
+              <span>${new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</span>
             </div>
-            <div class="message-body">${escapeHtml(message)}</div>
+            <div class="message-body">${data.message}</div>
           </div>
         `;
 
@@ -356,42 +371,21 @@
       });
 
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }, err => {
-      console.error("Erreur snapshot messages:", err);
     });
   }
 
   async function sendMessage() {
-    if (!currentPseudo) return;
-
     const input = document.getElementById("message");
-    if (!input) return;
-
     const text = input.value.trim();
     if (!text) return;
 
-    try {
-      await messagesRef.add({
-        pseudo: currentPseudo,
-        message: text,
-        timestamp: new Date()
-      });
-      input.value = "";
-    } catch (e) {
-      console.error("Erreur envoi message:", e);
-    }
-  }
+    await messagesRef.add({
+      pseudo: currentPseudo,
+      message: text,
+      timestamp: new Date()
+    });
 
-  function escapeHtml(text) {
-    if (!text) return "";
-    const map = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    };
-    return text.replace(/[&<>"']/g, m => map[m] || m);
+    input.value = "";
   }
 </script>
 
