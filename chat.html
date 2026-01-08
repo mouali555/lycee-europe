@@ -53,10 +53,6 @@
       outline: none;
     }
 
-    input::placeholder {
-      color: #6b7280;
-    }
-
     button {
       background: linear-gradient(135deg, #38bdf8, #6366f1);
       border: none;
@@ -65,23 +61,17 @@
       box-shadow: 0 10px 25px rgba(37,99,235,0.55);
     }
 
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(37,99,235,0.7);
-    }
-
     #error {
       margin-top: 10px;
       color: #f87171;
       font-size: 14px;
     }
 
-    /* APP CHAT */
-    #chat-app {
+    /* CHAT (généré dynamiquement) */
+    .chat-app {
       width: 100%;
       max-width: 900px;
       height: 90vh;
-      display: none; /* très important : caché tant que pas connecté */
       background: rgba(15,23,42,0.65);
       border-radius: 24px;
       border: 1px solid rgba(148,163,184,0.35);
@@ -108,7 +98,6 @@
       color: #cbd5f5;
     }
 
-    /* ZONE MESSAGES */
     #messages {
       flex: 1;
       overflow-y: auto;
@@ -166,7 +155,6 @@
       word-wrap: break-word;
     }
 
-    /* BARRE EN BAS (STYLE MESSENGER) */
     #bottom-bar {
       padding: 14px 20px;
       background: rgba(15,23,42,0.9);
@@ -198,29 +186,12 @@
   <input type="password" id="access-code" placeholder="Code d’accès">
   <input type="text" id="pseudo" placeholder="Votre pseudo">
 
-  <button id="access-btn" onclick="enterChat()">Entrer</button>
+  <button onclick="enterChat()">Entrer</button>
 
   <p id="error"></p>
 </div>
 
-<!-- APP CHAT (CACHÉE AU DÉBUT) -->
-<div id="chat-app">
-
-  <header>
-    <div>💬 Chat – Lycée Europe</div>
-    <span class="pseudo-display" id="header-pseudo"></span>
-  </header>
-
-  <div id="messages"></div>
-
-  <div id="bottom-bar">
-    <input type="text" id="message" placeholder="Votre message… (Entrée pour envoyer)">
-    <button onclick="sendMessage()">Envoyer</button>
-  </div>
-
-</div>
-
-<!-- FIREBASE SDK (chargé, mais PAS utilisé tant que le code n’est pas validé) -->
+<!-- FIREBASE SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
@@ -230,23 +201,11 @@
   let messagesRef = null;
   let unsubscribe = null;
   let currentPseudo = null;
-  let firebaseInitialized = false;
-
-  // Entrée avec Entrée sur le clavier
-  document.getElementById("access-code").addEventListener("keydown", e => {
-    if (e.key === "Enter") enterChat();
-  });
-  document.getElementById("pseudo").addEventListener("keydown", e => {
-    if (e.key === "Enter") enterChat();
-  });
 
   function enterChat() {
     const code = document.getElementById("access-code").value.trim();
-    const pseudoInput = document.getElementById("pseudo");
-    const pseudo = pseudoInput.value.trim();
+    const pseudo = document.getElementById("pseudo").value.trim();
     const error = document.getElementById("error");
-
-    error.textContent = "";
 
     if (!code || !pseudo) {
       error.textContent = "Veuillez remplir tous les champs.";
@@ -261,38 +220,65 @@
     currentPseudo = pseudo;
     localStorage.setItem("pseudo", pseudo);
 
-    document.getElementById("access-screen").style.display = "none";
-    document.getElementById("chat-app").style.display = "flex";
-    document.getElementById("header-pseudo").textContent = "Connecté en tant que : " + pseudo;
+    document.getElementById("access-screen").remove();
 
-    initFirebaseAndChat();
+    loadChatUI();
+    initFirebase();
+    startListening();
   }
 
-  function initFirebaseAndChat() {
-    // On initialise Firebase UNIQUEMENT après le bon code
-    if (!firebaseInitialized) {
-      firebase.initializeApp({
-        apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
-        authDomain: "lycee-europe.firebaseapp.com",
-        projectId: "lycee-europe"
-      });
-      db = firebase.firestore();
-      messagesRef = db.collection("messages");
-      firebaseInitialized = true;
-    }
+  function loadChatUI() {
+    const app = document.createElement("div");
+    app.className = "chat-app";
 
-    // On écoute les messages seulement maintenant
+    app.innerHTML = `
+      <header>
+        <div>💬 Chat – Lycée Europe</div>
+        <span class="pseudo-display">Connecté en tant que : ${currentPseudo}</span>
+      </header>
+
+      <div id="messages"></div>
+
+      <div id="bottom-bar">
+        <input type="text" id="message" placeholder="Votre message… (Entrée pour envoyer)">
+        <button onclick="sendMessage()">Envoyer</button>
+      </div>
+    `;
+
+    document.body.appendChild(app);
+
+    document.getElementById("message").addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
+
+  function initFirebase() {
+    firebase.initializeApp({
+      apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
+      authDomain: "lycee-europe.firebaseapp.com",
+      projectId: "lycee-europe"
+    });
+
+    db = firebase.firestore();
+    messagesRef = db.collection("messages");
+  }
+
+  function startListening() {
     unsubscribe = messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
       const messagesDiv = document.getElementById("messages");
       messagesDiv.innerHTML = "";
 
       snapshot.forEach(doc => {
         const data = doc.data();
-        const pseudo = data.pseudo || "Anonyme";
-        const message = data.message || "";
-        const time = data.timestamp && data.timestamp.toDate
-          ? data.timestamp.toDate().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
-          : "";
+        const pseudo = data.pseudo;
+        const message = data.message;
+        const time = data.timestamp.toDate().toLocaleTimeString("fr-FR", {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
 
         const row = document.createElement("div");
         row.className = "message-row";
@@ -301,10 +287,10 @@
           <div class="avatar">${pseudo.charAt(0).toUpperCase()}</div>
           <div class="message-card">
             <div class="message-header">
-              <span>${escapeHtml(pseudo)}</span>
+              <span>${pseudo}</span>
               <span>${time}</span>
             </div>
-            <div class="message-body">${escapeHtml(message)}</div>
+            <div class="message-body">${message}</div>
           </div>
         `;
 
@@ -312,50 +298,21 @@
       });
 
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }, err => {
-      console.error("Erreur Firestore :", err);
     });
-
-    // focus sur le champ message
-    document.getElementById("message").focus();
   }
 
   async function sendMessage() {
-    if (!messagesRef || !currentPseudo) return;
-
     const input = document.getElementById("message");
     const text = input.value.trim();
     if (!text) return;
 
-    try {
-      await messagesRef.add({
-        pseudo: currentPseudo,
-        message: text,
-        timestamp: new Date()
-      });
-      input.value = "";
-    } catch (e) {
-      console.error("Erreur envoi message :", e);
-    }
-  }
+    await messagesRef.add({
+      pseudo: currentPseudo,
+      message: text,
+      timestamp: new Date()
+    });
 
-  // Envoi avec Entrée
-  document.getElementById("message").addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  function escapeHtml(text) {
-    const map = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    };
-    return text.replace(/[&<>"']/g, m => map[m]);
+    input.value = "";
   }
 </script>
 
