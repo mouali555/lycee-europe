@@ -2,116 +2,187 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Chat Lycée Europe</title>
+  <title>Chat – Lycée Europe</title>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #e5e7eb;
       margin: 0;
       padding: 0;
     }
+
     header {
-      background: #003366;
+      background: #0a66c2;
       color: white;
       padding: 15px;
       text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
+
     #chat-container {
-      max-width: 600px;
-      margin: 30px auto;
+      max-width: 700px;
+      margin: 25px auto;
       background: white;
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
     #messages {
-      height: 300px;
-      overflow-y: scroll;
-      border: 1px solid #ccc;
+      height: 400px;
+      overflow-y: auto;
       padding: 10px;
+      background: #f3f4f6;
+      border-radius: 10px;
       margin-bottom: 15px;
-      background: #fafafa;
     }
+
     .message {
-      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      animation: fadeIn 0.3s ease;
     }
-    .message strong {
-      color: #003366;
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: #0a66c2;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .bubble {
+      background: white;
+      padding: 10px 14px;
+      border-radius: 14px;
+      max-width: 75%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .bubble strong {
+      color: #0a66c2;
+      font-size: 14px;
+    }
+
+    .timestamp {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 3px;
+    }
+
     input, button {
-      padding: 10px;
-      margin: 5px 0;
+      padding: 12px;
       width: 100%;
-      box-sizing: border-box;
+      margin-top: 8px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 15px;
     }
-    #pseudo {
-      margin-bottom: 10px;
+
+    button {
+      background: #0a66c2;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #084a8f;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>💬 Chat Public – Lycée Europe</h1>
-  </header>
+<header>💬 Chat – Lycée Europe</header>
 
-  <div id="chat-container">
-    <input type="text" id="pseudo" placeholder="Entrez votre prénom ou pseudo">
-    <div id="messages"></div>
-    <input type="text" id="message" placeholder="Votre message...">
-    <button onclick="sendMessage()">Envoyer</button>
-  </div>
+<div id="chat-container">
+  <input type="text" id="pseudo" placeholder="Votre prénom ou pseudo">
+  <div id="messages"></div>
+  <input type="text" id="message" placeholder="Votre message...">
+  <button onclick="sendMessage()">Envoyer</button>
+</div>
 
-  <!-- Firebase COMPAT SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
-      authDomain: "lycee-europe.firebaseapp.com",
-      projectId: "lycee-europe",
-      storageBucket: "lycee-europe.appspot.com",
-      messagingSenderId: "836743969706",
-      appId: "1:836743969706:web:4f07c577d8a9d24afc09d3",
-      measurementId: "G-Q89GM7Q0TX"
-    };
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
+    authDomain: "lycee-europe.firebaseapp.com",
+    projectId: "lycee-europe",
+    storageBucket: "lycee-europe.appspot.com",
+    messagingSenderId: "836743969706",
+    appId: "1:836743969706:web:4f07c577d8a9d24afc09d3",
+    measurementId: "G-Q89GM7Q0TX"
+  };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const messagesRef = db.collection("messages");
 
-    const messagesRef = db.collection("messages");
+  async function sendMessage() {
+    const pseudo = document.getElementById("pseudo").value.trim();
+    const message = document.getElementById("message").value.trim();
 
-    async function sendMessage() {
-      const pseudo = document.getElementById("pseudo").value.trim();
-      const message = document.getElementById("message").value.trim();
+    if (!pseudo || !message) return;
 
-      if (!pseudo || !message) return;
-
-      await messagesRef.add({
-        pseudo: pseudo,
-        message: message,
-        timestamp: new Date()
-      });
-
-      document.getElementById("message").value = "";
-    }
-
-    const messagesDiv = document.getElementById("messages");
-
-    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
-      messagesDiv.innerHTML = "";
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const msg = document.createElement("div");
-        msg.classList.add("message");
-        msg.innerHTML = `<strong>${data.pseudo}:</strong> ${data.message}`;
-        messagesDiv.appendChild(msg);
-      });
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    await messagesRef.add({
+      pseudo,
+      message,
+      timestamp: new Date()
     });
-  </script>
+
+    document.getElementById("message").value = "";
+  }
+
+  const messagesDiv = document.getElementById("messages");
+
+  messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+    messagesDiv.innerHTML = "";
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      const avatarLetter = data.pseudo.charAt(0).toUpperCase();
+      const time = data.timestamp?.toDate().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+
+      const msg = document.createElement("div");
+      msg.classList.add("message");
+
+      msg.innerHTML = `
+        <div class="avatar">${avatarLetter}</div>
+        <div>
+          <div class="bubble">
+            <strong>${data.pseudo}</strong><br>
+            ${data.message}
+          </div>
+          <div class="timestamp">${time}</div>
+        </div>
+      `;
+
+      messagesDiv.appendChild(msg);
+    });
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
+</script>
 
 </body>
 </html>
