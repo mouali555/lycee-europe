@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nexus Chat</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -9,27 +10,26 @@
 <body>
     <div class="app-container">
         <aside>
-            <div class="logo"><i class="fas fa-terminal"></i> NEXUS</div>
+            <div class="logo"><i class="fas fa-terminal"></i></div>
             <nav>
-                <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat Global</a>
-                <a href="chatvip.html"><i class="fas fa-crown"></i> Elite Access</a>
+                <a href="index.html"><i class="fas fa-home"></i></a>
+                <a href="chat.html" class="active"><i class="fas fa-comments"></i></a>
+                <a href="chatvip.html"><i class="fas fa-crown"></i></a>
             </nav>
         </aside>
 
         <main>
             <div class="top-bar">
-                <h1>Salon Général</h1>
-                <div style="font-size:0.8rem; color:#22c55e"><i class="fas fa-circle"></i> Online</div>
+                <h1 style="font-size: 1.1rem;">Salon Général</h1>
+                <div style="font-size:0.7rem; color:#22c55e"><i class="fas fa-circle"></i> Live</div>
             </div>
 
-            <div id="chat-feed" class="chat-wrapper">
-                </div>
+            <div id="chat-feed" class="chat-wrapper"></div>
 
             <div class="input-area">
                 <div class="capsule">
-                    <input type="text" id="pseudo" placeholder="ID" style="width: 70px; font-weight: bold; border-right: 1px solid grey; margin-right: 10px;">
-                    <input type="text" id="msg" placeholder="Votre message...">
+                    <input type="text" id="pseudo" placeholder="ID" style="width: 50px; font-weight: bold; border-right: 1px solid #374151; margin-right: 10px;">
+                    <input type="text" id="msg" placeholder="Message...">
                     <button class="btn-send" onclick="envoyer()"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -39,7 +39,11 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     <script>
-        const firebaseConfig = { apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM", authDomain: "lycee-europe-private.firebaseapp.com", projectId: "lycee-europe-private" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM", 
+            authDomain: "lycee-europe-private.firebaseapp.com", 
+            projectId: "lycee-europe-private" 
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
@@ -51,7 +55,11 @@
             const p = document.getElementById("pseudo").value.trim();
             if(m && p) {
                 localStorage.setItem("n_id", p);
-                db.collection("messages").add({ pseudo: p, message: m, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                db.collection("messages").add({ 
+                    pseudo: p, 
+                    message: m, 
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp() 
+                });
                 document.getElementById("msg").value = "";
             }
         }
@@ -63,14 +71,23 @@
                 const d = doc.data(); if(!d.timestamp) return;
                 const isMe = d.pseudo === document.getElementById("pseudo").value;
                 h += `<div class="msg-group ${isMe ? 'me' : ''}">
-                        <div style="font-size:0.7rem; color:grey; margin:0 5px;">${d.pseudo}</div>
+                        <div style="font-size:0.6rem; color:grey; margin:0 5px 2px 5px;">${d.pseudo}</div>
                         <div class="bubble">${d.message}</div>
                       </div>`;
             });
             feed.innerHTML = h;
             feed.scrollTop = feed.scrollHeight;
         });
+
         document.getElementById("msg").addEventListener("keypress", (e) => e.key === "Enter" && envoyer());
+
+        // FIX MOBILE
+        const fixMobileHeight = () => {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        };
+        window.addEventListener('resize', fixMobileHeight);
+        fixMobileHeight();
     </script>
 </body>
 </html>
