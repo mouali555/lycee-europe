@@ -2,63 +2,42 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Accès Sécurisé | VIP</title>
+    <title>Espace VIP</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* Styles spécifiques au salon VIP pour le différencier du public */
-        :root { --accent-vip: #fbbf24; }
-        .vip-border { border-top: 3px solid var(--accent-vip) !important; }
-        .auth-overlay {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 3rem; text-align: center;
-        }
-        .vip-input {
-            background: rgba(0,0,0,0.3) !important;
-            border: 1px solid rgba(251, 191, 36, 0.2) !important;
-            margin-bottom: 1rem; width: 100%; max-width: 300px;
-        }
-        .btn-vip {
-            background: var(--accent-vip) !important;
-            color: #000 !important; font-weight: 800 !important;
-            width: 100%; max-width: 300px;
-        }
-        .vip-msg-header { color: var(--accent-vip) !important; font-weight: 700; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="vip-theme"> <div class="app-container">
+    <aside>
+        <div class="logo"><i class="fas fa-crown" style="color: var(--vip-gold);"></i> VIP ACCESS</div>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-grid-2"></i> Dashboard</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html" class="active vip-link"><i class="fas fa-gem"></i> Espace VIP</a></li>
+            </ul>
+        </nav>
+    </aside>
 
-<header>
-    <h1>ESPACE RÉSERVÉ</h1>
-    <a href="index.html" style="color: var(--accent-vip); text-decoration: none;"><i class="fas fa-house"></i> Quitter</a>
-</header>
+    <main>
+        <header>
+            <h1 style="color: var(--vip-gold);">Salon Privé <i class="fas fa-lock" style="font-size:1.5rem"></i></h1>
+        </header>
 
-<div class="container" style="grid-template-columns: 1fr;">
-    <main style="max-width: 900px; margin: 0 auto; width: 100%;">
-        <div class="card vip-border" id="vip-logic">
-            
-            <div id="lock-screen" class="auth-overlay">
-                <i class="fas fa-shield-halved fa-4x" style="color: var(--accent-vip); margin-bottom: 1.5rem;"></i>
-                <h2 style="margin-bottom: 0.5rem;">Authentification Requise</h2>
-                <p style="color: var(--text-dim); margin-bottom: 2rem;">Veuillez entrer le code d'accréditation et votre identifiant.</p>
-                
-                <input type="password" id="vip-code" class="vip-input" placeholder="Code secret">
-                <input type="text" id="pseudo" class="vip-input" placeholder="Identifiant">
-                <button onclick="checkAccess()" class="btn-vip btn-action">DÉVERROUILLER</button>
-                
-                <p id="error-msg" style="color: #f87171; margin-top: 1rem; font-size: 0.8rem;"></p>
+        <div id="login-overlay" class="card" style="max-width: 500px; margin: 0 auto; text-align: center; padding: 3rem;">
+            <i class="fas fa-shield-halved fa-4x" style="color: var(--vip-gold); margin-bottom: 20px;"></i>
+            <h2 style="margin-bottom: 20px;">Authentification Requise</h2>
+            <input type="password" id="vip-code" placeholder="Code Secret" style="width: 100%; margin-bottom: 10px; text-align: center;">
+            <input type="text" id="vip-pseudo" placeholder="Votre Identifiant" style="width: 100%; margin-bottom: 20px; text-align: center;">
+            <button class="send" onclick="checkAuth()" style="width: 100%; padding: 12px; background: var(--vip-gold);">ENTRER</button>
+            <p id="error-msg" style="color: #ef4444; margin-top: 15px; font-size: 0.9rem;"></p>
+        </div>
+
+        <div id="vip-interface" class="card chat-window" style="display: none; border-color: var(--vip-gold);">
+            <div id="messages" class="messages-area"></div>
+            <div class="input-zone">
+                <input type="text" id="msg" placeholder="Message chiffré..." style="flex: 1;">
+                <button class="send" onclick="envoyerVip()"><i class="fas fa-paper-plane"></i></button>
             </div>
-
-            <div id="vip-chat" class="chat-container" style="display: none;">
-                <div id="messages"></div>
-                <div class="smart-input-bar">
-                    <input type="text" id="msg" placeholder="Envoyer un message sécurisé...">
-                    <button id="send-btn" onclick="envoyer()" style="background: var(--accent-vip); color: #000;">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-
         </div>
     </main>
 </div>
@@ -77,53 +56,51 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let currentPseudo = "";
+    let currentUser = "";
 
-    async function checkAccess() {
+    async function checkAuth() {
         const code = document.getElementById("vip-code").value;
-        const pseudo = document.getElementById("pseudo").value.trim();
-        const error = document.getElementById("error-msg");
-
+        const pseudo = document.getElementById("vip-pseudo").value;
+        
         try {
-            const config = await db.collection("config").doc("access").get();
-            if (code === config.data().code && pseudo !== "") {
-                currentPseudo = pseudo;
-                document.getElementById("lock-screen").style.display = "none";
-                document.getElementById("vip-chat").style.display = "flex";
-                listenVip();
+            const doc = await db.collection("config").doc("access").get();
+            if (code === doc.data().code && pseudo) {
+                currentUser = pseudo;
+                document.getElementById("login-overlay").style.display = "none";
+                document.getElementById("vip-interface").style.display = "flex";
+                startListening();
             } else {
-                error.innerText = "Accès refusé. Code invalide.";
+                document.getElementById("error-msg").innerText = "Accès refusé. Identifiants incorrects.";
             }
-        } catch (e) {
-            error.innerText = "Erreur de connexion au serveur.";
-        }
+        } catch(e) { console.error(e); }
     }
 
-    function listenVip() {
+    function startListening() {
         db.collection("messages_prives").orderBy("timestamp").onSnapshot(snap => {
-            const box = document.getElementById("messages");
-            box.innerHTML = "";
+            const div = document.getElementById("messages");
+            div.innerHTML = "";
             snap.forEach(doc => {
                 const d = doc.data();
-                box.innerHTML += `
-                    <div class="message-row">
-                        <div class="message-header vip-msg-header">${d.pseudo}</div>
-                        <div class="message-card">${d.message}</div>
+                const isMe = d.pseudo === currentUser;
+                div.innerHTML += `
+                    <div class="msg ${isMe ? 'me' : ''}">
+                        <div class="msg-avatar" style="background: var(--vip-gold); color: black;">${d.pseudo[0]}</div>
+                        <div class="msg-content">${d.message}</div>
                     </div>`;
             });
-            box.scrollTop = box.scrollHeight;
+            div.scrollTop = div.scrollHeight;
         });
     }
 
-    async function envoyer() {
-        const msg = document.getElementById("msg").value;
-        if(!msg) return;
-        await db.collection("messages_prives").add({
-            pseudo: currentPseudo,
-            message: msg,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        document.getElementById("msg").value = "";
+    function envoyerVip() {
+        const m = document.getElementById("msg").value;
+        if(m) {
+            db.collection("messages_prives").add({
+                pseudo: currentUser, message: m,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            document.getElementById("msg").value = "";
+        }
     }
 </script>
 </body>
