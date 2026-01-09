@@ -8,54 +8,48 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* CSS SPECIFIQUE VIP - ACCENTS VIOLETS */
+        /* ================================
+           CHAT VIP – STYLE SILICON VALLEY DARK
+           ================================ */
+
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        
+
         .home-link {
             background: transparent;
-            color: var(--neon-pink);
+            color: var(--accent-alt-soft);
             text-decoration: none;
             padding: 8px 16px;
-            border: 1px solid var(--neon-pink);
+            border: 1px solid var(--accent-alt-soft);
             font-size: 14px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
+            border-radius: var(--radius-md);
+            transition: 0.25s;
         }
 
         .home-link:hover {
-            background: var(--neon-pink);
+            background: var(--accent-alt-soft);
             color: #fff;
-            box-shadow: 0 0 15px var(--neon-pink);
+            box-shadow: 0 0 18px rgba(168,85,247,0.5);
         }
 
+        /* CONTAINER CHAT */
         .chat-container {
-            background: rgba(10, 0, 10, 0.7);
-            padding: 15px;
-            border: 1px solid var(--neon-pink);
+            background: var(--bg-panel);
+            padding: 18px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-soft);
             height: 75vh;
             display: flex;
             flex-direction: column;
+            box-shadow: var(--shadow-soft);
             position: relative;
-        }
-        
-        /* Grille VIP */
-        .chat-container::after {
-            content: " ";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(transparent 95%, var(--neon-pink) 100%);
-            background-size: 100% 20px;
-            opacity: 0.1;
-            pointer-events: none;
         }
 
         #messages {
@@ -64,141 +58,175 @@
             padding-right: 10px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
         }
-        
-        #messages::-webkit-scrollbar { width: 6px; }
-        #messages::-webkit-scrollbar-thumb { background: var(--neon-pink); }
-        #messages::-webkit-scrollbar-track { background: #111; }
 
-        .message-row { display: flex; gap: 12px; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        #messages::-webkit-scrollbar { width: 6px; }
+        #messages::-webkit-scrollbar-thumb { background: var(--accent-alt); border-radius: 10px; }
+        #messages::-webkit-scrollbar-track { background: #0f172a; }
+
+        /* MESSAGE */
+        .message-row {
+            display: flex;
+            gap: 12px;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .avatar {
-            width: 40px;
-            height: 40px;
-            background: #000;
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
+            width: 42px;
+            height: 42px;
+            background: var(--bg-dark-alt);
+            border: 1px solid var(--accent);
+            color: var(--accent-soft);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            box-shadow: 0 0 5px var(--neon-cyan);
+            font-size: 1.1rem;
+            border-radius: var(--radius-md);
+            box-shadow: 0 0 10px rgba(59,130,246,0.25);
         }
 
         .message-card {
-            background: rgba(188, 19, 254, 0.1);
+            background: var(--bg-panel-soft);
             padding: 12px 16px;
             max-width: 80%;
-            border-left: 2px solid var(--neon-pink);
-            color: #e5e7eb;
+            border-left: 3px solid var(--accent-alt);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            box-shadow: var(--shadow-subtle);
         }
 
         .message-header {
             font-size: 0.8rem;
-            color: var(--neon-pink);
+            color: var(--accent-alt-soft);
             margin-bottom: 4px;
-            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
         }
 
         .message-body {
             font-size: 0.95rem;
-            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-soft);
         }
 
+        /* INPUT BAR */
         .smart-input-bar {
             display: flex;
             align-items: center;
-            background: #000;
-            padding: 10px;
-            border: 1px solid var(--neon-pink);
+            background: var(--bg-dark-alt);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-soft);
             margin-top: 15px;
             gap: 10px;
-            box-shadow: 0 0 10px rgba(188, 19, 254, 0.2);
+            box-shadow: var(--shadow-subtle);
         }
 
         .smart-input-bar input {
             flex: 1;
             background: transparent;
             border: none;
-            color: var(--neon-pink);
+            color: var(--text-main);
             font-size: 16px;
-            font-family: 'Share Tech Mono', monospace;
             outline: none;
         }
-        
-        .smart-input-bar input::placeholder { color: #666; }
+
+        .smart-input-bar input::placeholder {
+            color: var(--text-muted);
+        }
 
         #send-btn {
-            width: 45px;
-            height: 45px;
-            border: 1px solid var(--neon-pink);
+            width: 46px;
+            height: 46px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--accent-alt);
             background: transparent;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
+            transition: 0.25s;
         }
-        
-        #send-btn svg { width: 20px; height: 20px; fill: var(--neon-pink); }
-        #send-btn:hover { background: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink); }
-        #send-btn:hover svg { fill: #fff; }
 
+        #send-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--accent-alt);
+        }
+
+        #send-btn:hover {
+            background: var(--accent-alt);
+            box-shadow: 0 0 18px rgba(168,85,247,0.5);
+        }
+
+        #send-btn:hover svg {
+            fill: #fff;
+        }
+
+        /* ÉCRAN D’ACCÈS */
         #access-screen {
-            background: rgba(0,0,0,0.8);
-            padding: 30px;
-            border: 1px solid var(--neon-pink);
+            background: var(--bg-panel);
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-soft);
             text-align: center;
-            box-shadow: 0 0 30px rgba(188, 19, 254, 0.15);
+            box-shadow: var(--shadow-soft);
         }
 
         #access-screen input {
             width: 100%;
             margin-top: 15px;
             padding: 12px;
-            background: #111;
-            border: 1px solid #444;
-            color: var(--neon-pink);
-            text-align: center;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.1rem;
+            background: var(--bg-dark-alt);
+            border: 1px solid var(--border-soft);
+            color: var(--text-main);
+            border-radius: var(--radius-md);
+            font-size: 1.05rem;
         }
-        
-        #access-screen input:focus { border-color: var(--neon-pink); outline: none; }
+
+        #access-screen input:focus {
+            border-color: var(--accent-alt);
+        }
 
         #access-screen button {
             width: 100%;
             margin-top: 15px;
             padding: 12px;
-            background: var(--neon-pink);
+            background: var(--accent-alt);
             border: none;
             color: white;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            border-radius: var(--radius-md);
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            transition: 0.25s;
         }
-        
-        #access-screen button:hover { background: white; color: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink); }
 
-        #error { margin-top: 10px; color: #ff0033; font-weight: bold; text-shadow: 0 0 5px #ff0033; }
+        #access-screen button:hover {
+            background: var(--accent-alt-soft);
+            box-shadow: 0 0 18px rgba(168,85,247,0.5);
+        }
+
+        #error {
+            margin-top: 10px;
+            color: #ff4d6d;
+            font-weight: 600;
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- 🔥 BANNIÈRE AJOUTÉE (SEULE MODIF) -->
-    <div class="banner">
-        <img src="banniere.png" alt="Bannière du Lycée de l'Europe">
-    </div>
-
 <header>
     <div>
         <h1>Lycée de l'Europe</h1>
-        <p style="color:var(--neon-pink)">Canal VIP [CRYPTED]</p>
+        <p style="color:var(--accent-alt-soft)">Canal VIP [CRYPTED]</p>
     </div>
     <a href="index.html" class="home-link">
         <i class="fas fa-house"></i> Accueil
@@ -223,7 +251,7 @@
     </aside>
 
     <main>
-        <article class="card" style="border-color: var(--neon-pink);">
+        <article class="card">
             <div id="access-screen">
                 <h2><i class="fas fa-user-secret"></i> Accès Restreint</h2>
                 <p>Zone sécurisée. Authentification requise.</p>
@@ -288,7 +316,6 @@ async function enterChat() {
         return;
     }
     
-    // Si pas encore chargé, on charge
     if (!ACCESS_CODE) await loadAccessCode();
 
     if (code !== ACCESS_CODE) {
