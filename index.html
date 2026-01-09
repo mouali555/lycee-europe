@@ -11,8 +11,13 @@
 
     
     <header>
-        <h1>Lycée de l'Europe – Dunkerque</h1>
-        <p>Meilleurs vœux 2026 🎉</p>
+        <div>
+            <h1>Lycée de l'Europe – Dunkerque</h1>
+            <p>Meilleurs vœux 2026 🎉</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
     </header>
 
     <div class="container">
@@ -74,6 +79,49 @@
                     🎆 L'ensemble du personnel vous souhaite une bonne année 2026 🎆
                 </div>
             </article>
+
+            <!-- STATISTICS DASHBOARD -->
+            <article class="card" style="margin-top: 20px;">
+                <h2><i class="fas fa-chart-line"></i> Tableau de Bord</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" data-target="1250">0</div>
+                            <div class="stat-label">Élèves</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" data-target="85">0</div>
+                            <div class="stat-label">Professeurs</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" data-target="92">0</div>
+                            <div class="stat-label">% Réussite</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number" data-target="15">0</div>
+                            <div class="stat-label">Projets Erasmus</div>
+                        </div>
+                    </div>
+                </div>
+            </article>
         </main>
 
         <!-- MENU DROIT -->
@@ -105,6 +153,69 @@
     <footer>
         <p>site de test par des bts ciel</p>
     </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+
+            // Animate statistics
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const observerOptions = {
+                threshold: 0.5
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.getAttribute('data-target'));
+                        animateCounter(entry.target, target);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            statNumbers.forEach(stat => observer.observe(stat));
+        });
+
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 30);
+        }
+    </script>
 
 </body>
 </html>
