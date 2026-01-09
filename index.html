@@ -3,101 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail Numérique | Lycée de l'Europe</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Lycée de l'Europe - Dunkerque</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="dashboard">
+<body>
 
-    <nav class="sidebar">
-        <div class="sidebar-logo">
-            <i class="fas fa-graduation-cap"></i>
-            <span>BTS CIEL</span>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.html" class="active"><i class="fas fa-th-large"></i><span>Dashboard</span></a></li>
-            <li><a href="chat.html"><i class="fas fa-comments"></i><span>Chat Public</span></a></li>
-            <li><a href="chatvip.html"><i class="fas fa-shield-halved"></i><span>Espace VIP</span></a></li>
-            <li class="nav-separator"></li>
-            <li><a href="#"><i class="fas fa-book"></i><span>Cours</span></a></li>
-            <li><a href="#"><i class="fas fa-microchip"></i><span>Projets</span></a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <p>v2.0.26</p>
-        </div>
-    </nav>
+    <header>
+        <h1>Lycée de l'Europe – Dunkerque</h1>
+        <p>Meilleurs vœux 2026 🎉</p>
+    </header>
 
-    <div class="main-content">
-        <header class="top-bar">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Rechercher une ressource...">
-            </div>
-            <div class="user-profile">
-                <span>Étudiant Invité</span>
-                <div class="status-dot"></div>
-            </div>
-        </header>
+    <div class="container">
+        <aside>
+            <nav class="menu-box">
+                <ul>
+                    <li><a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                    <li><a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                    <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                    <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                    <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                    <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                    <li><a href="chat.html"><i class="fas fa-comments"></i> Chat</a></li>
+                    <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-        <main class="dashboard-view">
-            <section class="welcome-banner">
-                <div class="banner-text">
-                    <h1>Bonjour, Lycée de l'Europe ! 👋</h1>
-                    <p>Bienvenue sur votre nouvel espace numérique de travail.</p>
+        <main>
+            <article class="card">
+                <h2>Voyage à Londres – Novembre 2025</h2>
+                <p>Du 3 au 6 novembre, nos élèves ont séjourné en famille d'accueil et visité Big Ben, London Eye, British Museum...</p>
+                <p>Ils ont également assisté à la comédie musicale <strong>Wicked</strong>.</p>
+                <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/p2BLLVqvA6I" frameborder="0" allowfullscreen></iframe>
                 </div>
-                <div class="banner-stats">
-                    <div class="stat-item">
-                        <span class="stat-value">2026</span>
-                        <span class="stat-label">Année Scolaire</span>
-                    </div>
-                </div>
-            </section>
-
-            <div class="grid-layout">
-                <div class="card wide-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-plane-departure"></i> Dernières Actualités</h3>
-                    </div>
-                    <div class="card-body">
-                        <h4>Voyage à Londres – Novembre 2025</h4>
-                        <p>Immersion culturelle : visite de la City, British Museum et spectacle Wicked.</p>
-                        <div class="video-wrapper">
-                            <iframe src="https://www.youtube.com/embed/p2BLLVqvA6I" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mini-card">
-                    <h3>Accès Rapides</h3>
-                    <div class="quick-actions">
-                        <a href="https://0590072h.index-education.net/pronote/" class="action-btn">
-                            <i class="fas fa-user-check"></i> Pronote
-                        </a>
-                        <a href="chat.html" class="action-btn">
-                            <i class="fas fa-paper-plane"></i> Chat Public
-                        </a>
-                        <a href="https://www.instagram.com/clubphotodunkerque/" class="action-btn">
-                            <i class="fas fa-camera"></i> Club Photo
-                        </a>
-                    </div>
-                </div>
-
-                <div class="card mini-card status-card">
-                    <h3>Serveur Firestore</h3>
-                    <div class="status-indicator">
-                        <span class="ping-pulse"></span>
-                        <p>Opérationnel (Paris-West)</p>
-                    </div>
-                    <div class="alert-box-mini">
-                        Bonne année 2026 à tous !
-                    </div>
-                </div>
-            </div>
+                <div class="alert-box">🎆 Bonne année 2026 🎆</div>
+            </article>
         </main>
+
+        <aside>
+            <div class="menu-box">
+                <h3>Accès Rapide</h3>
+                <ul>
+                    <li><a href="https://0590072h.index-education.net/pronote/"><i class="fas fa-user-check"></i> Pronote</a></li>
+                    <li><a href="#"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                    <li><a href="#"><i class="fas fa-camera"></i> Club Photo</a></li>
+                </ul>
+            </div>
+        </aside>
     </div>
 
+    <footer><p>site de test par des bts ciel</p></footer>
 </body>
 </html>
-
-
 
