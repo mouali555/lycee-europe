@@ -1,212 +1,99 @@
-/* 1. Imports et Variables Pro */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lycée de l'Europe - Dunkerque</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
-:root {
-    --bg-main: #0a0f1d;
-    --sidebar-bg: #0f172a;
-    --card-bg: rgba(30, 41, 59, 0.5);
-    --accent-blue: #3b82f6;
-    --accent-green: #10b981;
-    --text-primary: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: rgba(255, 255, 255, 0.06);
-    --sidebar-width: 260px;
-}
+    <header>
+        <h1>Lycée de l'Europe – Dunkerque</h1>
+        <p>Meilleurs vœux 2026 🎉</p>
+    </header>
 
-/* 2. Reset et Base */
-* { box-sizing: border-box; transition: all 0.2s ease; }
+    <div class="container">
+        
+        <aside>
+            <nav class="menu-box">
+                <ul>
+                    <li>
+                        <a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a>
+                    </li>
+                    <li>
+                        <a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a>
+                    </li>
+                    <li>
+                        <a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a>
+                    </li>
+                    <li>
+                        <a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a>
+                    </li>
+                    <li>
+                        <a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a>
+                    </li>
+                    <li>
+                        <a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a>
+                    </li>
 
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-main);
-    color: var(--text-primary);
-    display: flex;
-    min-height: 100vh;
-    overflow-x: hidden;
-}
+                    <li>
+                        <a href="chat.html"><i class="fas fa-comments"></i> Chat</a>
+                    </li>
 
-/* 3. Sidebar (Navigation Gauche) */
-.sidebar {
-    width: var(--sidebar-width);
-    background: var(--sidebar-bg);
-    border-right: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    height: 100vh;
-    z-index: 100;
-}
+                    <li>
+                        <a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a>
+                    </li>
 
-.sidebar-logo {
-    padding: 30px;
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: var(--accent-blue);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+                </ul>
+            </nav>
+        </aside>
 
-.nav-links {
-    list-style: none;
-    padding: 0 15px;
-    flex: 1;
-}
+        <main>
+            <article class="card">
+                <h2>Voyage à Londres – Novembre 2025</h2>
+                <p>Du 3 au 6 novembre, nos élèves ont séjourné en famille d'accueil et visité Big Ben, London Eye, British Museum...</p>
+                <p>Ils ont également assisté à la comédie musicale <strong>Wicked</strong>.</p>
+                
+                <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/p2BLLVqvA6I?si=8qVh7uFWrCFYQUV5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
 
-.nav-links li a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 15px;
-    color: var(--text-muted);
-    text-decoration: none;
-    border-radius: 8px;
-    margin-bottom: 5px;
-}
+                <div class="alert-box">
+                    🎆 L'ensemble du personnel vous souhaite une bonne année 2026 🎆
+                </div>
+            </article>
+        </main>
 
-.nav-links li a:hover, .nav-links li a.active {
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--text-primary);
-}
+        <aside>
+            <div class="menu-box">
+                <h3>Accès Rapide</h3>
+                <ul>
+                    <li>
+                        <a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a>
+                    </li>
+                    <li>
+                        <a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement intérieur</a>
+                    </li>
+                    <li>
+                        <a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a>
+                    </li>
+                    <li>
+                        <a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a>
+                    </li>
+                    <li>
+                        <a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
 
-.nav-links li a i { width: 20px; text-align: center; }
+    </div>
 
-/* 4. Contenu Principal (Main Content) */
-.main-content {
-    margin-left: var(--sidebar-width);
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
+    <footer>
+        <p>site de test par des bts ciel</p>
+    </footer>
 
-.top-bar {
-    height: 70px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    background: rgba(10, 15, 29, 0.8);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
-    z-index: 90;
-}
-
-.search-bar {
-    background: rgba(255,255,255,0.05);
-    padding: 8px 15px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 300px;
-}
-
-.search-bar input {
-    background: transparent;
-    border: none;
-    color: white;
-    outline: none;
-    font-size: 0.9rem;
-}
-
-/* 5. Dashboard View */
-.dashboard-view { padding: 40px; }
-
-.welcome-banner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-}
-
-.welcome-banner h1 { font-size: 2rem; margin: 0; font-weight: 700; }
-.welcome-banner p { color: var(--text-muted); margin-top: 5px; }
-
-/* Grid Layout */
-.grid-layout {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-}
-
-.card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 25px;
-    backdrop-filter: blur(5px);
-}
-
-.wide-card { grid-column: span 2; }
-
-/* 6. Composants Spécifiques */
-.video-wrapper {
-    margin-top: 20px;
-    border-radius: 12px;
-    overflow: hidden;
-    aspect-ratio: 16/9;
-}
-.video-wrapper iframe { width: 100%; height: 100%; }
-
-.action-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255,255,255,0.05);
-    padding: 12px;
-    border-radius: 10px;
-    text-decoration: none;
-    color: var(--text-primary);
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-}
-
-.action-btn:hover { background: var(--accent-blue); }
-
-.status-indicator {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--accent-green);
-    font-size: 0.9rem;
-}
-
-.ping-pulse {
-    width: 8px; height: 8px;
-    background: var(--accent-green);
-    border-radius: 50%;
-    box-shadow: 0 0 10px var(--accent-green);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(0.95); opacity: 0.5; }
-    70% { transform: scale(1.2); opacity: 0.2; }
-    100% { transform: scale(0.95); opacity: 0.5; }
-}
-
-/* 7. Chat Container (Pour les prochaines pages) */
-.chat-container {
-    height: 60vh;
-    display: flex;
-    flex-direction: column;
-}
-
-#messages {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 20px;
-}
-
-/* 8. Responsive */
-@media (max-width: 1024px) {
-    .sidebar { width: 70px; }
-    .sidebar span, .sidebar-logo span { display: none; }
-    .main-content { margin-left: 70px; }
-    .grid-layout { grid-template-columns: 1fr; }
-    .wide-card { grid-column: span 1; }
-}
-
+</body>
+</html>
