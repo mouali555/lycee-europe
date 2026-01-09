@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Chat - Lycée de l'Europe</title>
+    <title>Global Chat - Nexus</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -11,29 +11,29 @@
 
 <div class="app-container">
     <aside>
-        <div class="logo"><i class="fas fa-bolt"></i> BTS CIEL</div>
+        <div class="logo"><i class="fas fa-microchip"></i> NEXUS CIEL</div>
         <nav>
             <ul>
-                <li><a href="index.html"><i class="fas fa-home"></i> <span>Accueil</span></a></li>
-                <li><a href="chat.html" class="active"><i class="fas fa-comment-dots"></i> <span>Chat</span></a></li>
-                <li><a href="chatvip.html"><i class="fas fa-crown" style="color: #fbbf24;"></i> <span>VIP</span></a></li>
+                <li><a href="index.html"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+                <li><a href="chat.html" class="active"><i class="fas fa-comments"></i> <span>Global Chat</span></a></li>
+                <li><a href="chatvip.html"><i class="fas fa-crown"></i> <span>Elite Access</span></a></li>
             </ul>
         </nav>
     </aside>
 
     <main>
         <div class="top-bar">
-            <h1>Salon Public 💬</h1>
-            <div style="font-size:0.8rem; color: #94a3b8;">En ligne</div>
+            <h1>Global Chat <i class="fas fa-circle" style="color:#22c55e; font-size: 0.6rem; margin-left:10px; vertical-align: middle;"></i></h1>
+            <div class="date-badge">Connecté</div>
         </div>
 
-        <div id="chat-feed" class="chat-wrapper">
+        <div id="chat-feed" class="chat-wrapper" style="flex:1; overflow-y:auto;">
             </div>
 
         <div class="input-area">
             <div class="capsule">
-                <input type="text" id="pseudo-input" placeholder="Pseudo" style="width: 80px; border-right: 1px solid #334155; margin-right: 8px;">
-                <input type="text" id="msg-input" placeholder="Votre message...">
+                <input type="text" id="pseudo-input" placeholder="Pseudo" style="width: 80px; border-right: 1px solid var(--border); margin-right: 15px;">
+                <input type="text" id="msg-input" placeholder="Envoyer un message au groupe...">
                 <button class="btn-send" onclick="envoyer()">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -56,15 +56,12 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Gestion du Pseudo
     let myPseudo = localStorage.getItem("chat_pseudo") || "";
     if(myPseudo) document.getElementById("pseudo-input").value = myPseudo;
 
-    // Envoi
     function envoyer() {
         const p = document.getElementById("pseudo-input").value.trim();
         const m = document.getElementById("msg-input").value.trim();
-        
         if(p && m) {
             localStorage.setItem("chat_pseudo", p);
             myPseudo = p;
@@ -76,30 +73,27 @@
         }
     }
 
-    // Réception
     db.collection("messages").orderBy("timestamp").onSnapshot(snap => {
         const feed = document.getElementById("chat-feed");
-        feed.innerHTML = "";
+        let html = "";
         snap.forEach(doc => {
             const d = doc.data();
+            if(!d.timestamp) return;
             const isMe = d.pseudo === myPseudo;
-            
-            feed.innerHTML += `
-                <div style="${!isMe ? 'margin-bottom:2px' : ''}">
-                    ${!isMe ? `<div class="pseudo-label">${d.pseudo}</div>` : ''}
+            html += `
+                <div style="margin-bottom: 12px; display: flex; flex-direction: column; ${isMe ? 'align-items: flex-end' : ''}">
+                    ${!isMe ? `<div class="pseudo-label" style="margin-left:45px; font-size:0.7rem; color:var(--text-dim);">${d.pseudo}</div>` : ''}
                     <div class="msg ${isMe ? 'me' : ''}">
-                        ${!isMe ? `<div class="avatar">${d.pseudo[0].toUpperCase()}</div>` : ''}
+                        ${!isMe ? `<div class="avatar" style="width:30px; height:30px; border-radius:50%; background:var(--glass); display:flex; align-items:center; justify-content:center; font-size:0.8rem; border:1px solid var(--border);">${d.pseudo[0].toUpperCase()}</div>` : ''}
                         <div class="bubble">${d.message}</div>
                     </div>
-                </div>
-            `;
+                </div>`;
         });
+        feed.innerHTML = html;
         feed.scrollTop = feed.scrollHeight;
     });
 
-    // Touche Entrée
     document.getElementById("msg-input").addEventListener("keypress", (e) => e.key === "Enter" && envoyer());
 </script>
-
 </body>
 </html>
