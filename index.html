@@ -18,19 +18,18 @@
         </aside>
         <main>
             <div class="top-bar">
-                <h1>Système Opérationnel</h1>
-                <div style="background:var(--primary-glow); color:var(--primary); padding:5px 15px; border-radius:20px; font-size:0.7rem; font-weight:bold; border:1px solid var(--primary);">STATUT: OK</div>
+                <h1>Système Nexus</h1>
             </div>
-            <div style="padding: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-                <div class="bubble" style="padding: 40px; text-align: center; cursor: pointer;" onclick="location.href='chat.html'">
-                    <i class="fas fa-users fa-3x" style="color:var(--primary); margin-bottom: 20px;"></i>
-                    <h2>SALON GÉNÉRAL</h2>
-                    <p style="color:var(--text-dim); margin: 15px 0;">Accès libre pour tous les étudiants.</p>
+            <div style="padding: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background:var(--card); padding:30px; border-radius:20px; text-align:center; border:1px solid var(--border);">
+                    <i class="fas fa-users fa-3x" style="color:var(--primary)"></i>
+                    <h2 style="margin:20px 0;">Chat Public</h2>
+                    <a href="chat.html" style="color:var(--primary); font-weight:bold;">Entrer</a>
                 </div>
-                <div class="bubble" style="padding: 40px; text-align: center; border-color: var(--vip); cursor: pointer;" onclick="location.href='chatvip.html'">
-                    <i class="fas fa-key fa-3x" style="color:var(--vip); margin-bottom: 20px;"></i>
-                    <h2 style="color:var(--vip)">ZONE ELITE</h2>
-                    <p style="color:var(--text-dim); margin: 15px 0;">Accès restreint • Chiffrement AES-256.</p>
+                <div style="background:var(--card); padding:30px; border-radius:20px; text-align:center; border:1px solid var(--vip);">
+                    <i class="fas fa-crown fa-3x" style="color:var(--vip)"></i>
+                    <h2 style="margin:20px 0;">Chat VIP</h2>
+                    <a href="chatvip.html" style="color:var(--vip); font-weight:bold;">Déverrouiller</a>
                 </div>
             </div>
         </main>
