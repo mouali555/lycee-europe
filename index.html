@@ -2,74 +2,53 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Portail BTS CIEL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTS CIEL | Nexus</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-
 <div class="app-container">
     <aside>
-        <div class="logo"><i class="fas fa-bolt"></i> BTS CIEL</div>
+        <div class="logo"><i class="fas fa-microchip"></i> NEXUS CIEL</div>
         <nav>
             <ul>
-                <li><a href="index.html" class="active"><i class="fas fa-home"></i> <span>Accueil</span></a></li>
-                <li><a href="chat.html"><i class="fas fa-comment-dots"></i> <span>Chat</span></a></li>
-                <li><a href="chatvip.html"><i class="fas fa-crown" style="color: #fbbf24;"></i> <span>VIP</span></a></li>
+                <li><a href="index.html" class="active"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> <span>Global Chat</span></a></li>
+                <li><a href="chatvip.html"><i class="fas fa-crown"></i> <span>Elite Access</span></a></li>
             </ul>
         </nav>
     </aside>
 
     <main>
         <div class="top-bar">
-            <h1>Bienvenue 👋</h1>
-            <div class="date-badge" style="font-size:0.8rem; padding:5px 12px; background:rgba(255,255,255,0.1); border-radius:20px;">
-                Session 2026
-            </div>
+            <h1>Nexus Hub <span style="font-weight: 300; opacity: 0.5;">v2.0</span></h1>
+            <div class="date-badge">2026 SESSION</div>
         </div>
 
-        <div class="chat-wrapper" style="overflow-y: auto; padding-bottom: 80px;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                
-                <article class="card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px;">
-                    <h2 style="margin-bottom: 10px; color: #3b82f6; font-size: 1.1rem; display:flex; align-items:center; gap:10px;">
-                        <i class="fas fa-plane"></i> Voyage à Londres
-                    </h2>
-                    <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.5; margin-bottom: 15px;">
-                        Souvenirs de l'immersion culturelle de Novembre 2025.
-                    </p>
-                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=TEST" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" allowfullscreen></iframe>
-                    </div>
-                </article>
-
-                <article class="card" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px;">
-                    <h2 style="margin-bottom: 10px; color: #a855f7; font-size: 1.1rem; display:flex; align-items:center; gap:10px;">
-                        <i class="fas fa-bullhorn"></i> Informations
-                    </h2>
-                    
-                    <div style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
-                        <strong style="color:white; display:block; margin-bottom:4px;">Meilleurs vœux !</strong>
-                        <p style="font-size: 0.85rem; color: #cbd5e1;">L'équipe pédagogique vous souhaite une excellente année 2026.</p>
-                    </div>
-
-                    <ul style="list-style: none;">
-                        <li style="display:flex; justify-content:space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem;">
-                            <span><i class="fas fa-server" style="color:#22c55e; margin-right:8px;"></i> Serveur</span>
-                            <span style="color:#22c55e; font-weight:bold;">En Ligne</span>
-                        </li>
-                        <li style="display:flex; justify-content:space-between; padding: 10px 0; font-size: 0.9rem;">
-                            <span><i class="fas fa-users" style="color:#f43f5e; margin-right:8px;"></i> Étudiants</span>
-                            <span style="font-weight:bold;">42 connectés</span>
-                        </li>
-                    </ul>
-                </article>
-
+        <section class="hero-section">
+            <div style="margin-bottom: 40px;">
+                <h2 style="font-size: 3rem; margin-bottom: 10px;">Connecter l'avenir.</h2>
+                <p style="color: var(--text-dim); max-width: 600px;">Bienvenue sur le portail officiel du BTS CIEL. Collaborez, échangez et accédez aux ressources de pointe en un seul endroit.</p>
             </div>
-        </div>
+
+            <div class="grid-welcome">
+                <div class="card-fancy">
+                    <i class="fas fa-terminal" style="font-size: 2rem; color: var(--primary); margin-bottom: 20px;"></i>
+                    <h3>Chat Collaboratif</h3>
+                    <p style="color: var(--text-dim); margin-top: 10px;">Échangez en temps réel avec tous les étudiants de la promo.</p>
+                    <a href="chat.html" style="display:inline-block; margin-top:20px; color:var(--primary); text-decoration:none; font-weight:bold;">Entrer dans le salon →</a>
+                </div>
+
+                <div class="card-fancy" style="border-color: var(--vip-gold);">
+                    <i class="fas fa-shield-alt" style="font-size: 2rem; color: var(--vip-gold); margin-bottom: 20px;"></i>
+                    <h3>Espace VIP</h3>
+                    <p style="color: var(--text-dim); margin-top: 10px;">Zone hautement sécurisée pour les projets sensibles et l'élite.</p>
+                    <a href="chatvip.html" style="display:inline-block; margin-top:20px; color:var(--vip-gold); text-decoration:none; font-weight:bold;">Accès restreint →</a>
+                </div>
+            </div>
+        </section>
     </main>
 </div>
-
 </body>
 </html>
