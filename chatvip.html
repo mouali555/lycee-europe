@@ -2,76 +2,121 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Elite Access</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elite Access - Nexus</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="vip-mode">
-    <div class="app-container">
-        <aside>
-            <div class="logo"><i class="fas fa-crown"></i> ELITE</div>
-            <nav>
-                <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="chat.html"><i class="fas fa-comments"></i> Chat Global</a>
-                <a href="chatvip.html" class="active"><i class="fas fa-crown"></i> Elite Access</a>
-            </nav>
-        </aside>
 
-        <main>
-            <div id="lock" style="position:absolute; inset:0; z-index:99; background:#030712; display:flex; align-items:center; justify-content:center;">
-                <div style="text-align:center; padding:30px; border:1px solid var(--vip); border-radius:20px;">
-                    <i class="fas fa-lock fa-3x" style="color:var(--vip); margin-bottom:15px;"></i>
-                    <input type="password" id="p" placeholder="Code Elite" style="width:100%; padding:10px; margin-bottom:10px; text-align:center;">
-                    <button onclick="unlock()" style="width:100%; padding:10px; background:var(--vip); border:none; border-radius:10px; cursor:pointer;">AUTH_EXEC</button>
+<div class="app-container">
+    <aside>
+        <div class="logo"><i class="fas fa-crown"></i> ELITE NEXUS</div>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> <span>Global Chat</span></a></li>
+                <li><a href="chatvip.html" class="active"><i class="fas fa-crown"></i> <span>Elite Access</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <div class="top-bar">
+            <h1 style="color: var(--vip-gold);">Zone Cryptée 🔒</h1>
+            <div class="date-badge" style="border-color: var(--vip-gold); color: var(--vip-gold);">Niveau 5</div>
+        </div>
+
+        <div id="login-screen" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
+            <div class="card-fancy" style="max-width: 400px; text-align: center; border-color: var(--vip-gold);">
+                <div style="font-size: 3rem; color: var(--vip-gold); margin-bottom: 20px;"><i class="fas fa-user-secret"></i></div>
+                <h2 style="margin-bottom: 10px;">Authentification</h2>
+                <p style="color: var(--text-dim); margin-bottom: 25px; font-size: 0.9rem;">Entrez vos identifiants d'accès prioritaire.</p>
+                <input type="password" id="code" placeholder="Code Secret" style="width:100%; padding:12px; background:rgba(0,0,0,0.2); border:1px solid var(--border); border-radius:10px; color:white; margin-bottom:10px; text-align:center;">
+                <input type="text" id="vip-pseudo" placeholder="Nom d'agent" style="width:100%; padding:12px; background:rgba(0,0,0,0.2); border:1px solid var(--border); border-radius:10px; color:white; margin-bottom:20px; text-align:center;">
+                <button onclick="check()" class="btn-send" style="width:100%; border-radius:10px; font-weight:bold; background:var(--vip-gold); color:black;">DÉVERROUILLER</button>
+                <p id="error" style="color:#ef4444; margin-top:15px; font-size:0.8rem;"></p>
+            </div>
+        </div>
+
+        <div id="chat-interface" style="display:none; flex:1; flex-direction:column; overflow:hidden;">
+            <div id="chat-feed" class="chat-wrapper" style="flex:1; overflow-y:auto;"></div>
+            <div class="input-area">
+                <div class="capsule" style="border-color: var(--vip-gold);">
+                    <input type="text" id="msg-input" placeholder="Envoyer un message crypté...">
+                    <button class="btn-send" onclick="envoyerVip()" style="background:var(--vip-gold); color:black;">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
+        </div>
+    </main>
+</div>
 
-            <div id="chat-content" style="display:none; flex-direction:column; flex:1;">
-                <div class="top-bar">
-                    <h1 style="color:var(--vip)">Elite Channel</h1>
-                </div>
-                <div id="chat-v" class="chat-wrapper"></div>
-                <div class="input-area">
-                    <div class="capsule" style="border:1px solid var(--vip)">
-                        <input type="text" id="mv" placeholder="Signal crypté...">
-                        <button class="btn-send" style="background:var(--vip); color:black;" onclick="sendV()"><i class="fas fa-shield-alt"></i></button>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+    // Configuration Firebase (Identique)
+    const firebaseConfig = {
+        apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
+        authDomain: "lycee-europe-private.firebaseapp.com",
+        projectId: "lycee-europe-private",
+        storageBucket: "lycee-europe-private.firebasestorage.app",
+        messagingSenderId: "259168134432",
+        appId: "1:259168134432:web:470f5536d9305b4cf86345"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    let me = "";
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-    <script>
-        firebase.initializeApp({ apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM", authDomain: "lycee-europe-private.firebaseapp.com", projectId: "lycee-europe-private" });
-        const db = firebase.firestore();
-
-        async function unlock() {
-            const pass = document.getElementById("p").value;
+    async function check() {
+        const c = document.getElementById("code").value;
+        const p = document.getElementById("vip-pseudo").value;
+        try {
             const doc = await db.collection("config").doc("access").get();
-            if(pass === doc.data().code) {
-                document.getElementById("lock").style.display = "none";
-                document.getElementById("chat-content").style.display = "flex";
-                db.collection("messages_prives").orderBy("timestamp").onSnapshot(snap => {
-                    const f = document.getElementById("chat-v");
-                    let h = "";
-                    snap.forEach(d => {
-                        const data = d.data(); if(!data.timestamp) return;
-                        h += `<div class="msg-group"><div class="bubble">${data.message}</div></div>`;
-                    });
-                    f.innerHTML = h; f.scrollTop = f.scrollHeight;
-                });
+            if(c === doc.data().code && p) {
+                me = p;
+                document.getElementById("login-screen").style.display="none";
+                document.getElementById("chat-interface").style.display="flex";
+                listen();
+            } else {
+                document.getElementById("error").innerText = "ACCÈS REFUSÉ : Code invalide.";
             }
-        }
+        } catch(e) { console.error(e); }
+    }
 
-        function sendV() {
-            const m = document.getElementById("mv").value;
-            if(m) {
-                db.collection("messages_prives").add({ pseudo: "VIP", message: m, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-                document.getElementById("mv").value = "";
-            }
+    function listen() {
+        db.collection("messages_prives").orderBy("timestamp").onSnapshot(snap => {
+            const feed = document.getElementById("chat-feed");
+            let html = "";
+            snap.forEach(doc => {
+                const d = doc.data();
+                if(!d.timestamp) return;
+                const isMe = d.pseudo === me;
+                html += `
+                    <div style="margin-bottom: 12px; display: flex; flex-direction: column; ${isMe ? 'align-items: flex-end' : ''}">
+                        <div class="msg ${isMe ? 'me' : ''}">
+                            ${!isMe ? `<div class="avatar" style="width:30px; height:30px; border-radius:50%; background:var(--vip-gold); color:black; display:flex; align-items:center; justify-content:center; font-weight:bold;">${d.pseudo[0]}</div>` : ''}
+                            <div class="bubble">${d.message}</div>
+                        </div>
+                    </div>`;
+            });
+            feed.innerHTML = html;
+            feed.scrollTop = feed.scrollHeight;
+        });
+    }
+
+    function envoyerVip() {
+        const m = document.getElementById("msg-input").value.trim();
+        if(m) {
+            db.collection("messages_prives").add({
+                pseudo: me, message: m,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            document.getElementById("msg-input").value = "";
         }
-    </script>
+    }
+    document.getElementById("msg-input").addEventListener("keypress", (e) => e.key === "Enter" && envoyerVip());
+</script>
 </body>
 </html>
