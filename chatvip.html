@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat VIP – Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-inline: 1.5rem;
+        }
+
+        .home-link {
+            background: #ffffff;
+            color: #0f172a;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(15,23,42,0.2);
+            box-shadow: 0 4px 10px rgba(15,23,42,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .home-link:hover {
+            background: #e5e7eb;
+        }
+
+        .chat-container {
+            background: rgba(15,23,42,0.75);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(12px);
+            height: 75vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#38bdf8,#1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .message-card {
+            background: rgba(255,255,255,0.08);
+            padding: 10px 14px;
+            border-radius: 14px;
+            max-width: 75%;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .smart-input-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(15,23,42,0.9);
+            border-radius: 999px;
+            padding: 10px 16px;
+            border: 1px solid rgba(255,255,255,0.15);
+            margin-top: 12px;
+            gap: 12px;
+        }
+
+        .smart-input-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+
+        #send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg,#38bdf8,#6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #send-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        #access-screen {
+            background: rgba(15,23,42,0.8);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.15);
+            text-align: center;
+        }
+
+        #access-screen input, #access-screen button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        #access-screen button {
+            background: linear-gradient(135deg,#38bdf8,#6366f1);
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #error {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #f87171;
+            min-height: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>Lycée de l'Europe – Dunkerque</h1>
+        <p>Chat VIP 🔐</p>
+    </div>
+    <a href="index.html" class="home-link">
+        <i class="fas fa-house"></i>
+        Accueil
+    </a>
+</header>
+
+<div class="container">
+
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat</a></li>
+                <li><a href="chatvip.html" class="active"><i class="fas fa-lock"></i> Chat VIP</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <article class="card">
+
+            <div id="access-screen">
+                <h2>Connexion VIP</h2>
+                <p>Entrez le code d’accès VIP et votre pseudo.</p>
+                <input type="password" id="access-code" placeholder="Code VIP">
+                <input type="text" id="pseudo" placeholder="Votre pseudo">
+                <button onclick="enterChat()">Entrer</button>
+                <p id="error"></p>
+            </div>
+
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement intérieur</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+    </aside>
+
+</div>
+
+<footer>
+    <p>site de test par des bts ciel</p>
+</footer>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
+  authDomain: "lycee-europe-private.firebaseapp.com",
+  projectId: "lycee-europe-private",
+  storageBucket: "lycee-europe-private.firebasestorage.app",
+  messagingSenderId: "259168134432",
+  appId: "1:259168134432:web:470f5536d9305b4cf86345",
+  measurementId: "G-X323CMQRZR"
+});
+
+const db = firebase.firestore();
+
+/* COLLECTION DES MESSAGES VIP */
+const messagesRef = db.collection("messages_prives");
+
+let ACCESS_CODE = null;
+let currentPseudo = null;
+
+/* Charger le code VIP */
+async function loadAccessCode() {
+    const doc = await db
+        .collection("config")
+        .doc("Lycée europe private")
+        .collection("access")
+        .doc("access")
+        .get();
+
+    ACCESS_CODE = doc.data().code;
+}
+
+/* Connexion */
+async function enterChat() {
+    const code = document.getElementById("access-code").value.trim();
+    const pseudo = document.getElementById("pseudo").value.trim();
+    const error = document.getElementById("error");
+
+    if (!code || !pseudo) {
+        error.textContent = "Veuillez remplir tous les champs.";
+        return;
+    }
+
+    await loadAccessCode();
+
+    if (code !== ACCESS_CODE) {
+        error.textContent = "Code VIP incorrect.";
+        return;
+    }
+
+    currentPseudo = pseudo;
+    loadChatUI();
+}
+
+/* Interface du chat */
+function loadChatUI() {
+    const article = document.querySelector("main article");
+
+    article.innerHTML = `
+        <h2>Chat VIP 🔐</h2>
+        <div class="chat-container">
+            <div id="messages"></div>
+
+            <div class="smart-input-bar">
+                <input type="text" id="message" placeholder="Écrire un message VIP...">
+                <button id="send-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("send-btn").onclick = sendMessage;
+    document.getElementById("message").addEventListener("keydown", e => {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    listenMessages();
+}
+
+/* Écoute des messages */
+function listenMessages() {
+    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+        const messagesDiv = document.getElementById("messages");
+        if (!messagesDiv) return;
+
+        messagesDiv.innerHTML = "";
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+
+            const row = document.createElement("div");
+            row.className = "message-row";
+
+            const time = data.timestamp
+                ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})
+                : "—";
+
+            row.innerHTML = `
+                <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
+                <div class="message-card">
+                    <div class="message-header"><strong>${data.pseudo}</strong> • ${time}</div>
+                    <div class="message-body">${data.message}</div>
+                </div>
+            `;
+
+            messagesDiv.appendChild(row);
+        });
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+}
+
+/* Envoi d’un message */
+async function sendMessage() {
+    const input = document.getElementById("message");
+    const text = input.value.trim();
+    if (!text) return;
+
+    await messagesRef.add({
+        pseudo: currentPseudo,
+        message: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    input.value = "";
+}
+</script>
+
+</body>
+</html>
