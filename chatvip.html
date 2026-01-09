@@ -442,8 +442,8 @@
             </ul>
         </div>
 
-        <!-- CASINO SPIN THE WHEEL -->
-        <div class="menu-box casino-box">
+        <!-- CASINO SPIN THE WHEEL - Only shown after login -->
+        <div class="menu-box casino-box" id="casino-wheel-section" style="display: none;">
             <h3 style="color: gold;"><i class="fas fa-crown"></i> Casino VIP Luxe</h3>
             <div class="wheel-container">
                 <canvas id="wheelCanvas" width="220" height="220"></canvas>
@@ -524,6 +524,21 @@ function loadChatUI() {
     `;
     document.getElementById("send-btn").onclick = sendMessage;
     document.getElementById("message").addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
+    
+    // Show casino wheel after successful login
+    const casinoSection = document.getElementById('casino-wheel-section');
+    if (casinoSection) {
+        casinoSection.style.display = 'block';
+        // Initialize wheel after showing it
+        setTimeout(() => {
+            initWheel();
+            const spinBtn = document.getElementById('spin-wheel-btn');
+            if (spinBtn) {
+                spinBtn.addEventListener('click', spinWheel);
+            }
+        }, 100);
+    }
+    
     listenMessages();
 }
 
@@ -729,14 +744,7 @@ window.addEventListener('DOMContentLoaded', () => {
         themeIcon.classList.add('fa-sun');
     }
     
-    // Initialize Casino Wheel
-    initWheel();
-    
-    // Attach spin wheel button event
-    const spinBtn = document.getElementById('spin-wheel-btn');
-    if (spinBtn) {
-        spinBtn.addEventListener('click', spinWheel);
-    }
+    // Do NOT initialize Casino Wheel here - it will be initialized after login in loadChatUI()
 });
 </script>
 
