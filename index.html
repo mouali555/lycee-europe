@@ -3,22 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portail BTS CIEL</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Portail BTS CIEL - Lycée de l'Europe</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-deep: #0f172a;
+            --bg-gradient: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.1);
+            --primary: #38bdf8;
+            --vip-gold: #fbbf24;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        aside {
+            background: rgba(2, 6, 23, 0.6);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            background: linear-gradient(90deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul { list-style: none; }
+        nav li { margin-bottom: 0.5rem; }
+
+        nav a {
+            display: flex; align-items: center; gap: 15px;
+            padding: 12px 16px;
+            color: var(--text-dim); text-decoration: none;
+            border-radius: 12px; font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--glass-hover);
+            color: white;
+            border-color: var(--border);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.1);
+        }
+        
+        nav a i { width: 20px; text-align: center; }
+
+        /* MAIN */
+        main { padding: 2rem 3rem; }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 3rem;
+        }
+        h1 { font-size: 2rem; font-weight: 700; }
+        
+        .date-badge { 
+            background: var(--glass); padding: 8px 16px; 
+            border-radius: 20px; font-size: 0.9rem; 
+            border: 1px solid var(--border); 
+        }
+
+        /* GRID CARDS */
+        .grid-cards { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 2rem; 
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .card h2 { font-size: 1.2rem; margin-bottom: 1rem; color: var(--primary); }
+        .card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; }
+
+        .video-wrapper {
+            margin-top: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            padding-bottom: 56.25%;
+            border: 1px solid var(--border);
+        }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        @media (max-width: 900px) {
+            .app-container { grid-template-columns: 1fr; }
+            aside { display: none; }
+            main { padding: 1.5rem; }
+        }
+    </style>
 </head>
 <body>
 
 <div class="app-container">
     <aside>
         <div class="logo">
-            <i class="fas fa-atom fa-spin-pulse" style="font-size: 1.2rem;"></i> BTS CIEL
+            <i class="fas fa-atom fa-spin" style="animation-duration: 10s;"></i> BTS CIEL
         </div>
         <nav>
             <ul>
                 <li><a href="index.html" class="active"><i class="fas fa-grid-2"></i> Dashboard</a></li>
                 <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
-                <li><a href="chatvip.html" class="vip-link"><i class="fas fa-gem"></i> Espace VIP</a></li>
+                <li><a href="chatvip.html" style="color: var(--vip-gold);"><i class="fas fa-gem"></i> Espace VIP</a></li>
+                
                 <li style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
                     <span style="font-size: 0.8rem; color: #64748b; padding-left: 10px; text-transform: uppercase;">Liens Rapides</span>
                 </li>
@@ -32,29 +162,36 @@
         <header>
             <div>
                 <h1>Bienvenue, Étudiant 👋</h1>
-                <p style="color: var(--text-dim)">Voici les dernières actualités du Lycée de l'Europe.</p>
+                <p style="color: var(--text-dim)">Portail Numérique • Lycée de l'Europe</p>
             </div>
-            <div class="date-badge">Année 2026</div>
+            <div class="date-badge">Session 2026</div>
         </header>
 
         <div class="grid-cards">
             <article class="card" style="grid-column: span 2;">
-                <h2><i class="fas fa-plane-departure" style="color: var(--primary);"></i> Voyage à Londres</h2>
-                <p>Retour en images sur l'immersion culturelle de Novembre. Visite de la City, British Museum et spectacle Wicked.</p>
+                <h2><i class="fas fa-plane-departure"></i> Voyage à Londres</h2>
+                <p>Retour en images sur l'immersion culturelle de Novembre 2025. Visite de la City, British Museum et spectacle Wicked.</p>
                 <div class="video-wrapper">
                     <iframe src="https://www.youtube.com/embed/p2BLLVqvA6I?si=8qVh7uFWrCFYQUV5" frameborder="0" allowfullscreen></iframe>
                 </div>
             </article>
 
             <article class="card">
-                <h2><i class="fas fa-bullhorn" style="color: #a855f7;"></i> Annonces</h2>
+                <h2><i class="fas fa-bullhorn"></i> Informations</h2>
                 <div style="background: rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 10px; border-left: 3px solid var(--primary); margin-top: 10px;">
-                    <strong>Meilleurs vœux 2026 !</strong>
+                    <strong style="color:white;">Meilleurs vœux 2026 !</strong>
                     <p style="font-size: 0.85rem; margin-top: 5px;">Toute l'équipe pédagogique vous souhaite la réussite.</p>
                 </div>
-                <div style="margin-top: 20px;">
-                    <p><i class="fas fa-check-circle" style="color: #22c55e;"></i> Serveur: <strong>En Ligne</strong></p>
-                    <p><i class="fas fa-users" style="color: #f43f5e;"></i> Connectés: <strong>42</strong></p>
+                
+                <div style="margin-top: 25px;">
+                    <p style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.1); padding:8px 0;">
+                        <span>État du serveur</span>
+                        <span style="color:#22c55e;">En Ligne ●</span>
+                    </p>
+                    <p style="display:flex; justify-content:space-between; padding:8px 0;">
+                        <span>Connectés</span>
+                        <span style="color:#f43f5e;">42</span>
+                    </p>
                 </div>
             </article>
         </div>
