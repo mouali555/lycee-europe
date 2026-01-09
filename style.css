@@ -237,3 +237,18 @@ footer {
     height: 220px;
   }
 }
+/* BANNIÈRE DU SITE */
+.banner {
+    width: 100%;
+    max-height: 180px;
+    overflow: hidden;
+    border-bottom: 2px solid var(--neon-cyan);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+}
+
+.banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
