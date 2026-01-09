@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joyeux Anniversaire Johann ! – Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* STYLES SPÉCIFIQUES POUR LA PAGE D'ANNIVERSAIRE */
+        
+        /* Variables pour les couleurs d'anniversaire */
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff006e;
+            --neon-yellow: #ffd60a;
+            --neon-purple: #a855f7;
+            --neon-green: #00ff9f;
+        }
+        
+        /* Header spécial anniversaire */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(168,85,247,0.3) 0%, rgba(255,0,110,0.3) 100%);
+        }
+        
+        .home-link {
+            background: transparent;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid var(--neon-cyan);
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            border-radius: 4px;
+        }
+
+        .home-link:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        
+        /* Conteneur principal pour l'anniversaire */
+        .birthday-container {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Titre principal avec animation */
+        .birthday-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin: 30px 0;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink), var(--neon-yellow), var(--neon-purple));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite, bounce 2s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+            filter: drop-shadow(0 0 20px rgba(255, 0, 110, 0.6));
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Sous-titre avec clignotement */
+        .birthday-subtitle {
+            font-size: 2rem;
+            color: var(--neon-yellow);
+            margin: 20px 0;
+            animation: pulse 1.5s ease-in-out infinite;
+            text-shadow: 0 0 20px var(--neon-yellow);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* Conteneur pour l'image */
+        .birthday-image-container {
+            margin: 50px auto;
+            max-width: 600px;
+            position: relative;
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .birthday-image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            border: 4px solid var(--neon-cyan);
+            box-shadow: 
+                0 0 30px var(--neon-cyan),
+                0 0 60px var(--neon-pink),
+                0 0 90px var(--neon-purple);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(2deg); }
+            66% { transform: translateY(-10px) rotate(-2deg); }
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 
+                    0 0 20px var(--neon-cyan),
+                    0 0 40px var(--neon-pink),
+                    0 0 60px var(--neon-purple);
+            }
+            to {
+                box-shadow: 
+                    0 0 40px var(--neon-cyan),
+                    0 0 80px var(--neon-pink),
+                    0 0 120px var(--neon-purple);
+            }
+        }
+        
+        /* Confettis animés */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--neon-pink);
+            animation: confetti-fall 3s linear infinite;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(1000px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Génération de confettis avec différents delays et couleurs */
+        .confetti:nth-child(1) { left: 10%; animation-delay: 0s; background: var(--neon-cyan); }
+        .confetti:nth-child(2) { left: 20%; animation-delay: 0.5s; background: var(--neon-pink); }
+        .confetti:nth-child(3) { left: 30%; animation-delay: 1s; background: var(--neon-yellow); }
+        .confetti:nth-child(4) { left: 40%; animation-delay: 1.5s; background: var(--neon-purple); }
+        .confetti:nth-child(5) { left: 50%; animation-delay: 2s; background: var(--neon-green); }
+        .confetti:nth-child(6) { left: 60%; animation-delay: 0.3s; background: var(--neon-cyan); }
+        .confetti:nth-child(7) { left: 70%; animation-delay: 0.8s; background: var(--neon-pink); }
+        .confetti:nth-child(8) { left: 80%; animation-delay: 1.3s; background: var(--neon-yellow); }
+        .confetti:nth-child(9) { left: 90%; animation-delay: 1.8s; background: var(--neon-purple); }
+        .confetti:nth-child(10) { left: 15%; animation-delay: 2.3s; background: var(--neon-green); }
+        
+        /* Message de vœux */
+        .birthday-message {
+            font-size: 1.5rem;
+            margin: 30px auto;
+            max-width: 700px;
+            line-height: 1.8;
+            color: #e5e7eb;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 15px;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+        
+        /* Emojis animés */
+        .emoji {
+            font-size: 3rem;
+            display: inline-block;
+            animation: spin 3s linear infinite;
+            margin: 0 10px;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .emoji:nth-child(even) {
+            animation: spin 3s linear infinite reverse;
+        }
+        
+        /* Bouton spécial */
+        .birthday-button {
+            margin: 30px auto;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 30px var(--neon-pink);
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .birthday-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px var(--neon-pink), 0 0 80px var(--neon-purple);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .birthday-title {
+                font-size: 2rem;
+            }
+            
+            .birthday-subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .birthday-message {
+                font-size: 1.2rem;
+            }
+            
+            .birthday-image-container {
+                max-width: 90%;
+            }
+        }
+        
+        /* Animations pour les messages de célébration */
+        @keyframes messagePopIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes messagePopOut {
+            from {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>Lycée de l'Europe</h1>
+        <p>Célébration Spéciale 🎉</p>
+    </div>
+    <a href="index.html" class="home-link">
+        <i class="fas fa-house"></i> Retour
+    </a>
+</header>
+
+<div class="container">
+
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                <li><a href="joyeux-anniversaire.html" class="active"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <article class="card">
+            <div class="birthday-container">
+                <!-- Confettis animés -->
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                
+                <!-- Titre principal -->
+                <h1 class="birthday-title">
+                    <span class="emoji">🎉</span>
+                    Joyeux anniversaire Johann !
+                    <span class="emoji">🎂</span>
+                </h1>
+                
+                <!-- Sous-titre -->
+                <h2 class="birthday-subtitle">
+                    ✨ 19 ans aujourd'hui ! ✨
+                </h2>
+                
+                <!-- Image de Johann -->
+                <div class="birthday-image-container">
+                    <img src="johann.svg" alt="Johann - 19 ans" id="johann-image">
+                </div>
+                
+                <!-- Message de vœux -->
+                <div class="birthday-message">
+                    <p>🎈 Toute l'équipe du Lycée de l'Europe te souhaite un très joyeux anniversaire ! 🎈</p>
+                    <p>Que cette nouvelle année soit remplie de succès, de bonheur et de belles réussites ! 🌟</p>
+                    <p>Profite bien de ta journée spéciale ! 🎁</p>
+                </div>
+                
+                <!-- Bouton interactif -->
+                <button class="birthday-button" onclick="celebrate()">
+                    <i class="fas fa-star"></i> Célébrer ! <i class="fas fa-star"></i>
+                </button>
+            </div>
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+    </aside>
+
+</div>
+
+<footer>
+    <p>Site de test par des BTS CIEL - Joyeux anniversaire Johann ! 🎉</p>
+</footer>
+
+<script>
+    // Fonction pour créer encore plus de confettis lors du clic sur le bouton
+    let isGeneratingConfetti = false;
+    
+    function celebrate() {
+        // Debounce pour éviter les clics multiples
+        if (isGeneratingConfetti) return;
+        isGeneratingConfetti = true;
+        
+        const container = document.querySelector('.birthday-container');
+        
+        // Créer 50 nouveaux confettis
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            
+            // Couleurs aléatoires
+            const colors = ['#00f3ff', '#ff006e', '#ffd60a', '#a855f7', '#00ff9f'];
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Formes variées
+            if (Math.random() > 0.5) {
+                confetti.style.borderRadius = '50%';
+            }
+            
+            container.appendChild(confetti);
+            
+            // Supprimer le confetti après l'animation
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.remove();
+                }
+            }, 5000);
+        }
+        
+        // Afficher un message de célébration avec un style moderne
+        showCelebrationMessage();
+        
+        // Réinitialiser le debounce après 2 secondes
+        setTimeout(() => {
+            isGeneratingConfetti = false;
+        }, 2000);
+    }
+    
+    // Fonction pour afficher un message moderne au lieu d'alert()
+    function showCelebrationMessage() {
+        const message = document.createElement('div');
+        message.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff006e, #a855f7);
+            color: white;
+            padding: 40px 60px;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 0, 110, 0.8), 0 0 100px rgba(168, 85, 247, 0.6);
+            z-index: 10000;
+            animation: messagePopIn 0.3s ease-out;
+        `;
+        message.innerHTML = `
+            <div style="font-size: 3rem; margin-bottom: 20px;">🎉</div>
+            <div style="margin-bottom: 10px;">JOYEUX ANNIVERSAIRE JOHANN !</div>
+            <div style="font-size: 1.2rem; opacity: 0.9;">Que tous tes vœux se réalisent ! ✨</div>
+        `;
+        
+        document.body.appendChild(message);
+        
+        // Supprimer le message après 3 secondes
+        setTimeout(() => {
+            message.style.animation = 'messagePopOut 0.3s ease-out';
+            setTimeout(() => {
+                if (message.parentNode) {
+                    message.remove();
+                }
+            }, 300);
+        }, 3000);
+    }
+    
+    // Changer l'image si johann.png existe
+    const img = document.getElementById('johann-image');
+    const testImg = new Image();
+    testImg.onload = function() {
+        img.src = 'johann.png';
+    };
+    testImg.onerror = function() {
+        // Garder johann.svg si johann.png n'existe pas (fallback silencieux)
+    };
+    testImg.src = 'johann.png';
+</script>
+
+</body>
+</html>
