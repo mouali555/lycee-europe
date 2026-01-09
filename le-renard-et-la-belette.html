@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le renard et la belette - Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1 aria-label="Lycée de l'Europe - Dunkerque">✨ Lycée de l'Europe – Dunkerque ✨</h1>
+            <p aria-label="Le renard et la belette">🦊 Le renard et la belette 🦊</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </header>
+
+    <div class="container">
+        <aside>
+            <nav class="menu-box">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                    <li><a href="la-classe-de-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                    <li><a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                    <li><a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                    <li><a href="la-prepa-ptsi-pt.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                    <li><a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main>
+            <article class="card">
+                <h2><i class="fas fa-video"></i> Le renard et la belette</h2>
+                <p>
+                    Découvrez cette vidéo spéciale qui fait partie de l'histoire et de la culture du Lycée de l'Europe. 
+                    Un moment unique à partager avec notre communauté.
+                </p>
+                
+                <div class="video-container" style="margin-top: 25px;">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/ileZEHrdD7I?si=O704eRUlRK5ntkC-&start=439" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+
+                <div class="alert-box" style="margin-top: 25px;">
+                    🦊 Cette vidéo démarre automatiquement à 7:19 pour vous faire découvrir le passage le plus intéressant !
+                </div>
+
+                <p style="margin-top: 25px; color: var(--text-muted);">
+                    Cette section fait partie des traditions et des moments emblématiques du Lycée de l'Europe. 
+                    Elle témoigne de l'esprit unique qui anime notre établissement et notre communauté d'élèves et d'enseignants.
+                </p>
+            </article>
+        </main>
+
+        <aside>
+            <div class="menu-box">
+                <h3>Navigation</h3>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Retour Accueil</a></li>
+                    <li><a href="chat.html"><i class="fas fa-comments"></i> Chat</a></li>
+                    <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        });
+    </script>
+
+</body>
+</html>

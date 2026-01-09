@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Classe de Seconde - Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1 aria-label="Lycée de l'Europe - Dunkerque">✨ Lycée de l'Europe – Dunkerque ✨</h1>
+            <p aria-label="La Classe de Seconde">📚 La Classe de Seconde 📚</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </header>
+
+    <div class="container">
+        <aside>
+            <nav class="menu-box">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                    <li><a href="la-classe-de-seconde.html" class="active"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                    <li><a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                    <li><a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                    <li><a href="la-prepa-ptsi-pt.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                    <li><a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main>
+            <article class="card">
+                <h2><i class="fas fa-book-open"></i> La Classe de Seconde</h2>
+                <p>
+                    La classe de Seconde générale et technologique est une année de détermination qui permet aux élèves 
+                    de consolider leurs acquis du collège et de préparer leurs choix d'orientation pour le cycle terminal du lycée.
+                </p>
+                
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-compass"></i> Une Année d'Exploration
+                </h3>
+                <p>
+                    La Seconde est conçue pour permettre aux élèves de découvrir de nouvelles matières et d'affiner leur projet 
+                    d'orientation. C'est une année charnière qui pose les fondations de la réussite future.
+                </p>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-book"></i> Les Enseignements Communs
+                </h3>
+                <p>
+                    Tous les élèves de Seconde suivent un tronc commun d'enseignements généraux :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Français</strong> : 4 heures par semaine</li>
+                    <li><strong style="color: var(--luxury-gold);">Mathématiques</strong> : 4 heures par semaine</li>
+                    <li><strong style="color: var(--luxury-gold);">Histoire-Géographie</strong> : 3 heures par semaine</li>
+                    <li><strong style="color: var(--luxury-gold);">Langues Vivantes A et B</strong> : 5h30 par semaine</li>
+                    <li><strong style="color: var(--luxury-gold);">Sciences Économiques et Sociales</strong> : 1h30 par semaine</li>
+                    <li><strong style="color: var(--luxury-gold);">Physique-Chimie</strong> : 3 heures par semaine</li>
+                    <li><strong style="color: var(--luxury-gold);">Sciences de la Vie et de la Terre</strong> : 1h30 par semaine</li>
+                    <li><strong style="color: var(--luxury-gold);">Éducation Physique et Sportive</strong> : 2 heures par semaine</li>
+                    <li><strong style="color: var(--luxury-gold);">Enseignement Moral et Civique</strong> : 18 heures annuelles</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-puzzle-piece"></i> Les Options
+                </h3>
+                <p>
+                    En plus du tronc commun, les élèves peuvent choisir des enseignements optionnels pour compléter 
+                    leur formation et explorer leurs centres d'intérêt :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Langues et cultures de l'Antiquité (Latin ou Grec)</li>
+                    <li>Langue vivante C</li>
+                    <li>Arts (Arts plastiques, Théâtre, Musique, etc.)</li>
+                    <li>Sciences de l'Ingénieur</li>
+                    <li>Création et Innovation Technologiques</li>
+                    <li>Management et Gestion</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-road"></i> Préparation à l'Orientation
+                </h3>
+                <p>
+                    Au cours de l'année de Seconde, les élèves bénéficient d'un accompagnement personnalisé pour les aider 
+                    à construire leur parcours. Des heures dédiées à l'orientation permettent de découvrir :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Les différentes filières du cycle terminal (Générale ou Technologique)</li>
+                    <li>Les spécialités proposées au Lycée de l'Europe</li>
+                    <li>Les débouchés et les métiers associés aux différents parcours</li>
+                    <li>Les attendus de l'enseignement supérieur</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-bullseye"></i> Nos Objectifs
+                </h3>
+                <p>
+                    L'équipe pédagogique du Lycée de l'Europe s'engage à :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Consolider les acquis fondamentaux de chaque élève</li>
+                    <li>Développer l'autonomie et les méthodes de travail</li>
+                    <li>Favoriser la curiosité intellectuelle et l'esprit critique</li>
+                    <li>Accompagner chaque élève dans la construction de son projet d'orientation</li>
+                </ul>
+
+                <div class="alert-box" style="margin-top: 25px;">
+                    <i class="fas fa-info-circle"></i> Les inscriptions en classe de Seconde sont ouvertes. 
+                    N'hésitez pas à nous contacter pour plus d'informations !
+                </div>
+            </article>
+        </main>
+
+        <aside>
+            <div class="menu-box">
+                <h3>Liens Utiles</h3>
+                <ul>
+                    <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Retour Accueil</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        });
+    </script>
+
+</body>
+</html>

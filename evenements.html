@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Événements - Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1 aria-label="Lycée de l'Europe - Dunkerque">✨ Lycée de l'Europe – Dunkerque ✨</h1>
+            <p aria-label="Événements">📅 Événements 📅</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </header>
+
+    <div class="container">
+        <aside>
+            <nav class="menu-box">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                    <li><a href="la-classe-de-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                    <li><a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                    <li><a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                    <li><a href="la-prepa-ptsi-pt.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                    <li><a href="evenements.html" class="active"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main>
+            <article class="card">
+                <h2><i class="fas fa-calendar-alt"></i> Événements du Lycée de l'Europe</h2>
+                <p>
+                    Le Lycée de l'Europe organise tout au long de l'année de nombreux événements culturels, sportifs, 
+                    pédagogiques et festifs. Ces moments privilégiés rythment la vie de l'établissement et contribuent 
+                    à l'épanouissement de nos élèves.
+                </p>
+                
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-door-open"></i> Portes Ouvertes - 15 mars 2026
+                </h3>
+                <p>
+                    La journée Portes Ouvertes est l'occasion de découvrir le lycée, ses formations, ses équipements 
+                    et de rencontrer les enseignants et les élèves. Au programme :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Visites guidées de l'établissement</li>
+                    <li>Présentation des formations (Seconde, Baccalauréats, BTS, Prépa)</li>
+                    <li>Démonstrations dans les ateliers et laboratoires</li>
+                    <li>Témoignages d'élèves et d'anciens élèves</li>
+                    <li>Stands d'information sur l'orientation</li>
+                </ul>
+                <div class="alert-box" style="margin-top: 15px;">
+                    📍 Samedi 15 mars 2026 de 9h à 17h - Entrée libre
+                </div>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-globe-europe"></i> Projets Erasmus+
+                </h3>
+                <p>
+                    Le Lycée de l'Europe participe activement au programme Erasmus+ avec 15 projets actifs. 
+                    Nos élèves ont l'opportunité de partir en mobilité dans différents pays européens :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Échanges scolaires</strong> : Allemagne, Espagne, Italie, Pays-Bas</li>
+                    <li><strong style="color: var(--luxury-gold);">Stages en entreprise</strong> : Pour les étudiants de BTS</li>
+                    <li><strong style="color: var(--luxury-gold);">Projets collaboratifs</strong> : Travail en équipe avec des lycées partenaires</li>
+                    <li><strong style="color: var(--luxury-gold);">Séjours linguistiques</strong> : Immersion culturelle et linguistique</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-plane-departure"></i> Voyage à Londres - Novembre 2025
+                </h3>
+                <p>
+                    Du 3 au 6 novembre 2025, nos élèves ont vécu une expérience inoubliable lors du voyage à Londres. 
+                    Hébergés en famille d'accueil, ils ont pu :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Visiter les monuments emblématiques : Big Ben, Tower Bridge, London Eye</li>
+                    <li>Explorer les musées : British Museum, Natural History Museum</li>
+                    <li>Assister à la comédie musicale <strong>Wicked</strong> dans le West End</li>
+                    <li>Pratiquer l'anglais en situation réelle</li>
+                    <li>Découvrir la culture britannique</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-trophy"></i> Compétitions et Concours
+                </h3>
+                <p>
+                    Le lycée encourage la participation de ses élèves à diverses compétitions et concours :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Olympiades des Sciences</strong> : Mathématiques, Physique, Chimie</li>
+                    <li><strong style="color: var(--luxury-gold);">Concours d'Éloquence</strong> : Développement des compétences oratoires</li>
+                    <li><strong style="color: var(--luxury-gold);">Challenges Robotique</strong> : Pour les élèves de STI2D et BTS</li>
+                    <li><strong style="color: var(--luxury-gold);">Concours Général</strong> : Récompense l'excellence académique</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-palette"></i> Événements Culturels
+                </h3>
+                <p>
+                    La vie culturelle du lycée est riche et variée :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Semaine des Arts</strong> : Expositions, spectacles, ateliers artistiques</li>
+                    <li><strong style="color: var(--luxury-gold);">Club Photo</strong> : Expositions et sorties photographiques</li>
+                    <li><strong style="color: var(--luxury-gold);">Ciné-Débats</strong> : Projections suivies de discussions</li>
+                    <li><strong style="color: var(--luxury-gold);">Concerts et Spectacles</strong> : Talents des élèves mis à l'honneur</li>
+                    <li><strong style="color: var(--luxury-gold);">Rencontres avec des Auteurs</strong> : Dans le cadre des cours de français</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-running"></i> Événements Sportifs
+                </h3>
+                <p>
+                    Le sport occupe une place importante dans la vie du lycée :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Journée du Sport Scolaire</strong> : Septembre</li>
+                    <li><strong style="color: var(--luxury-gold);">Cross du Lycée</strong> : Octobre</li>
+                    <li><strong style="color: var(--luxury-gold);">Championnats UNSS</strong> : Tout au long de l'année</li>
+                    <li><strong style="color: var(--luxury-gold);">Tournois Inter-Classes</strong> : Football, basketball, volleyball</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-heart"></i> Actions Solidaires
+                </h3>
+                <p>
+                    Le lycée s'engage dans des actions solidaires et citoyennes :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Téléthon</strong> : Collecte de fonds en décembre</li>
+                    <li><strong style="color: var(--luxury-gold);">Collectes Alimentaires</strong> : Pour les associations locales</li>
+                    <li><strong style="color: var(--luxury-gold);">Semaine de la Solidarité</strong> : Sensibilisation aux grandes causes</li>
+                    <li><strong style="color: var(--luxury-gold);">Actions Environnementales</strong> : Développement durable</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-calendar-check"></i> Calendrier des Événements à Venir
+                </h3>
+                <div class="news-items" style="margin-top: 15px;">
+                    <div class="news-item">
+                        <div class="news-icon"><i class="fas fa-door-open"></i></div>
+                        <div class="news-content">
+                            <h4>Portes Ouvertes</h4>
+                            <p>Samedi 15 mars 2026 - 9h à 17h</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-icon"><i class="fas fa-theater-masks"></i></div>
+                        <div class="news-content">
+                            <h4>Semaine des Arts</h4>
+                            <p>Du 7 au 11 avril 2026</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-icon"><i class="fas fa-trophy"></i></div>
+                        <div class="news-content">
+                            <h4>Finale du Concours d'Éloquence</h4>
+                            <p>Vendredi 17 mai 2026</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <div class="news-content">
+                            <h4>Remise des Diplômes</h4>
+                            <p>Vendredi 20 juin 2026</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert-box" style="margin-top: 25px;">
+                    <i class="fas fa-info-circle"></i> Suivez-nous sur nos réseaux sociaux pour ne manquer aucun événement !
+                </div>
+            </article>
+        </main>
+
+        <aside>
+            <div class="menu-box">
+                <h3>Contacts</h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>03 28 58 83 00</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>contact@lycee-europe.fr</span>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-box" style="margin-top: 20px;">
+                <h3>Liens</h3>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Retour Accueil</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        });
+    </script>
+
+</body>
+</html>
