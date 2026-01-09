@@ -3,52 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>VIP - Lycée de l'Europe</title>
+    <title>Elite Access - Nexus</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="vip-mode"> <div class="app-container">
+<body class="vip-mode">
+
+<div class="app-container">
     <aside>
-        <div class="logo"><i class="fas fa-bolt"></i> BTS CIEL</div>
+        <div class="logo"><i class="fas fa-crown"></i> ELITE NEXUS</div>
         <nav>
             <ul>
-                <li><a href="index.html"><i class="fas fa-home"></i> <span>Accueil</span></a></li>
-                <li><a href="chat.html"><i class="fas fa-comment-dots"></i> <span>Chat</span></a></li>
-                <li><a href="chatvip.html" class="active"><i class="fas fa-crown"></i> <span>VIP</span></a></li>
+                <li><a href="index.html"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> <span>Global Chat</span></a></li>
+                <li><a href="chatvip.html" class="active"><i class="fas fa-crown"></i> <span>Elite Access</span></a></li>
             </ul>
         </nav>
     </aside>
 
     <main>
-        <div class="top-bar" style="border-bottom-color: rgba(251, 191, 36, 0.3);">
-            <h1 style="color: #fbbf24;">Espace VIP 🔒</h1>
+        <div class="top-bar">
+            <h1 style="color: var(--vip-gold);">Zone Cryptée 🔒</h1>
+            <div class="date-badge" style="border-color: var(--vip-gold); color: var(--vip-gold);">Niveau 5</div>
         </div>
 
-        <div id="login-screen" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; text-align:center;">
-            <div style="width:80px; height:80px; border-radius:50%; background:rgba(251, 191, 36, 0.1); display:flex; align-items:center; justify-content:center; margin-bottom:20px; border:1px solid #fbbf24;">
-                <i class="fas fa-shield-halved fa-2x" style="color:#fbbf24;"></i>
+        <div id="login-screen" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
+            <div class="card-fancy" style="max-width: 400px; text-align: center; border-color: var(--vip-gold);">
+                <div style="font-size: 3rem; color: var(--vip-gold); margin-bottom: 20px;"><i class="fas fa-user-secret"></i></div>
+                <h2 style="margin-bottom: 10px;">Authentification</h2>
+                <p style="color: var(--text-dim); margin-bottom: 25px; font-size: 0.9rem;">Entrez vos identifiants d'accès prioritaire.</p>
+                <input type="password" id="code" placeholder="Code Secret" style="width:100%; padding:12px; background:rgba(0,0,0,0.2); border:1px solid var(--border); border-radius:10px; color:white; margin-bottom:10px; text-align:center;">
+                <input type="text" id="vip-pseudo" placeholder="Nom d'agent" style="width:100%; padding:12px; background:rgba(0,0,0,0.2); border:1px solid var(--border); border-radius:10px; color:white; margin-bottom:20px; text-align:center;">
+                <button onclick="check()" class="btn-send" style="width:100%; border-radius:10px; font-weight:bold; background:var(--vip-gold); color:black;">DÉVERROUILLER</button>
+                <p id="error" style="color:#ef4444; margin-top:15px; font-size:0.8rem;"></p>
             </div>
-            <h2 style="margin-bottom:10px;">Accès Restreint</h2>
-            <p style="color:#94a3b8; margin-bottom:30px; font-size:0.9rem;">Veuillez vous identifier pour accéder au réseau crypté.</p>
-            
-            <div class="capsule" style="flex-direction:column; max-width:300px; padding:20px; border-radius:20px; background:rgba(0,0,0,0.3);">
-                <input type="password" id="code" placeholder="Code Secret" style="text-align:center; width:100%; border-bottom:1px solid #334155; padding:10px; margin-bottom:10px;">
-                <input type="text" id="vip-pseudo" placeholder="Identifiant" style="text-align:center; width:100%; padding:10px;">
-            </div>
-            
-            <button onclick="check()" style="margin-top:20px; background:#fbbf24; border:none; padding:12px 40px; border-radius:30px; font-weight:bold; cursor:pointer;">
-                DÉVERROUILLER
-            </button>
-            <p id="error" style="color:#ef4444; margin-top:15px; font-size:0.9rem; min-height:20px;"></p>
         </div>
 
         <div id="chat-interface" style="display:none; flex:1; flex-direction:column; overflow:hidden;">
-            <div id="chat-feed" class="chat-wrapper"></div>
-            
+            <div id="chat-feed" class="chat-wrapper" style="flex:1; overflow-y:auto;"></div>
             <div class="input-area">
-                <div class="capsule" style="border-color: rgba(251, 191, 36, 0.3);">
-                    <input type="text" id="msg-input" placeholder="Message crypté...">
-                    <button class="btn-send" onclick="envoyerVip()">
+                <div class="capsule" style="border-color: var(--vip-gold);">
+                    <input type="text" id="msg-input" placeholder="Envoyer un message crypté...">
+                    <button class="btn-send" onclick="envoyerVip()" style="background:var(--vip-gold); color:black;">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
@@ -60,6 +56,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 <script>
+    // Configuration Firebase (Identique)
     const firebaseConfig = {
         apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
         authDomain: "lycee-europe-private.firebaseapp.com",
@@ -83,7 +80,7 @@
                 document.getElementById("chat-interface").style.display="flex";
                 listen();
             } else {
-                document.getElementById("error").innerText = "Code d'accès refusé.";
+                document.getElementById("error").innerText = "ACCÈS REFUSÉ : Code invalide.";
             }
         } catch(e) { console.error(e); }
     }
@@ -91,19 +88,20 @@
     function listen() {
         db.collection("messages_prives").orderBy("timestamp").onSnapshot(snap => {
             const feed = document.getElementById("chat-feed");
-            feed.innerHTML = "";
+            let html = "";
             snap.forEach(doc => {
                 const d = doc.data();
+                if(!d.timestamp) return;
                 const isMe = d.pseudo === me;
-                feed.innerHTML += `
-                    <div style="${!isMe ? 'margin-bottom:2px' : ''}">
-                        ${!isMe ? `<div class="pseudo-label">${d.pseudo}</div>` : ''}
+                html += `
+                    <div style="margin-bottom: 12px; display: flex; flex-direction: column; ${isMe ? 'align-items: flex-end' : ''}">
                         <div class="msg ${isMe ? 'me' : ''}">
-                            ${!isMe ? `<div class="avatar" style="background:#fbbf24; color:black;">${d.pseudo[0]}</div>` : ''}
+                            ${!isMe ? `<div class="avatar" style="width:30px; height:30px; border-radius:50%; background:var(--vip-gold); color:black; display:flex; align-items:center; justify-content:center; font-weight:bold;">${d.pseudo[0]}</div>` : ''}
                             <div class="bubble">${d.message}</div>
                         </div>
                     </div>`;
             });
+            feed.innerHTML = html;
             feed.scrollTop = feed.scrollHeight;
         });
     }
@@ -118,9 +116,7 @@
             document.getElementById("msg-input").value = "";
         }
     }
-    
     document.getElementById("msg-input").addEventListener("keypress", (e) => e.key === "Enter" && envoyerVip());
 </script>
-
 </body>
 </html>
