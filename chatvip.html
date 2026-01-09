@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat VIP – Lycée de l'Europe</title>
+    <title>Chat VIP – Lycée de l'Europe | Espace Exclusif</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* CSS SPECIFIQUE VIP - ACCENTS VIOLETS */
+        /* CSS SPECIFIQUE VIP - THEME LUXE OR */
         header {
             display: flex;
             align-items: center;
@@ -32,10 +32,10 @@
         
         .home-link {
             background: transparent;
-            color: var(--neon-pink);
+            color: var(--luxury-gold);
             text-decoration: none;
-            padding: 8px 16px;
-            border: 1px solid var(--neon-pink);
+            padding: 10px 20px;
+            border: 2px solid var(--luxury-gold);
             font-size: 14px;
             font-weight: 600;
             display: inline-flex;
@@ -44,34 +44,36 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: 0.3s;
-            border-radius: 8px;
+            border-radius: 12px;
+            font-family: 'Lato', sans-serif;
         }
 
         .home-link:hover {
-            background: var(--neon-pink);
-            color: #fff;
-            box-shadow: 0 0 15px var(--neon-pink);
+            background: var(--luxury-gradient);
+            color: var(--luxury-black);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
         }
 
         .chat-container {
-            background: rgba(10, 0, 10, 0.7);
-            padding: 15px;
-            border: 1px solid var(--neon-pink);
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.8), rgba(26, 26, 26, 0.7));
+            padding: 20px;
+            border: 2px solid var(--luxury-gold);
             height: 75vh;
             display: flex;
             flex-direction: column;
             position: relative;
-            border-radius: 12px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.2);
         }
         
-        /* Grille VIP */
+        /* Grille VIP luxe */
         .chat-container::after {
             content: " ";
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(transparent 95%, var(--neon-pink) 100%);
-            background-size: 100% 20px;
-            opacity: 0.1;
+            background: linear-gradient(transparent 95%, var(--luxury-gold) 100%);
+            background-size: 100% 25px;
+            opacity: 0.08;
             pointer-events: none;
         }
 
@@ -84,197 +86,249 @@
             gap: 15px;
         }
         
-        #messages::-webkit-scrollbar { width: 6px; }
-        #messages::-webkit-scrollbar-thumb { background: var(--neon-pink); border-radius: 3px; }
-        #messages::-webkit-scrollbar-track { background: #111; }
+        #messages::-webkit-scrollbar { width: 8px; }
+        #messages::-webkit-scrollbar-thumb { 
+            background: var(--luxury-gradient); 
+            border-radius: 4px; 
+        }
+        #messages::-webkit-scrollbar-track { background: rgba(10, 10, 10, 0.5); }
 
-        .message-row { display: flex; gap: 12px; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .message-row { 
+            display: flex; 
+            gap: 12px; 
+            animation: slideIn 0.4s ease-out; 
+        }
+        
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(-15px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
 
         .avatar {
-            width: 40px;
-            height: 40px;
-            background: #000;
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
+            width: 45px;
+            height: 45px;
+            background: var(--luxury-black);
+            border: 2px solid var(--luxury-gold);
+            color: var(--luxury-gold);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            box-shadow: 0 0 5px var(--neon-cyan);
-            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            font-family: 'Playfair Display', serif;
         }
 
         .message-card {
-            background: rgba(188, 19, 254, 0.1);
-            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(10, 10, 10, 0.6));
+            padding: 14px 18px;
             max-width: 80%;
-            border-left: 2px solid var(--neon-pink);
-            color: #e5e7eb;
-            border-radius: 8px;
+            border-left: 3px solid var(--luxury-gold);
+            color: var(--text-color);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .message-header {
-            font-size: 0.8rem;
-            color: var(--neon-pink);
-            margin-bottom: 4px;
-            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: var(--luxury-gold);
+            margin-bottom: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
         }
 
         .message-body {
-            font-size: 0.95rem;
-            font-family: 'Share Tech Mono', monospace;
+            font-size: 1rem;
+            font-family: 'Lato', sans-serif;
+            line-height: 1.5;
         }
 
         .smart-input-bar {
             display: flex;
             align-items: center;
-            background: #000;
-            padding: 10px;
-            border: 1px solid var(--neon-pink);
+            background: rgba(10, 10, 10, 0.9);
+            padding: 12px;
+            border: 2px solid var(--luxury-gold);
             margin-top: 15px;
-            gap: 10px;
-            box-shadow: 0 0 10px rgba(188, 19, 254, 0.2);
-            border-radius: 8px;
+            gap: 12px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
         }
 
         .smart-input-bar input {
             flex: 1;
             background: transparent;
             border: none;
-            color: var(--neon-pink);
+            color: var(--luxury-gold-light);
             font-size: 16px;
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'Lato', sans-serif;
             outline: none;
         }
         
-        .smart-input-bar input::placeholder { color: #666; }
+        .smart-input-bar input::placeholder { color: var(--text-muted); }
 
         #send-btn {
-            width: 45px;
-            height: 45px;
-            border: 1px solid var(--neon-pink);
-            background: transparent;
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--luxury-gold);
+            background: var(--luxury-gradient);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
-            border-radius: 8px;
+            transition: 0.3s;
+            border-radius: 12px;
         }
         
-        #send-btn svg { width: 20px; height: 20px; fill: var(--neon-pink); }
-        #send-btn:hover { background: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink); }
-        #send-btn:hover svg { fill: #fff; }
+        #send-btn svg { width: 22px; height: 22px; fill: var(--luxury-black); }
+        #send-btn:hover { 
+            background: linear-gradient(135deg, var(--accent-gold), var(--luxury-gold)); 
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); 
+            transform: scale(1.05);
+        }
 
         #access-screen {
-            background: rgba(0,0,0,0.8);
-            padding: 30px;
-            border: 1px solid var(--neon-pink);
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(26, 26, 26, 0.90));
+            padding: 40px;
+            border: 3px solid var(--luxury-gold);
             text-align: center;
-            box-shadow: 0 0 30px rgba(188, 19, 254, 0.15);
-            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+        }
+
+        #access-screen h2 {
+            color: var(--luxury-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        #access-screen p {
+            color: var(--text-muted);
+            font-family: 'Lato', sans-serif;
+            margin-bottom: 10px;
         }
 
         #access-screen input {
             width: 100%;
             margin-top: 15px;
-            padding: 12px;
-            background: #111;
-            border: 1px solid #444;
-            color: var(--neon-pink);
+            padding: 14px;
+            background: rgba(10, 10, 10, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            color: var(--luxury-gold-light);
             text-align: center;
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'Lato', sans-serif;
             font-size: 1.1rem;
-            border-radius: 8px;
+            border-radius: 12px;
+            transition: 0.3s;
         }
         
-        #access-screen input:focus { border-color: var(--neon-pink); outline: none; }
+        #access-screen input:focus { 
+            border-color: var(--luxury-gold); 
+            outline: none; 
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
 
         #access-screen button {
             width: 100%;
-            margin-top: 15px;
-            padding: 12px;
-            background: var(--neon-pink);
-            border: none;
-            color: white;
+            margin-top: 20px;
+            padding: 14px;
+            background: var(--luxury-gradient);
+            border: 2px solid var(--luxury-gold);
+            color: var(--luxury-black);
             font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Playfair Display', serif;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 2px;
-            border-radius: 8px;
+            border-radius: 12px;
             transition: all 0.3s ease;
+            font-size: 1rem;
         }
         
-        #access-screen button:hover { background: white; color: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink); transform: scale(1.02); }
+        #access-screen button:hover { 
+            background: linear-gradient(135deg, var(--accent-gold), var(--luxury-gold)); 
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); 
+            transform: scale(1.02); 
+        }
 
-        #error { margin-top: 10px; color: #ff0033; font-weight: bold; text-shadow: 0 0 5px #ff0033; }
+        #error { 
+            margin-top: 15px; 
+            color: #ff4444; 
+            font-weight: bold; 
+            text-shadow: 0 0 5px #ff4444; 
+            font-family: 'Lato', sans-serif;
+        }
 
-        /* CASINO WHEEL STYLES */
+        /* CASINO WHEEL STYLES - LUXURY GOLD */
         :root {
             --casino-gold: #FFD700;
             --casino-gold-dark: #DAA520;
         }
         
         .casino-box {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(218, 165, 32, 0.1) 100%);
-            border: 2px solid var(--casino-gold);
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(218, 165, 32, 0.12) 100%);
+            border: 3px solid var(--casino-gold);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
             margin-top: 20px;
+        }
+
+        .casino-box h3 {
+            color: var(--casino-gold) !important;
         }
 
         .wheel-container {
             position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
+            width: 220px;
+            height: 220px;
+            margin: 25px auto;
         }
 
         #wheelCanvas {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
-            border: 4px solid var(--casino-gold);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), 0 0 50px rgba(255, 215, 0, 0.4);
+            border: 5px solid var(--casino-gold);
         }
 
         .wheel-pointer {
             position: absolute;
-            top: -15px;
+            top: -20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--casino-gold);
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
             z-index: 10;
             animation: pointerBounce 1s ease-in-out infinite;
         }
 
         @keyframes pointerBounce {
             0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(5px); }
+            50% { transform: translateX(-50%) translateY(6px); }
         }
 
         .spin-button {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold-dark));
-            border: 2px solid var(--casino-gold);
+            border: 3px solid var(--casino-gold);
             color: #000;
             font-weight: 900;
-            font-size: 1rem;
+            font-size: 1.05rem;
             cursor: pointer;
             border-radius: 50px;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+            font-family: 'Playfair Display', serif;
         }
 
         .spin-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6);
+            box-shadow: 0 10px 35px rgba(255, 215, 0, 0.7);
             background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold));
         }
 
@@ -289,29 +343,31 @@
         }
 
         #wheel-result {
-            margin-top: 15px;
-            padding: 10px;
+            margin-top: 18px;
+            padding: 12px;
             text-align: center;
             font-weight: bold;
-            border-radius: 8px;
-            min-height: 40px;
+            border-radius: 12px;
+            min-height: 45px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.05rem;
         }
 
         .result-win {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(218, 165, 32, 0.2));
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(218, 165, 32, 0.25));
             color: var(--casino-gold);
-            border: 1px solid var(--casino-gold);
-            animation: resultPulse 0.5s ease-out;
+            border: 2px solid var(--casino-gold);
+            animation: resultPulse 0.6s ease-out;
         }
 
         .result-lose {
-            background: rgba(255, 0, 110, 0.1);
-            color: #ff006e;
-            border: 1px solid #ff006e;
-            animation: resultPulse 0.5s ease-out;
+            background: rgba(255, 68, 68, 0.15);
+            color: #ff4444;
+            border: 2px solid #ff4444;
+            animation: resultPulse 0.6s ease-out;
         }
 
         @keyframes resultPulse {
@@ -327,8 +383,8 @@
 <header>
     <div class="header-left">
         <div>
-            <h1>Lycée de l'Europe</h1>
-            <p style="color:var(--neon-pink)">Canal VIP [CRYPTED]</p>
+            <h1 aria-label="Lycée de l'Europe">✨ Lycée de l'Europe ✨</h1>
+            <p style="color:var(--luxury-gold)" aria-label="Espace VIP Sécurisé">🔐 Espace VIP Sécurisé</p>
         </div>
     </div>
     <div class="header-right">
@@ -360,13 +416,15 @@
     </aside>
 
     <main>
-        <article class="card" style="border-color: var(--neon-pink);">
+        <article class="card" style="border-color: var(--luxury-gold);">
             <div id="access-screen">
-                <h2><i class="fas fa-user-secret"></i> Accès Restreint</h2>
-                <p>Zone sécurisée. Authentification requise.</p>
-                <input type="password" id="access-code" placeholder="CODE D'ACCÈS">
-                <input type="text" id="pseudo" placeholder="IDENTIFIANT">
-                <button onclick="enterChat()">Déchiffrer & Entrer</button>
+                <h2><i class="fas fa-crown"></i> Accès VIP Exclusif</h2>
+                <p>Espace réservé aux membres privilégiés. Authentification requise.</p>
+                <input type="password" id="access-code" placeholder="CODE D'ACCÈS VIP">
+                <input type="text" id="pseudo" placeholder="IDENTIFIANT MEMBRE">
+                <button onclick="enterChat()">
+                    <i class="fas fa-key"></i> Déverrouiller l'Accès
+                </button>
                 <p id="error"></p>
             </div>
         </article>
@@ -386,13 +444,13 @@
 
         <!-- CASINO SPIN THE WHEEL -->
         <div class="menu-box casino-box">
-            <h3 style="color: gold;"><i class="fas fa-crown"></i> Casino VIP</h3>
+            <h3 style="color: gold;"><i class="fas fa-crown"></i> Casino VIP Luxe</h3>
             <div class="wheel-container">
-                <canvas id="wheelCanvas" width="200" height="200"></canvas>
+                <canvas id="wheelCanvas" width="220" height="220"></canvas>
                 <div class="wheel-pointer">▼</div>
             </div>
             <button class="spin-button" id="spin-wheel-btn">
-                <i class="fas fa-dice"></i> Tenter sa chance
+                <i class="fas fa-dice"></i> Tenter sa Chance
             </button>
             <div id="wheel-result"></div>
         </div>
@@ -401,7 +459,7 @@
 </div>
 
 <footer>
-    <p>Secure Connection // BTS CIEL</p>
+    <p>✨ Connexion Sécurisée - BTS CIEL ✨</p>
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
@@ -453,11 +511,11 @@ async function enterChat() {
 function loadChatUI() {
     const article = document.querySelector("main article");
     article.innerHTML = `
-        <h2><i class="fas fa-user-shield"></i> Canal VIP</h2>
+        <h2><i class="fas fa-crown"></i> Salon VIP Exclusif</h2>
         <div class="chat-container">
             <div id="messages"></div>
             <div class="smart-input-bar">
-                <input type="text" id="message" placeholder="Message crypté...">
+                <input type="text" id="message" placeholder="Message privé...">
                 <button id="send-btn">
                     <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
                 </button>
