@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Prépa PTSI/PT - Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1 aria-label="Lycée de l'Europe - Dunkerque">✨ Lycée de l'Europe – Dunkerque ✨</h1>
+            <p aria-label="La Prépa PTSI/PT">⚙️ La Prépa PTSI/PT ⚙️</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </header>
+
+    <div class="container">
+        <aside>
+            <nav class="menu-box">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                    <li><a href="la-classe-de-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                    <li><a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                    <li><a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                    <li><a href="la-prepa-ptsi-pt.html" class="active"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                    <li><a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main>
+            <article class="card">
+                <h2><i class="fas fa-cogs"></i> La Classe Préparatoire PTSI/PT</h2>
+                <p>
+                    La classe préparatoire PTSI (Physique, Technologie et Sciences de l'Ingénieur) puis PT (Physique et Technologie) 
+                    est une formation d'élite qui prépare aux concours d'entrée des grandes écoles d'ingénieurs. 
+                    Le Lycée de l'Europe offre un environnement propice à l'excellence académique dans cette filière exigeante.
+                </p>
+                
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-rocket"></i> Une Formation d'Excellence
+                </h3>
+                <p>
+                    La filière PTSI/PT se distingue par son approche concrète des sciences de l'ingénieur. 
+                    Elle allie rigueur mathématique et physique, avec une forte dimension technologique et pratique. 
+                    Cette prépa est particulièrement adaptée aux élèves passionnés par la mécanique, l'électronique, 
+                    l'automatique et les systèmes industriels.
+                </p>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-book-open"></i> Programme de 1ère année (PTSI)
+                </h3>
+                <p>
+                    La première année PTSI propose une formation équilibrée entre sciences fondamentales et sciences de l'ingénieur :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Mathématiques</strong> : 9 heures (algèbre, analyse, probabilités)</li>
+                    <li><strong style="color: var(--luxury-gold);">Physique-Chimie</strong> : 8 heures (mécanique, thermodynamique, électromagnétisme)</li>
+                    <li><strong style="color: var(--luxury-gold);">Sciences de l'Ingénieur</strong> : 8h30 (mécanique, électronique, automatique)</li>
+                    <li><strong style="color: var(--luxury-gold);">Informatique</strong> : 2 heures (programmation Python, algorithmique)</li>
+                    <li><strong style="color: var(--luxury-gold);">Français-Philosophie</strong> : 2 heures (culture générale)</li>
+                    <li><strong style="color: var(--luxury-gold);">Langue Vivante</strong> : 2 heures (principalement anglais)</li>
+                    <li><strong style="color: var(--luxury-gold);">TIPE</strong> : 2 heures (Travaux d'Initiative Personnelle Encadrés)</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-graduation-cap"></i> Programme de 2ème année (PT)
+                </h3>
+                <p>
+                    La deuxième année PT approfondit les connaissances et prépare intensivement aux concours :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Mathématiques</strong> : 9 heures (approfondissement des concepts)</li>
+                    <li><strong style="color: var(--luxury-gold);">Physique-Chimie</strong> : 8 heures (physique appliquée)</li>
+                    <li><strong style="color: var(--luxury-gold);">Sciences Industrielles de l'Ingénieur</strong> : 9 heures (systèmes complexes)</li>
+                    <li><strong style="color: var(--luxury-gold);">Informatique</strong> : Intégrée aux autres matières</li>
+                    <li><strong style="color: var(--luxury-gold);">Français-Philosophie</strong> : 2 heures</li>
+                    <li><strong style="color: var(--luxury-gold);">Langue Vivante</strong> : 2 heures</li>
+                    <li><strong style="color: var(--luxury-gold);">TIPE</strong> : Préparation du projet et de l'oral</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-tools"></i> Travaux Pratiques et Projets
+                </h3>
+                <p>
+                    La filière PTSI/PT se distingue par son approche pratique. Les étudiants travaillent régulièrement 
+                    sur des systèmes industriels réels : robots, drones, véhicules autonomes, systèmes de production automatisés. 
+                    Ils développent ainsi des compétences concrètes en :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Modélisation et simulation de systèmes mécaniques</li>
+                    <li>Programmation de systèmes embarqués</li>
+                    <li>Analyse de performances et optimisation</li>
+                    <li>Conception assistée par ordinateur (CAO)</li>
+                    <li>Travail en équipe sur des projets d'envergure</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-trophy"></i> Concours et Écoles Accessibles
+                </h3>
+                <p>
+                    À l'issue de la prépa PT, les étudiants passent les concours pour intégrer les grandes écoles d'ingénieurs. 
+                    La banque PT donne accès à plus de 120 écoles prestigieuses :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Arts et Métiers ParisTech (ENSAM)</strong></li>
+                    <li><strong style="color: var(--luxury-gold);">Écoles Centrales</strong> (Lyon, Lille, Marseille, Nantes)</li>
+                    <li><strong style="color: var(--luxury-gold);">Écoles des Mines</strong></li>
+                    <li><strong style="color: var(--luxury-gold);">ENSTA</strong>, <strong>Supaéro</strong>, <strong>Télécom</strong></li>
+                    <li><strong style="color: var(--luxury-gold);">Écoles des Arts et Métiers</strong></li>
+                    <li>Et de nombreuses autres écoles d'ingénieurs reconnues</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-users"></i> Un Accompagnement Personnalisé
+                </h3>
+                <p>
+                    Au Lycée de l'Europe, nous mettons tout en œuvre pour la réussite de nos étudiants en prépa :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Effectifs réduits pour un suivi individualisé</li>
+                    <li>Équipe pédagogique expérimentée et dévouée</li>
+                    <li>Khôlles (interrogations orales) régulières pour s'entraîner</li>
+                    <li>Devoirs surveillés dans les conditions des concours</li>
+                    <li>Accompagnement psychologique et méthodologique</li>
+                    <li>Résidence étudiante à proximité du lycée</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-check-circle"></i> Profil des Candidats
+                </h3>
+                <p>
+                    La prépa PTSI/PT s'adresse aux bacheliers généraux ayant suivi les spécialités scientifiques 
+                    (Mathématiques, Physique-Chimie, Sciences de l'Ingénieur ou NSI). Les qualités recherchées sont :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Goût prononcé pour les sciences et la technologie</li>
+                    <li>Rigueur et méthode de travail</li>
+                    <li>Curiosité intellectuelle et créativité</li>
+                    <li>Capacité à travailler de manière intensive</li>
+                    <li>Motivation pour intégrer une école d'ingénieurs</li>
+                </ul>
+
+                <div class="alert-box" style="margin-top: 25px;">
+                    <i class="fas fa-info-circle"></i> Les inscriptions en PTSI se font via Parcoursup. 
+                    N'hésitez pas à assister à nos Journées Portes Ouvertes pour rencontrer nos étudiants et nos professeurs !
+                </div>
+            </article>
+        </main>
+
+        <aside>
+            <div class="menu-box">
+                <h3>Ressources</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-file-pdf"></i> Plaquette PTSI/PT</a></li>
+                    <li><a href="#"><i class="fas fa-video"></i> Vidéo Présentation</a></li>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Retour Accueil</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        });
+    </script>
+
+</body>
+</html>

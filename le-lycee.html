@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Lycée - Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1 aria-label="Lycée de l'Europe - Dunkerque">✨ Lycée de l'Europe – Dunkerque ✨</h1>
+            <p aria-label="Le Lycée">🏛️ Le Lycée 🏛️</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </header>
+
+    <div class="container">
+        <aside>
+            <nav class="menu-box">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="le-lycee.html" class="active"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                    <li><a href="la-classe-de-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                    <li><a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                    <li><a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                    <li><a href="la-prepa-ptsi-pt.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                    <li><a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main>
+            <article class="card">
+                <h2><i class="fas fa-landmark"></i> Le Lycée de l'Europe</h2>
+                <p>
+                    Situé à Dunkerque, le Lycée de l'Europe est un établissement d'enseignement secondaire et supérieur 
+                    qui accueille plus de 1250 élèves. Notre établissement se distingue par son excellence académique, 
+                    son innovation pédagogique et son ouverture internationale.
+                </p>
+                
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-building"></i> Notre Histoire
+                </h3>
+                <p>
+                    Fondé dans les années 1960, le Lycée de l'Europe porte bien son nom en incarnant les valeurs européennes 
+                    d'ouverture, de diversité et d'excellence. Au fil des décennies, notre établissement s'est modernisé 
+                    tout en préservant ses traditions d'excellence académique.
+                </p>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-star"></i> Nos Valeurs
+                </h3>
+                <p>
+                    Le Lycée de l'Europe repose sur quatre piliers fondamentaux :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Excellence Académique</strong> : Un taux de réussite de 92% au Baccalauréat témoigne de notre engagement envers la réussite de nos élèves.</li>
+                    <li><strong style="color: var(--luxury-gold);">Innovation Pédagogique</strong> : Nos méthodes d'enseignement modernes préparent les élèves aux défis du XXIe siècle.</li>
+                    <li><strong style="color: var(--luxury-gold);">Ouverture Internationale</strong> : Avec 15 projets Erasmus+ actifs, nous favorisons la mobilité et l'ouverture culturelle.</li>
+                    <li><strong style="color: var(--luxury-gold);">Accompagnement Personnalisé</strong> : Chaque élève bénéficie d'un suivi individualisé pour développer son plein potentiel.</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-users"></i> Notre Équipe
+                </h3>
+                <p>
+                    Notre établissement compte 85 professeurs dévoués et qualifiés, ainsi qu'une équipe administrative 
+                    et de vie scolaire attentive au bien-être de chaque élève. Ensemble, nous créons un environnement 
+                    propice à l'apprentissage et à l'épanouissement personnel.
+                </p>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-laptop"></i> Infrastructures Modernes
+                </h3>
+                <p>
+                    Le lycée dispose d'équipements de pointe : salles informatiques équipées, laboratoires scientifiques modernes, 
+                    CDI spacieux avec accès à une riche bibliothèque numérique, espaces sportifs, et bien plus encore. 
+                    Ces installations permettent à nos élèves de développer leurs compétences dans les meilleures conditions.
+                </p>
+
+                <div class="alert-box" style="margin-top: 25px;">
+                    <i class="fas fa-info-circle"></i> Pour plus d'informations sur les inscriptions, 
+                    contactez-nous au 03 28 58 83 00 ou par email à contact@lycee-europe.fr
+                </div>
+            </article>
+        </main>
+
+        <aside>
+            <div class="menu-box">
+                <h3>Informations Pratiques</h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>809 rue du Banc Vert<br>59140 Dunkerque</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>03 28 58 83 00</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>contact@lycee-europe.fr</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        });
+    </script>
+
+</body>
+</html>
