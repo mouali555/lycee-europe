@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* Mise en forme du header pour ajouter le bouton Accueil */
         header {
             display: flex;
             align-items: center;
@@ -31,15 +30,10 @@
             gap: 6px;
         }
 
-        .home-link i {
-            font-size: 13px;
-        }
-
         .home-link:hover {
             background: #e5e7eb;
         }
 
-        /* Zone du chat (au centre) */
         .chat-container {
             background: rgba(15,23,42,0.75);
             border-radius: 20px;
@@ -84,7 +78,6 @@
             border: 1px solid rgba(255,255,255,0.15);
         }
 
-        /* Barre d’envoi style GPT */
         .smart-input-bar {
             display: flex;
             align-items: center;
@@ -123,7 +116,6 @@
             fill: white;
         }
 
-        /* Écran d’accès */
         #access-screen {
             background: rgba(15,23,42,0.8);
             padding: 20px;
@@ -160,186 +152,206 @@
 
 <body>
 
-    <header>
-        <div>
-            <h1>Lycée de l'Europe – Dunkerque</h1>
-            <p>Chat officiel du lycée 💬</p>
-        </div>
-        <a href="index.html" class="home-link">
-            <i class="fas fa-house"></i>
-            Accueil
-        </a>
-    </header>
-
-    <div class="container">
-
-        <!-- MENU GAUCHE -->
-        <aside>
-            <nav class="menu-box">
-                <ul>
-                    <li><a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
-                    <li><a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat</a></li>
-                </ul>
-            </nav>
-        </aside>
-
-        <!-- CONTENU CENTRAL : LE CHAT -->
-        <main>
-            <article class="card">
-
-                <div id="access-screen">
-                    <h2>Connexion au chat</h2>
-                    <p>Entrez le code d’accès et votre pseudo.</p>
-                    <input type="password" id="access-code" placeholder="Code d’accès">
-                    <input type="text" id="pseudo" placeholder="Votre pseudo">
-                    <button onclick="enterChat()">Entrer</button>
-                    <p id="error"></p>
-                </div>
-
-            </article>
-        </main>
-
-        <!-- MENU DROIT -->
-        <aside>
-            <div class="menu-box">
-                <h3>Accès Rapide</h3>
-                <ul>
-                    <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
-                    <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement intérieur</a></li>
-                    <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
-                </ul>
-            </div>
-        </aside>
-
+<header>
+    <div>
+        <h1>Lycée de l'Europe – Dunkerque</h1>
+        <p>Chat Public 💬</p>
     </div>
+    <a href="index.html" class="home-link">
+        <i class="fas fa-house"></i>
+        Accueil
+    </a>
+</header>
 
-    <footer>
-        <p>site de test par des bts ciel</p>
-    </footer>
+<div class="container">
 
-    <!-- FIREBASE -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <!-- MENU GAUCHE -->
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
 
-    <script>
-        firebase.initializeApp({
-            apiKey: "AIzaSyAJxJpHd_gJweQs5nQHfrV5C5WPEKZ_F90",
-            authDomain: "lycee-europe.firebaseapp.com",
-            projectId: "lycee-europe"
-        });
+                <!-- CHAT PUBLIC -->
+                <li><a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat</a></li>
 
-        const db = firebase.firestore();
-        const messagesRef = db.collection("messages");
+                <!-- CHAT VIP AJOUTÉ -->
+                <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+            </ul>
+        </nav>
+    </aside>
 
-        let ACCESS_CODE = null;
-        let currentPseudo = null;
+    <!-- CONTENU CENTRAL -->
+    <main>
+        <article class="card">
 
-        async function loadAccessCode() {
-            const doc = await db.collection("config").doc("access").get();
-            ACCESS_CODE = doc.data().code;
-        }
+            <div id="access-screen">
+                <h2>Connexion au Chat</h2>
+                <p>Entrez le code d’accès et votre pseudo.</p>
+                <input type="password" id="access-code" placeholder="Code d’accès">
+                <input type="text" id="pseudo" placeholder="Votre pseudo">
+                <button onclick="enterChat()">Entrer</button>
+                <p id="error"></p>
+            </div>
 
-        async function enterChat() {
-            const code = document.getElementById("access-code").value.trim();
-            const pseudo = document.getElementById("pseudo").value.trim();
-            const error = document.getElementById("error");
+        </article>
+    </main>
 
-            if (!code || !pseudo) {
-                error.textContent = "Veuillez remplir tous les champs.";
-                return;
-            }
+    <!-- MENU DROIT -->
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement intérieur</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+    </aside>
 
-            await loadAccessCode();
+</div>
 
-            if (code !== ACCESS_CODE) {
-                error.textContent = "Code incorrect.";
-                return;
-            }
+<footer>
+    <p>site de test par des bts ciel</p>
+</footer>
 
-            currentPseudo = pseudo;
-            loadChatUI();
-        }
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
-        function loadChatUI() {
-            const article = document.querySelector("main article");
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
+  authDomain: "lycee-europe-private.firebaseapp.com",
+  projectId: "lycee-europe-private",
+  storageBucket: "lycee-europe-private.firebasestorage.app",
+  messagingSenderId: "259168134432",
+  appId: "1:259168134432:web:470f5536d9305b4cf86345",
+  measurementId: "G-X323CMQRZR"
+});
 
-            article.innerHTML = `
-                <h2>Chat du Lycée</h2>
-                <div class="chat-container">
-                    <div id="messages"></div>
+const db = firebase.firestore();
 
-                    <div class="smart-input-bar">
-                        <input type="text" id="message" placeholder="Écrire un message...">
-                        <button id="send-btn">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
-                            </svg>
-                        </button>
-                    </div>
+/* COLLECTION DES MESSAGES PUBLICS */
+const messagesRef = db.collection("messages");
+
+let ACCESS_CODE = null;
+let currentPseudo = null;
+
+/* Charger le code d’accès */
+async function loadAccessCode() {
+    const doc = await db
+        .collection("config")
+        .doc("access")
+        .get();
+
+    ACCESS_CODE = doc.data().code;
+}
+
+/* Connexion */
+async function enterChat() {
+    const code = document.getElementById("access-code").value.trim();
+    const pseudo = document.getElementById("pseudo").value.trim();
+    const error = document.getElementById("error");
+
+    if (!code || !pseudo) {
+        error.textContent = "Veuillez remplir tous les champs.";
+        return;
+    }
+
+    await loadAccessCode();
+
+    if (code !== ACCESS_CODE) {
+        error.textContent = "Code incorrect.";
+        return;
+    }
+
+    currentPseudo = pseudo;
+    loadChatUI();
+}
+
+/* Interface du chat */
+function loadChatUI() {
+    const article = document.querySelector("main article");
+
+    article.innerHTML = `
+        <h2>Chat Public 💬</h2>
+        <div class="chat-container">
+            <div id="messages"></div>
+
+            <div class="smart-input-bar">
+                <input type="text" id="message" placeholder="Écrire un message...">
+                <button id="send-btn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("send-btn").onclick = sendMessage;
+    document.getElementById("message").addEventListener("keydown", e => {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    listenMessages();
+}
+
+/* Écoute des messages */
+function listenMessages() {
+    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+        const messagesDiv = document.getElementById("messages");
+        if (!messagesDiv) return;
+
+        messagesDiv.innerHTML = "";
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+
+            const row = document.createElement("div");
+            row.className = "message-row";
+
+            const time = data.timestamp
+                ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})
+                : "—";
+
+            row.innerHTML = `
+                <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
+                <div class="message-card">
+                    <div class="message-header"><strong>${data.pseudo}</strong> • ${time}</div>
+                    <div class="message-body">${data.message}</div>
                 </div>
             `;
 
-            document.getElementById("send-btn").onclick = sendMessage;
-            document.getElementById("message").addEventListener("keydown", e => {
-                if (e.key === "Enter") sendMessage();
-            });
+            messagesDiv.appendChild(row);
+        });
 
-            listenMessages();
-        }
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+}
 
-        function listenMessages() {
-            messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
-                const messagesDiv = document.getElementById("messages");
-                if (!messagesDiv) return;
+/* Envoi d’un message */
+async function sendMessage() {
+    const input = document.getElementById("message");
+    const text = input.value.trim();
+    if (!text) return;
 
-                messagesDiv.innerHTML = "";
+    await messagesRef.add({
+        pseudo: currentPseudo,
+        message: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-
-                    const row = document.createElement("div");
-                    row.className = "message-row";
-
-                    const time = data.timestamp
-                        ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})
-                        : "—";
-
-                    row.innerHTML = `
-                        <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
-                        <div class="message-card">
-                            <div class="message-header"><strong>${data.pseudo}</strong> • ${time}</div>
-                            <div class="message-body">${data.message}</div>
-                        </div>
-                    `;
-
-                    messagesDiv.appendChild(row);
-                });
-
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            });
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById("message");
-            const text = input.value.trim();
-            if (!text) return;
-
-            await messagesRef.add({
-                pseudo: currentPseudo,
-                message: text,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            input.value = "";
-        }
-    </script>
+    input.value = "";
+}
+</script>
 
 </body>
 </html>
