@@ -212,9 +212,14 @@
         #error { margin-top: 10px; color: #ff0033; font-weight: bold; text-shadow: 0 0 5px #ff0033; }
 
         /* CASINO WHEEL STYLES */
+        :root {
+            --casino-gold: #FFD700;
+            --casino-gold-dark: #DAA520;
+        }
+        
         .casino-box {
             background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(218, 165, 32, 0.1) 100%);
-            border: 2px solid gold;
+            border: 2px solid var(--casino-gold);
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
             margin-top: 20px;
         }
@@ -231,7 +236,7 @@
             height: 100%;
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
-            border: 4px solid gold;
+            border: 4px solid var(--casino-gold);
         }
 
         .wheel-pointer {
@@ -240,7 +245,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 2rem;
-            color: gold;
+            color: var(--casino-gold);
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
             z-index: 10;
             animation: pointerBounce 1s ease-in-out infinite;
@@ -254,8 +259,8 @@
         .spin-button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, gold, #DAA520);
-            border: 2px solid #FFD700;
+            background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold-dark));
+            border: 2px solid var(--casino-gold);
             color: #000;
             font-weight: 900;
             font-size: 1rem;
@@ -270,7 +275,7 @@
         .spin-button:hover {
             transform: scale(1.05);
             box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6);
-            background: linear-gradient(135deg, #FFD700, gold);
+            background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold));
         }
 
         .spin-button:active {
@@ -297,8 +302,8 @@
 
         .result-win {
             background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(218, 165, 32, 0.2));
-            color: gold;
-            border: 1px solid gold;
+            color: var(--casino-gold);
+            border: 1px solid var(--casino-gold);
             animation: resultPulse 0.5s ease-out;
         }
 
@@ -520,6 +525,10 @@ function toggleTheme() {
 // CASINO WHEEL GAME
 let isSpinning = false;
 let currentRotation = 0;
+const FULL_CIRCLE = 360;
+const GOLD_COLOR = '#FFD700';
+const GOLD_DARK_COLOR = '#DAA520';
+const DARK_RED_COLOR = '#8B0000';
 
 function initWheel() {
     const canvas = document.getElementById('wheelCanvas');
@@ -532,14 +541,14 @@ function initWheel() {
     
     // Wheel segments
     const segments = [
-        { label: '🎁', color: '#FFD700', prize: 'Cadeau VIP' },
-        { label: '💎', color: '#DAA520', prize: '100 Points' },
-        { label: '🎉', color: '#FFD700', prize: 'Bonus Chat' },
-        { label: '⭐', color: '#DAA520', prize: '50 Points' },
-        { label: '🏆', color: '#FFD700', prize: 'Trophée' },
-        { label: '💫', color: '#DAA520', prize: '25 Points' },
-        { label: '🎊', color: '#FFD700', prize: 'Badge' },
-        { label: '❌', color: '#8B0000', prize: 'Perdu' }
+        { label: '🎁', color: GOLD_COLOR, prize: 'Cadeau VIP' },
+        { label: '💎', color: GOLD_DARK_COLOR, prize: '100 Points' },
+        { label: '🎉', color: GOLD_COLOR, prize: 'Bonus Chat' },
+        { label: '⭐', color: GOLD_DARK_COLOR, prize: '50 Points' },
+        { label: '🏆', color: GOLD_COLOR, prize: 'Trophée' },
+        { label: '💫', color: GOLD_DARK_COLOR, prize: '25 Points' },
+        { label: '🎊', color: GOLD_COLOR, prize: 'Badge' },
+        { label: '❌', color: DARK_RED_COLOR, prize: 'Perdu' }
     ];
     
     function drawWheel(rotation = 0) {
@@ -548,7 +557,7 @@ function initWheel() {
         ctx.translate(centerX, centerY);
         ctx.rotate(rotation * Math.PI / 180);
         
-        const anglePerSegment = 360 / segments.length;
+        const anglePerSegment = FULL_CIRCLE / segments.length;
         
         segments.forEach((segment, i) => {
             const startAngle = (i * anglePerSegment) * Math.PI / 180;
@@ -578,7 +587,7 @@ function initWheel() {
         // Center circle
         ctx.beginPath();
         ctx.arc(0, 0, 15, 0, 2 * Math.PI);
-        ctx.fillStyle = '#FFD700';
+        ctx.fillStyle = GOLD_COLOR;
         ctx.fill();
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 2;
@@ -606,8 +615,8 @@ function spinWheel() {
     
     // Random spin
     const spins = 5 + Math.random() * 3; // 5-8 full rotations
-    const extraDegrees = Math.random() * 360;
-    const totalRotation = spins * 360 + extraDegrees;
+    const extraDegrees = Math.random() * FULL_CIRCLE;
+    const totalRotation = spins * FULL_CIRCLE + extraDegrees;
     const duration = 4000; // 4 seconds
     const startTime = Date.now();
     
@@ -624,12 +633,12 @@ function spinWheel() {
         if (progress < 1) {
             requestAnimationFrame(animate);
         } else {
-            currentRotation = (currentRotation + totalRotation) % 360;
+            currentRotation = (currentRotation + totalRotation) % FULL_CIRCLE;
             window.wheelData.drawWheel(currentRotation);
             
             // Determine winner
-            const normalizedRotation = (360 - (currentRotation % 360)) % 360;
-            const segmentAngle = 360 / window.wheelData.segments.length;
+            const normalizedRotation = (FULL_CIRCLE - (currentRotation % FULL_CIRCLE)) % FULL_CIRCLE;
+            const segmentAngle = FULL_CIRCLE / window.wheelData.segments.length;
             const winningIndex = Math.floor(normalizedRotation / segmentAngle);
             const winner = window.wheelData.segments[winningIndex];
             
