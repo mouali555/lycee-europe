@@ -2,56 +2,36 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus - Accueil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Hub</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div id="loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#020617; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-    <div class="logo" style="font-size: 3rem; margin-bottom: 20px;"><i class="fas fa-microchip fa-spin"></i></div>
-    <div style="width: 200px; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden;">
-        <div id="progress" style="position:absolute; width:0%; height:100%; background:var(--primary); box-shadow: 0 0 15px var(--primary);"></div>
-    </div>
-    <p style="margin-top: 15px; font-family: 'Space Mono'; font-size: 0.8rem; color: var(--primary);">INITIALIZING NEXUS...</p>
-</div>
-
-<div class="app-container">
-    <aside>
-        <div class="logo"><i class="fas fa-microchip"></i> NEXUS</div>
-        <nav>
-            <a href="index.html" class="active"><i class="fas fa-th-large"></i> Accueil</a>
-            <a href="chat.html"><i class="fas fa-comments"></i> Chat Global</a>
-            <a href="chatvip.html"><i class="fas fa-crown"></i> Elite Zone</a>
-        </nav>
-    </aside>
-    <main>
-        <div class="top-bar"><h1>Dashboard</h1></div>
-        <div style="padding: 50px; text-align: center;">
-            <h2 style="font-size: 3rem; margin-bottom: 20px;">SYSTEM <span style="color:var(--primary)">ONLINE</span></h2>
-            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px;">
-                <div class="bubble" style="padding: 30px; width: 250px;">
-                    <h3>Public Chat</h3>
-                    <a href="chat.html" style="color: var(--primary); text-decoration: none; display: block; margin-top: 15px;">ENTRER →</a>
+    <div class="app-container">
+        <aside>
+            <div class="logo"><i class="fas fa-terminal"></i> <span class="logo-text">NEXUS</span></div>
+            <nav>
+                <a href="index.html" class="active"><i class="fas fa-home"></i> <span>Dashboard</span></a>
+                <a href="chat.html"><i class="fas fa-comments"></i> <span>Chat</span></a>
+                <a href="chatvip.html"><i class="fas fa-crown"></i> <span>Elite</span></a>
+            </nav>
+        </aside>
+        <main>
+            <div class="top-bar"><h1>Nexus Hub</h1></div>
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 20px; flex: 1; justify-content: center; align-items: center;">
+                <div class="bubble" style="width: 100%; max-width: 400px; padding: 40px; text-align: center; cursor: pointer;" onclick="location.href='chat.html'">
+                    <i class="fas fa-users fa-3x" style="color:var(--primary); margin-bottom: 20px;"></i>
+                    <h2>CHAT PUBLIC</h2>
+                    <p style="color:grey; margin-top: 10px;">Accès libre promo CIEL</p>
                 </div>
-                <div class="bubble" style="padding: 30px; width: 250px; border-color: var(--vip-gold);">
-                    <h3 style="color: var(--vip-gold);">Elite Zone</h3>
-                    <a href="chatvip.html" style="color: var(--vip-gold); text-decoration: none; display: block; margin-top: 15px;">DÉVERROUILLER →</a>
+                <div class="bubble" style="width: 100%; max-width: 400px; padding: 40px; text-align: center; border-color: var(--vip); cursor: pointer;" onclick="location.href='chatvip.html'">
+                    <i class="fas fa-key fa-3x" style="color:var(--vip); margin-bottom: 20px;"></i>
+                    <h2 style="color:var(--vip)">ZONE ELITE</h2>
+                    <p style="color:grey; margin-top: 10px;">Accès sécurisé</p>
                 </div>
             </div>
-        </div>
-    </main>
-</div>
-
-<script>
-    let w = 0;
-    const interval = setInterval(() => {
-        w += 10;
-        document.getElementById('progress').style.width = w + '%';
-        if(w >= 100) {
-            clearInterval(interval);
-            setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-        }
-    }, 100);
-</script>
+        </main>
+    </div>
 </body>
 </html>
