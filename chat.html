@@ -47,7 +47,6 @@
             position: relative;
         }
         
-        /* Grille de fond dans le chat */
         .chat-container::after {
             content: " ";
             position: absolute;
@@ -67,7 +66,6 @@
             gap: 15px;
         }
 
-        /* Scrollbar Cyberpunk */
         #messages::-webkit-scrollbar { width: 6px; }
         #messages::-webkit-scrollbar-thumb { background: var(--neon-cyan); }
         #messages::-webkit-scrollbar-track { background: #111; }
@@ -78,7 +76,10 @@
             animation: fadeIn 0.3s ease-out;
         }
         
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
         .avatar {
             width: 40px;
@@ -101,7 +102,6 @@
             max-width: 80%;
             border-left: 2px solid var(--neon-cyan);
             color: #d1d5db;
-            position: relative;
         }
 
         .message-header {
@@ -163,7 +163,6 @@
         }
         #send-btn:hover svg { fill: #000; }
 
-        /* Ecran de pseudo */
         #pseudo-screen {
             background: rgba(0,0,0,0.8);
             padding: 30px;
@@ -184,11 +183,6 @@
             font-size: 1.1rem;
         }
 
-        #pseudo-screen input:focus {
-            border-color: var(--neon-cyan);
-            outline: none;
-        }
-
         #pseudo-screen button {
             width: 100%;
             margin-top: 15px;
@@ -202,17 +196,12 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-        
-        #pseudo-screen button:hover {
-            background: white;
-            box-shadow: 0 0 15px white;
-        }
     </style>
 </head>
 
 <body>
 
-    <!-- 🔥 BANNIÈRE AJOUTÉE (RIEN D'AUTRE MODIFIÉ) -->
+    <!-- BANNIÈRE -->
     <div class="banner">
         <img src="banniere.png" alt="Bannière du Lycée de l'Europe">
     </div>
