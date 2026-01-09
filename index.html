@@ -2,37 +2,53 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTS CIEL | Nexus</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
-        <aside>
-            <div class="logo"><i class="fas fa-terminal"></i> NEXUS</div>
-            <nav>
-                <a href="index.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="chat.html"><i class="fas fa-comments"></i> Chat Global</a>
-                <a href="chatvip.html"><i class="fas fa-crown"></i> Elite Access</a>
-            </nav>
-        </aside>
-        <main>
-            <div class="top-bar">
-                <h1>Système Nexus</h1>
+<div class="app-container">
+    <aside>
+        <div class="logo"><i class="fas fa-microchip"></i> NEXUS CIEL</div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> <span>Global Chat</span></a></li>
+                <li><a href="chatvip.html"><i class="fas fa-crown"></i> <span>Elite Access</span></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <div class="top-bar">
+            <h1>Nexus Hub <span style="font-weight: 300; opacity: 0.5;">v2.0</span></h1>
+            <div class="date-badge">2026 SESSION</div>
+        </div>
+
+        <section class="hero-section">
+            <div style="margin-bottom: 40px;">
+                <h2 style="font-size: 3rem; margin-bottom: 10px;">Connecter l'avenir.</h2>
+                <p style="color: var(--text-dim); max-width: 600px;">Bienvenue sur le portail officiel du BTS CIEL. Collaborez, échangez et accédez aux ressources de pointe en un seul endroit.</p>
             </div>
-            <div style="padding: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div style="background:var(--card); padding:30px; border-radius:20px; text-align:center; border:1px solid var(--border);">
-                    <i class="fas fa-users fa-3x" style="color:var(--primary)"></i>
-                    <h2 style="margin:20px 0;">Chat Public</h2>
-                    <a href="chat.html" style="color:var(--primary); font-weight:bold;">Entrer</a>
+
+            <div class="grid-welcome">
+                <div class="card-fancy">
+                    <i class="fas fa-terminal" style="font-size: 2rem; color: var(--primary); margin-bottom: 20px;"></i>
+                    <h3>Chat Collaboratif</h3>
+                    <p style="color: var(--text-dim); margin-top: 10px;">Échangez en temps réel avec tous les étudiants de la promo.</p>
+                    <a href="chat.html" style="display:inline-block; margin-top:20px; color:var(--primary); text-decoration:none; font-weight:bold;">Entrer dans le salon →</a>
                 </div>
-                <div style="background:var(--card); padding:30px; border-radius:20px; text-align:center; border:1px solid var(--vip);">
-                    <i class="fas fa-crown fa-3x" style="color:var(--vip)"></i>
-                    <h2 style="margin:20px 0;">Chat VIP</h2>
-                    <a href="chatvip.html" style="color:var(--vip); font-weight:bold;">Déverrouiller</a>
+
+                <div class="card-fancy" style="border-color: var(--vip-gold);">
+                    <i class="fas fa-shield-alt" style="font-size: 2rem; color: var(--vip-gold); margin-bottom: 20px;"></i>
+                    <h3>Espace VIP</h3>
+                    <p style="color: var(--text-dim); margin-top: 10px;">Zone hautement sécurisée pour les projets sensibles et l'élite.</p>
+                    <a href="chatvip.html" style="display:inline-block; margin-top:20px; color:var(--vip-gold); text-decoration:none; font-weight:bold;">Accès restreint →</a>
                 </div>
             </div>
-        </main>
-    </div>
+        </section>
+    </main>
+</div>
 </body>
 </html>
