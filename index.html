@@ -2,53 +2,63 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>ENT | Lycée de l'Europe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portail BTS CIEL</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<header>
-    <h1>LYCÉE DE L'EUROPE</h1>
-    <div style="font-size: 0.9rem; color: var(--text-dim);">Dunkerque • Session 2026</div>
-</header>
-
-<div class="container">
+<div class="app-container">
     <aside>
-        <div class="menu-box">
-            <h3>Navigation Principal</h3>
-            <nav>
-                <ul>
-                    <li><a href="index.html" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
-                    <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
-                    <li><a href="chatvip.html"><i class="fas fa-shield-halved"></i> Espace VIP</a></li>
-                </ul>
-            </nav>
+        <div class="logo">
+            <i class="fas fa-atom fa-spin-pulse" style="font-size: 1.2rem;"></i> BTS CIEL
         </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active"><i class="fas fa-grid-2"></i> Dashboard</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html" class="vip-link"><i class="fas fa-gem"></i> Espace VIP</a></li>
+                <li style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                    <span style="font-size: 0.8rem; color: #64748b; padding-left: 10px; text-transform: uppercase;">Liens Rapides</span>
+                </li>
+                <li><a href="https://0590072h.index-education.net/pronote/"><i class="fas fa-graduation-cap"></i> Pronote</a></li>
+                <li><a href="#"><i class="fas fa-camera"></i> Club Photo</a></li>
+            </ul>
+        </nav>
     </aside>
 
     <main>
-        <article class="card">
-            <h2 style="margin-bottom: 1rem;">Actualités du Lycée</h2>
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+        <header>
+            <div>
+                <h1>Bienvenue, Étudiant 👋</h1>
+                <p style="color: var(--text-dim)">Voici les dernières actualités du Lycée de l'Europe.</p>
             </div>
-            <p style="margin-top: 1rem; color: var(--text-dim);">Découvrez les temps forts du voyage à Londres (Novembre 2025). Une immersion unique pour nos sections BTS.</p>
-        </article>
-    </main>
+            <div class="date-badge">Année 2026</div>
+        </header>
 
-    <aside>
-        <div class="menu-box">
-            <h3>Services Externes</h3>
-            <nav>
-                <ul>
-                    <li><a href="#"><i class="fas fa-graduation-cap"></i> Pronote</a></li>
-                    <li><a href="#"><i class="fas fa-camera"></i> Club Photo</a></li>
-                    <li><a href="#"><i class="fas fa-folder-open"></i> Ressources</a></li>
-                </ul>
-            </nav>
+        <div class="grid-cards">
+            <article class="card" style="grid-column: span 2;">
+                <h2><i class="fas fa-plane-departure" style="color: var(--primary);"></i> Voyage à Londres</h2>
+                <p>Retour en images sur l'immersion culturelle de Novembre. Visite de la City, British Museum et spectacle Wicked.</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/p2BLLVqvA6I?si=8qVh7uFWrCFYQUV5" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </article>
+
+            <article class="card">
+                <h2><i class="fas fa-bullhorn" style="color: #a855f7;"></i> Annonces</h2>
+                <div style="background: rgba(56, 189, 248, 0.1); padding: 15px; border-radius: 10px; border-left: 3px solid var(--primary); margin-top: 10px;">
+                    <strong>Meilleurs vœux 2026 !</strong>
+                    <p style="font-size: 0.85rem; margin-top: 5px;">Toute l'équipe pédagogique vous souhaite la réussite.</p>
+                </div>
+                <div style="margin-top: 20px;">
+                    <p><i class="fas fa-check-circle" style="color: #22c55e;"></i> Serveur: <strong>En Ligne</strong></p>
+                    <p><i class="fas fa-users" style="color: #f43f5e;"></i> Connectés: <strong>42</strong></p>
+                </div>
+            </article>
         </div>
-    </aside>
+    </main>
 </div>
 
 </body>
