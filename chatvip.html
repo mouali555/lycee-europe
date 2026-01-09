@@ -8,41 +8,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* CSS SPECIFIQUE VIP - ACCENTS VIOLETS */
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-inline: 1.5rem;
         }
-
+        
         .home-link {
-            background: #ffffff;
-            color: #0f172a;
+            background: transparent;
+            color: var(--neon-pink);
             text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 999px;
+            padding: 8px 16px;
+            border: 1px solid var(--neon-pink);
             font-size: 14px;
             font-weight: 600;
-            border: 1px solid rgba(15,23,42,0.2);
-            box-shadow: 0 4px 10px rgba(15,23,42,0.3);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
         }
 
         .home-link:hover {
-            background: #e5e7eb;
+            background: var(--neon-pink);
+            color: #fff;
+            box-shadow: 0 0 15px var(--neon-pink);
         }
 
         .chat-container {
-            background: rgba(15,23,42,0.75);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.15);
-            backdrop-filter: blur(12px);
+            background: rgba(10, 0, 10, 0.7);
+            padding: 15px;
+            border: 1px solid var(--neon-pink);
             height: 75vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+        
+        /* Grille VIP */
+        .chat-container::after {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(transparent 95%, var(--neon-pink) 100%);
+            background-size: 100% 20px;
+            opacity: 0.1;
+            pointer-events: none;
         }
 
         #messages {
@@ -51,102 +64,127 @@
             padding-right: 10px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
+        
+        #messages::-webkit-scrollbar { width: 6px; }
+        #messages::-webkit-scrollbar-thumb { background: var(--neon-pink); }
+        #messages::-webkit-scrollbar-track { background: #111; }
 
-        .message-row {
-            display: flex;
-            gap: 10px;
-        }
+        .message-row { display: flex; gap: 12px; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 
         .avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: linear-gradient(135deg,#38bdf8,#1d4ed8);
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
+            box-shadow: 0 0 5px var(--neon-cyan);
         }
 
         .message-card {
-            background: rgba(255,255,255,0.08);
-            padding: 10px 14px;
-            border-radius: 14px;
-            max-width: 75%;
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(188, 19, 254, 0.1);
+            padding: 12px 16px;
+            max-width: 80%;
+            border-left: 2px solid var(--neon-pink);
+            color: #e5e7eb;
+        }
+
+        .message-header {
+            font-size: 0.8rem;
+            color: var(--neon-pink);
+            margin-bottom: 4px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .message-body {
+            font-size: 0.95rem;
+            font-family: 'Share Tech Mono', monospace;
         }
 
         .smart-input-bar {
             display: flex;
             align-items: center;
-            background: rgba(15,23,42,0.9);
-            border-radius: 999px;
-            padding: 10px 16px;
-            border: 1px solid rgba(255,255,255,0.15);
-            margin-top: 12px;
-            gap: 12px;
+            background: #000;
+            padding: 10px;
+            border: 1px solid var(--neon-pink);
+            margin-top: 15px;
+            gap: 10px;
+            box-shadow: 0 0 10px rgba(188, 19, 254, 0.2);
         }
 
         .smart-input-bar input {
             flex: 1;
             background: transparent;
             border: none;
-            color: white;
-            font-size: 15px;
+            color: var(--neon-pink);
+            font-size: 16px;
+            font-family: 'Share Tech Mono', monospace;
             outline: none;
         }
+        
+        .smart-input-bar input::placeholder { color: #666; }
 
         #send-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--neon-pink);
+            background: transparent;
             cursor: pointer;
-            background: linear-gradient(135deg,#38bdf8,#6366f1);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: 0.2s;
         }
-
-        #send-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: white;
-        }
+        
+        #send-btn svg { width: 20px; height: 20px; fill: var(--neon-pink); }
+        #send-btn:hover { background: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink); }
+        #send-btn:hover svg { fill: #fff; }
 
         #access-screen {
-            background: rgba(15,23,42,0.8);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.8);
+            padding: 30px;
+            border: 1px solid var(--neon-pink);
             text-align: center;
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.15);
         }
 
-        #access-screen input, #access-screen button {
+        #access-screen input {
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
             padding: 12px;
-            border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            color: white;
+            background: #111;
+            border: 1px solid #444;
+            color: var(--neon-pink);
+            text-align: center;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
         }
+        
+        #access-screen input:focus { border-color: var(--neon-pink); outline: none; }
 
         #access-screen button {
-            background: linear-gradient(135deg,#38bdf8,#6366f1);
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--neon-pink);
             border: none;
-            cursor: pointer;
+            color: white;
             font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
+        
+        #access-screen button:hover { background: white; color: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink); }
 
-        #error {
-            margin-top: 8px;
-            font-size: 14px;
-            color: #f87171;
-            min-height: 18px;
-        }
+        #error { margin-top: 10px; color: #ff0033; font-weight: bold; text-shadow: 0 0 5px #ff0033; }
     </style>
 </head>
 
@@ -154,12 +192,11 @@
 
 <header>
     <div>
-        <h1>Lycée de l'Europe – Dunkerque</h1>
-        <p>Chat VIP 🔐</p>
+        <h1>Lycée de l'Europe</h1>
+        <p style="color:var(--neon-pink)">Canal VIP [CRYPTED]</p>
     </div>
     <a href="index.html" class="home-link">
-        <i class="fas fa-house"></i>
-        Accueil
+        <i class="fas fa-house"></i> Accueil
     </a>
 </header>
 
@@ -174,24 +211,22 @@
                 <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
                 <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
                 <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
-                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
                 <li><a href="chatvip.html" class="active"><i class="fas fa-lock"></i> Chat VIP</a></li>
             </ul>
         </nav>
     </aside>
 
     <main>
-        <article class="card">
-
+        <article class="card" style="border-color: var(--neon-pink);">
             <div id="access-screen">
-                <h2>Connexion VIP</h2>
-                <p>Entrez le code d’accès VIP et votre pseudo.</p>
-                <input type="password" id="access-code" placeholder="Code VIP">
-                <input type="text" id="pseudo" placeholder="Votre pseudo">
-                <button onclick="enterChat()">Entrer</button>
+                <h2><i class="fas fa-user-secret"></i> Accès Restreint</h2>
+                <p>Zone sécurisée. Authentification requise.</p>
+                <input type="password" id="access-code" placeholder="CODE D'ACCÈS">
+                <input type="text" id="pseudo" placeholder="IDENTIFIANT">
+                <button onclick="enterChat()">Déchiffrer & Entrer</button>
                 <p id="error"></p>
             </div>
-
         </article>
     </main>
 
@@ -200,7 +235,7 @@
             <h3>Accès Rapide</h3>
             <ul>
                 <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
-                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement intérieur</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
                 <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
                 <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
                 <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
@@ -211,10 +246,9 @@
 </div>
 
 <footer>
-    <p>site de test par des bts ciel</p>
+    <p>Secure Connection // BTS CIEL</p>
 </footer>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
@@ -230,38 +264,30 @@ firebase.initializeApp({
 });
 
 const db = firebase.firestore();
-
-/* COLLECTION DES MESSAGES VIP */
 const messagesRef = db.collection("messages_prives");
-
 let ACCESS_CODE = null;
 let currentPseudo = null;
 
-/* Charger le code VIP */
 async function loadAccessCode() {
-    const doc = await db
-        .collection("config")
-        .doc("access")
-        .get();
-
-    ACCESS_CODE = doc.data().code;
+    const doc = await db.collection("config").doc("access").get();
+    if(doc.exists) ACCESS_CODE = doc.data().code;
 }
 
-/* Connexion */
 async function enterChat() {
     const code = document.getElementById("access-code").value.trim();
     const pseudo = document.getElementById("pseudo").value.trim();
     const error = document.getElementById("error");
 
     if (!code || !pseudo) {
-        error.textContent = "Veuillez remplir tous les champs.";
+        error.textContent = "CHAMPS REQUIS MANQUANTS.";
         return;
     }
-
-    await loadAccessCode();
+    
+    // Si pas encore chargé, on charge
+    if (!ACCESS_CODE) await loadAccessCode();
 
     if (code !== ACCESS_CODE) {
-        error.textContent = "Code VIP incorrect.";
+        error.textContent = "ACCÈS REFUSÉ : CODE INVALIDE.";
         return;
     }
 
@@ -269,79 +295,58 @@ async function enterChat() {
     loadChatUI();
 }
 
-/* Interface du chat */
 function loadChatUI() {
     const article = document.querySelector("main article");
-
     article.innerHTML = `
-        <h2>Chat VIP 🔐</h2>
+        <h2><i class="fas fa-user-shield"></i> Canal VIP</h2>
         <div class="chat-container">
             <div id="messages"></div>
-
             <div class="smart-input-bar">
-                <input type="text" id="message" placeholder="Écrire un message VIP...">
+                <input type="text" id="message" placeholder="Message crypté...">
                 <button id="send-btn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
                 </button>
             </div>
         </div>
     `;
-
     document.getElementById("send-btn").onclick = sendMessage;
-    document.getElementById("message").addEventListener("keydown", e => {
-        if (e.key === "Enter") sendMessage();
-    });
-
+    document.getElementById("message").addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
     listenMessages();
 }
 
-/* Écoute des messages */
 function listenMessages() {
     messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
         const messagesDiv = document.getElementById("messages");
         if (!messagesDiv) return;
-
         messagesDiv.innerHTML = "";
-
         snapshot.forEach(doc => {
             const data = doc.data();
-
             const row = document.createElement("div");
             row.className = "message-row";
-
-            const time = data.timestamp
-                ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})
-                : "—";
-
+            const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}) : "--:--";
+            
             row.innerHTML = `
                 <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
                 <div class="message-card">
-                    <div class="message-header"><strong>${data.pseudo}</strong> • ${time}</div>
+                    <div class="message-header">${data.pseudo} <span style="opacity:0.5">[${time}]</span></div>
                     <div class="message-body">${data.message}</div>
                 </div>
             `;
-
             messagesDiv.appendChild(row);
         });
-
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     });
 }
 
-/* Envoi d’un message */
 async function sendMessage() {
     const input = document.getElementById("message");
     const text = input.value.trim();
     if (!text) return;
-
     await messagesRef.add({
         pseudo: currentPseudo,
         message: text,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
-
     input.value = "";
 }
 </script>
