@@ -241,8 +241,6 @@ let currentPseudo = null;
 async function loadAccessCode() {
     const doc = await db
         .collection("config")
-        .doc("Lycée europe private")
-        .collection("access")
         .doc("access")
         .get();
 
