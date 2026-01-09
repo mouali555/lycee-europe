@@ -2,37 +2,35 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus CIEL - Elite</title>
+    <title>Nexus Hub</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="app-container">
         <aside>
-            <div class="logo">NEXUS.SYS</div>
+            <div class="logo"><i class="fas fa-terminal"></i> NEXUS</div>
             <nav>
                 <a href="index.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="chat.html"><i class="fas fa-comment-alt"></i> Chat Global</a>
+                <a href="chat.html"><i class="fas fa-comments"></i> Chat Global</a>
                 <a href="chatvip.html"><i class="fas fa-crown"></i> Elite Access</a>
             </nav>
         </aside>
         <main>
             <div class="top-bar">
-                <h1>Bienvenue, Major</h1>
-                <div style="background:var(--card); padding:8px 15px; border-radius:20px; font-size:0.8rem; border:1px solid var(--border)">Session 2026</div>
+                <h1>Système Opérationnel</h1>
+                <div style="background:var(--primary-glow); color:var(--primary); padding:5px 15px; border-radius:20px; font-size:0.7rem; font-weight:bold; border:1px solid var(--primary);">STATUT: OK</div>
             </div>
-            <div style="padding: 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                <div class="bubble" style="padding: 40px; text-align: center;">
-                    <i class="fas fa-network-wired fa-3x" style="color:var(--primary); margin-bottom: 20px;"></i>
-                    <h2>Réseau Public</h2>
-                    <p style="color:#9ca3af; margin: 15px 0;">Communiquez librement avec la promo CIEL.</p>
-                    <button onclick="location.href='chat.html'" class="btn-send" style="width:auto; padding:0 30px; border-radius:10px;">Accéder</button>
+            <div style="padding: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div class="bubble" style="padding: 40px; text-align: center; cursor: pointer;" onclick="location.href='chat.html'">
+                    <i class="fas fa-users fa-3x" style="color:var(--primary); margin-bottom: 20px;"></i>
+                    <h2>SALON GÉNÉRAL</h2>
+                    <p style="color:var(--text-dim); margin: 15px 0;">Accès libre pour tous les étudiants.</p>
                 </div>
-                <div class="bubble" style="padding: 40px; text-align: center; border-color: var(--vip)">
-                    <i class="fas fa-user-shield fa-3x" style="color:var(--vip); margin-bottom: 20px;"></i>
-                    <h2 style="color:var(--vip)">Elite Zone</h2>
-                    <p style="color:#9ca3af; margin: 15px 0;">Espace sécurisé à haut niveau d'accréditation.</p>
-                    <button onclick="location.href='chatvip.html'" class="btn-send" style="width:auto; padding:0 30px; border-radius:10px; background:var(--vip); color:black;">Déchiffrer</button>
+                <div class="bubble" style="padding: 40px; text-align: center; border-color: var(--vip); cursor: pointer;" onclick="location.href='chatvip.html'">
+                    <i class="fas fa-key fa-3x" style="color:var(--vip); margin-bottom: 20px;"></i>
+                    <h2 style="color:var(--vip)">ZONE ELITE</h2>
+                    <p style="color:var(--text-dim); margin: 15px 0;">Accès restreint • Chiffrement AES-256.</p>
                 </div>
             </div>
         </main>
