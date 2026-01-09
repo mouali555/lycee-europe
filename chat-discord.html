@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUB DISCORD – Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Discord-themed styling */
+        .discord-theme {
+            background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(10, 10, 10, 0.6));
+            border-left: 4px solid #5865F2;
+        }
+        
+        .discord-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #5865F2;
+            color: white;
+            padding: 18px 35px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            border: 2px solid #5865F2;
+            box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+            font-family: 'Lato', sans-serif;
+            margin-top: 20px;
+        }
+        
+        .discord-button:hover {
+            background: #4752C4;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(88, 101, 242, 0.6);
+        }
+        
+        .discord-button i {
+            font-size: 1.5rem;
+        }
+        
+        .discord-icon-large {
+            font-size: 5rem;
+            color: #5865F2;
+            text-align: center;
+            margin: 20px 0;
+            animation: discordPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes discordPulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px rgba(88, 101, 242, 0.5));
+            }
+            50% {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 20px rgba(88, 101, 242, 0.8));
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>✨ Lycée de l'Europe ✨</h1>
+        <p>💬 PUB DISCORD</p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="index.html" style="background: transparent; color: var(--luxury-gold); text-decoration: none; padding: 10px 20px; border: 2px solid var(--luxury-gold); border-radius: 12px; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fas fa-house"></i> Accueil
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+</header>
+
+<div class="container">
+
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="chat-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="chat-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="chat-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="chat-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="chat-prepa.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="chat-evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                <li><a href="chat-discord.html" class="active"><i class="fas fa-brands fa-discord"></i> PUB DISCORD</a></li>
+                <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <article class="card">
+            <h2><i class="fab fa-discord"></i> Rejoignez notre Serveur Discord</h2>
+            
+            <div class="discord-icon-large">
+                <i class="fab fa-discord"></i>
+            </div>
+            
+            <div class="discord-theme" style="padding: 25px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+                <h3 style="color: #5865F2; margin-bottom: 15px; font-size: 1.8rem;">
+                    <i class="fas fa-users"></i> Serveur Discord BTS CIEL
+                </h3>
+                <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 10px;">
+                    <strong>C'est BTS Ciel etc.</strong>
+                </p>
+                <p style="font-size: 1rem; line-height: 1.8; color: var(--text-muted);">
+                    Rejoignez la communauté Discord du BTS CIEL du Lycée de l'Europe ! 
+                    Un espace d'échange, d'entraide et de partage pour tous les étudiants de la filière.
+                </p>
+                
+                <a href="https://discord.gg/vp9ZrBk2Ja" target="_blank" class="discord-button">
+                    <i class="fab fa-discord"></i>
+                    <span>Rejoindre le Serveur Discord</span>
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-star"></i> Pourquoi rejoindre notre Discord ?
+                </h3>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>📚 <strong>Entraide académique</strong> - Posez vos questions et partagez vos connaissances</li>
+                    <li>💡 <strong>Projets collaboratifs</strong> - Travaillez ensemble sur vos projets BTS</li>
+                    <li>🎮 <strong>Salons détente</strong> - Gaming, musique et discussions variées</li>
+                    <li>📢 <strong>Actualités CIEL</strong> - Restez informé des événements et actualités</li>
+                    <li>🤝 <strong>Networking</strong> - Rencontrez des alumni et professionnels du domaine</li>
+                    <li>🎉 <strong>Événements communautaires</strong> - Participez à des événements exclusifs</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-comments"></i> Nos Salons Principaux
+                </h3>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>💬 <strong>#général</strong> - Discussions générales entre étudiants</li>
+                    <li>📖 <strong>#aide-cours</strong> - Questions sur les cours et exercices</li>
+                    <li>💻 <strong>#projets-ciel</strong> - Partage de projets informatique et électronique</li>
+                    <li>🔒 <strong>#annonces</strong> - Informations importantes de la formation</li>
+                    <li>🎮 <strong>#gaming</strong> - Pour les passionnés de jeux vidéo</li>
+                    <li>🎵 <strong>#musique-média</strong> - Partagez vos découvertes musicales</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-shield-alt"></i> Règles de la Communauté
+                </h3>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>✅ Respectez tous les membres de la communauté</li>
+                    <li>✅ Maintenez un langage approprié et professionnel</li>
+                    <li>✅ Partagez du contenu pertinent dans les bons salons</li>
+                    <li>✅ Entraide et bienveillance avant tout</li>
+                    <li>❌ Pas de spam, flood ou publicité non autorisée</li>
+                    <li>❌ Pas de contenu inapproprié ou offensant</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(10, 10, 10, 0.6)); padding: 25px; border-radius: 12px; border-left: 4px solid #5865F2; text-align: center;">
+                <p style="font-size: 1.1rem; margin-bottom: 15px;">
+                    <strong>N'attendez plus ! Rejoignez dès maintenant notre communauté Discord.</strong>
+                </p>
+                <a href="https://discord.gg/vp9ZrBk2Ja" target="_blank" class="discord-button">
+                    <i class="fab fa-discord"></i>
+                    <span>Cliquez ici pour rejoindre</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+        
+        <div class="menu-box" style="background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(26, 26, 26, 0.90)); border-color: #5865F2;">
+            <h3 style="color: #5865F2;"><i class="fab fa-discord"></i> Lien Discord</h3>
+            <p style="text-align: center; font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px;">
+                Scannez ou cliquez pour rejoindre
+            </p>
+            <a href="https://discord.gg/vp9ZrBk2Ja" target="_blank" style="display: block; text-align: center; padding: 15px; background: #5865F2; color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.3s ease;">
+                <i class="fab fa-discord" style="font-size: 2rem; display: block; margin-bottom: 8px;"></i>
+                discord.gg/vp9ZrBk2Ja
+            </a>
+        </div>
+    </aside>
+
+</div>
+
+<footer>
+    <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+</footer>
+
+<script>
+    // Theme Toggle
+    function toggleTheme() {
+        const body = document.body;
+        const themeIcon = document.getElementById('theme-icon');
+        body.classList.toggle('light-mode');
+        
+        if (body.classList.contains('light-mode')) {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'light');
+        } else {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Load saved theme
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+    });
+</script>
+
+</body>
+</html>

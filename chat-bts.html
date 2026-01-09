@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les BTS – Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>✨ Lycée de l'Europe ✨</h1>
+        <p>💼 Les BTS - Enseignement Supérieur</p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="index.html" style="background: transparent; color: var(--luxury-gold); text-decoration: none; padding: 10px 20px; border: 2px solid var(--luxury-gold); border-radius: 12px; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fas fa-house"></i> Accueil
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+</header>
+
+<div class="container">
+
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="chat-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="chat-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="chat-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="chat-bts.html" class="active"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="chat-prepa.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="chat-evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                <li><a href="chat-discord.html"><i class="fas fa-brands fa-discord"></i> PUB DISCORD</a></li>
+                <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <article class="card">
+            <h2><i class="fas fa-briefcase"></i> Les BTS - Brevets de Technicien Supérieur</h2>
+            
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-bolt"></i> BTS CIEL - Cybersécurité, Informatique et réseaux, ÉLectronique
+                </h3>
+                <p>Formation de pointe dans les domaines de l'informatique, des réseaux, de la cybersécurité et de l'électronique. Ce BTS forme des techniciens supérieurs capables d'intervenir sur les systèmes électroniques et informatiques complexes.</p>
+                <p style="margin-top: 10px;"><strong>Options :</strong></p>
+                <ul style="margin-left: 20px; margin-top: 5px; line-height: 1.8;">
+                    <li>Option A : Informatique et Réseaux</li>
+                    <li>Option B : Électronique et Réseaux</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>Débouchés :</strong> Administrateur réseaux, technicien en cybersécurité, développeur IoT, technicien électronique.</p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-industry"></i> BTS Maintenance des Systèmes
+                </h3>
+                <p>Ce BTS prépare à la maintenance préventive et corrective des systèmes de production automatisés. Les étudiants apprennent à gérer les installations industrielles et à optimiser leur disponibilité.</p>
+                <p style="margin-top: 10px;"><strong>Options :</strong></p>
+                <ul style="margin-left: 20px; margin-top: 5px; line-height: 1.8;">
+                    <li>Systèmes de production</li>
+                    <li>Systèmes énergétiques et fluidiques</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>Débouchés :</strong> Technicien de maintenance, responsable d'équipe maintenance, chargé d'affaires.</p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-handshake"></i> BTS MCO - Management Commercial Opérationnel
+                </h3>
+                <p>Formation orientée vers le management d'unités commerciales et la relation client. Les étudiants développent des compétences en gestion, marketing et animation d'équipe.</p>
+                <p style="margin-top: 10px;"><strong>Débouchés :</strong> Manager de rayon, responsable de site e-commerce, chef des ventes, entrepreneur.</p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-building"></i> BTS SAM - Support à l'Action Managériale
+                </h3>
+                <p>Ce BTS forme des collaborateurs polyvalents capables d'assister les managers et de gérer des projets transversaux. Une formation alliant organisation, communication et gestion.</p>
+                <p style="margin-top: 10px;"><strong>Débouchés :</strong> Assistant de direction, chargé de projet, office manager, coordinateur administratif.</p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-graduation-cap"></i> Modalités de Formation
+                </h3>
+                <p>Tous nos BTS sont disponibles en :</p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li><strong>Formation initiale</strong> avec 8 à 12 semaines de stage en entreprise</li>
+                    <li><strong>Alternance</strong> (contrat d'apprentissage ou de professionnalisation)</li>
+                </ul>
+                <p style="margin-top: 10px;">Nos BTS bénéficient de partenariats solides avec les entreprises locales et régionales, garantissant une excellente insertion professionnelle.</p>
+            </div>
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+    </aside>
+
+</div>
+
+<footer>
+    <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+</footer>
+
+<script>
+    // Theme Toggle
+    function toggleTheme() {
+        const body = document.body;
+        const themeIcon = document.getElementById('theme-icon');
+        body.classList.toggle('light-mode');
+        
+        if (body.classList.contains('light-mode')) {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'light');
+        } else {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Load saved theme
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+    });
+</script>
+
+</body>
+</html>

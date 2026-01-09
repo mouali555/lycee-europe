@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Prépa PTSI/PT – Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>✨ Lycée de l'Europe ✨</h1>
+        <p>⚙️ La Prépa PTSI/PT</p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="index.html" style="background: transparent; color: var(--luxury-gold); text-decoration: none; padding: 10px 20px; border: 2px solid var(--luxury-gold); border-radius: 12px; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fas fa-house"></i> Accueil
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+</header>
+
+<div class="container">
+
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="chat-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="chat-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="chat-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="chat-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="chat-prepa.html" class="active"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="chat-evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                <li><a href="chat-discord.html"><i class="fas fa-brands fa-discord"></i> PUB DISCORD</a></li>
+                <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <article class="card">
+            <h2><i class="fas fa-cogs"></i> Classe Préparatoire PTSI/PT</h2>
+            
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-rocket"></i> PTSI - Physique, Technologie et Sciences de l'Ingénieur
+                </h3>
+                <p>La classe préparatoire PTSI est une formation scientifique de haut niveau qui prépare en deux ans aux concours des grandes écoles d'ingénieurs. Elle s'adresse aux bacheliers généraux ayant un fort intérêt pour les sciences et la technologie.</p>
+                <p style="margin-top: 10px;">La filière PTSI met l'accent sur :</p>
+                <ul style="margin-left: 20px; margin-top: 5px; line-height: 1.8;">
+                    <li>Les mathématiques appliquées</li>
+                    <li>La physique et la chimie</li>
+                    <li>Les sciences industrielles de l'ingénieur</li>
+                    <li>L'informatique pour tous</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-book"></i> Programme de Première Année (PTSI)
+                </h3>
+                <p><strong>Horaires hebdomadaires :</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>Mathématiques : 9h (cours + TD)</li>
+                    <li>Physique-Chimie : 8h (cours + TD + TP)</li>
+                    <li>Sciences Industrielles : 8h30 (cours + TD + TP)</li>
+                    <li>Informatique : 2h</li>
+                    <li>Français-Philosophie : 2h</li>
+                    <li>Langue vivante : 2h</li>
+                    <li>EPS : 2h</li>
+                    <li>TIPE (Travaux d'Initiative Personnelle Encadrés) : 2h</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-tools"></i> Deuxième Année - PT (Physique et Technologie)
+                </h3>
+                <p>En deuxième année, les étudiants intègrent la classe PT qui approfondit les enseignements de PTSI avec un focus sur :</p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>Modélisation et conception de systèmes complexes</li>
+                    <li>Analyse et optimisation des performances</li>
+                    <li>Études de cas industriels concrets</li>
+                    <li>Préparation intensive aux concours</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-school"></i> Débouchés - Les Grandes Écoles
+                </h3>
+                <p>La prépa PTSI/PT ouvre les portes de nombreuses grandes écoles d'ingénieurs :</p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>Arts et Métiers ParisTech (ENSAM)</li>
+                    <li>Écoles Centrales (Lille, Lyon, Nantes, Paris)</li>
+                    <li>École Polytechnique</li>
+                    <li>Mines-Ponts</li>
+                    <li>Télécom Paris</li>
+                    <li>ENSTA, ENSEA, Supélec...</li>
+                    <li>Et plus de 60 autres écoles via le concours commun</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-medal"></i> Encadrement d'Excellence
+                </h3>
+                <p>Le Lycée de l'Europe offre à ses étudiants de prépa :</p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>Des effectifs réduits pour un suivi personnalisé</li>
+                    <li>Une équipe pédagogique expérimentée et passionnée</li>
+                    <li>Des colles (interrogations orales) régulières</li>
+                    <li>Accès à une bibliothèque spécialisée</li>
+                    <li>Salles dédiées aux étudiants de prépa</li>
+                    <li>Soutien et accompagnement méthodologique</li>
+                </ul>
+            </div>
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+    </aside>
+
+</div>
+
+<footer>
+    <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+</footer>
+
+<script>
+    // Theme Toggle
+    function toggleTheme() {
+        const body = document.body;
+        const themeIcon = document.getElementById('theme-icon');
+        body.classList.toggle('light-mode');
+        
+        if (body.classList.contains('light-mode')) {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'light');
+        } else {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Load saved theme
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+    });
+</script>
+
+</body>
+</html>
