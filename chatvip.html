@@ -260,76 +260,154 @@
             font-family: 'Lato', sans-serif;
         }
 
-        /* CASINO WHEEL STYLES - LUXURY GOLD */
+        /* CASINO ROULETTE STYLES - REALISTIC CASINO DESIGN */
         :root {
             --casino-gold: #FFD700;
             --casino-gold-dark: #DAA520;
+            --casino-red: #D32F2F;
+            --casino-black: #1A1A1A;
+            --casino-green: #1B5E20;
         }
         
         .casino-box {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(218, 165, 32, 0.12) 100%);
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(51, 27, 3, 0.95) 100%);
             border: 3px solid var(--casino-gold);
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(139, 69, 19, 0.3);
             margin-top: 20px;
+            padding: 20px;
         }
 
         .casino-box h3 {
             color: var(--casino-gold) !important;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .roulette-table {
+            position: relative;
+            width: 100%;
+            max-width: 260px;
+            margin: 25px auto;
         }
 
         .wheel-container {
             position: relative;
             width: 220px;
             height: 220px;
-            margin: 25px auto;
+            margin: 0 auto 20px;
         }
 
         #wheelCanvas {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), 0 0 50px rgba(255, 215, 0, 0.4);
-            border: 5px solid var(--casino-gold);
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.6), 
+                0 0 60px rgba(255, 215, 0, 0.3),
+                inset 0 0 20px rgba(0, 0, 0, 0.8);
+            border: 8px solid var(--casino-gold);
+            background: radial-gradient(circle, #2a1810 0%, #1a1008 100%);
         }
 
+        /* Outer rim decoration */
+        .wheel-container::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            right: -12px;
+            bottom: -12px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--casino-gold), var(--casino-gold-dark), var(--casino-gold));
+            z-index: -1;
+            animation: rimRotate 8s linear infinite;
+        }
+
+        @keyframes rimRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Ball indicator */
         .wheel-pointer {
             position: absolute;
-            top: -20px;
+            top: 5px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 2.5rem;
-            color: var(--casino-gold);
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffffff 0%, #e0e0e0 50%, #c0c0c0 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 0 15px rgba(255, 255, 255, 0.9),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.3);
             z-index: 10;
-            animation: pointerBounce 1s ease-in-out infinite;
+            animation: ballBounce 1.5s ease-in-out infinite;
         }
 
-        @keyframes pointerBounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(6px); }
+        @keyframes ballBounce {
+            0%, 100% { 
+                transform: translateX(-50%) translateY(0) scale(1);
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+            }
+            50% { 
+                transform: translateX(-50%) translateY(8px) scale(1.1);
+                box-shadow: 0 0 25px rgba(255, 255, 255, 1), 0 5px 10px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* Center hub */
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, var(--casino-gold) 0%, var(--casino-gold-dark) 100%);
+            border-radius: 50%;
+            border: 3px solid #000;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            z-index: 20;
         }
 
         .spin-button {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold-dark));
+            padding: 16px;
+            background: linear-gradient(135deg, #B8860B 0%, var(--casino-gold) 50%, #B8860B 100%);
             border: 3px solid var(--casino-gold);
             color: #000;
             font-weight: 900;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            border-radius: 50px;
+            border-radius: 12px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             transition: all 0.3s ease;
-            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5), inset 0 -2px 8px rgba(0, 0, 0, 0.2);
             font-family: 'Playfair Display', serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spin-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .spin-button:hover::before {
+            left: 100%;
         }
 
         .spin-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 35px rgba(255, 215, 0, 0.7);
-            background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold));
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.7), inset 0 -2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .spin-button:active {
@@ -337,43 +415,84 @@
         }
 
         .spin-button:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: scale(1);
         }
 
         #wheel-result {
             margin-top: 18px;
-            padding: 12px;
+            padding: 14px;
             text-align: center;
             font-weight: bold;
             border-radius: 12px;
-            min-height: 45px;
+            min-height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Lato', sans-serif;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 215, 0, 0.3);
         }
 
         .result-win {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(218, 165, 32, 0.25));
-            color: var(--casino-gold);
-            border: 2px solid var(--casino-gold);
+            background: linear-gradient(135deg, rgba(27, 94, 32, 0.4), rgba(76, 175, 80, 0.3));
+            color: #66BB6A;
+            border: 2px solid #66BB6A;
             animation: resultPulse 0.6s ease-out;
+            text-shadow: 0 0 10px rgba(102, 187, 106, 0.5);
         }
 
         .result-lose {
-            background: rgba(255, 68, 68, 0.15);
-            color: #ff4444;
-            border: 2px solid #ff4444;
+            background: linear-gradient(135deg, rgba(211, 47, 47, 0.3), rgba(198, 40, 40, 0.2));
+            color: #EF5350;
+            border: 2px solid #EF5350;
             animation: resultPulse 0.6s ease-out;
+            text-shadow: 0 0 10px rgba(239, 83, 80, 0.5);
         }
 
         @keyframes resultPulse {
-            0% { transform: scale(0.8); opacity: 0; }
+            0% { transform: scale(0.9); opacity: 0; }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Lucky numbers display */
+        .lucky-numbers {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .lucky-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .lucky-number.red {
+            background: linear-gradient(135deg, #D32F2F, #C62828);
+            color: white;
+        }
+
+        .lucky-number.black {
+            background: linear-gradient(135deg, #424242, #212121);
+            color: white;
+        }
+
+        .lucky-number.green {
+            background: linear-gradient(135deg, #388E3C, #2E7D32);
+            color: white;
         }
     </style>
 </head>
@@ -402,14 +521,15 @@
     <aside>
         <nav class="menu-box">
             <ul>
-                <li><a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="chat-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="chat-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="chat-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="chat-prepa.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="chat-evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
                 <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
                 <li><a href="chatvip.html" class="active"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                <li><a href="chat-discord.html"><i class="fab fa-discord"></i> PUB DISCORD</a></li>
                 <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
             </ul>
         </nav>
@@ -442,15 +562,26 @@
             </ul>
         </div>
 
-        <!-- CASINO SPIN THE WHEEL -->
-        <div class="menu-box casino-box">
-            <h3 style="color: gold;"><i class="fas fa-crown"></i> Casino VIP Luxe</h3>
-            <div class="wheel-container">
-                <canvas id="wheelCanvas" width="220" height="220"></canvas>
-                <div class="wheel-pointer">▼</div>
+        <!-- CASINO ROULETTE -->
+        <div class="menu-box casino-box" id="casino-box" style="display: none;">
+            <h3><i class="fas fa-crown"></i> Roulette VIP</h3>
+            <div class="roulette-table">
+                <div class="wheel-container">
+                    <canvas id="wheelCanvas" width="220" height="220"></canvas>
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel-center"></div>
+                </div>
+                <div class="lucky-numbers">
+                    <div class="lucky-number green">0</div>
+                    <div class="lucky-number red">1</div>
+                    <div class="lucky-number black">2</div>
+                    <div class="lucky-number red">3</div>
+                    <div class="lucky-number black">4</div>
+                    <div class="lucky-number red">5</div>
+                </div>
             </div>
             <button class="spin-button" id="spin-wheel-btn">
-                <i class="fas fa-dice"></i> Tenter sa Chance
+                <i class="fas fa-sync-alt"></i> Lancer la Roulette
             </button>
             <div id="wheel-result"></div>
         </div>
@@ -525,6 +656,12 @@ function loadChatUI() {
     document.getElementById("send-btn").onclick = sendMessage;
     document.getElementById("message").addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
     listenMessages();
+    
+    // Show the casino roulette after successful login
+    const casinoBox = document.getElementById('casino-box');
+    if (casinoBox) {
+        casinoBox.style.display = 'block';
+    }
 }
 
 function listenMessages() {
@@ -580,13 +717,51 @@ function toggleTheme() {
     }
 }
 
-// CASINO WHEEL GAME
+// REALISTIC CASINO ROULETTE GAME
 let isSpinning = false;
 let currentRotation = 0;
 const FULL_CIRCLE = 360;
-const GOLD_COLOR = '#FFD700';
-const GOLD_DARK_COLOR = '#DAA520';
-const DARK_RED_COLOR = '#8B0000';
+
+// European Roulette numbers with their colors (37 numbers: 0-36)
+const rouletteNumbers = [
+    { num: 0, color: 'green', colorHex: '#1B5E20' },
+    { num: 32, color: 'red', colorHex: '#D32F2F' },
+    { num: 15, color: 'black', colorHex: '#1A1A1A' },
+    { num: 19, color: 'red', colorHex: '#D32F2F' },
+    { num: 4, color: 'black', colorHex: '#1A1A1A' },
+    { num: 21, color: 'red', colorHex: '#D32F2F' },
+    { num: 2, color: 'black', colorHex: '#1A1A1A' },
+    { num: 25, color: 'red', colorHex: '#D32F2F' },
+    { num: 17, color: 'black', colorHex: '#1A1A1A' },
+    { num: 34, color: 'red', colorHex: '#D32F2F' },
+    { num: 6, color: 'black', colorHex: '#1A1A1A' },
+    { num: 27, color: 'red', colorHex: '#D32F2F' },
+    { num: 13, color: 'black', colorHex: '#1A1A1A' },
+    { num: 36, color: 'red', colorHex: '#D32F2F' },
+    { num: 11, color: 'black', colorHex: '#1A1A1A' },
+    { num: 30, color: 'red', colorHex: '#D32F2F' },
+    { num: 8, color: 'black', colorHex: '#1A1A1A' },
+    { num: 23, color: 'red', colorHex: '#D32F2F' },
+    { num: 10, color: 'black', colorHex: '#1A1A1A' },
+    { num: 5, color: 'red', colorHex: '#D32F2F' },
+    { num: 24, color: 'black', colorHex: '#1A1A1A' },
+    { num: 16, color: 'red', colorHex: '#D32F2F' },
+    { num: 33, color: 'black', colorHex: '#1A1A1A' },
+    { num: 1, color: 'red', colorHex: '#D32F2F' },
+    { num: 20, color: 'black', colorHex: '#1A1A1A' },
+    { num: 14, color: 'red', colorHex: '#D32F2F' },
+    { num: 31, color: 'black', colorHex: '#1A1A1A' },
+    { num: 9, color: 'red', colorHex: '#D32F2F' },
+    { num: 22, color: 'black', colorHex: '#1A1A1A' },
+    { num: 18, color: 'red', colorHex: '#D32F2F' },
+    { num: 29, color: 'black', colorHex: '#1A1A1A' },
+    { num: 7, color: 'red', colorHex: '#D32F2F' },
+    { num: 28, color: 'black', colorHex: '#1A1A1A' },
+    { num: 12, color: 'red', colorHex: '#D32F2F' },
+    { num: 35, color: 'black', colorHex: '#1A1A1A' },
+    { num: 3, color: 'red', colorHex: '#D32F2F' },
+    { num: 26, color: 'black', colorHex: '#1A1A1A' }
+];
 
 function initWheel() {
     const canvas = document.getElementById('wheelCanvas');
@@ -595,19 +770,7 @@ function initWheel() {
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = 90;
-    
-    // Wheel segments
-    const segments = [
-        { label: '🎁', color: GOLD_COLOR, prize: 'Cadeau VIP' },
-        { label: '💎', color: GOLD_DARK_COLOR, prize: '100 Points' },
-        { label: '🎉', color: GOLD_COLOR, prize: 'Bonus Chat' },
-        { label: '⭐', color: GOLD_DARK_COLOR, prize: '50 Points' },
-        { label: '🏆', color: GOLD_COLOR, prize: 'Trophée' },
-        { label: '💫', color: GOLD_DARK_COLOR, prize: '25 Points' },
-        { label: '🎊', color: GOLD_COLOR, prize: 'Badge' },
-        { label: '❌', color: DARK_RED_COLOR, prize: 'Perdu' }
-    ];
+    const radius = 95;
     
     function drawWheel(rotation = 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -615,9 +778,9 @@ function initWheel() {
         ctx.translate(centerX, centerY);
         ctx.rotate(rotation * Math.PI / 180);
         
-        const anglePerSegment = FULL_CIRCLE / segments.length;
+        const anglePerSegment = FULL_CIRCLE / rouletteNumbers.length;
         
-        segments.forEach((segment, i) => {
+        rouletteNumbers.forEach((segment, i) => {
             const startAngle = (i * anglePerSegment) * Math.PI / 180;
             const endAngle = ((i + 1) * anglePerSegment) * Math.PI / 180;
             
@@ -626,30 +789,42 @@ function initWheel() {
             ctx.moveTo(0, 0);
             ctx.arc(0, 0, radius, startAngle, endAngle);
             ctx.closePath();
-            ctx.fillStyle = segment.color;
+            ctx.fillStyle = segment.colorHex;
             ctx.fill();
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
+            
+            // Gold separator lines
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 1.5;
             ctx.stroke();
             
-            // Draw label
+            // Draw number
             ctx.save();
             ctx.rotate(startAngle + (endAngle - startAngle) / 2);
             ctx.textAlign = 'center';
-            ctx.fillStyle = '#000';
-            ctx.font = 'bold 24px Arial';
-            ctx.fillText(segment.label, radius * 0.65, 8);
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 11px Arial';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+            ctx.shadowBlur = 3;
+            ctx.fillText(segment.num.toString(), radius * 0.7, 0);
+            ctx.shadowBlur = 0;
             ctx.restore();
         });
         
-        // Center circle
+        // Inner gold ring
         ctx.beginPath();
-        ctx.arc(0, 0, 15, 0, 2 * Math.PI);
-        ctx.fillStyle = GOLD_COLOR;
+        ctx.arc(0, 0, 20, 0, 2 * Math.PI);
+        ctx.fillStyle = '#FFD700';
         ctx.fill();
-        ctx.strokeStyle = '#000';
+        ctx.strokeStyle = '#B8860B';
         ctx.lineWidth = 2;
         ctx.stroke();
+        
+        // Center detail
+        ctx.beginPath();
+        ctx.arc(0, 0, 8, 0, 2 * Math.PI);
+        ctx.fillStyle = '#000';
+        ctx.fill();
         
         ctx.restore();
     }
@@ -657,7 +832,7 @@ function initWheel() {
     drawWheel();
     
     // Store for global access
-    window.wheelData = { canvas, ctx, segments, drawWheel };
+    window.wheelData = { canvas, ctx, rouletteNumbers, drawWheel };
 }
 
 function spinWheel() {
@@ -668,21 +843,23 @@ function spinWheel() {
     
     isSpinning = true;
     button.disabled = true;
-    resultDiv.textContent = '';
+    resultDiv.textContent = '🎰 La roulette tourne...';
     resultDiv.className = '';
+    resultDiv.style.color = '#FFD700';
+    resultDiv.style.border = '2px solid #FFD700';
     
-    // Random spin
-    const spins = 5 + Math.random() * 3; // 5-8 full rotations
+    // Random spin - 5-8 full rotations plus random position
+    const spins = 5 + Math.random() * 3;
     const extraDegrees = Math.random() * FULL_CIRCLE;
     const totalRotation = spins * FULL_CIRCLE + extraDegrees;
-    const duration = 4000; // 4 seconds
+    const duration = 5000; // 5 seconds for realistic casino feel
     const startTime = Date.now();
     
     function animate() {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
         
-        // Cubic ease-out function for smooth deceleration (slow down at the end)
+        // Cubic ease-out for smooth deceleration
         const easeOut = 1 - Math.pow(1 - progress, 3);
         const rotation = currentRotation + totalRotation * easeOut;
         
@@ -694,24 +871,42 @@ function spinWheel() {
             currentRotation = (currentRotation + totalRotation) % FULL_CIRCLE;
             window.wheelData.drawWheel(currentRotation);
             
-            // Determine winner
+            // Determine winner (pointer is at top, so we need to find which segment is at top)
             const normalizedRotation = (FULL_CIRCLE - (currentRotation % FULL_CIRCLE)) % FULL_CIRCLE;
-            const segmentAngle = FULL_CIRCLE / window.wheelData.segments.length;
+            const segmentAngle = FULL_CIRCLE / window.wheelData.rouletteNumbers.length;
             const winningIndex = Math.floor(normalizedRotation / segmentAngle);
-            const winner = window.wheelData.segments[winningIndex];
+            const winner = window.wheelData.rouletteNumbers[winningIndex];
             
             setTimeout(() => {
-                if (winner.label === '❌') {
-                    resultDiv.textContent = '😢 ' + winner.prize + ' !';
-                    resultDiv.className = 'result-lose';
+                const colorEmoji = winner.color === 'red' ? '🔴' : winner.color === 'black' ? '⚫' : '🟢';
+                const prizeMessages = [
+                    '🎉 100 Points VIP!',
+                    '💎 Badge Exclusif!',
+                    '⭐ Accès Premium 24h!',
+                    '🏆 Bonus Chat!',
+                    '👑 Statut VIP+!',
+                    '🎁 Cadeau Mystère!'
+                ];
+                
+                let resultText = `${colorEmoji} Numéro ${winner.num}`;
+                let resultClass = '';
+                
+                // Winning conditions: red numbers, number 7, 0
+                if (winner.num === 7 || winner.num === 0 || winner.color === 'red') {
+                    const prize = prizeMessages[Math.floor(Math.random() * prizeMessages.length)];
+                    resultText += ` - ${prize}`;
+                    resultClass = 'result-win';
                 } else {
-                    resultDiv.textContent = '🎉 ' + winner.prize + ' !';
-                    resultDiv.className = 'result-win';
+                    resultText += ' - Perdu! Retentez votre chance!';
+                    resultClass = 'result-lose';
                 }
+                
+                resultDiv.textContent = resultText;
+                resultDiv.className = resultClass;
                 
                 isSpinning = false;
                 button.disabled = false;
-            }, 500);
+            }, 800);
         }
     }
     
