@@ -16,27 +16,31 @@
                 <a href="chatvip.html" class="active"><i class="fas fa-crown"></i> Elite Access</a>
             </nav>
         </aside>
+
         <main>
-            <div id="lock" style="position:absolute; inset:0; z-index:999; background:var(--bg); display:flex; align-items:center; justify-content:center;">
-                <div class="bubble" style="width:320px; text-align:center; padding:40px; border-color:var(--vip)">
-                    <i class="fas fa-fingerprint fa-3x" style="color:var(--vip); margin-bottom:20px;"></i>
-                    <input type="password" id="p" placeholder="Code Elite" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:10px; color:white; text-align:center;">
-                    <button onclick="unlock()" style="margin-top:20px; width:100%; background:var(--vip); border:none; padding:15px; border-radius:10px; font-weight:bold; cursor:pointer;">AUTH_EXECUTE</button>
+            <div id="lock" style="position:absolute; inset:0; z-index:99; background:#030712; display:flex; align-items:center; justify-content:center;">
+                <div style="text-align:center; padding:30px; border:1px solid var(--vip); border-radius:20px;">
+                    <i class="fas fa-lock fa-3x" style="color:var(--vip); margin-bottom:15px;"></i>
+                    <input type="password" id="p" placeholder="Code Elite" style="width:100%; padding:10px; margin-bottom:10px; text-align:center;">
+                    <button onclick="unlock()" style="width:100%; padding:10px; background:var(--vip); border:none; border-radius:10px; cursor:pointer;">AUTH_EXEC</button>
                 </div>
             </div>
 
-            <div id="content" style="display:none; flex-direction:column; height:100%;">
-                <div class="top-bar"><h1><i class="fas fa-shield-alt"></i> ELITE_CHAT_SECURE</h1></div>
+            <div id="chat-content" style="display:none; flex-direction:column; flex:1;">
+                <div class="top-bar">
+                    <h1 style="color:var(--vip)">Elite Channel</h1>
+                </div>
                 <div id="chat-v" class="chat-wrapper"></div>
                 <div class="input-area">
-                    <div class="capsule" style="border-color:var(--vip)">
+                    <div class="capsule" style="border:1px solid var(--vip)">
                         <input type="text" id="mv" placeholder="Signal crypté...">
-                        <button class="btn-send" style="background:var(--vip); color:black;" onclick="sendV()"><i class="fas fa-bolt"></i></button>
+                        <button class="btn-send" style="background:var(--vip); color:black;" onclick="sendV()"><i class="fas fa-shield-alt"></i></button>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     <script>
@@ -48,21 +52,17 @@
             const doc = await db.collection("config").doc("access").get();
             if(pass === doc.data().code) {
                 document.getElementById("lock").style.display = "none";
-                document.getElementById("content").style.display = "flex";
-                startV();
-            }
-        }
-
-        function startV() {
-            db.collection("messages_prives").orderBy("timestamp").onSnapshot(snap => {
-                const feed = document.getElementById("chat-v");
-                let h = "";
-                snap.forEach(doc => {
-                    const d = doc.data(); if(!d.timestamp) return;
-                    h += `<div class="msg-group"><div class="bubble">${d.message}</div></div>`;
+                document.getElementById("chat-content").style.display = "flex";
+                db.collection("messages_prives").orderBy("timestamp").onSnapshot(snap => {
+                    const f = document.getElementById("chat-v");
+                    let h = "";
+                    snap.forEach(d => {
+                        const data = d.data(); if(!data.timestamp) return;
+                        h += `<div class="msg-group"><div class="bubble">${data.message}</div></div>`;
+                    });
+                    f.innerHTML = h; f.scrollTop = f.scrollHeight;
                 });
-                feed.innerHTML = h; feed.scrollTop = feed.scrollHeight;
-            });
+            }
         }
 
         function sendV() {
