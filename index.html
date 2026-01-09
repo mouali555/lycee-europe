@@ -3,58 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lycée de l'Europe - Dunkerque [NET]</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Lycée de l'Europe - Portail 2026</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <h1>Lycée de l'Europe – Dunkerque</h1>
-        <p>System Online :: 2026 🎉</p>
-    </header>
+    <div class="bg-animation"></div>
 
-    <div class="container">
+    <header class="main-header">
+        <div class="logo-container">
+            <i class="fas fa-microchip logo-icon"></i>
+            <div>
+                <h1>Lycée de l'Europe</h1>
+                <span class="status-badge">System Online :: 2026</span>
+            </div>
+        </div>
+        </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Bienvenue dans le futur</h2>
+            <p>Portail numérique des étudiants & personnels. Accédez aux ressources, au chat sécurisé et aux actualités.</p>
+        </div>
+    </section>
+
+    <div class="layout-grid">
         
-        <aside>
-            <nav class="menu-box">
+        <aside class="sidebar-left">
+            <nav class="glass-panel menu-nav">
+                <h3><i class="fas fa-bars"></i> Navigation</h3>
                 <ul>
                     <li><a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                    <li><a href="en-construction.html"><i class="fas fa-book-open"></i> La Seconde</a></li>
+                    <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Bacs</a></li>
                     <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
-                    <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
-                    <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
-                    <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                    <li><a href="en-construction.html"><i class="fas fa-cogs"></i> Prépa PTSI/PT</a></li>
+                    <li><a href="chat.html" class="special-link"><i class="fas fa-comments"></i> Chat Public <span class="badge">LIVE</span></a></li>
+                    <li><a href="chatvip.html" class="vip-link"><i class="fas fa-lock"></i> Chat VIP</a></li>
                 </ul>
             </nav>
         </aside>
 
-        <main>
-            <article class="card">
-                <h2><i class="fas fa-plane-departure"></i> Mission: Londres 2025</h2>
-                <p>Status: Complété. Du 3 au 6 novembre, nos agents ont infiltré Londres (Big Ben, London Eye, British Museum).</p>
-                <p>Target acquired: Comédie musicale <strong>Wicked</strong>.</p>
-                
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/p2BLLVqvA6I?si=8qVh7uFWrCFYQUV5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                </div>
+        <main class="main-content">
+            
+            <div class="alert-banner">
+                <i class="fas fa-bell"></i>
+                <span>Initialisation protocole : Bonne année 2026</span>
+            </div>
 
-                <div class="alert-box">
-                    ⚠️ Initialisation protocole : Bonne année 2026 ⚠️
+            <article class="glass-panel content-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-plane-departure"></i> Mission: Londres 2025</h2>
+                    <span class="tag completed">Terminé</span>
+                </div>
+                
+                <div class="card-body">
+                    <p>Du 3 au 6 novembre, nos agents ont infiltré Londres (Big Ben, London Eye, British Museum).</p>
+                    <p class="highlight-text">Target acquired: Comédie musicale <strong>Wicked</strong>.</p>
+                    
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/p2BLLVqvA6I?si=8qVh7uFWrCFYQUV5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </article>
+
+            <article class="glass-panel content-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-newspaper"></i> Dernières Actualités</h2>
+                    <span class="tag new">Nouveau</span>
+                </div>
+                <div class="card-body">
+                    <p>Les inscriptions pour le club robotique sont ouvertes. Rejoignez la section CIEL pour en savoir plus.</p>
                 </div>
             </article>
         </main>
 
-        <aside>
-            <div class="menu-box">
-                <h3>Accès Rapide</h3>
+        <aside class="sidebar-right">
+            <div class="glass-panel quick-access">
+                <h3><i class="fas fa-rocket"></i> Accès Rapide</h3>
                 <ul>
-                    <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
-                    <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
-                    <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                    <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true" target="_blank" class="btn-primary"><i class="fas fa-user-check"></i> Pronote</a></li>
                     <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                    <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing" target="_blank"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                    <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr" target="_blank"><i class="fas fa-camera"></i> Club Photo</a></li>
                     <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
                 </ul>
             </div>
@@ -63,7 +96,7 @@
     </div>
 
     <footer>
-        <p>Design: BTS CIEL // Corp 2026</p>
+        <p>Design: BTS CIEL // Corp 2026 &copy; All rights reserved.</p>
     </footer>
 
 </body>
