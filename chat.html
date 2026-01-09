@@ -116,7 +116,7 @@
             fill: white;
         }
 
-        #access-screen {
+        #pseudo-screen {
             background: rgba(15,23,42,0.8);
             padding: 20px;
             border-radius: 16px;
@@ -124,7 +124,7 @@
             text-align: center;
         }
 
-        #access-screen input, #access-screen button {
+        #pseudo-screen input, #pseudo-screen button {
             width: 100%;
             margin-top: 10px;
             padding: 12px;
@@ -134,18 +134,11 @@
             color: white;
         }
 
-        #access-screen button {
+        #pseudo-screen button {
             background: linear-gradient(135deg,#38bdf8,#6366f1);
             border: none;
             cursor: pointer;
             font-weight: bold;
-        }
-
-        #error {
-            margin-top: 8px;
-            font-size: 14px;
-            color: #f87171;
-            min-height: 18px;
         }
     </style>
 </head>
@@ -179,7 +172,7 @@
                 <!-- CHAT PUBLIC -->
                 <li><a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat</a></li>
 
-                <!-- CHAT VIP AJOUTÉ -->
+                <!-- CHAT VIP -->
                 <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
             </ul>
         </nav>
@@ -189,13 +182,11 @@
     <main>
         <article class="card">
 
-            <div id="access-screen">
-                <h2>Connexion au Chat</h2>
-                <p>Entrez le code d’accès et votre pseudo.</p>
-                <input type="password" id="access-code" placeholder="Code d’accès">
+            <div id="pseudo-screen">
+                <h2>Entrer dans le Chat</h2>
+                <p>Choisissez un pseudo pour discuter.</p>
                 <input type="text" id="pseudo" placeholder="Votre pseudo">
                 <button onclick="enterChat()">Entrer</button>
-                <p id="error"></p>
             </div>
 
         </article>
@@ -241,34 +232,14 @@ const db = firebase.firestore();
 /* COLLECTION DES MESSAGES PUBLICS */
 const messagesRef = db.collection("messages");
 
-let ACCESS_CODE = null;
 let currentPseudo = null;
 
-/* Charger le code d’accès */
-async function loadAccessCode() {
-    const doc = await db
-        .collection("config")
-        .doc("access")
-        .get();
-
-    ACCESS_CODE = doc.data().code;
-}
-
 /* Connexion */
-async function enterChat() {
-    const code = document.getElementById("access-code").value.trim();
+function enterChat() {
     const pseudo = document.getElementById("pseudo").value.trim();
-    const error = document.getElementById("error");
 
-    if (!code || !pseudo) {
-        error.textContent = "Veuillez remplir tous les champs.";
-        return;
-    }
-
-    await loadAccessCode();
-
-    if (code !== ACCESS_CODE) {
-        error.textContent = "Code incorrect.";
+    if (!pseudo) {
+        alert("Veuillez entrer un pseudo.");
         return;
     }
 
