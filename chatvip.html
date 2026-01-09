@@ -2,35 +2,36 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus - VIP</title>
+    <title>Elite Access</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="vip-mode">
     <div class="app-container">
         <aside>
-            <div class="logo" style="color:var(--vip)">NEXUS.ELITE</div>
+            <div class="logo"><i class="fas fa-crown"></i> ELITE</div>
             <nav>
                 <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="chat.html"><i class="fas fa-comment-alt"></i> Chat Global</a>
+                <a href="chat.html"><i class="fas fa-comments"></i> Chat Global</a>
                 <a href="chatvip.html" class="active"><i class="fas fa-crown"></i> Elite Access</a>
             </nav>
         </aside>
         <main>
-            <div id="lock" style="position:absolute; inset:0; z-index:100; background:var(--bg); display:flex; align-items:center; justify-content:center;">
-                <div class="bubble" style="width:300px; text-align:center; padding:30px;">
-                    <i class="fas fa-lock fa-2x" style="color:var(--vip); margin-bottom:20px;"></i>
-                    <input type="password" id="pass" placeholder="Code d'accès" style="width:100%; padding:12px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:10px; color:white; text-align:center;">
-                    <button onclick="unlock()" style="margin-top:15px; background:var(--vip); color:black; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">Entrer</button>
+            <div id="lock" style="position:absolute; inset:0; z-index:999; background:var(--bg); display:flex; align-items:center; justify-content:center;">
+                <div class="bubble" style="width:320px; text-align:center; padding:40px; border-color:var(--vip)">
+                    <i class="fas fa-fingerprint fa-3x" style="color:var(--vip); margin-bottom:20px;"></i>
+                    <input type="password" id="p" placeholder="Code Elite" style="width:100%; padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:10px; color:white; text-align:center;">
+                    <button onclick="unlock()" style="margin-top:20px; width:100%; background:var(--vip); border:none; padding:15px; border-radius:10px; font-weight:bold; cursor:pointer;">AUTH_EXECUTE</button>
                 </div>
             </div>
-            <div id="v-chat" style="display:none; flex-direction:column; height:100%;">
-                <div class="top-bar"><h1>Elite Channel</h1></div>
-                <div id="chat-feed-vip" class="chat-wrapper"></div>
+
+            <div id="content" style="display:none; flex-direction:column; height:100%;">
+                <div class="top-bar"><h1><i class="fas fa-shield-alt"></i> ELITE_CHAT_SECURE</h1></div>
+                <div id="chat-v" class="chat-wrapper"></div>
                 <div class="input-area">
                     <div class="capsule" style="border-color:var(--vip)">
-                        <input type="text" id="msg-vip" placeholder="Message crypté...">
-                        <button class="btn-send" style="background:var(--vip); color:black;" onclick="sendV()"><i class="fas fa-shield-alt"></i></button>
+                        <input type="text" id="mv" placeholder="Signal crypté...">
+                        <button class="btn-send" style="background:var(--vip); color:black;" onclick="sendV()"><i class="fas fa-bolt"></i></button>
                     </div>
                 </div>
             </div>
@@ -41,35 +42,34 @@
     <script>
         firebase.initializeApp({ apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM", authDomain: "lycee-europe-private.firebaseapp.com", projectId: "lycee-europe-private" });
         const db = firebase.firestore();
-        const myVipId = "Agent_"+Math.floor(Math.random()*99);
 
         async function unlock() {
-            const p = document.getElementById("pass").value;
-            const snap = await db.collection("config").doc("access").get();
-            if(p === snap.data().code) {
+            const pass = document.getElementById("p").value;
+            const doc = await db.collection("config").doc("access").get();
+            if(pass === doc.data().code) {
                 document.getElementById("lock").style.display = "none";
-                document.getElementById("v-chat").style.display = "flex";
-                loadV();
+                document.getElementById("content").style.display = "flex";
+                startV();
             }
         }
 
-        function loadV() {
+        function startV() {
             db.collection("messages_prives").orderBy("timestamp").onSnapshot(snap => {
-                const f = document.getElementById("chat-feed-vip");
+                const feed = document.getElementById("chat-v");
                 let h = "";
                 snap.forEach(doc => {
                     const d = doc.data(); if(!d.timestamp) return;
-                    h += `<div class="msg-group ${d.pseudo === myVipId ? 'me' : ''}"><div class="bubble">${d.message}</div></div>`;
+                    h += `<div class="msg-group"><div class="bubble">${d.message}</div></div>`;
                 });
-                f.innerHTML = h; f.scrollTop = f.scrollHeight;
+                feed.innerHTML = h; feed.scrollTop = feed.scrollHeight;
             });
         }
 
         function sendV() {
-            const m = document.getElementById("msg-vip").value;
+            const m = document.getElementById("mv").value;
             if(m) {
-                db.collection("messages_prives").add({ pseudo: myVipId, message: m, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-                document.getElementById("msg-vip").value = "";
+                db.collection("messages_prives").add({ pseudo: "VIP", message: m, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                document.getElementById("mv").value = "";
             }
         }
     </script>
