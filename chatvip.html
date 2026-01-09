@@ -386,7 +386,7 @@
                 <canvas id="wheelCanvas" width="200" height="200"></canvas>
                 <div class="wheel-pointer">▼</div>
             </div>
-            <button class="spin-button" onclick="spinWheel()">
+            <button class="spin-button" id="spin-wheel-btn">
                 <i class="fas fa-dice"></i> Tenter sa chance
             </button>
             <div id="wheel-result"></div>
@@ -516,21 +516,6 @@ function toggleTheme() {
         localStorage.setItem('theme', 'dark');
     }
 }
-
-// Load saved theme
-window.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('theme');
-    const themeIcon = document.getElementById('theme-icon');
-    
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-    }
-    
-    // Initialize Casino Wheel
-    initWheel();
-});
 
 // CASINO WHEEL GAME
 let isSpinning = false;
@@ -665,6 +650,27 @@ function spinWheel() {
     
     animate();
 }
+
+// Load saved theme and initialize wheel
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    const themeIcon = document.getElementById('theme-icon');
+    
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+    }
+    
+    // Initialize Casino Wheel
+    initWheel();
+    
+    // Attach spin wheel button event
+    const spinBtn = document.getElementById('spin-wheel-btn');
+    if (spinBtn) {
+        spinBtn.addEventListener('click', spinWheel);
+    }
+});
 </script>
 
 </body>
