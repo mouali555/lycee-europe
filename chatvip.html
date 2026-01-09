@@ -279,17 +279,23 @@
 
         .wheel-container {
             position: relative;
-            width: 220px;
-            height: 220px;
-            margin: 25px auto;
+            width: 280px;
+            height: 280px;
+            margin: 30px auto;
+            padding: 15px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
         }
 
         #wheelCanvas {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.6), 0 0 50px rgba(255, 215, 0, 0.4);
-            border: 5px solid var(--casino-gold);
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.7), 
+                0 0 60px rgba(255, 215, 0, 0.5),
+                inset 0 0 20px rgba(0, 0, 0, 0.3);
+            border: 6px solid var(--casino-gold);
         }
 
         .wheel-pointer {
@@ -446,7 +452,7 @@
         <div class="menu-box casino-box" id="casino-section" style="display: none;">
             <h3 style="color: gold;"><i class="fas fa-crown"></i> Roulette VIP Luxe</h3>
             <div class="wheel-container">
-                <canvas id="wheelCanvas" width="240" height="240"></canvas>
+                <canvas id="wheelCanvas" width="300" height="300"></canvas>
                 <div class="wheel-pointer">▼</div>
             </div>
             <button class="spin-button" id="spin-wheel-btn">
@@ -602,7 +608,7 @@ function initWheel() {
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = 110;
+    const radius = 140; // Increased from 110 to match larger canvas
     
     // European Roulette numbers in wheel order
     const rouletteNumbers = [
@@ -627,9 +633,9 @@ function initWheel() {
         
         // Draw outer golden rim
         ctx.beginPath();
-        ctx.arc(0, 0, radius + 5, 0, 2 * Math.PI);
+        ctx.arc(0, 0, radius + 8, 0, 2 * Math.PI); // Increased from radius + 5
         ctx.strokeStyle = '#FFD700';
-        ctx.lineWidth = 6;
+        ctx.lineWidth = 8; // Increased from 6 to 8
         ctx.stroke();
         
         // Draw segments
@@ -653,26 +659,26 @@ function initWheel() {
             ctx.rotate(startAngle + (endAngle - startAngle) / 2);
             ctx.textAlign = 'center';
             ctx.fillStyle = '#FFFFFF';
-            ctx.font = 'bold 11px Arial';
+            ctx.font = 'bold 14px Arial'; // Increased from 11px to 14px
             ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-            ctx.shadowBlur = 3;
-            ctx.fillText(num.toString(), radius * 0.75, 4);
+            ctx.shadowBlur = 4;
+            ctx.fillText(num.toString(), radius * 0.75, 5);
             ctx.shadowBlur = 0;
             ctx.restore();
         });
         
         // Center decorative circle
         ctx.beginPath();
-        ctx.arc(0, 0, 20, 0, 2 * Math.PI);
+        ctx.arc(0, 0, 28, 0, 2 * Math.PI); // Increased from 20 to 28
         ctx.fillStyle = '#FFD700';
         ctx.fill();
         ctx.strokeStyle = '#DAA520';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3;
         ctx.stroke();
         
         // Center star decoration
         ctx.fillStyle = '#0A0A0A';
-        ctx.font = 'bold 16px Arial';
+        ctx.font = 'bold 20px Arial'; // Increased from 16px to 20px
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('★', 0, 0);
