@@ -457,9 +457,6 @@
     function displayAnimatedGif() {
         const johannImage = document.getElementById('johann-image');
         
-        // Store the original source
-        const originalSrc = johannImage.src;
-        
         // Change to the animated GIF with a smooth transition
         johannImage.style.transition = 'transform 0.5s ease, opacity 0.3s ease';
         johannImage.style.opacity = '0';
@@ -521,7 +518,7 @@
                 0 0 80px rgba(255, 0, 110, 0.6),
                 0 0 120px rgba(168, 85, 247, 0.4),
                 0 0 160px rgba(255, 214, 10, 0.3);
-            animation: rainbowBorder 3s linear infinite, float 3s ease-in-out infinite;
+            animation: rainbowBorder 3s linear infinite;
         `;
         
         // Add celebration text
