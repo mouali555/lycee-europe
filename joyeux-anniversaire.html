@@ -242,6 +242,29 @@
                 max-width: 90%;
             }
         }
+        
+        /* Animations pour les messages de célébration */
+        @keyframes messagePopIn {
+            from {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes messagePopOut {
+            from {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -343,7 +366,13 @@
 
 <script>
     // Fonction pour créer encore plus de confettis lors du clic sur le bouton
+    let isGeneratingConfetti = false;
+    
     function celebrate() {
+        // Debounce pour éviter les clics multiples
+        if (isGeneratingConfetti) return;
+        isGeneratingConfetti = true;
+        
         const container = document.querySelector('.birthday-container');
         
         // Créer 50 nouveaux confettis
@@ -367,12 +396,57 @@
             
             // Supprimer le confetti après l'animation
             setTimeout(() => {
-                confetti.remove();
+                if (confetti.parentNode) {
+                    confetti.remove();
+                }
             }, 5000);
         }
         
-        // Effet sonore textuel
-        alert('🎉 JOYEUX ANNIVERSAIRE JOHANN ! 🎂\n\nQue tous tes vœux se réalisent ! ✨');
+        // Afficher un message de célébration avec un style moderne
+        showCelebrationMessage();
+        
+        // Réinitialiser le debounce après 2 secondes
+        setTimeout(() => {
+            isGeneratingConfetti = false;
+        }, 2000);
+    }
+    
+    // Fonction pour afficher un message moderne au lieu d'alert()
+    function showCelebrationMessage() {
+        const message = document.createElement('div');
+        message.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff006e, #a855f7);
+            color: white;
+            padding: 40px 60px;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(255, 0, 110, 0.8), 0 0 100px rgba(168, 85, 247, 0.6);
+            z-index: 10000;
+            animation: messagePopIn 0.3s ease-out;
+        `;
+        message.innerHTML = `
+            <div style="font-size: 3rem; margin-bottom: 20px;">🎉</div>
+            <div style="margin-bottom: 10px;">JOYEUX ANNIVERSAIRE JOHANN !</div>
+            <div style="font-size: 1.2rem; opacity: 0.9;">Que tous tes vœux se réalisent ! ✨</div>
+        `;
+        
+        document.body.appendChild(message);
+        
+        // Supprimer le message après 3 secondes
+        setTimeout(() => {
+            message.style.animation = 'messagePopOut 0.3s ease-out';
+            setTimeout(() => {
+                if (message.parentNode) {
+                    message.remove();
+                }
+            }, 300);
+        }, 3000);
     }
     
     // Changer l'image si johann.png existe
@@ -382,8 +456,7 @@
         img.src = 'johann.png';
     };
     testImg.onerror = function() {
-        // Garder johann.svg si johann.png n'existe pas
-        console.log('Using SVG placeholder for Johann image');
+        // Garder johann.svg si johann.png n'existe pas (fallback silencieux)
     };
     testImg.src = 'johann.png';
 </script>
