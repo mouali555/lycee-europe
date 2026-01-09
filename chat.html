@@ -373,12 +373,54 @@ async function sendMessage() {
     const input = document.getElementById("message");
     const text = input.value.trim();
     if (!text) return;
+    
     await messagesRef.add({
         pseudo: currentPseudo,
         message: text,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
     input.value = "";
+    
+    // AI Bot Response
+    checkForBotResponse(text);
+}
+
+// Simple AI Bot
+async function checkForBotResponse(message) {
+    const msg = message.toLowerCase();
+    let botResponse = null;
+    
+    // Questions about the lycée
+    if (msg.includes('horaires') || msg.includes('heures') || msg.includes('ouverture')) {
+        botResponse = "📅 Le lycée est ouvert du lundi au vendredi de 8h à 18h. Les cours commencent à 8h30.";
+    } else if (msg.includes('contact') || msg.includes('téléphone') || msg.includes('email')) {
+        botResponse = "📞 Pour nous contacter : 03 28 58 83 00 ou visitez notre page Pronote pour plus d'informations.";
+    } else if (msg.includes('bts') || msg.includes('formation')) {
+        botResponse = "🎓 Nous proposons plusieurs BTS dont BTS CIEL. Consultez la section 'Les BTS' pour plus de détails.";
+    } else if (msg.includes('erasmus')) {
+        botResponse = "🌍 Le lycée participe au programme Erasmus+ avec 15 projets actifs. Renseignez-vous auprès de vos professeurs !";
+    } else if (msg.includes('bonjour') || msg.includes('salut') || msg.includes('hello') || msg.includes('hi')) {
+        botResponse = "👋 Bonjour ! Je suis l'assistant virtuel du Lycée de l'Europe. Comment puis-je vous aider ?";
+    } else if (msg.includes('aide') || msg.includes('help') || msg.includes('?')) {
+        botResponse = "💡 Je peux vous aider avec : horaires, contact, BTS, Erasmus, règlement intérieur, événements. Posez-moi vos questions !";
+    } else if (msg.includes('règlement') || msg.includes('reglement')) {
+        botResponse = "📋 Le règlement intérieur est disponible dans le menu 'Accès Rapide' à droite.";
+    } else if (msg.includes('événements') || msg.includes('evenements') || msg.includes('activités')) {
+        botResponse = "🎉 Consultez la section 'Événements' pour voir les activités à venir. Notre dernier voyage était à Londres !";
+    } else if (msg.includes('pronote')) {
+        botResponse = "💻 Accédez à Pronote via le lien dans 'Accès Rapide' : https://0590072h.index-education.net/pronote/";
+    }
+    
+    // If we found a response, send it after a short delay
+    if (botResponse) {
+        setTimeout(async () => {
+            await messagesRef.add({
+                pseudo: "🤖 Assistant LDE",
+                message: botResponse,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }, 1500); // 1.5 second delay for realistic effect
+    }
 }
 
 // Theme Toggle
