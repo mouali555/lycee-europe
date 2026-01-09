@@ -2,68 +2,73 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus - Chat</title>
+    <title>Nexus Chat</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="app-container">
         <aside>
-            <div class="logo">NEXUS.SYS</div>
+            <div class="logo"><i class="fas fa-terminal"></i> NEXUS</div>
             <nav>
                 <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="chat.html" class="active"><i class="fas fa-comment-alt"></i> Chat Global</a>
+                <a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat Global</a>
                 <a href="chatvip.html"><i class="fas fa-crown"></i> Elite Access</a>
             </nav>
         </aside>
         <main>
             <div class="top-bar">
                 <h1>Canal Général</h1>
-                <span style="color:#22c55e; font-size: 0.8rem;"><i class="fas fa-circle"></i> Live</span>
+                <div style="font-size:0.8rem; color:var(--text-dim)"><i class="fas fa-circle" style="color:#22c55e"></i> 42 en ligne</div>
             </div>
+            
             <div id="chat-feed" class="chat-wrapper"></div>
+
             <div class="input-area">
                 <div class="capsule">
-                    <input type="text" id="pseudo-input" placeholder="ID" style="width: 60px; color:var(--primary); font-weight:bold;">
-                    <input type="text" id="msg-input" placeholder="Transmission de données...">
+                    <input type="text" id="pseudo" placeholder="ID" style="width: 70px; color:var(--primary); font-weight:bold; border-right:1px solid var(--border); margin-right:15px;">
+                    <input type="text" id="msg" placeholder="Tapez votre message ici...">
                     <button class="btn-send" onclick="envoyer()"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
         </main>
     </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     <script>
         const firebaseConfig = { apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM", authDomain: "lycee-europe-private.firebaseapp.com", projectId: "lycee-europe-private" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        let myId = localStorage.getItem("nexus_id") || "User"+Math.floor(Math.random()*999);
-        document.getElementById("pseudo-input").value = myId;
+
+        let myId = localStorage.getItem("n_id") || "Agent"+Math.floor(Math.random()*99);
+        document.getElementById("pseudo").value = myId;
 
         function envoyer() {
-            const m = document.getElementById("msg-input").value;
-            const p = document.getElementById("pseudo-input").value;
+            const m = document.getElementById("msg").value.trim();
+            const p = document.getElementById("pseudo").value.trim();
             if(m) {
-                localStorage.setItem("nexus_id", p);
+                localStorage.setItem("n_id", p);
                 db.collection("messages").add({ pseudo: p, message: m, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-                document.getElementById("msg-input").value = "";
+                document.getElementById("msg").value = "";
             }
         }
+
         db.collection("messages").orderBy("timestamp").onSnapshot(snap => {
             const feed = document.getElementById("chat-feed");
             let h = "";
             snap.forEach(doc => {
                 const d = doc.data(); if(!d.timestamp) return;
-                const isMe = d.pseudo === document.getElementById("pseudo-input").value;
+                const isMe = d.pseudo === document.getElementById("pseudo").value;
                 h += `<div class="msg-group ${isMe ? 'me' : ''}">
-                        <div style="font-size:0.7rem; color:#6b7280; margin-bottom:4px; padding:0 10px;">${d.pseudo}</div>
+                        <div style="font-size:0.7rem; color:var(--text-dim); margin:0 10px 3px 10px;">${d.pseudo}</div>
                         <div class="bubble">${d.message}</div>
                       </div>`;
             });
             feed.innerHTML = h;
             feed.scrollTop = feed.scrollHeight;
         });
-        document.getElementById("msg-input").addEventListener("keypress", (e) => e.key === "Enter" && envoyer());
+        document.getElementById("msg").addEventListener("keypress", (e) => e.key === "Enter" && envoyer());
     </script>
 </body>
 </html>
