@@ -1,221 +1,123 @@
-<!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lycée de l'Europe - Dunkerque</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Enhanced Homepage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f9f9f9;
+            color: #333;
+        }
+        .hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('hero-bg.jpg') center/cover no-repeat;
+            color: white;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+        .hero h1 {
+            font-size: 4em;
+            margin: 0;
+        }
+        .hero p {
+            font-size: 1.5em;
+            margin: 20px 0 40px 0;
+        }
+        .hero button {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .hero button:hover {
+            background-color: #0056b3;
+        }
+        nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: #333;
+            padding: 15px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: transform 0.3s;
+        }
+        nav a:hover {
+            transform: scale(1.1);
+        }
+        .cta {
+            text-align: center;
+            margin: 50px 0;
+        }
+        .cta button {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .cta button:hover {
+            background-color: #218838;
+        }
+        .dynamic-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 50px 20px;
+        }
+        .dynamic-content div {
+            flex: 1 1 calc(33% - 40px);
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+    </style>
 </head>
 <body>
-
-    
-    <header>
-        <div>
-            <h1>Lycée de l'Europe – Dunkerque</h1>
-            <p>Meilleurs vœux 2026 🎉</p>
-        </div>
-        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-            <i class="fas fa-moon" id="theme-icon"></i>
-        </button>
-    </header>
-
-    <div class="container">
-        
-        <!-- MENU GAUCHE -->
-        <aside>
-            <nav class="menu-box">
-                <ul>
-                    <li>
-                        <a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a>
-                    </li>
-                    <li>
-                        <a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a>
-                    </li>
-                    <li>
-                        <a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a>
-                    </li>
-                    <li>
-                        <a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a>
-                    </li>
-                    <li>
-                        <a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a>
-                    </li>
-                    <li>
-                        <a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a>
-                    </li>
-
-                    <!-- CHAT PUBLIC -->
-                    <li>
-                        <a href="chat.html"><i class="fas fa-comments"></i> Chat</a>
-                    </li>
-
-                    <!-- CHAT VIP -->
-                    <li>
-                        <a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a>
-                    </li>
-
-                    <!-- ANNIVERSAIRE JOHANN -->
-                    <li>
-                        <a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a>
-                    </li>
-
-                </ul>
-            </nav>
-        </aside>
-
-        <!-- CONTENU CENTRAL -->
-        <main>
-            <article class="card">
-                <h2>Voyage à Londres – Novembre 2025</h2>
-                <p>Du 3 au 6 novembre, nos élèves ont séjourné en famille d'accueil et visité Big Ben, London Eye, British Museum...</p>
-                <p>Ils ont également assisté à la comédie musicale <strong>Wicked</strong>.</p>
-                
-                <div class="video-container">
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/p2BLLVqvA6I?si=8qVh7uFWrCFYQUV5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                </div>
-
-                <div class="alert-box">
-                    🎆 L'ensemble du personnel vous souhaite une bonne année 2026 🎆
-                </div>
-            </article>
-
-            <!-- STATISTICS DASHBOARD -->
-            <article class="card" style="margin-top: 20px;">
-                <h2><i class="fas fa-chart-line"></i> Tableau de Bord</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="stat-info">
-                            <div class="stat-number" data-target="1250">0</div>
-                            <div class="stat-label">Élèves</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-chalkboard-teacher"></i>
-                        </div>
-                        <div class="stat-info">
-                            <div class="stat-number" data-target="85">0</div>
-                            <div class="stat-label">Professeurs</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                        <div class="stat-info">
-                            <div class="stat-number" data-target="92">0</div>
-                            <div class="stat-label">% Réussite</div>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-globe"></i>
-                        </div>
-                        <div class="stat-info">
-                            <div class="stat-number" data-target="15">0</div>
-                            <div class="stat-label">Projets Erasmus</div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-        </main>
-
-        <!-- MENU DROIT -->
-        <aside>
-            <div class="menu-box">
-                <h3>Accès Rapide</h3>
-                <ul>
-                    <li>
-                        <a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a>
-                    </li>
-                    <li>
-                        <a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement intérieur</a>
-                    </li>
-                    <li>
-                        <a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a>
-                    </li>
-                    <li>
-                        <a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a>
-                    </li>
-                    <li>
-                        <a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a>
-                    </li>
-                </ul>
-            </div>
-        </aside>
-
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">About Us</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+    </nav>
+    <div class="hero">
+        <h1>Welcome to Our Website</h1>
+        <p>Delivering the best experiences for our users</p>
+        <button>Get Started</button>
     </div>
-
-    <footer>
-        <p>site de test par des bts ciel</p>
-    </footer>
-
-    <script>
-        // Theme Toggle
-        function toggleTheme() {
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            body.classList.toggle('light-mode');
-            
-            if (body.classList.contains('light-mode')) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-                localStorage.setItem('theme', 'light');
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-                localStorage.setItem('theme', 'dark');
-            }
-        }
-
-        // Load saved theme
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            const themeIcon = document.getElementById('theme-icon');
-            
-            if (savedTheme === 'light') {
-                document.body.classList.add('light-mode');
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            }
-
-            // Animate statistics
-            const statNumbers = document.querySelectorAll('.stat-number');
-            const observerOptions = {
-                threshold: 0.5
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const target = parseInt(entry.target.getAttribute('data-target'));
-                        animateCounter(entry.target, target);
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-
-            statNumbers.forEach(stat => observer.observe(stat));
-        });
-
-        function animateCounter(element, target) {
-            let current = 0;
-            const increment = target / 50;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    element.textContent = target;
-                    clearInterval(timer);
-                } else {
-                    element.textContent = Math.floor(current);
-                }
-            }, 30);
-        }
-    </script>
-
+    <section class="cta">
+        <h2>Join Us Today</h2>
+        <button>Sign Up Now</button>
+    </section>
+    <section class="dynamic-content">
+        <div>
+            <h3>Feature One</h3>
+            <p>Describe the first key feature.</p>
+        </div>
+        <div>
+            <h3>Feature Two</h3>
+            <p>Describe the second key feature.</p>
+        </div>
+        <div>
+            <h3>Feature Three</h3>
+            <p>Describe the third key feature.</p>
+        </div>
+    </section>
 </body>
 </html>
