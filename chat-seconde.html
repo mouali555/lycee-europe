@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Classe de Seconde – Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>✨ Lycée de l'Europe ✨</h1>
+        <p>📚 La Classe de Seconde</p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="index.html" style="background: transparent; color: var(--luxury-gold); text-decoration: none; padding: 10px 20px; border: 2px solid var(--luxury-gold); border-radius: 12px; display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fas fa-house"></i> Accueil
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+</header>
+
+<div class="container">
+
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="chat-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="chat-seconde.html" class="active"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="chat-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="chat-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="chat-prepa.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="chat-evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                <li><a href="chat-discord.html"><i class="fas fa-brands fa-discord"></i> PUB DISCORD</a></li>
+                <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <article class="card">
+            <h2><i class="fas fa-book-open"></i> La Classe de Seconde</h2>
+            
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-star"></i> Année de Découverte
+                </h3>
+                <p>La classe de Seconde est une année charnière qui permet aux élèves de découvrir de nouvelles matières et de préparer leur orientation pour le cycle terminal. C'est une année d'exploration et de consolidation des acquis du collège.</p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-list-check"></i> Enseignements Obligatoires
+                </h3>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>Français : 4h</li>
+                    <li>Mathématiques : 4h</li>
+                    <li>Histoire-Géographie : 3h</li>
+                    <li>Langues vivantes (LV1 et LV2) : 5h30</li>
+                    <li>Sciences Économiques et Sociales : 1h30</li>
+                    <li>Sciences Numériques et Technologie : 1h30</li>
+                    <li>Éducation Physique et Sportive : 2h</li>
+                    <li>Sciences de la Vie et de la Terre : 1h30</li>
+                    <li>Physique-Chimie : 3h</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-compass"></i> Options et Enseignements Facultatifs
+                </h3>
+                <p>Les élèves peuvent choisir jusqu'à 2 enseignements optionnels parmi :</p>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>Langue vivante C (Italien, Chinois)</li>
+                    <li>Arts (Arts plastiques, Musique)</li>
+                    <li>EPS (Éducation Physique et Sportive)</li>
+                    <li>Langues et cultures de l'Antiquité (Latin, Grec)</li>
+                </ul>
+            </div>
+
+            <div style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(10, 10, 10, 0.6)); padding: 20px; border-radius: 12px; border-left: 4px solid var(--luxury-gold);">
+                <h3 style="color: var(--luxury-gold); margin-bottom: 12px;">
+                    <i class="fas fa-route"></i> Accompagnement à l'Orientation
+                </h3>
+                <p>Tout au long de l'année, nos élèves de Seconde bénéficient d'un accompagnement personnalisé de 2 heures par semaine ainsi que d'un suivi d'orientation avec notre conseiller d'orientation psychologue.</p>
+            </div>
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+    </aside>
+
+</div>
+
+<footer>
+    <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+</footer>
+
+<script>
+    // Theme Toggle
+    function toggleTheme() {
+        const body = document.body;
+        const themeIcon = document.getElementById('theme-icon');
+        body.classList.toggle('light-mode');
+        
+        if (body.classList.contains('light-mode')) {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'light');
+        } else {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Load saved theme
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+    });
+</script>
+
+</body>
+</html>
