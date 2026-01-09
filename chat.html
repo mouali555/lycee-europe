@@ -3,46 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat – Lycée de l'Europe</title>
+    <title>Chat Net – Lycée de l'Europe</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* STYLES SPECIFIQUES AU CHAT CYBERPUNK */
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-inline: 1.5rem;
         }
 
         .home-link {
-            background: #ffffff;
-            color: #0f172a;
+            background: transparent;
+            color: var(--neon-cyan);
             text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 999px;
+            padding: 8px 16px;
+            border: 1px solid var(--neon-cyan);
             font-size: 14px;
             font-weight: 600;
-            border: 1px solid rgba(15,23,42,0.2);
-            box-shadow: 0 4px 10px rgba(15,23,42,0.3);
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
         }
 
         .home-link:hover {
-            background: #e5e7eb;
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-cyan);
         }
 
         .chat-container {
-            background: rgba(15,23,42,0.75);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.15);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border: 1px solid #333;
             height: 75vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+        
+        /* Grille de fond dans le chat */
+        .chat-container::after {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(transparent 95%, var(--neon-cyan) 100%);
+            background-size: 100% 20px;
+            opacity: 0.05;
+            pointer-events: none;
         }
 
         #messages {
@@ -51,94 +64,148 @@
             padding-right: 10px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
+
+        /* Scrollbar Cyberpunk */
+        #messages::-webkit-scrollbar { width: 6px; }
+        #messages::-webkit-scrollbar-thumb { background: var(--neon-cyan); }
+        #messages::-webkit-scrollbar-track { background: #111; }
 
         .message-row {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            animation: fadeIn 0.3s ease-out;
         }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         .avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: linear-gradient(135deg,#38bdf8,#1d4ed8);
+            width: 40px;
+            height: 40px;
+            background: #000;
+            border: 1px solid var(--neon-pink);
+            color: var(--neon-pink);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 0 5px var(--neon-pink);
+            clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
         }
 
         .message-card {
-            background: rgba(255,255,255,0.08);
-            padding: 10px 14px;
-            border-radius: 14px;
-            max-width: 75%;
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0, 243, 255, 0.05);
+            padding: 12px 16px;
+            max-width: 80%;
+            border-left: 2px solid var(--neon-cyan);
+            color: #d1d5db;
+            position: relative;
+        }
+
+        .message-header {
+            font-size: 0.8rem;
+            color: var(--neon-cyan);
+            margin-bottom: 4px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .message-body {
+            font-size: 0.95rem;
+            font-family: 'Share Tech Mono', monospace;
         }
 
         .smart-input-bar {
             display: flex;
             align-items: center;
-            background: rgba(15,23,42,0.9);
-            border-radius: 999px;
-            padding: 10px 16px;
-            border: 1px solid rgba(255,255,255,0.15);
-            margin-top: 12px;
-            gap: 12px;
+            background: #000;
+            padding: 10px;
+            border: 1px solid #444;
+            margin-top: 15px;
+            gap: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         .smart-input-bar input {
             flex: 1;
             background: transparent;
             border: none;
-            color: white;
-            font-size: 15px;
+            color: var(--neon-cyan);
+            font-size: 16px;
+            font-family: 'Share Tech Mono', monospace;
             outline: none;
         }
+        
+        .smart-input-bar input::placeholder { color: #555; }
 
         #send-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: none;
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--neon-cyan);
+            background: rgba(0, 243, 255, 0.1);
             cursor: pointer;
-            background: linear-gradient(135deg,#38bdf8,#6366f1);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: 0.2s;
         }
 
         #send-btn svg {
             width: 20px;
             height: 20px;
-            fill: white;
+            fill: var(--neon-cyan);
         }
 
+        #send-btn:hover {
+            background: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        #send-btn:hover svg { fill: #000; }
+
+        /* Ecran de pseudo */
         #pseudo-screen {
-            background: rgba(15,23,42,0.8);
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.8);
+            padding: 30px;
+            border: 1px solid var(--neon-cyan);
             text-align: center;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
         }
 
-        #pseudo-screen input, #pseudo-screen button {
+        #pseudo-screen input {
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
             padding: 12px;
-            border-radius: 999px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
+            background: #111;
+            border: 1px solid #333;
             color: white;
+            font-family: 'Share Tech Mono', monospace;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        #pseudo-screen input:focus {
+            border-color: var(--neon-cyan);
+            outline: none;
         }
 
         #pseudo-screen button {
-            background: linear-gradient(135deg,#38bdf8,#6366f1);
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--neon-cyan);
             border: none;
-            cursor: pointer;
+            color: #000;
             font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        #pseudo-screen button:hover {
+            background: white;
+            box-shadow: 0 0 15px white;
         }
     </style>
 </head>
@@ -147,18 +214,16 @@
 
 <header>
     <div>
-        <h1>Lycée de l'Europe – Dunkerque</h1>
-        <p>Chat Public 💬</p>
+        <h1>Lycée de l'Europe</h1>
+        <p>Canal Public [OPEN]</p>
     </div>
     <a href="index.html" class="home-link">
-        <i class="fas fa-house"></i>
-        Accueil
+        <i class="fas fa-house"></i> Retour
     </a>
 </header>
 
 <div class="container">
 
-    <!-- MENU GAUCHE -->
     <aside>
         <nav class="menu-box">
             <ul>
@@ -168,37 +233,29 @@
                 <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
                 <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
                 <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
-
-                <!-- CHAT PUBLIC -->
-                <li><a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat</a></li>
-
-                <!-- CHAT VIP -->
+                <li><a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat Public</a></li>
                 <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
             </ul>
         </nav>
     </aside>
 
-    <!-- CONTENU CENTRAL -->
     <main>
         <article class="card">
-
             <div id="pseudo-screen">
-                <h2>Entrer dans le Chat</h2>
-                <p>Choisissez un pseudo pour discuter.</p>
-                <input type="text" id="pseudo" placeholder="Votre pseudo">
-                <button onclick="enterChat()">Entrer</button>
+                <h2><i class="fas fa-fingerprint"></i> Identification</h2>
+                <p>Entrez votre identifiant réseau pour rejoindre le canal.</p>
+                <input type="text" id="pseudo" placeholder="Votre Pseudo...">
+                <button onclick="enterChat()">Se Connecter</button>
             </div>
-
         </article>
     </main>
 
-    <!-- MENU DROIT -->
     <aside>
         <div class="menu-box">
             <h3>Accès Rapide</h3>
             <ul>
                 <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
-                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement intérieur</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
                 <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
                 <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
                 <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
@@ -209,10 +266,9 @@
 </div>
 
 <footer>
-    <p>site de test par des bts ciel</p>
+    <p>System v2.0 // BTS CIEL</p>
 </footer>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
@@ -228,101 +284,70 @@ firebase.initializeApp({
 });
 
 const db = firebase.firestore();
-
-/* COLLECTION DES MESSAGES PUBLICS */
 const messagesRef = db.collection("messages");
-
 let currentPseudo = null;
 
-/* Connexion */
 function enterChat() {
     const pseudo = document.getElementById("pseudo").value.trim();
-
-    if (!pseudo) {
-        alert("Veuillez entrer un pseudo.");
-        return;
-    }
-
+    if (!pseudo) { alert("ERREUR: Identifiant requis."); return; }
     currentPseudo = pseudo;
     loadChatUI();
 }
 
-/* Interface du chat */
 function loadChatUI() {
     const article = document.querySelector("main article");
-
     article.innerHTML = `
-        <h2>Chat Public 💬</h2>
+        <h2><i class="fas fa-wifi"></i> Canal Public</h2>
         <div class="chat-container">
             <div id="messages"></div>
-
             <div class="smart-input-bar">
-                <input type="text" id="message" placeholder="Écrire un message...">
+                <input type="text" id="message" placeholder="Transmettre données...">
                 <button id="send-btn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
                 </button>
             </div>
         </div>
     `;
-
     document.getElementById("send-btn").onclick = sendMessage;
-    document.getElementById("message").addEventListener("keydown", e => {
-        if (e.key === "Enter") sendMessage();
-    });
-
+    document.getElementById("message").addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
     listenMessages();
 }
 
-/* Écoute des messages */
 function listenMessages() {
     messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
         const messagesDiv = document.getElementById("messages");
         if (!messagesDiv) return;
-
         messagesDiv.innerHTML = "";
-
         snapshot.forEach(doc => {
             const data = doc.data();
-
             const row = document.createElement("div");
             row.className = "message-row";
-
-            const time = data.timestamp
-                ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})
-                : "—";
-
+            const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}) : "--:--";
+            
             row.innerHTML = `
                 <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
                 <div class="message-card">
-                    <div class="message-header"><strong>${data.pseudo}</strong> • ${time}</div>
+                    <div class="message-header">${data.pseudo} <span style="opacity:0.5; font-size:0.7em">[${time}]</span></div>
                     <div class="message-body">${data.message}</div>
                 </div>
             `;
-
             messagesDiv.appendChild(row);
         });
-
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     });
 }
 
-/* Envoi d’un message */
 async function sendMessage() {
     const input = document.getElementById("message");
     const text = input.value.trim();
     if (!text) return;
-
     await messagesRef.add({
         pseudo: currentPseudo,
         message: text,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
-
     input.value = "";
 }
 </script>
-
 </body>
 </html>
