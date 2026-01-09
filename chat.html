@@ -2,38 +2,36 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Chat Public | Lycée</title>
+    <title>Chat Public</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<header>
-    <h1>SALON PUBLIC</h1>
-    <a href="index.html" style="color: var(--accent); text-decoration: none; font-size: 0.9rem;"><i class="fas fa-arrow-left"></i> Retour</a>
-</header>
-
-<div class="container" style="grid-template-columns: 260px 1fr;">
+<div class="app-container">
     <aside>
-        <div class="menu-box">
-            <h3>Salons</h3>
-            <nav>
-                <ul>
-                    <li><a href="chat.html" class="active"><i class="fas fa-hashtag"></i> général</a></li>
-                    <li><a href="chatvip.html"><i class="fas fa-lock"></i> vip-only</a></li>
-                </ul>
-            </nav>
-        </div>
+        <div class="logo"><i class="fas fa-atom"></i> BTS CIEL</div>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-grid-2"></i> Dashboard</a></li>
+                <li><a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html" class="vip-link"><i class="fas fa-gem"></i> Espace VIP</a></li>
+            </ul>
+        </nav>
     </aside>
 
     <main>
-        <div class="card chat-container" id="chat-app">
-            <div id="messages">
-                </div>
-            <div class="smart-input-bar">
-                <input type="text" id="pseudo" placeholder="Pseudo" style="width: 120px; border-right: 1px solid var(--border);">
-                <input type="text" id="msg" placeholder="Tapez votre message ici...">
-                <button id="send-btn" onclick="envoyer()"><i class="fas fa-paper-plane"></i></button>
+        <header>
+            <h1>Salon Général <span style="font-size:1rem; color:var(--text-dim)">#public</span></h1>
+        </header>
+
+        <div class="card chat-window">
+            <div id="messages" class="messages-area"></div>
+
+            <div class="input-zone">
+                <input type="text" id="pseudo" placeholder="Pseudo" style="width: 150px;">
+                <input type="text" id="msg" placeholder="Écrivez votre message..." style="flex: 1;">
+                <button class="send" onclick="envoyer()"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
     </main>
@@ -53,31 +51,46 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    let currentPseudo = localStorage.getItem("chat_pseudo") || "";
+    document.getElementById("pseudo").value = currentPseudo;
+
     function envoyer() {
-        const p = document.getElementById("pseudo").value;
-        const m = document.getElementById("msg").value;
-        if(p && m) {
-            db.collection("messages").add({
-                pseudo: p,
-                message: m,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            document.getElementById("msg").value = "";
-        }
+        const p = document.getElementById("pseudo").value.trim();
+        const m = document.getElementById("msg").value.trim();
+        if(!p || !m) return;
+        
+        localStorage.setItem("chat_pseudo", p); // Sauvegarde le pseudo
+        currentPseudo = p;
+
+        db.collection("messages").add({
+            pseudo: p, message: m,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById("msg").value = "";
     }
 
     db.collection("messages").orderBy("timestamp").onSnapshot(snap => {
-        const box = document.getElementById("messages");
-        box.innerHTML = "";
+        const div = document.getElementById("messages");
+        div.innerHTML = "";
         snap.forEach(doc => {
-            const d = doc.data();
-            box.innerHTML += `<div class="message-row">
-                <div class="message-header">${d.pseudo}</div>
-                <div class="message-card">${d.message}</div>
-            </div>`;
+            const data = doc.data();
+            const isMe = data.pseudo === currentPseudo;
+            
+            div.innerHTML += `
+                <div class="msg ${isMe ? 'me' : ''}">
+                    <div class="msg-avatar">${data.pseudo[0].toUpperCase()}</div>
+                    <div class="msg-content">
+                        <span class="msg-pseudo">${data.pseudo}</span>
+                        ${data.message}
+                    </div>
+                </div>`;
         });
-        box.scrollTop = box.scrollHeight;
+        div.scrollTop = div.scrollHeight;
     });
+
+    // Envoi avec Entrée
+    document.getElementById("msg").addEventListener("keypress", (e) => e.key === "Enter" && envoyer());
 </script>
+
 </body>
 </html>
