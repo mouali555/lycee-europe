@@ -16,18 +16,20 @@
                 <a href="chatvip.html"><i class="fas fa-crown"></i> Elite Access</a>
             </nav>
         </aside>
+
         <main>
             <div class="top-bar">
-                <h1>Canal Général</h1>
-                <div style="font-size:0.8rem; color:var(--text-dim)"><i class="fas fa-circle" style="color:#22c55e"></i> 42 en ligne</div>
+                <h1>Salon Général</h1>
+                <div style="font-size:0.8rem; color:#22c55e"><i class="fas fa-circle"></i> Online</div>
             </div>
-            
-            <div id="chat-feed" class="chat-wrapper"></div>
+
+            <div id="chat-feed" class="chat-wrapper">
+                </div>
 
             <div class="input-area">
                 <div class="capsule">
-                    <input type="text" id="pseudo" placeholder="ID" style="width: 70px; color:var(--primary); font-weight:bold; border-right:1px solid var(--border); margin-right:15px;">
-                    <input type="text" id="msg" placeholder="Tapez votre message ici...">
+                    <input type="text" id="pseudo" placeholder="ID" style="width: 70px; font-weight: bold; border-right: 1px solid grey; margin-right: 10px;">
+                    <input type="text" id="msg" placeholder="Votre message...">
                     <button class="btn-send" onclick="envoyer()"><i class="fas fa-paper-plane"></i></button>
                 </div>
             </div>
@@ -47,7 +49,7 @@
         function envoyer() {
             const m = document.getElementById("msg").value.trim();
             const p = document.getElementById("pseudo").value.trim();
-            if(m) {
+            if(m && p) {
                 localStorage.setItem("n_id", p);
                 db.collection("messages").add({ pseudo: p, message: m, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
                 document.getElementById("msg").value = "";
@@ -61,7 +63,7 @@
                 const d = doc.data(); if(!d.timestamp) return;
                 const isMe = d.pseudo === document.getElementById("pseudo").value;
                 h += `<div class="msg-group ${isMe ? 'me' : ''}">
-                        <div style="font-size:0.7rem; color:var(--text-dim); margin:0 10px 3px 10px;">${d.pseudo}</div>
+                        <div style="font-size:0.7rem; color:grey; margin:0 5px;">${d.pseudo}</div>
                         <div class="bubble">${d.message}</div>
                       </div>`;
             });
