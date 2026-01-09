@@ -442,15 +442,15 @@
             </ul>
         </div>
 
-        <!-- CASINO SPIN THE WHEEL -->
-        <div class="menu-box casino-box">
-            <h3 style="color: gold;"><i class="fas fa-crown"></i> Casino VIP Luxe</h3>
+        <!-- CASINO SPIN THE WHEEL - Only visible after VIP login -->
+        <div class="menu-box casino-box" id="casino-section" style="display: none;">
+            <h3 style="color: gold;"><i class="fas fa-crown"></i> Roulette VIP Luxe</h3>
             <div class="wheel-container">
-                <canvas id="wheelCanvas" width="220" height="220"></canvas>
+                <canvas id="wheelCanvas" width="240" height="240"></canvas>
                 <div class="wheel-pointer">▼</div>
             </div>
             <button class="spin-button" id="spin-wheel-btn">
-                <i class="fas fa-dice"></i> Tenter sa Chance
+                <i class="fas fa-dice"></i> Lancer la Roulette
             </button>
             <div id="wheel-result"></div>
         </div>
@@ -525,6 +525,16 @@ function loadChatUI() {
     document.getElementById("send-btn").onclick = sendMessage;
     document.getElementById("message").addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
     listenMessages();
+    
+    // Show casino section after successful login
+    const casinoSection = document.getElementById('casino-section');
+    if (casinoSection) {
+        casinoSection.style.display = 'block';
+        // Re-initialize wheel after showing
+        setTimeout(() => {
+            initWheel();
+        }, 100);
+    }
 }
 
 function listenMessages() {
@@ -580,13 +590,10 @@ function toggleTheme() {
     }
 }
 
-// CASINO WHEEL GAME
+// REALISTIC EUROPEAN ROULETTE GAME
 let isSpinning = false;
 let currentRotation = 0;
 const FULL_CIRCLE = 360;
-const GOLD_COLOR = '#FFD700';
-const GOLD_DARK_COLOR = '#DAA520';
-const DARK_RED_COLOR = '#8B0000';
 
 function initWheel() {
     const canvas = document.getElementById('wheelCanvas');
@@ -595,19 +602,20 @@ function initWheel() {
     const ctx = canvas.getContext('2d');
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const radius = 90;
+    const radius = 110;
     
-    // Wheel segments
-    const segments = [
-        { label: '🎁', color: GOLD_COLOR, prize: 'Cadeau VIP' },
-        { label: '💎', color: GOLD_DARK_COLOR, prize: '100 Points' },
-        { label: '🎉', color: GOLD_COLOR, prize: 'Bonus Chat' },
-        { label: '⭐', color: GOLD_DARK_COLOR, prize: '50 Points' },
-        { label: '🏆', color: GOLD_COLOR, prize: 'Trophée' },
-        { label: '💫', color: GOLD_DARK_COLOR, prize: '25 Points' },
-        { label: '🎊', color: GOLD_COLOR, prize: 'Badge' },
-        { label: '❌', color: DARK_RED_COLOR, prize: 'Perdu' }
+    // European Roulette numbers in wheel order
+    const rouletteNumbers = [
+        0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10,
+        5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
     ];
+    
+    // Color mapping for European roulette (0 is green, odd/even pattern)
+    function getRouletteColor(num) {
+        if (num === 0) return '#2F8D2F'; // Green for 0
+        const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+        return redNumbers.includes(num) ? '#B91C1C' : '#0A0A0A'; // Red or Black
+    }
     
     function drawWheel(rotation = 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -615,9 +623,17 @@ function initWheel() {
         ctx.translate(centerX, centerY);
         ctx.rotate(rotation * Math.PI / 180);
         
-        const anglePerSegment = FULL_CIRCLE / segments.length;
+        const anglePerSegment = FULL_CIRCLE / rouletteNumbers.length;
         
-        segments.forEach((segment, i) => {
+        // Draw outer golden rim
+        ctx.beginPath();
+        ctx.arc(0, 0, radius + 5, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 6;
+        ctx.stroke();
+        
+        // Draw segments
+        rouletteNumbers.forEach((num, i) => {
             const startAngle = (i * anglePerSegment) * Math.PI / 180;
             const endAngle = ((i + 1) * anglePerSegment) * Math.PI / 180;
             
@@ -626,30 +642,40 @@ function initWheel() {
             ctx.moveTo(0, 0);
             ctx.arc(0, 0, radius, startAngle, endAngle);
             ctx.closePath();
-            ctx.fillStyle = segment.color;
+            ctx.fillStyle = getRouletteColor(num);
             ctx.fill();
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 1.5;
             ctx.stroke();
             
-            // Draw label
+            // Draw number
             ctx.save();
             ctx.rotate(startAngle + (endAngle - startAngle) / 2);
             ctx.textAlign = 'center';
-            ctx.fillStyle = '#000';
-            ctx.font = 'bold 24px Arial';
-            ctx.fillText(segment.label, radius * 0.65, 8);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 11px Arial';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+            ctx.shadowBlur = 3;
+            ctx.fillText(num.toString(), radius * 0.75, 4);
+            ctx.shadowBlur = 0;
             ctx.restore();
         });
         
-        // Center circle
+        // Center decorative circle
         ctx.beginPath();
-        ctx.arc(0, 0, 15, 0, 2 * Math.PI);
-        ctx.fillStyle = GOLD_COLOR;
+        ctx.arc(0, 0, 20, 0, 2 * Math.PI);
+        ctx.fillStyle = '#FFD700';
         ctx.fill();
-        ctx.strokeStyle = '#000';
+        ctx.strokeStyle = '#DAA520';
         ctx.lineWidth = 2;
         ctx.stroke();
+        
+        // Center star decoration
+        ctx.fillStyle = '#0A0A0A';
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('★', 0, 0);
         
         ctx.restore();
     }
@@ -657,7 +683,7 @@ function initWheel() {
     drawWheel();
     
     // Store for global access
-    window.wheelData = { canvas, ctx, segments, drawWheel };
+    window.wheelData = { canvas, ctx, rouletteNumbers, getRouletteColor, drawWheel };
 }
 
 function spinWheel() {
@@ -675,7 +701,7 @@ function spinWheel() {
     const spins = 5 + Math.random() * 3; // 5-8 full rotations
     const extraDegrees = Math.random() * FULL_CIRCLE;
     const totalRotation = spins * FULL_CIRCLE + extraDegrees;
-    const duration = 4000; // 4 seconds
+    const duration = 4500; // 4.5 seconds for more realistic feel
     const startTime = Date.now();
     
     function animate() {
@@ -694,20 +720,20 @@ function spinWheel() {
             currentRotation = (currentRotation + totalRotation) % FULL_CIRCLE;
             window.wheelData.drawWheel(currentRotation);
             
-            // Determine winner
+            // Determine winning number
             const normalizedRotation = (FULL_CIRCLE - (currentRotation % FULL_CIRCLE)) % FULL_CIRCLE;
-            const segmentAngle = FULL_CIRCLE / window.wheelData.segments.length;
+            const segmentAngle = FULL_CIRCLE / window.wheelData.rouletteNumbers.length;
             const winningIndex = Math.floor(normalizedRotation / segmentAngle);
-            const winner = window.wheelData.segments[winningIndex];
+            const winningNumber = window.wheelData.rouletteNumbers[winningIndex];
+            const winningColor = window.wheelData.getRouletteColor(winningNumber);
             
             setTimeout(() => {
-                if (winner.label === '❌') {
-                    resultDiv.textContent = '😢 ' + winner.prize + ' !';
-                    resultDiv.className = 'result-lose';
-                } else {
-                    resultDiv.textContent = '🎉 ' + winner.prize + ' !';
-                    resultDiv.className = 'result-win';
-                }
+                let colorName = 'VERT';
+                if (winningColor === '#B91C1C') colorName = 'ROUGE';
+                else if (winningColor === '#0A0A0A') colorName = 'NOIR';
+                
+                resultDiv.textContent = `🎰 ${winningNumber} ${colorName} 🎰`;
+                resultDiv.className = 'result-win';
                 
                 isSpinning = false;
                 button.disabled = false;
@@ -718,7 +744,7 @@ function spinWheel() {
     animate();
 }
 
-// Load saved theme and initialize wheel
+// Load saved theme (wheel initialization moved to after login)
 window.addEventListener('DOMContentLoaded', () => {
     const savedTheme = localStorage.getItem('theme');
     const themeIcon = document.getElementById('theme-icon');
@@ -729,10 +755,7 @@ window.addEventListener('DOMContentLoaded', () => {
         themeIcon.classList.add('fa-sun');
     }
     
-    // Initialize Casino Wheel
-    initWheel();
-    
-    // Attach spin wheel button event
+    // Attach spin wheel button event (will only work after login shows the casino)
     const spinBtn = document.getElementById('spin-wheel-btn');
     if (spinBtn) {
         spinBtn.addEventListener('click', spinWheel);
