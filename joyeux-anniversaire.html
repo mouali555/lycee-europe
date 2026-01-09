@@ -68,9 +68,50 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradientShift 3s ease infinite, bounce 2s ease-in-out infinite;
+            animation: gradientShift 3s ease infinite, bounce 2s ease-in-out infinite, sparkle 1.5s ease-in-out infinite;
             text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
             filter: drop-shadow(0 0 20px rgba(255, 0, 110, 0.6));
+            position: relative;
+        }
+        
+        .birthday-title::before,
+        .birthday-title::after {
+            content: '✨';
+            position: absolute;
+            font-size: 2rem;
+            animation: sparkleFloat 2s ease-in-out infinite;
+        }
+        
+        .birthday-title::before {
+            left: -40px;
+            top: 0;
+            animation-delay: 0s;
+        }
+        
+        .birthday-title::after {
+            right: -40px;
+            top: 0;
+            animation-delay: 1s;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 0, 110, 0.6)) brightness(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(0, 243, 255, 0.8)) brightness(1.3);
+            }
+        }
+        
+        @keyframes sparkleFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-15px) rotate(180deg);
+                opacity: 0.7;
+            }
         }
         
         @keyframes gradientShift {
@@ -304,10 +345,130 @@
                 filter: hue-rotate(360deg) brightness(1.2);
             }
         }
+
+        /* BALLOONS ANIMATION */
+        .balloon {
+            position: fixed;
+            width: 50px;
+            height: 70px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            box-shadow: 
+                inset -10px -10px 20px rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(255, 0, 110, 0.5);
+            animation: floatUp 8s ease-in infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .balloon::before {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 15px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-150vh) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Different balloon colors and delays */
+        .balloon:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+            background: linear-gradient(135deg, #00f3ff, #0ea5e9);
+        }
+
+        .balloon:nth-child(2) {
+            left: 25%;
+            animation-delay: 2s;
+            animation-duration: 10s;
+            background: linear-gradient(135deg, #ff006e, #ec4899);
+        }
+
+        .balloon:nth-child(3) {
+            left: 40%;
+            animation-delay: 4s;
+            animation-duration: 9s;
+            background: linear-gradient(135deg, #ffd60a, #fbbf24);
+        }
+
+        .balloon:nth-child(4) {
+            left: 55%;
+            animation-delay: 1s;
+            animation-duration: 11s;
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+        }
+
+        .balloon:nth-child(5) {
+            left: 70%;
+            animation-delay: 3s;
+            animation-duration: 8s;
+            background: linear-gradient(135deg, #00ff9f, #10b981);
+        }
+
+        .balloon:nth-child(6) {
+            left: 85%;
+            animation-delay: 5s;
+            animation-duration: 10s;
+            background: linear-gradient(135deg, #ff006e, #f97316);
+        }
+
+        .balloon:nth-child(7) {
+            left: 15%;
+            animation-delay: 6s;
+            animation-duration: 9s;
+            background: linear-gradient(135deg, #00f3ff, #6366f1);
+        }
+
+        .balloon:nth-child(8) {
+            left: 60%;
+            animation-delay: 7s;
+            animation-duration: 11s;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+        }
     </style>
 </head>
 
 <body>
+
+<!-- ANIMATED BALLOONS -->
+<div class="balloon"></div>
+<div class="balloon"></div>
+<div class="balloon"></div>
+<div class="balloon"></div>
+<div class="balloon"></div>
+<div class="balloon"></div>
+<div class="balloon"></div>
+<div class="balloon"></div>
 
 <header>
     <div>
