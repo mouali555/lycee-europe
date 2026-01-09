@@ -2,61 +2,76 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Nexus - Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nexus - Global Chat</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="app-container">
-    <aside>
-        <div class="logo"><i class="fas fa-microchip"></i> NEXUS</div>
-        <nav>
-            <a href="index.html"><i class="fas fa-th-large"></i> Accueil</a>
-            <a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat Global</a>
-            <a href="chatvip.html"><i class="fas fa-crown"></i> Elite Zone</a>
-        </nav>
-    </aside>
-    <main>
-        <div class="top-bar"><h1># Général</h1></div>
-        <div id="chat-feed" class="chat-wrapper"></div>
-        <div class="input-area">
-            <div class="capsule">
-                <input type="text" id="pseudo" placeholder="Pseudo" style="width: 80px; color: var(--primary); border-right: 1px solid var(--border); margin-right: 15px;">
-                <input type="text" id="msg" placeholder="Envoyer un message...">
-                <button class="btn-send" onclick="envoyer()"><i class="fas fa-paper-plane"></i></button>
+    <div class="app-container">
+        <aside>
+            <div class="logo"><i class="fas fa-terminal"></i> <span class="logo-text">NEXUS</span></div>
+            <nav>
+                <a href="index.html"><i class="fas fa-home"></i> <span>Dashboard</span></a>
+                <a href="chat.html" class="active"><i class="fas fa-comments"></i> <span>Chat</span></a>
+                <a href="chatvip.html"><i class="fas fa-crown"></i> <span>Elite</span></a>
+            </nav>
+        </aside>
+
+        <main>
+            <div class="top-bar">
+                <h1 style="font-size: 1.1rem;"># Général</h1>
+                <div style="font-size:0.7rem; color:#22c55e"><i class="fas fa-circle"></i> ONLINE</div>
             </div>
-        </div>
-    </main>
-</div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-<script>
-    const firebaseConfig = { apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM", authDomain: "lycee-europe-private.firebaseapp.com", projectId: "lycee-europe-private" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+            <div id="chat-feed" class="chat-wrapper"></div>
 
-    function envoyer() {
-        const m = document.getElementById("msg").value;
-        const p = document.getElementById("pseudo").value;
-        if(m && p) {
-            db.collection("messages").add({ pseudo: p, message: m, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-            document.getElementById("msg").value = "";
+            <div class="input-area">
+                <div class="capsule">
+                    <input type="text" id="pseudo" placeholder="ID" style="width: 60px; font-weight: bold; color: var(--primary); border-right: 1px solid #374151; margin-right: 10px;">
+                    <input type="text" id="msg" placeholder="Transmission...">
+                    <button class="btn-send" onclick="envoyer()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM", authDomain: "lycee-europe-private.firebaseapp.com", projectId: "lycee-europe-private" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let myId = localStorage.getItem("n_id") || "Agent"+Math.floor(Math.random()*99);
+        document.getElementById("pseudo").value = myId;
+
+        function envoyer() {
+            const m = document.getElementById("msg").value.trim();
+            const p = document.getElementById("pseudo").value.trim();
+            if(m && p) {
+                localStorage.setItem("n_id", p);
+                db.collection("messages").add({ pseudo: p, message: m, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                document.getElementById("msg").value = "";
+            }
         }
-    }
 
-    db.collection("messages").orderBy("timestamp").onSnapshot(snap => {
-        const feed = document.getElementById("chat-feed");
-        let html = "";
-        snap.forEach(doc => {
-            const d = doc.data();
-            const isMe = d.pseudo === document.getElementById("pseudo").value;
-            html += `<div class="msg-group ${isMe ? 'me' : ''}"><div class="bubble">${d.message}</div></div>`;
+        db.collection("messages").orderBy("timestamp").onSnapshot(snap => {
+            const feed = document.getElementById("chat-feed");
+            let h = "";
+            snap.forEach(doc => {
+                const d = doc.data(); if(!d.timestamp) return;
+                const isMe = d.pseudo === document.getElementById("pseudo").value;
+                h += `<div class="msg-group ${isMe ? 'me' : ''}">
+                        <div style="font-size:0.6rem; color:grey; margin-bottom:2px;">${d.pseudo}</div>
+                        <div class="bubble">${d.message}</div>
+                      </div>`;
+            });
+            feed.innerHTML = h;
+            feed.scrollTop = feed.scrollHeight;
         });
-        feed.innerHTML = html;
-        feed.scrollTop = feed.scrollHeight;
-    });
-    document.getElementById("msg").addEventListener("keypress", (e) => e.key === "Enter" && envoyer());
-</script>
+
+        document.getElementById("msg").addEventListener("keypress", (e) => e.key === "Enter" && envoyer());
+    </script>
 </body>
 </html>
