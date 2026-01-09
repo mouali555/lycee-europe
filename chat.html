@@ -2,116 +2,68 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Chat - Global</title>
+    <title>Nexus - Chat</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="app-container">
-    <aside>
-        <div class="logo"><i class="fas fa-microchip"></i> NEXUS</div>
-        <nav>
-            <a href="index.html"><i class="fas fa-th-large"></i> <span>Accueil</span></a>
-            <a href="chat.html" class="active"><i class="fas fa-comments"></i> <span>Messages</span></a>
-            <a href="chatvip.html"><i class="fas fa-crown"></i> <span>Elite</span></a>
-        </nav>
-    </aside>
-
-    <main>
-        <div class="top-bar">
-            <h1 id="channel-title"># Général</h1>
-            <div class="date-badge">Connecté</div>
-        </div>
-
-        <div class="channels-bar">
-            <button class="chan-btn active" onclick="switchChannel('messages', '# Général')"># Général</button>
-            <button class="chan-btn" onclick="switchChannel('cours', '# Ressources')"># Cours</button>
-            <button class="chan-btn" onclick="switchChannel('projets', '# Projets')"># Projets</button>
-        </div>
-
-        <div id="chat-feed" class="chat-wrapper"></div>
-
-        <div class="input-area">
-            <div class="capsule">
-                <input type="text" id="pseudo-input" placeholder="Pseudo" style="width:70px; border-right:1px solid var(--border); margin-right:15px;">
-                <input type="text" id="msg-input" placeholder="Écrire dans ce canal...">
-                <button class="btn-send" onclick="envoyer()"><i class="fas fa-paper-plane"></i></button>
+    <div class="app-container">
+        <aside>
+            <div class="logo">NEXUS.SYS</div>
+            <nav>
+                <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="chat.html" class="active"><i class="fas fa-comment-alt"></i> Chat Global</a>
+                <a href="chatvip.html"><i class="fas fa-crown"></i> Elite Access</a>
+            </nav>
+        </aside>
+        <main>
+            <div class="top-bar">
+                <h1>Canal Général</h1>
+                <span style="color:#22c55e; font-size: 0.8rem;"><i class="fas fa-circle"></i> Live</span>
             </div>
-        </div>
-    </main>
-</div>
+            <div id="chat-feed" class="chat-wrapper"></div>
+            <div class="input-area">
+                <div class="capsule">
+                    <input type="text" id="pseudo-input" placeholder="ID" style="width: 60px; color:var(--primary); font-weight:bold;">
+                    <input type="text" id="msg-input" placeholder="Transmission de données...">
+                    <button class="btn-send" onclick="envoyer()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = { apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM", authDomain: "lycee-europe-private.firebaseapp.com", projectId: "lycee-europe-private" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        let myId = localStorage.getItem("nexus_id") || "User"+Math.floor(Math.random()*999);
+        document.getElementById("pseudo-input").value = myId;
 
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
-        authDomain: "lycee-europe-private.firebaseapp.com",
-        projectId: "lycee-europe-private",
-        storageBucket: "lycee-europe-private.firebasestorage.app",
-        messagingSenderId: "259168134432",
-        appId: "1:259168134432:web:470f5536d9305b4cf86345"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    let currentColl = "messages";
-    let myPseudo = localStorage.getItem("chat_pseudo") || "Anonyme";
-    document.getElementById("pseudo-input").value = myPseudo;
-
-    function switchChannel(coll, title) {
-        currentColl = coll;
-        document.getElementById("channel-title").innerText = title;
-        document.querySelectorAll('.chan-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        listen();
-    }
-
-    function envoyer() {
-        const m = document.getElementById("msg-input").value.trim();
-        const p = document.getElementById("pseudo-input").value.trim();
-        if(m && p) {
-            localStorage.setItem("chat_pseudo", p);
-            db.collection(currentColl).add({
-                pseudo: p, message: m,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            document.getElementById("msg-input").value = "";
+        function envoyer() {
+            const m = document.getElementById("msg-input").value;
+            const p = document.getElementById("pseudo-input").value;
+            if(m) {
+                localStorage.setItem("nexus_id", p);
+                db.collection("messages").add({ pseudo: p, message: m, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                document.getElementById("msg-input").value = "";
+            }
         }
-    }
-
-    let unsubscribe;
-    function listen() {
-        if(unsubscribe) unsubscribe();
-        unsubscribe = db.collection(currentColl).orderBy("timestamp").onSnapshot(snap => {
+        db.collection("messages").orderBy("timestamp").onSnapshot(snap => {
             const feed = document.getElementById("chat-feed");
-            let html = "";
+            let h = "";
             snap.forEach(doc => {
-                const d = doc.data();
-                if(!d.timestamp) return;
+                const d = doc.data(); if(!d.timestamp) return;
                 const isMe = d.pseudo === document.getElementById("pseudo-input").value;
-                const time = d.timestamp.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                
-                html += `
-                <div class="msg-group ${isMe ? 'me' : ''}">
-                    <div class="msg-info"><span>${d.pseudo}</span> • <span>${time}</span></div>
-                    <div class="bubble" oncontextmenu="deleteMsg('${doc.id}'); return false;">${d.message}</div>
-                </div>`;
+                h += `<div class="msg-group ${isMe ? 'me' : ''}">
+                        <div style="font-size:0.7rem; color:#6b7280; margin-bottom:4px; padding:0 10px;">${d.pseudo}</div>
+                        <div class="bubble">${d.message}</div>
+                      </div>`;
             });
-            feed.innerHTML = html;
+            feed.innerHTML = h;
             feed.scrollTop = feed.scrollHeight;
         });
-    }
-
-    async function deleteMsg(id) {
-        if(confirm("Supprimer ce message ?")) {
-            await db.collection(currentColl).doc(id).delete();
-        }
-    }
-
-    listen();
-    document.getElementById("msg-input").addEventListener("keypress", (e) => e.key === "Enter" && envoyer());
-</script>
+        document.getElementById("msg-input").addEventListener("keypress", (e) => e.key === "Enter" && envoyer());
+    </script>
 </body>
 </html>
