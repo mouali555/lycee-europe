@@ -1,417 +1,76 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat VIP – Lycée de l'Europe</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
+    <title>Chat VIP - Casino Edition</title>
     <style>
-        /* CSS SPECIFIQUE VIP - ACCENTS VIOLETS */
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .home-link {
-            background: transparent;
-            color: var(--neon-pink);
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 1px solid var(--neon-pink);
-            font-size: 14px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            border-radius: 8px;
-        }
-
-        .home-link:hover {
-            background: var(--neon-pink);
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom right, #1a1a1d, #4e4e50);
             color: #fff;
-            box-shadow: 0 0 15px var(--neon-pink);
+            margin: 0;
+            padding: 0;
         }
-
-        .chat-container {
-            background: rgba(10, 0, 10, 0.7);
-            padding: 15px;
-            border: 1px solid var(--neon-pink);
-            height: 75vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            border-radius: 12px;
-        }
-        
-        /* Grille VIP */
-        .chat-container::after {
-            content: " ";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(transparent 95%, var(--neon-pink) 100%);
-            background-size: 100% 20px;
-            opacity: 0.1;
-            pointer-events: none;
-        }
-
-        #messages {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        #messages::-webkit-scrollbar { width: 6px; }
-        #messages::-webkit-scrollbar-thumb { background: var(--neon-pink); border-radius: 3px; }
-        #messages::-webkit-scrollbar-track { background: #111; }
-
-        .message-row { display: flex; gap: 12px; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: #000;
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            box-shadow: 0 0 5px var(--neon-cyan);
-            border-radius: 8px;
-        }
-
-        .message-card {
-            background: rgba(188, 19, 254, 0.1);
-            padding: 12px 16px;
-            max-width: 80%;
-            border-left: 2px solid var(--neon-pink);
-            color: #e5e7eb;
-            border-radius: 8px;
-        }
-
-        .message-header {
-            font-size: 0.8rem;
-            color: var(--neon-pink);
-            margin-bottom: 4px;
-            font-family: 'Orbitron', sans-serif;
-        }
-
-        .message-body {
-            font-size: 0.95rem;
-            font-family: 'Share Tech Mono', monospace;
-        }
-
-        .smart-input-bar {
-            display: flex;
-            align-items: center;
-            background: #000;
-            padding: 10px;
-            border: 1px solid var(--neon-pink);
-            margin-top: 15px;
-            gap: 10px;
-            box-shadow: 0 0 10px rgba(188, 19, 254, 0.2);
-            border-radius: 8px;
-        }
-
-        .smart-input-bar input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--neon-pink);
-            font-size: 16px;
-            font-family: 'Share Tech Mono', monospace;
-            outline: none;
-        }
-        
-        .smart-input-bar input::placeholder { color: #666; }
-
-        #send-btn {
-            width: 45px;
-            height: 45px;
-            border: 1px solid var(--neon-pink);
-            background: transparent;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-            border-radius: 8px;
-        }
-        
-        #send-btn svg { width: 20px; height: 20px; fill: var(--neon-pink); }
-        #send-btn:hover { background: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink); }
-        #send-btn:hover svg { fill: #fff; }
-
-        #access-screen {
-            background: rgba(0,0,0,0.8);
-            padding: 30px;
-            border: 1px solid var(--neon-pink);
+        .header {
+            background: #d4af37; /* Luxurious gold effect */
+            padding: 1em;
             text-align: center;
-            box-shadow: 0 0 30px rgba(188, 19, 254, 0.15);
-            border-radius: 12px;
-        }
-
-        #access-screen input {
-            width: 100%;
-            margin-top: 15px;
-            padding: 12px;
-            background: #111;
-            border: 1px solid #444;
-            color: var(--neon-pink);
-            text-align: center;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.1rem;
-            border-radius: 8px;
-        }
-        
-        #access-screen input:focus { border-color: var(--neon-pink); outline: none; }
-
-        #access-screen button {
-            width: 100%;
-            margin-top: 15px;
-            padding: 12px;
-            background: var(--neon-pink);
-            border: none;
-            color: white;
+            font-size: 2em;
             font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
         }
-        
-        #access-screen button:hover { background: white; color: var(--neon-pink); box-shadow: 0 0 15px var(--neon-pink); transform: scale(1.02); }
-
-        #error { margin-top: 10px; color: #ff0033; font-weight: bold; text-shadow: 0 0 5px #ff0033; }
+        .vip-feature {
+            margin: 2em auto;
+            padding: 2em;
+            background: rgba(0,0,0,0.8);
+            border-radius: 10px;
+            max-width: 900px;
+            text-align: center;
+        }
+        .vip-feature h2 {
+            color: #d4af37;
+        }
+        .mini-game {
+            margin-top: 2em;
+            padding: 1em;
+            background: #333;
+            border-radius: 10px;
+        }
+        .spinner {
+            display: inline-block;
+            margin-top: 1em;
+            padding: 1em 2em;
+            background: #d4af37;
+            color: #1a1a1d;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
-
 <body>
+    <div class="header">Welcome to the VIP Casino Experience</div>
 
-<header>
-    <div class="header-left">
-        <div>
-            <h1>Lycée de l'Europe</h1>
-            <p style="color:var(--neon-pink)">Canal VIP [CRYPTED]</p>
+    <div class="vip-feature">
+        <h2>Exclusive Features</h2>
+        <p>Indulge in the thrill of our exclusive VIP casino with luxurious effects that redefine glamour. Spin the wheel or test your luck at our private blackjack table.</p>
+
+        <div class="mini-game">
+            <h3>Mini-Jeu Interactive: Spin the Wheel</h3>
+            <p>Click the button below to spin the wheel and win exciting prizes!</p>
+            <button class="spinner" onclick="spinWheel()">Spin the Wheel</button>
+            <p id="result" style="margin-top: 1em; font-weight: bold;"></p>
         </div>
     </div>
-    <div class="header-right">
-        <a href="index.html" class="home-link">
-            <i class="fas fa-house"></i> Accueil
-        </a>
-        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-            <i class="fas fa-moon" id="theme-icon"></i>
-        </button>
-    </div>
-</header>
 
-<div class="container">
-
-    <aside>
-        <nav class="menu-box">
-            <ul>
-                <li><a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
-                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
-                <li><a href="chatvip.html" class="active"><i class="fas fa-lock"></i> Chat VIP</a></li>
-                <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
-            </ul>
-        </nav>
-    </aside>
-
-    <main>
-        <article class="card" style="border-color: var(--neon-pink);">
-            <div id="access-screen">
-                <h2><i class="fas fa-user-secret"></i> Accès Restreint</h2>
-                <p>Zone sécurisée. Authentification requise.</p>
-                <input type="password" id="access-code" placeholder="CODE D'ACCÈS">
-                <input type="text" id="pseudo" placeholder="IDENTIFIANT">
-                <button onclick="enterChat()">Déchiffrer & Entrer</button>
-                <p id="error"></p>
-            </div>
-        </article>
-    </main>
-
-    <aside>
-        <div class="menu-box">
-            <h3>Accès Rapide</h3>
-            <ul>
-                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
-                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
-                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
-                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
-            </ul>
-        </div>
-    </aside>
-
-</div>
-
-<footer>
-    <p>Secure Connection // BTS CIEL</p>
-</footer>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-
-<script>
-firebase.initializeApp({
-  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
-  authDomain: "lycee-europe-private.firebaseapp.com",
-  projectId: "lycee-europe-private",
-  storageBucket: "lycee-europe-private.firebasestorage.app",
-  messagingSenderId: "259168134432",
-  appId: "1:259168134432:web:470f5536d9305b4cf86345",
-  measurementId: "G-X323CMQRZR"
-});
-
-const db = firebase.firestore();
-const messagesRef = db.collection("messages_prives");
-let ACCESS_CODE = null;
-let currentPseudo = null;
-
-async function loadAccessCode() {
-    const doc = await db.collection("config").doc("access").get();
-    if(doc.exists) ACCESS_CODE = doc.data().code;
-}
-
-async function enterChat() {
-    const code = document.getElementById("access-code").value.trim();
-    const pseudo = document.getElementById("pseudo").value.trim();
-    const error = document.getElementById("error");
-
-    if (!code || !pseudo) {
-        error.textContent = "CHAMPS REQUIS MANQUANTS.";
-        return;
-    }
-    
-    // Si pas encore chargé, on charge
-    if (!ACCESS_CODE) await loadAccessCode();
-
-    if (code !== ACCESS_CODE) {
-        error.textContent = "ACCÈS REFUSÉ : CODE INVALIDE.";
-        return;
-    }
-
-    currentPseudo = pseudo;
-    loadChatUI();
-}
-
-function loadChatUI() {
-    const article = document.querySelector("main article");
-    article.innerHTML = `
-        <h2><i class="fas fa-user-shield"></i> Canal VIP</h2>
-        <div class="chat-container">
-            <div id="messages"></div>
-            <div class="smart-input-bar">
-                <input type="text" id="message" placeholder="Message crypté...">
-                <button id="send-btn">
-                    <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
-                </button>
-            </div>
-        </div>
-    `;
-    document.getElementById("send-btn").onclick = sendMessage;
-    document.getElementById("message").addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
-    listenMessages();
-}
-
-function listenMessages() {
-    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
-        const messagesDiv = document.getElementById("messages");
-        if (!messagesDiv) return;
-        messagesDiv.innerHTML = "";
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const row = document.createElement("div");
-            row.className = "message-row";
-            const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}) : "--:--";
-            
-            row.innerHTML = `
-                <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
-                <div class="message-card">
-                    <div class="message-header">${data.pseudo} <span style="opacity:0.5">[${time}]</span></div>
-                    <div class="message-body">${data.message}</div>
-                </div>
-            `;
-            messagesDiv.appendChild(row);
-        });
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    });
-}
-
-async function sendMessage() {
-    const input = document.getElementById("message");
-    const text = input.value.trim();
-    if (!text) return;
-    await messagesRef.add({
-        pseudo: currentPseudo,
-        message: text,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    input.value = "";
-}
-
-// Theme Toggle
-function toggleTheme() {
-    const body = document.body;
-    const themeIcon = document.getElementById('theme-icon');
-    body.classList.toggle('light-mode');
-    
-    if (body.classList.contains('light-mode')) {
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-        localStorage.setItem('theme', 'light');
-    } else {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-        localStorage.setItem('theme', 'dark');
-    }
-}
-
-// Load saved theme
-window.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('theme');
-    const themeIcon = document.getElementById('theme-icon');
-    
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-    }
-});
-</script>
-
+    <script>
+        // Mini-game logic
+        function spinWheel() {
+            const outcomes = ["Congratulations! You won 100 coins!", "Try again next time!", "You've unlocked a free spin!"];
+            const randomOutcome = outcomes[Math.floor(Math.random() * outcomes.length)];
+            document.getElementById('result').textContent = randomOutcome;
+        }
+    </script>
 </body>
 </html>
