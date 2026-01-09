@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les BTS - Chat | Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        header { display: flex; align-items: center; justify-content: space-between; }
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .home-link { background: transparent; color: var(--neon-cyan); text-decoration: none; padding: 8px 16px; border: 1px solid var(--neon-cyan); font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; border-radius: 8px; }
+        .home-link:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
+        :root { --neon-cyan: #00f3ff; --neon-pink: #ff006e; }
+        .room-info-banner { background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(10, 10, 10, 0.8)); border: 2px solid var(--luxury-gold); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2); }
+        .room-info-banner h3 { color: var(--luxury-gold); font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+        .room-info-banner p { color: var(--text-muted); font-family: 'Lato', sans-serif; line-height: 1.6; margin-bottom: 8px; }
+        .chat-rooms-selector { display: flex; flex-wrap: wrap; gap: 8px; padding: 15px; background: rgba(0, 0, 0, 0.3); border-radius: 12px; margin-bottom: 15px; }
+        .room-tab { padding: 8px 16px; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); color: var(--luxury-gold); text-decoration: none; border-radius: 8px; font-size: 0.9rem; transition: all 0.3s ease; font-family: 'Lato', sans-serif; }
+        .room-tab:hover { background: rgba(212, 175, 55, 0.2); border-color: var(--luxury-gold); transform: translateY(-2px); }
+        .room-tab.active { background: var(--luxury-gradient); color: var(--luxury-black); border-color: var(--luxury-gold); font-weight: 600; }
+        .chat-container { background: rgba(0, 0, 0, 0.6); padding: 15px; border: 1px solid #333; height: 60vh; display: flex; flex-direction: column; position: relative; border-radius: 12px; }
+        .chat-container::after { content: " "; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(transparent 95%, var(--neon-cyan) 100%); background-size: 100% 20px; opacity: 0.05; pointer-events: none; }
+        #messages { flex: 1; overflow-y: auto; padding-right: 10px; display: flex; flex-direction: column; gap: 15px; }
+        #messages::-webkit-scrollbar { width: 6px; }
+        #messages::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 3px; }
+        #messages::-webkit-scrollbar-track { background: #111; }
+        .message-row { display: flex; gap: 12px; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .avatar { width: 40px; height: 40px; background: #000; border: 1px solid var(--neon-pink); color: var(--neon-pink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; box-shadow: 0 0 5px var(--neon-pink); clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); }
+        .message-card { background: rgba(0, 243, 255, 0.05); padding: 12px 16px; max-width: 80%; border-left: 2px solid var(--neon-cyan); color: #d1d5db; position: relative; border-radius: 8px; }
+        .message-header { font-size: 0.8rem; color: var(--neon-cyan); margin-bottom: 4px; font-family: 'Orbitron', sans-serif; }
+        .message-body { font-size: 0.95rem; font-family: 'Share Tech Mono', monospace; }
+        .smart-input-bar { display: flex; align-items: center; background: #000; padding: 10px; border: 1px solid #444; margin-top: 15px; gap: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.5); border-radius: 8px; }
+        .smart-input-bar input { flex: 1; background: transparent; border: none; color: var(--neon-cyan); font-size: 16px; font-family: 'Share Tech Mono', monospace; outline: none; }
+        .smart-input-bar input::placeholder { color: #555; }
+        #send-btn { width: 45px; height: 45px; border: 1px solid var(--neon-cyan); background: rgba(0, 243, 255, 0.1); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; border-radius: 8px; }
+        #send-btn svg { width: 20px; height: 20px; fill: var(--neon-cyan); }
+        #send-btn:hover { background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); }
+        #send-btn:hover svg { fill: #000; }
+        #pseudo-screen { background: rgba(0,0,0,0.8); padding: 30px; border: 1px solid var(--neon-cyan); text-align: center; box-shadow: 0 0 30px rgba(0, 243, 255, 0.1); border-radius: 12px; }
+        #pseudo-screen input { width: 100%; margin-top: 15px; padding: 12px; background: #111; border: 1px solid #333; color: white; font-family: 'Share Tech Mono', monospace; text-align: center; font-size: 1.1rem; border-radius: 8px; }
+        #pseudo-screen input:focus { border-color: var(--neon-cyan); outline: none; }
+        #pseudo-screen button { width: 100%; margin-top: 15px; padding: 12px; background: var(--neon-cyan); border: none; color: #000; font-weight: bold; font-family: 'Orbitron', sans-serif; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; border-radius: 8px; transition: all 0.3s ease; }
+        #pseudo-screen button:hover { background: white; box-shadow: 0 0 15px white; transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <div>
+            <h1>Lycée de l'Europe</h1>
+            <p>Canal: Les BTS [PUBLIC]</p>
+        </div>
+    </div>
+    <div class="header-right">
+        <a href="index.html" class="home-link"><i class="fas fa-house"></i> Retour</a>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><i class="fas fa-moon" id="theme-icon"></i></button>
+    </div>
+</header>
+
+<div class="container">
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="en-construction.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <article class="card">
+            <div class="chat-rooms-selector">
+                <a href="chat-lycee.html" class="room-tab"><i class="fas fa-landmark"></i> Le Lycée</a>
+                <a href="chat-seconde.html" class="room-tab"><i class="fas fa-briefcase"></i> Seconde</a>
+                <a href="chat-bac.html" class="room-tab"><i class="fas fa-graduation-cap"></i> Baccalauréats</a>
+                <a href="chat-bts.html" class="room-tab active"><i class="fas fa-briefcase"></i> BTS</a>
+                <a href="chat-prepa.html" class="room-tab"><i class="fas fa-cogs"></i> Prépa</a>
+                <a href="chat-events.html" class="room-tab"><i class="fas fa-calendar-alt"></i> Événements</a>
+            </div>
+
+            <div class="room-info-banner">
+                <h3><i class="fas fa-briefcase"></i> Bienvenue dans le salon "Les BTS"</h3>
+                <p><strong>À propos :</strong> Ce salon est réservé aux étudiants de BTS pour échanger sur leurs projets, stages et formations professionnelles.
+                <p><strong>Le Lycée de l&#039;Europe propose plusieurs BTS dont le BTS CIEL (Cybersécurité, Informatique et réseaux, Électronique). Ces formations allient théorie et pratique avec des stages en entreprise.
+            </div>
+
+            <div id="pseudo-screen">
+                <h2><i class="fas fa-fingerprint"></i> Identification</h2>
+                <p>Entrez votre identifiant réseau pour rejoindre le canal.</p>
+                <input type="text" id="pseudo" placeholder="Votre Pseudo...">
+                <button onclick="enterChat()">Se Connecter</button>
+            </div>
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+    </aside>
+</div>
+
+<footer><p>System v2.0 // BTS CIEL</p></footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",authDomain:"lycee-europe-private.firebaseapp.com",projectId:"lycee-europe-private",storageBucket:"lycee-europe-private.firebasestorage.app",messagingSenderId:"259168134432",appId:"1:259168134432:web:470f5536d9305b4cf86345",measurementId:"G-X323CMQRZR"});
+const db=firebase.firestore();const messagesRef=db.collection("chat_bts");let currentPseudo=null;
+function enterChat(){const pseudo=document.getElementById("pseudo").value.trim();if(!pseudo){alert("ERREUR: Identifiant requis.");return;}currentPseudo=pseudo;loadChatUI();}
+function loadChatUI(){const article=document.querySelector("main article");const roomSelector=document.querySelector(".chat-rooms-selector").outerHTML;const roomInfo=document.querySelector(".room-info-banner").outerHTML;article.innerHTML=roomSelector+roomInfo+`<h2><i class="fas fa-wifi"></i> Canal: Les BTS</h2><div class="chat-container"><div id="messages"></div><div class="smart-input-bar"><input type="text" id="message" placeholder="Transmettre données..."><button id="send-btn"><svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg></button></div></div>`;document.getElementById("send-btn").onclick=sendMessage;document.getElementById("message").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage();});listenMessages();}
+function listenMessages(){messagesRef.orderBy("timestamp").onSnapshot(snapshot=>{const messagesDiv=document.getElementById("messages");if(!messagesDiv)return;messagesDiv.innerHTML="";snapshot.forEach(doc=>{const data=doc.data();const row=document.createElement("div");row.className="message-row";const time=data.timestamp?new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}):"--:--";row.innerHTML=`<div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div><div class="message-card"><div class="message-header">${data.pseudo} <span style="opacity:0.5; font-size:0.7em">[${time}]</span></div><div class="message-body">${data.message}</div></div>`;messagesDiv.appendChild(row);});messagesDiv.scrollTop=messagesDiv.scrollHeight;});}
+async function sendMessage(){const input=document.getElementById("message");const text=input.value.trim();if(!text)return;await messagesRef.add({pseudo:currentPseudo,message:text,timestamp:firebase.firestore.FieldValue.serverTimestamp()});input.value="";}
+function toggleTheme(){const body=document.body;const themeIcon=document.getElementById('theme-icon');body.classList.toggle('light-mode');if(body.classList.contains('light-mode')){themeIcon.classList.remove('fa-moon');themeIcon.classList.add('fa-sun');localStorage.setItem('theme','light');}else{themeIcon.classList.remove('fa-sun');themeIcon.classList.add('fa-moon');localStorage.setItem('theme','dark');}}
+window.addEventListener('DOMContentLoaded',()=>{const savedTheme=localStorage.getItem('theme');const themeIcon=document.getElementById('theme-icon');if(savedTheme==='light'){document.body.classList.add('light-mode');themeIcon.classList.remove('fa-moon');themeIcon.classList.add('fa-sun');}});
+</script>
+</body>
+</html>
