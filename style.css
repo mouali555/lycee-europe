@@ -901,3 +901,121 @@ header, footer {
   letter-spacing: 1px;
   font-family: 'Lato', sans-serif;
 }
+
+/* NEWS ITEMS - LUXURY STYLE */
+.news-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.news-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(212, 175, 55, 0.05);
+  border-radius: 10px;
+  border-left: 3px solid var(--luxury-gold);
+  transition: var(--transition-smooth);
+}
+
+.news-item:hover {
+  background: rgba(212, 175, 55, 0.12);
+  transform: translateX(5px);
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+}
+
+.news-icon {
+  width: 35px;
+  height: 35px;
+  background: var(--luxury-gradient);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+}
+
+.news-icon i {
+  color: var(--luxury-black);
+  font-size: 1rem;
+}
+
+.news-content h4 {
+  font-size: 0.95rem;
+  color: var(--luxury-gold);
+  margin-bottom: 3px;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+}
+
+.news-content p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+  font-family: 'Lato', sans-serif;
+}
+
+/* CONTACT INFO - LUXURY STYLE */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(212, 175, 55, 0.05);
+  border-radius: 8px;
+  transition: var(--transition-smooth);
+}
+
+.contact-item:hover {
+  background: rgba(212, 175, 55, 0.12);
+  box-shadow: 0 3px 10px rgba(212, 175, 55, 0.15);
+}
+
+.contact-item i {
+  color: var(--luxury-gold);
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.contact-item span {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-family: 'Lato', sans-serif;
+}
+
+/* Light mode adjustments for new sections */
+body.light-mode .news-item,
+body.light-mode .contact-item {
+  background: rgba(212, 175, 55, 0.08);
+}
+
+body.light-mode .news-item:hover,
+body.light-mode .contact-item:hover {
+  background: rgba(212, 175, 55, 0.15);
+}
+
+body.light-mode .news-content h4 {
+  color: var(--luxury-gold-dark);
+}
+
+body.light-mode .news-content p,
+body.light-mode .contact-item span {
+  color: var(--light-text);
+  opacity: 0.8;
+}
