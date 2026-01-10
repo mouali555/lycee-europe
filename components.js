@@ -192,6 +192,34 @@ function initScrollAnimations() {
         box.classList.add('animate-on-scroll');
         observer.observe(box);
     });
+    
+    // Observe fade-in-scroll elements
+    document.querySelectorAll('.fade-in-scroll').forEach(el => {
+        observer.observe(el);
+        // Add 'visible' class when intersecting
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    fadeObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        fadeObserver.observe(el);
+    });
+    
+    // Observe slide animations
+    document.querySelectorAll('.slide-in-left, .slide-in-right').forEach(el => {
+        const slideObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    slideObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        slideObserver.observe(el);
+    });
 }
 
 // ===========================
@@ -320,6 +348,44 @@ function showLoadingAnimation() {
 // INITIALIZE ALL COMPONENTS
 // ===========================
 
+// Scroll to top button
+function initScrollToTop() {
+    // Create scroll to top button
+    const scrollBtn = document.createElement('button');
+    scrollBtn.className = 'scroll-to-top';
+    scrollBtn.innerHTML = '<i class="fas fa-arrow-up" aria-hidden="true"></i>';
+    scrollBtn.setAttribute('aria-label', 'Retour en haut de la page');
+    document.body.appendChild(scrollBtn);
+    
+    // Show/hide on scroll
+    let lastScrollPosition = 0;
+    let ticking = false;
+    
+    window.addEventListener('scroll', () => {
+        lastScrollPosition = window.scrollY;
+        
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                if (lastScrollPosition > 300) {
+                    scrollBtn.classList.add('visible');
+                } else {
+                    scrollBtn.classList.remove('visible');
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    // Smooth scroll to top
+    scrollBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
 // Performance monitoring
 function logPerformanceMetrics() {
     if ('performance' in window && 'PerformanceObserver' in window) {
@@ -356,6 +422,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize theme toggle
     initThemeToggle();
+    
+    // Initialize scroll to top button
+    initScrollToTop();
     
     // Log performance metrics (dev mode)
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
