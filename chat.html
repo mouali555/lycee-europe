@@ -305,40 +305,60 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
-<script>
-firebase.initializeApp({
-  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
-  authDomain: "lycee-europe-private.firebaseapp.com",
-  projectId: "lycee-europe-private",
-  storageBucket: "lycee-europe-private.firebasestorage.app",
-  messagingSenderId: "259168134432",
-  appId: "1:259168134432:web:470f5536d9305b4cf86345",
-  measurementId: "G-X323CMQRZR"
-});
+<script src="components.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 
-const db = firebase.firestore();
+<script>
+// Firebase Configuration loaded from firebase-config.js
 const messagesRef = db.collection("messages");
 let currentPseudo = null;
 
-function enterChat() {
-    const pseudo = document.getElementById("pseudo").value.trim();
-    if (!pseudo) { alert("ERREUR: Identifiant requis."); return; }
-    currentPseudo = pseudo;
-    loadChatUI();
+// Color palette for avatars
+const avatarColors = [
+    '#00f5ff', '#7b2cbf', '#ff006e', '#ffd700', 
+    '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
+];
+
+function getAvatarColor(username) {
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) {
+        hash = username.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
-function loadChatUI() {
-    const article = document.querySelector("main article");
-    article.innerHTML = `
-        <h2><i class="fas fa-wifi"></i> Canal Public</h2>
-        <div class="chat-container">
-            <div id="messages"></div>
-            <div class="smart-input-bar">
-                <input type="text" id="message" placeholder="Transmettre données...">
-                <button id="send-btn">
-                    <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
-                </button>
+function formatTime(timestamp) {
+    if (!timestamp) return '--:--';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function renderMessage(data) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message';
+    
+    const avatarColor = getAvatarColor(data.pseudo);
+    const initials = data.pseudo.substring(0, 2).toUpperCase();
+    
+    messageDiv.innerHTML = `
+        <div class="message-avatar" style="background: ${avatarColor}">
+            ${initials}
+        </div>
+        <div class="message-content">
+            <div class="message-header">
+                <span class="message-author">${escapeHtml(data.pseudo)}</span>
+                <span class="message-time">${formatTime(data.timestamp)}</span>
             </div>
+            <div class="message-text">${escapeHtml(data.message)}</div>
         </div>
     `;
     document.getElementById("send-btn").onclick = sendMessage;
@@ -348,45 +368,47 @@ function loadChatUI() {
 
 function listenMessages() {
     messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
-        const messagesDiv = document.getElementById("messages");
-        if (!messagesDiv) return;
-        messagesDiv.innerHTML = "";
+        const messagesContainer = document.getElementById('messages');
+        if (!messagesContainer) return;
+        
+        messagesContainer.innerHTML = '';
+        
         snapshot.forEach(doc => {
             const data = doc.data();
-            const row = document.createElement("div");
-            row.className = "message-row";
-            const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}) : "--:--";
-            
-            row.innerHTML = `
-                <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
-                <div class="message-card">
-                    <div class="message-header">${data.pseudo} <span style="opacity:0.5; font-size:0.7em">[${time}]</span></div>
-                    <div class="message-body">${data.message}</div>
-                </div>
-            `;
-            messagesDiv.appendChild(row);
+            messagesContainer.appendChild(renderMessage(data));
         });
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Update member count (simplified - just show number of unique users)
+        const uniqueUsers = new Set();
+        snapshot.forEach(doc => {
+            uniqueUsers.add(doc.data().pseudo);
+        });
+        document.getElementById('online-count').textContent = uniqueUsers.size;
     });
 }
 
 async function sendMessage() {
-    const input = document.getElementById("message");
+    const input = document.getElementById('message-input');
     const text = input.value.trim();
-    if (!text) return;
+    
+    if (!text || !currentPseudo) return;
     
     await messagesRef.add({
         pseudo: currentPseudo,
         message: text,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
-    input.value = "";
     
-    // AI Bot Response
+    input.value = '';
+    input.style.height = 'auto';
+    
+    // Check for bot response
     checkForBotResponse(text);
 }
 
-// Simple AI Bot
+// AI Bot Assistant - KEEP THIS INTACT
 async function checkForBotResponse(message) {
     const msg = message.toLowerCase();
     let botResponse = null;
@@ -424,33 +446,57 @@ async function checkForBotResponse(message) {
     }
 }
 
-// Theme Toggle
-function toggleTheme() {
-    const body = document.body;
-    const themeIcon = document.getElementById('theme-icon');
-    body.classList.toggle('light-mode');
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    const pseudoScreen = document.getElementById('pseudo-screen');
+    const pseudoInput = document.getElementById('pseudo-input');
+    const joinBtn = document.getElementById('join-btn');
+    const sendBtn = document.getElementById('send-btn');
+    const messageInput = document.getElementById('message-input');
     
-    if (body.classList.contains('light-mode')) {
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-        localStorage.setItem('theme', 'light');
-    } else {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-        localStorage.setItem('theme', 'dark');
-    }
-}
-
-// Load saved theme
-window.addEventListener('DOMContentLoaded', () => {
-    const savedTheme = localStorage.getItem('theme');
-    const themeIcon = document.getElementById('theme-icon');
+    // Join chat
+    joinBtn.addEventListener('click', () => {
+        const username = pseudoInput.value.trim();
+        if (username.length >= 2) {
+            currentPseudo = username;
+            pseudoScreen.classList.add('hidden');
+            
+            // Start listening to messages
+            listenMessages();
+            
+            // Send join message
+            messagesRef.add({
+                pseudo: 'Système',
+                message: `${currentPseudo} a rejoint le chat ! 👋`,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } else {
+            alert('Le pseudo doit contenir au moins 2 caractères');
+        }
+    });
     
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-    }
+    // Send with Enter
+    pseudoInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            joinBtn.click();
+        }
+    });
+    
+    // Send message
+    sendBtn.addEventListener('click', sendMessage);
+    
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+    
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
 });
 </script>
 </body>
