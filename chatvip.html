@@ -680,9 +680,13 @@ async function loadAccessCode() {
         const doc = await db.collection("config").doc("access").get();
         if(doc.exists) {
             ACCESS_CODE = doc.data().code;
+        } else {
+            console.warn("Access code document not found");
         }
     } catch (error) {
         console.error("Error loading access code:", error);
+        // Fallback to hardcoded code if Firebase fails
+        ACCESS_CODE = "CIELVIP992";
     }
 }
 
