@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oups... Le Permis ! – Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* STYLES SPÉCIFIQUES POUR LA PAGE "PERMIS RATÉ" */
+        
+        :root {
+            --alert-red: #ff3333;
+            --warning-orange: #ff8c00;
+            --drama-purple: #4a0e4e;
+            --tear-blue: #00a8ff;
+        }
+        
+        /* Header spécial Alerte */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(74, 14, 78, 0.9) 0%, rgba(255, 51, 51, 0.4) 100%);
+            border-bottom: 2px solid var(--alert-red);
+        }
+        
+        .home-link {
+            background: transparent;
+            color: var(--warning-orange);
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid var(--warning-orange);
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            border-radius: 4px;
+        }
+
+        .home-link:hover {
+            background: var(--warning-orange);
+            color: #000;
+            box-shadow: 0 0 15px var(--warning-orange);
+        }
+        
+        /* Conteneur principal */
+        .fail-container {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Titre Dramatique */
+        .fail-title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 20px 0;
+            background: linear-gradient(90deg, var(--alert-red), var(--warning-orange), var(--alert-red));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 3s linear infinite;
+            text-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
+            font-family: 'Playfair Display', serif;
+        }
+
+        @keyframes textShine {
+            to {
+                background-position: 200% center;
+            }
+        }
+        
+        /* Sous-titre */
+        .fail-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        /* Conteneur Vidéo Spécial */
+        .video-wrapper {
+            margin: 30px auto;
+            max-width: 500px;
+            position: relative;
+            padding: 10px;
+            background: linear-gradient(45deg, var(--alert-red), var(--luxury-gold));
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            animation: warningPulse 2s infinite alternate;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            border-radius: 15px;
+            display: block;
+            border: 2px solid #000;
+        }
+
+        @keyframes warningPulse {
+            from { box-shadow: 0 0 20px rgba(255, 51, 51, 0.4); transform: scale(1); }
+            to { box-shadow: 0 0 40px rgba(255, 140, 0, 0.6); transform: scale(1.02); }
+        }
+        
+        /* Message de consolation (faux) */
+        .consolation-message {
+            font-size: 1.2rem;
+            margin: 30px auto;
+            max-width: 700px;
+            line-height: 1.8;
+            color: #e5e7eb;
+            padding: 25px;
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: 15px;
+            border: 1px solid var(--alert-red);
+            box-shadow: inset 0 0 20px rgba(255, 51, 51, 0.1);
+        }
+
+        .highlight-text {
+            color: var(--warning-orange);
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        /* Bouton Troll */
+        .troll-button {
+            margin: 30px auto;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--warning-orange), var(--alert-red));
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 51, 51, 0.4);
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Lato', sans-serif;
+        }
+        
+        .troll-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 51, 51, 0.6);
+        }
+
+        /* Objets qui tombent (Panneaux, bus, etc.) */
+        .falling-object {
+            position: fixed;
+            top: -50px;
+            font-size: 24px;
+            animation: fall linear forwards;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(720deg);
+            }
+        }
+
+        /* BADGE "PIÉTON CERTIFIÉ" */
+        .badge-pieton {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: 3px solid var(--luxury-gold);
+            color: var(--luxury-gold);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+            transform: rotate(-5deg);
+            background: rgba(0,0,0,0.5);
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>Lycée de l'Europe</h1>
+        <p>⚠️ Info Trafic : Un piéton de plus ⚠️</p>
+    </div>
+    <a href="index.html" class="home-link">
+        <i class="fas fa-house"></i> Accueil
+    </a>
+</header>
+
+<div class="container">
+
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
+                <li><a href="#" class="active" style="background: var(--alert-red); color: white;"><i class="fas fa-walking"></i> Club Marche à Pied</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+            </ul>
+        </nav>
+        
+        <div class="menu-box" style="margin-top: 20px;">
+            <h3>Tes Options</h3>
+            <ul style="list-style: none;">
+                <li style="margin-bottom: 10px;"><i class="fas fa-bus" style="color: var(--warning-orange);"></i> Le Bus (Ligne C1)</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-bicycle" style="color: var(--warning-orange);"></i> Le Vélo</li>
+                <li style="margin-bottom: 10px;"><i class="fas fa-shoe-prints" style="color: var(--warning-orange);"></i> Tes jambes</li>
+            </ul>
+        </div>
+    </aside>
+
+    <main>
+        <article class="card">
+            <div class="fail-container">
+                
+                <h1 class="fail-title">
+                    <i class="fas fa-car-crash"></i> PERMIS : ÉCHEC CRITIQUE <i class="fas fa-car-crash"></i>
+                </h1>
+                
+                <h2 class="fail-subtitle">
+                    "L'important, c'est de participer..."
+                </h2>
+                
+                <div class="video-wrapper">
+                    <video autoplay muted loop playsinline id="failVideo">
+                        <source src="grok_video_2026-01-02-23-06-57.mp4" type="video/mp4">
+                        Votre navigateur ne supporte pas la vidéo. Heureusement pour vous.
+                    </video>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.7);">
+                        <i class="fas fa-volume-up"></i> Cliquez pour activer le son des pleurs
+                    </div>
+                </div>
+                
+                <div class="consolation-message">
+                    <p>On a appris la "triste" nouvelle... 😢</p>
+                    <p>Ne t'inquiète pas, l'inspecteur n'était sûrement pas prêt pour ton talent de pilote.</p>
+                    <p class="highlight-text">En attendant, voici ta carte officielle :</p>
+                    
+                    <div class="badge-pieton">
+                        CERTIFIÉ PIÉTON 2026
+                    </div>
+                </div>
+                
+                <button class="troll-button" onclick="startTroll()">
+                    <i class="fas fa-bicycle"></i> Commander un vélo
+                </button>
+            </div>
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Statistiques</h3>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-times-circle" style="color: var(--alert-red);"></i>
+                    <span>Permis obtenus : 0</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-road" style="color: var(--warning-orange);"></i>
+                    <span>Trottoirs usés : 100%</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-euro-sign" style="color: var(--luxury-gold);"></i>
+                    <span>Économies Essence : Max</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert-box" style="background: rgba(255, 51, 51, 0.1); border-color: var(--alert-red); color: var(--alert-red);">
+            ⚠️ Attention : Piéton en liberté !
+        </div>
+    </aside>
+
+</div>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-bottom">
+            <p>© 2026 Lycée de l'Europe - Service d'Aide aux Sans-Permis.</p>
+            <p>Courage, ça va bien se passer (en bus). 🚌</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Activation du son au clic sur la vidéo
+    const video = document.getElementById('failVideo');
+    const videoWrapper = document.querySelector('.video-wrapper');
+    
+    videoWrapper.addEventListener('click', () => {
+        if (video.muted) {
+            video.muted = false;
+            // On s'assure que le son est monté
+            video.volume = 1.0;
+        } else {
+            video.muted = true;
+        }
+    });
+
+    // Fonction TROLL : Fait tomber des panneaux et des bus
+    function startTroll() {
+        const container = document.body;
+        const icons = ['🛑', '🚌', '🚲', '🚶', '⛔', '🚷', '💸'];
+        
+        // Jouer un petit effet sonore ici si tu veux (optionnel)
+        
+        // Créer 30 éléments qui tombent
+        for (let i = 0; i < 30; i++) {
+            const el = document.createElement('div');
+            el.className = 'falling-object';
+            el.innerText = icons[Math.floor(Math.random() * icons.length)];
+            
+            // Position aléatoire
+            el.style.left = Math.random() * 100 + 'vw';
+            
+            // Vitesse aléatoire
+            const duration = Math.random() * 3 + 2; // entre 2 et 5 secondes
+            el.style.animationDuration = duration + 's';
+            
+            // Taille aléatoire
+            el.style.fontSize = (Math.random() * 30 + 20) + 'px';
+            
+            container.appendChild(el);
+            
+            // Nettoyage
+            setTimeout(() => {
+                el.remove();
+            }, duration * 1000);
+        }
+        
+        // Changer le texte du bouton
+        const btn = document.querySelector('.troll-button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i> Bon courage !';
+        btn.style.background = "var(--luxury-gold)";
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = "";
+        }, 3000);
+    }
+</script>
+
+</body>
+</html>
