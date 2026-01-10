@@ -257,25 +257,41 @@ header p {
 
 /* LAYOUT */
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 20px auto;
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 240px;
-  gap: 20px;
-  padding: 0 12px;
+  grid-template-columns: 260px minmax(0, 1fr) 260px;
+  gap: 24px;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure main content doesn't get too narrow */
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .container {
+    grid-template-columns: 240px minmax(0, 1fr) 240px;
+    gap: 20px;
+  }
 }
 
 /* CARDS - LUXURY STYLE */
 .card {
   background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(26, 26, 26, 0.90));
   border-radius: 20px;
-  padding: 25px 30px;
+  padding: 28px 32px;
   border: 2px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.1);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.6), 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(212, 175, 55, 0.1),
+    inset 0 1px 0 rgba(212, 175, 55, 0.2);
   transition: var(--transition-smooth);
   animation: fadeInUp 0.8s ease-out;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* Luxury shimmer effect */
@@ -286,9 +302,9 @@ header p {
   left: -50%;
   width: 150%;
   height: 150%;
-  background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.08), transparent);
+  background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
   transform: rotate(45deg);
-  transition: all 0.8s ease;
+  transition: all 1s ease;
   pointer-events: none;
 }
 
@@ -298,7 +314,11 @@ header p {
 
 .card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(212, 175, 55, 0.2);
+  box-shadow: 
+    0 30px 65px rgba(0, 0, 0, 0.7), 
+    0 15px 40px rgba(0, 0, 0, 0.5),
+    0 0 45px rgba(212, 175, 55, 0.2),
+    inset 0 1px 0 rgba(212, 175, 55, 0.3);
   border-color: var(--luxury-gold);
 }
 
@@ -314,46 +334,70 @@ header p {
 }
 
 .card h2 {
-  font-size: 1.6rem;
-  margin-bottom: 15px;
+  font-size: 1.75rem;
+  margin-bottom: 18px;
   position: relative;
   font-family: 'Playfair Display', serif;
   color: var(--luxury-gold);
   font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
 }
 
 .card h2::after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: -10px;
   left: 0;
-  width: 60px;
-  height: 3px;
+  width: 70px;
+  height: 4px;
   background: var(--luxury-gradient);
   border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+}
+
+.card h3 {
+  font-size: 1.4rem;
+  margin-top: 28px;
+  margin-bottom: 16px;
+  color: var(--luxury-gold-light);
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .card p {
-  margin-bottom: 12px;
-  line-height: 1.7;
+  margin-bottom: 14px;
+  line-height: 1.8;
   font-family: 'Lato', sans-serif;
   color: var(--text-muted);
+  font-size: 1.05rem;
 }
 
 /* MENU - LUXURY STYLE */
 .menu-box {
   background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(26, 26, 26, 0.90));
   border-radius: 20px;
-  padding: 20px 22px;
+  padding: 22px 24px;
   border: 2px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 175, 55, 0.1);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.6), 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(212, 175, 55, 0.1),
+    inset 0 1px 0 rgba(212, 175, 55, 0.2);
   animation: fadeInSide 0.8s ease-out;
   transition: var(--transition-smooth);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .menu-box:hover {
-  transform: translateX(5px);
-  box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6), 0 0 35px rgba(212, 175, 55, 0.15);
+  transform: translateX(6px);
+  box-shadow: 
+    0 30px 65px rgba(0, 0, 0, 0.7), 
+    0 15px 40px rgba(0, 0, 0, 0.5),
+    0 0 45px rgba(212, 175, 55, 0.2),
+    inset 0 1px 0 rgba(212, 175, 55, 0.3);
   border-color: var(--luxury-gold);
 }
 
@@ -524,17 +568,20 @@ header p {
 
 /* FOOTER ENHANCED - LUXURY STYLE */
 footer {
-  margin-top: 30px;
-  padding: 40px 20px 20px;
+  margin-top: 40px;
+  padding: 50px 30px 25px;
   text-align: center;
   color: var(--text-muted);
   border-top: 2px solid var(--luxury-gold);
-  background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(26, 26, 26, 0.95));
+  background: linear-gradient(135deg, rgba(10, 10, 10, 0.98), rgba(26, 26, 26, 0.96));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   position: relative;
   font-family: 'Lato', sans-serif;
-  box-shadow: 0 -10px 30px rgba(212, 175, 55, 0.1);
+  box-shadow: 
+    0 -15px 40px rgba(212, 175, 55, 0.15),
+    0 -5px 20px rgba(0, 0, 0, 0.5),
+    inset 0 2px 0 rgba(212, 175, 55, 0.2);
 }
 
 footer::before {
@@ -1902,15 +1949,19 @@ body.light-mode .cookie-customize {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.3) 0%, rgba(10, 10, 10, 0.7) 100%);
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.3) 0%, rgba(10, 10, 10, 0.75) 100%);
   display: flex;
   align-items: flex-end;
-  padding: 30px;
-  transition: background 0.4s ease;
+  padding: 35px;
+  transition: background 0.5s ease;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 .hero-image-container:hover .hero-image-overlay {
-  background: linear-gradient(180deg, rgba(10, 10, 10, 0.2) 0%, rgba(10, 10, 10, 0.8) 100%);
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.2) 0%, rgba(10, 10, 10, 0.85) 100%);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
 .hero-image-text {
@@ -2103,7 +2154,8 @@ img[loading="lazy"].loaded {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 280px;
+    width: 85%;
+    max-width: 320px;
     height: 100vh;
     background: linear-gradient(135deg, rgba(10, 10, 10, 0.98), rgba(26, 26, 26, 0.98));
     backdrop-filter: blur(20px);
@@ -2113,6 +2165,7 @@ img[loading="lazy"].loaded {
     overflow-y: auto;
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-right: 2px solid var(--luxury-gold);
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.7);
   }
 
   aside.mobile-nav-open {
@@ -2125,24 +2178,34 @@ img[loading="lazy"].loaded {
 
   .container {
     padding: 0 16px;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .hero-image-container {
-    height: 250px;
+    height: 300px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+
+  .hero-image-text {
+    padding: 20px;
   }
 
   .hero-image-text h2 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+    line-height: 1.3;
   }
 
   .hero-image-text p {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 
   .cookie-content {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
+    padding: 20px;
   }
 
   .cookie-icon {
@@ -2151,31 +2214,93 @@ img[loading="lazy"].loaded {
 
   .cookie-actions {
     width: 100%;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .cookie-btn {
     flex: 1;
     justify-content: center;
     min-width: 0;
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  header {
+    padding: 16px 20px;
   }
 
   header h1 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    line-height: 1.3;
   }
 
   header p {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .card h2 {
+    font-size: 1.5rem;
+  }
+
+  .card p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .menu-box {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .menu-box a {
+    padding: 14px 12px;
+    font-size: 1rem;
+    min-height: 48px;
   }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
   .container {
     grid-template-columns: 220px minmax(0, 1fr) 220px;
-    gap: 15px;
+    gap: 18px;
   }
 
   .hero-image-container {
-    height: 320px;
+    height: 350px;
+  }
+
+  .card {
+    padding: 22px 26px;
+  }
+
+  .menu-box {
+    padding: 18px 20px;
+  }
+}
+
+/* Tablet portrait mode */
+@media (min-width: 768px) and (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+  }
+
+  aside:first-of-type {
+    display: none;
+  }
+
+  aside:last-of-type {
+    grid-row: 2;
+  }
+
+  main {
+    grid-row: 1;
   }
 }
 
@@ -2192,6 +2317,27 @@ img[loading="lazy"].loaded {
 
 /* Small mobile adjustments */
 @media (max-width: 480px) {
+  header h1 {
+    font-size: 1.2rem;
+  }
+
+  header p {
+    font-size: 0.85rem;
+  }
+
+  .hero-image-container {
+    height: 250px;
+    border-radius: 12px;
+  }
+
+  .hero-image-text h2 {
+    font-size: 1.5rem;
+  }
+
+  .hero-image-text p {
+    font-size: 0.95rem;
+  }
+
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 15px;
@@ -2206,14 +2352,48 @@ img[loading="lazy"].loaded {
   .cta-secondary {
     width: 100%;
     justify-content: center;
+    padding: 16px 24px;
+    font-size: 1rem;
   }
 
   .cookie-actions {
     flex-direction: column;
+    gap: 10px;
   }
 
   .cookie-btn {
     width: 100%;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .card h2 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Extra small devices (320px and below) */
+@media (max-width: 360px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  header {
+    padding: 12px 16px;
+  }
+
+  header h1 {
+    font-size: 1.1rem;
+  }
+
+  .hero-image-container {
+    height: 220px;
+  }
+
+  .card {
+    padding: 16px;
   }
 }
 
