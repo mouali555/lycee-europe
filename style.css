@@ -257,12 +257,22 @@ header p {
 
 /* LAYOUT */
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 20px auto;
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 240px;
-  gap: 20px;
-  padding: 0 12px;
+  grid-template-columns: 260px minmax(0, 1fr) 260px;
+  gap: 24px;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure main content doesn't get too narrow */
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .container {
+    grid-template-columns: 240px minmax(0, 1fr) 240px;
+    gap: 20px;
+  }
 }
 
 /* CARDS - LUXURY STYLE */
@@ -2103,7 +2113,8 @@ img[loading="lazy"].loaded {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 280px;
+    width: 85%;
+    max-width: 320px;
     height: 100vh;
     background: linear-gradient(135deg, rgba(10, 10, 10, 0.98), rgba(26, 26, 26, 0.98));
     backdrop-filter: blur(20px);
@@ -2113,6 +2124,7 @@ img[loading="lazy"].loaded {
     overflow-y: auto;
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-right: 2px solid var(--luxury-gold);
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.7);
   }
 
   aside.mobile-nav-open {
@@ -2125,24 +2137,34 @@ img[loading="lazy"].loaded {
 
   .container {
     padding: 0 16px;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .hero-image-container {
-    height: 250px;
+    height: 300px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+
+  .hero-image-text {
+    padding: 20px;
   }
 
   .hero-image-text h2 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+    line-height: 1.3;
   }
 
   .hero-image-text p {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 
   .cookie-content {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
+    padding: 20px;
   }
 
   .cookie-icon {
@@ -2151,31 +2173,93 @@ img[loading="lazy"].loaded {
 
   .cookie-actions {
     width: 100%;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .cookie-btn {
     flex: 1;
     justify-content: center;
     min-width: 0;
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  header {
+    padding: 16px 20px;
   }
 
   header h1 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    line-height: 1.3;
   }
 
   header p {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .card {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .card h2 {
+    font-size: 1.5rem;
+  }
+
+  .card p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .menu-box {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .menu-box a {
+    padding: 14px 12px;
+    font-size: 1rem;
+    min-height: 48px;
   }
 }
 
 @media (min-width: 768px) and (max-width: 1024px) {
   .container {
     grid-template-columns: 220px minmax(0, 1fr) 220px;
-    gap: 15px;
+    gap: 18px;
   }
 
   .hero-image-container {
-    height: 320px;
+    height: 350px;
+  }
+
+  .card {
+    padding: 22px 26px;
+  }
+
+  .menu-box {
+    padding: 18px 20px;
+  }
+}
+
+/* Tablet portrait mode */
+@media (min-width: 768px) and (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    max-width: 720px;
+  }
+
+  aside:first-of-type {
+    display: none;
+  }
+
+  aside:last-of-type {
+    grid-row: 2;
+  }
+
+  main {
+    grid-row: 1;
   }
 }
 
@@ -2192,6 +2276,27 @@ img[loading="lazy"].loaded {
 
 /* Small mobile adjustments */
 @media (max-width: 480px) {
+  header h1 {
+    font-size: 1.2rem;
+  }
+
+  header p {
+    font-size: 0.85rem;
+  }
+
+  .hero-image-container {
+    height: 250px;
+    border-radius: 12px;
+  }
+
+  .hero-image-text h2 {
+    font-size: 1.5rem;
+  }
+
+  .hero-image-text p {
+    font-size: 0.95rem;
+  }
+
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 15px;
@@ -2206,14 +2311,48 @@ img[loading="lazy"].loaded {
   .cta-secondary {
     width: 100%;
     justify-content: center;
+    padding: 16px 24px;
+    font-size: 1rem;
   }
 
   .cookie-actions {
     flex-direction: column;
+    gap: 10px;
   }
 
   .cookie-btn {
     width: 100%;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .card h2 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Extra small devices (320px and below) */
+@media (max-width: 360px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  header {
+    padding: 12px 16px;
+  }
+
+  header h1 {
+    font-size: 1.1rem;
+  }
+
+  .hero-image-container {
+    height: 220px;
+  }
+
+  .card {
+    padding: 16px;
   }
 }
 
