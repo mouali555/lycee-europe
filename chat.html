@@ -626,15 +626,29 @@
 </div>
 
 <script src="components.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
 <script>
-// MODERN CHAT FUNCTIONALITY
-let pseudo = '';
-let messages = [];
-let onlineUsers = new Set();
+// Firebase Configuration
+firebase.initializeApp({
+  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
+  authDomain: "lycee-europe-private.firebaseapp.com",
+  projectId: "lycee-europe-private",
+  storageBucket: "lycee-europe-private.firebasestorage.app",
+  messagingSenderId: "259168134432",
+  appId: "1:259168134432:web:470f5536d9305b4cf86345",
+  measurementId: "G-X323CMQRZR"
+});
+
+const db = firebase.firestore();
+const messagesRef = db.collection("messages");
+let currentPseudo = null;
 
 // Color palette for avatars
 const avatarColors = [
-    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+    '#00f5ff', '#7b2cbf', '#ff006e', '#ffd700', 
     '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
 ];
 
@@ -646,31 +660,10 @@ function getAvatarColor(username) {
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
-function formatTime(date) {
+function formatTime(timestamp) {
+    if (!timestamp) return '--:--';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-}
-
-function renderMessage(msg) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message';
-    
-    const avatarColor = getAvatarColor(msg.author);
-    const initials = msg.author.substring(0, 2).toUpperCase();
-    
-    messageDiv.innerHTML = `
-        <div class="message-avatar" style="background: ${avatarColor}">
-            ${initials}
-        </div>
-        <div class="message-content">
-            <div class="message-header">
-                <span class="message-author">${msg.author}</span>
-                <span class="message-time">${formatTime(msg.time)}</span>
-            </div>
-            <div class="message-text">${escapeHtml(msg.text)}</div>
-        </div>
-    `;
-    
-    return messageDiv;
 }
 
 function escapeHtml(text) {
@@ -679,52 +672,106 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function addMessage(author, text) {
-    const msg = {
-        author: author,
-        text: text,
-        time: new Date()
-    };
+function renderMessage(data) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message';
     
-    messages.push(msg);
-    const messagesContainer = document.getElementById('messages');
-    messagesContainer.appendChild(renderMessage(msg));
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    const avatarColor = getAvatarColor(data.pseudo);
+    const initials = data.pseudo.substring(0, 2).toUpperCase();
+    
+    messageDiv.innerHTML = `
+        <div class="message-avatar" style="background: ${avatarColor}">
+            ${initials}
+        </div>
+        <div class="message-content">
+            <div class="message-header">
+                <span class="message-author">${escapeHtml(data.pseudo)}</span>
+                <span class="message-time">${formatTime(data.timestamp)}</span>
+            </div>
+            <div class="message-text">${escapeHtml(data.message)}</div>
+        </div>
+    `;
+    
+    return messageDiv;
 }
 
-function updateMembersList() {
-    const membersList = document.getElementById('members-list');
-    const onlineCount = document.getElementById('online-count');
-    
-    membersList.innerHTML = '';
-    onlineCount.textContent = onlineUsers.size;
-    
-    Array.from(onlineUsers).sort().forEach(username => {
-        const li = document.createElement('li');
-        li.className = 'member-item';
+function listenMessages() {
+    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+        const messagesContainer = document.getElementById('messages');
+        if (!messagesContainer) return;
         
-        const avatarColor = getAvatarColor(username);
-        const initials = username.substring(0, 2).toUpperCase();
+        messagesContainer.innerHTML = '';
         
-        li.innerHTML = `
-            <div class="member-avatar" style="background: ${avatarColor}">
-                ${initials}
-            </div>
-            <span class="member-name">${username}</span>
-        `;
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            messagesContainer.appendChild(renderMessage(data));
+        });
         
-        membersList.appendChild(li);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Update member count (simplified - just show number of unique users)
+        const uniqueUsers = new Set();
+        snapshot.forEach(doc => {
+            uniqueUsers.add(doc.data().pseudo);
+        });
+        document.getElementById('online-count').textContent = uniqueUsers.size;
     });
 }
 
-function sendMessage() {
+async function sendMessage() {
     const input = document.getElementById('message-input');
     const text = input.value.trim();
     
-    if (text && pseudo) {
-        addMessage(pseudo, text);
-        input.value = '';
-        input.style.height = 'auto';
+    if (!text || !currentPseudo) return;
+    
+    await messagesRef.add({
+        pseudo: currentPseudo,
+        message: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    input.value = '';
+    input.style.height = 'auto';
+    
+    // Check for bot response
+    checkForBotResponse(text);
+}
+
+// AI Bot Assistant - KEEP THIS INTACT
+async function checkForBotResponse(message) {
+    const msg = message.toLowerCase();
+    let botResponse = null;
+    
+    // Questions about the lycée
+    if (msg.includes('horaires') || msg.includes('heures') || msg.includes('ouverture')) {
+        botResponse = "📅 Le lycée est ouvert du lundi au vendredi de 8h à 18h. Les cours commencent à 8h30.";
+    } else if (msg.includes('contact') || msg.includes('téléphone') || msg.includes('email')) {
+        botResponse = "📞 Pour nous contacter : 03 28 58 83 00 ou visitez notre page Pronote pour plus d'informations.";
+    } else if (msg.includes('bts') || msg.includes('formation')) {
+        botResponse = "🎓 Nous proposons plusieurs BTS dont BTS CIEL. Consultez la section 'Les BTS' pour plus de détails.";
+    } else if (msg.includes('erasmus')) {
+        botResponse = "🌍 Le lycée participe au programme Erasmus+ avec 15 projets actifs. Renseignez-vous auprès de vos professeurs !";
+    } else if (msg.includes('bonjour') || msg.includes('salut') || msg.includes('hello') || msg.includes('hi')) {
+        botResponse = "👋 Bonjour ! Je suis l'assistant virtuel du Lycée de l'Europe. Comment puis-je vous aider ?";
+    } else if (msg.includes('aide') || msg.includes('help') || msg.includes('?')) {
+        botResponse = "💡 Je peux vous aider avec : horaires, contact, BTS, Erasmus, règlement intérieur, événements. Posez-moi vos questions !";
+    } else if (msg.includes('règlement') || msg.includes('reglement')) {
+        botResponse = "📋 Le règlement intérieur est disponible dans le menu 'Accès Rapide' à droite.";
+    } else if (msg.includes('événements') || msg.includes('evenements') || msg.includes('activités')) {
+        botResponse = "🎉 Consultez la section 'Événements' pour voir les activités à venir. Notre dernier voyage était à Londres !";
+    } else if (msg.includes('pronote')) {
+        botResponse = "💻 Accédez à Pronote via le lien dans 'Accès Rapide' : https://0590072h.index-education.net/pronote/";
+    }
+    
+    // If we found a response, send it after a short delay
+    if (botResponse) {
+        setTimeout(async () => {
+            await messagesRef.add({
+                pseudo: "🤖 Assistant LDE",
+                message: botResponse,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }, 1500); // 1.5 second delay for realistic effect
     }
 }
 
@@ -740,13 +787,18 @@ document.addEventListener('DOMContentLoaded', () => {
     joinBtn.addEventListener('click', () => {
         const username = pseudoInput.value.trim();
         if (username.length >= 2) {
-            pseudo = username;
+            currentPseudo = username;
             pseudoScreen.classList.add('hidden');
-            onlineUsers.add(pseudo);
-            updateMembersList();
             
-            // Welcome message
-            addMessage('Système', `${pseudo} a rejoint le chat ! 👋`);
+            // Start listening to messages
+            listenMessages();
+            
+            // Send join message
+            messagesRef.add({
+                pseudo: 'Système',
+                message: `${currentPseudo} a rejoint le chat ! 👋`,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
         } else {
             alert('Le pseudo doit contenir au moins 2 caractères');
         }
@@ -774,19 +826,6 @@ document.addEventListener('DOMContentLoaded', () => {
         this.style.height = 'auto';
         this.style.height = Math.min(this.scrollHeight, 120) + 'px';
     });
-    
-    // Add some demo users
-    ['Marie', 'Thomas', 'Sophie', 'Lucas'].forEach(name => {
-        onlineUsers.add(name);
-    });
-    updateMembersList();
-    
-    // Welcome message
-    setTimeout(() => {
-        if (!pseudo) {
-            addMessage('Système', 'Bienvenue sur le chat du Lycée de l\'Europe ! 🎓');
-        }
-    }, 500);
 });
 </script>
 
