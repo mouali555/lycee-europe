@@ -3,517 +3,383 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat VIP – Lycée de l'Europe</title>
+    <title>Chat VIP – Lycée de l'Europe | Espace Exclusif</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* MODERN CHAT STYLES - Discord/Slack inspired */
-        body {
-            background: var(--secondary);
-            overflow: hidden;
-        }
-
+        /* CSS SPECIFIQUE VIP - THEME LUXE OR */
         header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: var(--space-4) var(--space-6);
-            background: var(--white);
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
         }
 
-        body.dark-mode header {
-            background: var(--gray-800);
-            border-bottom-color: var(--border);
-        }
-
-        .header-left h1 {
-            font-size: 1.25rem;
-            margin: 0;
-            color: var(--primary);
-        }
-
-        .header-left p {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin: 0;
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .header-right {
             display: flex;
-            gap: var(--space-3);
             align-items: center;
+            gap: 10px;
         }
-
+        
         .home-link {
+            background: transparent;
+            color: var(--luxury-gold);
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid var(--luxury-gold);
+            font-size: 14px;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: var(--space-2);
-            padding: var(--space-2) var(--space-4);
-            background: var(--gray-100);
-            color: var(--text-dark);
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: var(--transition-fast);
-        }
-
-        body.dark-mode .home-link {
-            background: var(--gray-700);
-            color: var(--text-dark);
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            border-radius: 12px;
+            font-family: 'Lato', sans-serif;
         }
 
         .home-link:hover {
-            background: var(--primary-light);
-            color: var(--white);
+            background: var(--luxury-gradient);
+            color: var(--luxury-black);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
         }
 
-        .chat-layout {
-            display: grid;
-            grid-template-columns: 260px 1fr 200px;
-            height: calc(100vh - 80px);
-            max-width: 1400px;
-            margin: 0 auto;
-            gap: 1px;
-            background: var(--border);
-        }
-
-        /* SIDEBAR - Channels */
-        .sidebar {
-            background: var(--white);
-            padding: var(--space-4);
-            overflow-y: auto;
-        }
-
-        body.dark-mode .sidebar {
-            background: var(--gray-800);
-        }
-
-        .channel-list {
-            list-style: none;
-        }
-
-        .channel-item {
-            padding: var(--space-3);
-            margin-bottom: var(--space-2);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-            color: var(--text-muted);
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: var(--transition-fast);
-        }
-
-        .channel-item:hover,
-        .channel-item.active {
-            background: var(--gray-100);
-            color: var(--primary);
-        }
-
-        body.dark-mode .channel-item:hover,
-        body.dark-mode .channel-item.active {
-            background: var(--gray-700);
-        }
-
-        .channel-item i {
-            font-size: 1.125rem;
-        }
-
-        /* MAIN CHAT AREA */
-        .chat-main {
-            background: var(--secondary);
+        .chat-container {
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.8), rgba(26, 26, 26, 0.7));
+            padding: 20px;
+            border: 2px solid var(--luxury-gold);
+            height: 75vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Grille VIP luxe */
+        .chat-container::after {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(transparent 95%, var(--luxury-gold) 100%);
+            background-size: 100% 25px;
+            opacity: 0.08;
+            pointer-events: none;
         }
 
-        body.dark-mode .chat-main {
-            background: var(--gray-900);
-        }
-
-        .chat-header {
-            padding: var(--space-4) var(--space-6);
-            border-bottom: 1px solid var(--border);
-            background: var(--white);
-        }
-
-        body.dark-mode .chat-header {
-            background: var(--gray-800);
-        }
-
-        .chat-header h2 {
-            margin: 0;
-            font-size: 1.125rem;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-
-        .chat-header p {
-            margin: var(--space-1) 0 0 0;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        .messages-container {
+        #messages {
             flex: 1;
             overflow-y: auto;
-            padding: var(--space-6);
+            padding-right: 10px;
             display: flex;
             flex-direction: column;
-            gap: var(--space-4);
+            gap: 15px;
+        }
+        
+        #messages::-webkit-scrollbar { width: 8px; }
+        #messages::-webkit-scrollbar-thumb { 
+            background: var(--luxury-gradient); 
+            border-radius: 4px; 
+        }
+        #messages::-webkit-scrollbar-track { background: rgba(10, 10, 10, 0.5); }
+
+        .message-row { 
+            display: flex; 
+            gap: 12px; 
+            animation: slideIn 0.4s ease-out; 
+        }
+        
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(-15px); } 
+            to { opacity: 1; transform: translateX(0); } 
         }
 
-        /* Scrollbar styling */
-        .messages-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .messages-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .messages-container::-webkit-scrollbar-thumb {
-            background: var(--gray-300);
-            border-radius: 4px;
-        }
-
-        body.dark-mode .messages-container::-webkit-scrollbar-thumb {
-            background: var(--gray-700);
-        }
-
-        .messages-container::-webkit-scrollbar-thumb:hover {
-            background: var(--gray-400);
-        }
-
-        .message {
-            display: flex;
-            gap: var(--space-3);
-            padding: var(--space-2);
-            border-radius: 8px;
-            transition: var(--transition-fast);
-            animation: fadeInUp 0.3s ease-out;
-        }
-
-        .message:hover {
-            background: var(--gray-50);
-        }
-
-        body.dark-mode .message:hover {
-            background: var(--gray-800);
-        }
-
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--primary-light);
-            color: var(--white);
-            border-radius: 50%;
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--luxury-black);
+            border: 2px solid var(--luxury-gold);
+            color: var(--luxury-gold);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1rem;
-            flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            font-family: 'Playfair Display', serif;
         }
 
-        .message-content {
-            flex: 1;
-            min-width: 0;
+        .message-card {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.12), rgba(10, 10, 10, 0.6));
+            padding: 14px 18px;
+            max-width: 80%;
+            border-left: 3px solid var(--luxury-gold);
+            color: var(--text-color);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .message-header {
-            display: flex;
-            align-items: baseline;
-            gap: var(--space-2);
-            margin-bottom: var(--space-1);
+            font-size: 0.85rem;
+            color: var(--luxury-gold);
+            margin-bottom: 6px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
         }
 
-        .message-author {
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 0.95rem;
-        }
-
-        .message-time {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .message-text {
-            color: var(--text-dark);
-            font-size: 0.95rem;
+        .message-body {
+            font-size: 1rem;
+            font-family: 'Lato', sans-serif;
             line-height: 1.5;
-            word-wrap: break-word;
         }
 
-        /* MESSAGE INPUT */
-        .message-input-container {
-            padding: var(--space-4) var(--space-6);
-            background: var(--white);
-            border-top: 1px solid var(--border);
-        }
-
-        body.dark-mode .message-input-container {
-            background: var(--gray-800);
-        }
-
-        .message-input-wrapper {
+        .smart-input-bar {
             display: flex;
-            gap: var(--space-3);
-            align-items: flex-end;
-        }
-
-        .message-input {
-            flex: 1;
-            padding: var(--space-3) var(--space-4);
-            background: var(--gray-100);
-            border: 1px solid var(--border);
+            align-items: center;
+            background: rgba(10, 10, 10, 0.9);
+            padding: 12px;
+            border: 2px solid var(--luxury-gold);
+            margin-top: 15px;
+            gap: 12px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
             border-radius: 12px;
-            color: var(--text-dark);
-            font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-            resize: none;
-            min-height: 44px;
-            max-height: 120px;
-            transition: var(--transition-fast);
         }
 
-        body.dark-mode .message-input {
-            background: var(--gray-700);
-            border-color: var(--border);
-            color: var(--text-dark);
-        }
-
-        .message-input:focus {
-            outline: none;
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .message-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .send-button {
-            width: 44px;
-            height: 44px;
-            background: var(--primary);
-            color: var(--white);
+        .smart-input-bar input {
+            flex: 1;
+            background: transparent;
             border: none;
-            border-radius: 50%;
+            color: var(--luxury-gold-light);
+            font-size: 16px;
+            font-family: 'Lato', sans-serif;
+            outline: none;
+        }
+        
+        .smart-input-bar input::placeholder { color: var(--text-muted); }
+
+        #send-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--luxury-gold);
+            background: var(--luxury-gradient);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.125rem;
-            transition: var(--transition-smooth);
-            flex-shrink: 0;
+            transition: 0.3s;
+            border-radius: 12px;
         }
-
-        .send-button:hover {
-            background: var(--primary-light);
+        
+        #send-btn svg { width: 22px; height: 22px; fill: var(--luxury-black); }
+        #send-btn:hover { 
+            background: linear-gradient(135deg, var(--accent-gold), var(--luxury-gold)); 
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); 
             transform: scale(1.05);
         }
 
-        .send-button:active {
-            transform: scale(0.95);
-        }
-
-        /* MEMBERS SIDEBAR */
-        .members-sidebar {
-            background: var(--white);
-            padding: var(--space-4);
-            overflow-y: auto;
-        }
-
-        body.dark-mode .members-sidebar {
-            background: var(--gray-800);
-        }
-
-        .members-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: var(--space-4);
-        }
-
-        .member-list {
-            list-style: none;
-        }
-
-        .member-item {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-            padding: var(--space-2);
-            margin-bottom: var(--space-2);
-            border-radius: 6px;
-            transition: var(--transition-fast);
-        }
-
-        .member-item:hover {
-            background: var(--gray-100);
-        }
-
-        body.dark-mode .member-item:hover {
-            background: var(--gray-700);
-        }
-
-        .member-avatar {
-            width: 28px;
-            height: 28px;
-            background: var(--accent);
-            color: var(--white);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.75rem;
-            position: relative;
-        }
-
-        .member-avatar::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            right: -2px;
-            width: 10px;
-            height: 10px;
-            background: var(--accent);
-            border: 2px solid var(--white);
-            border-radius: 50%;
-        }
-
-        body.dark-mode .member-avatar::after {
-            border-color: var(--gray-800);
-        }
-
-        .member-name {
-            font-size: 0.875rem;
-            color: var(--text-dark);
-            font-weight: 500;
-        }
-
-        /* PSEUDO SCREEN */
-        #pseudo-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        #pseudo-screen.hidden {
-            display: none;
-        }
-
-        .pseudo-modal {
-            background: var(--white);
-            padding: var(--space-8);
+        #access-screen {
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(26, 26, 26, 0.90));
+            padding: 40px;
+            border: 3px solid var(--luxury-gold);
+            text-align: center;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
             border-radius: 20px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: var(--shadow-xl);
-            text-align: center;
         }
 
-        body.dark-mode .pseudo-modal {
-            background: var(--gray-800);
+        #access-screen h2 {
+            color: var(--luxury-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 15px;
         }
 
-        .pseudo-modal h2 {
-            color: var(--primary);
-            margin-bottom: var(--space-4);
-        }
-
-        .pseudo-modal p {
+        #access-screen p {
             color: var(--text-muted);
-            margin-bottom: var(--space-6);
+            font-family: 'Lato', sans-serif;
+            margin-bottom: 10px;
         }
 
-        .pseudo-input {
+        #access-screen input {
             width: 100%;
-            padding: var(--space-4);
-            background: var(--gray-100);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-dark);
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
+            margin-top: 15px;
+            padding: 14px;
+            background: rgba(10, 10, 10, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            color: var(--luxury-gold-light);
             text-align: center;
-            margin-bottom: var(--space-4);
-            transition: var(--transition-fast);
-        }
-
-        body.dark-mode .pseudo-input {
-            background: var(--gray-700);
-            border-color: var(--border);
-            color: var(--text-dark);
-        }
-
-        .pseudo-input:focus {
-            outline: none;
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .pseudo-button {
-            width: 100%;
-            padding: var(--space-4);
-            background: var(--primary);
-            color: var(--white);
-            border: none;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.1rem;
             border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
+            transition: 0.3s;
+        }
+        
+        #access-screen input:focus { 
+            border-color: var(--luxury-gold); 
+            outline: none; 
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        #access-screen button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background: var(--luxury-gradient);
+            border: 2px solid var(--luxury-gold);
+            color: var(--luxury-black);
+            font-weight: bold;
+            font-family: 'Playfair Display', serif;
             cursor: pointer;
-            transition: var(--transition-smooth);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        #access-screen button:hover { 
+            background: linear-gradient(135deg, var(--accent-gold), var(--luxury-gold)); 
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); 
+            transform: scale(1.02); 
         }
 
-        .pseudo-button:hover {
-            background: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+        #error { 
+            margin-top: 15px; 
+            color: #ff4444; 
+            font-weight: bold; 
+            text-shadow: 0 0 5px #ff4444; 
+            font-family: 'Lato', sans-serif;
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .chat-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar,
-            .members-sidebar {
-                display: none;
-            }
+        /* CASINO WHEEL STYLES - LUXURY GOLD */
+        :root {
+            --casino-gold: #FFD700;
+            --casino-gold-dark: #DAA520;
+        }
+        
+        .casino-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(218, 165, 32, 0.12) 100%);
+            border: 3px solid var(--casino-gold);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+            margin-top: 20px;
         }
 
-        @media (max-width: 768px) {
-            .messages-container {
-                padding: var(--space-4);
-            }
+        .casino-box h3 {
+            color: var(--casino-gold) !important;
+        }
 
-            .message-input-container {
-                padding: var(--space-3);
-            }
+        .wheel-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 30px auto;
+            padding: 15px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.7), 
+                0 0 60px rgba(255, 215, 0, 0.5),
+                inset 0 0 20px rgba(0, 0, 0, 0.3);
+            border: 6px solid var(--casino-gold);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            color: var(--casino-gold);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+            z-index: 10;
+            animation: pointerBounce 1s ease-in-out infinite;
+        }
+
+        @keyframes pointerBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(6px); }
+        }
+
+        .spin-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold-dark));
+            border: 3px solid var(--casino-gold);
+            color: #000;
+            font-weight: 900;
+            font-size: 1.05rem;
+            cursor: pointer;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .spin-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 35px rgba(255, 215, 0, 0.7);
+            background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold));
+        }
+
+        .spin-button:active {
+            transform: scale(0.98);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        #wheel-result {
+            margin-top: 18px;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 12px;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.05rem;
+        }
+
+        .result-win {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(218, 165, 32, 0.25));
+            color: var(--casino-gold);
+            border: 2px solid var(--casino-gold);
+            animation: resultPulse 0.6s ease-out;
+        }
+
+        .result-lose {
+            background: rgba(255, 68, 68, 0.15);
+            color: #ff4444;
+            border: 2px solid #ff4444;
+            animation: resultPulse 0.6s ease-out;
+        }
+
+        @keyframes resultPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
@@ -522,12 +388,14 @@
 
 <header>
     <div class="header-left">
-        <h1><i class="fas fa-crown"></i> Chat VIP</h1>
-        <p>Lycée de l'Europe</p>
+        <div>
+            <h1 aria-label="Lycée de l'Europe">✨ Lycée de l'Europe ✨</h1>
+            <p style="color:var(--luxury-gold)" aria-label="Espace VIP Sécurisé">🔐 Espace VIP Sécurisé</p>
+        </div>
     </div>
     <div class="header-right">
         <a href="index.html" class="home-link">
-            <i class="fas fa-home"></i> Retour
+            <i class="fas fa-house"></i> Accueil
         </a>
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
             <i class="fas fa-moon" id="theme-icon"></i>
@@ -612,28 +480,20 @@
             <!-- Messages will be dynamically added here -->
         </div>
 
-        <div class="message-input-container">
-            <div class="message-input-wrapper">
-                <textarea 
-                    id="message-input" 
-                    class="message-input" 
-                    placeholder="Envoyer un message à #salon-vip..."
-                    rows="1"
-                ></textarea>
-                <button id="send-btn" class="send-button" aria-label="Envoyer">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+        <!-- CASINO SPIN THE WHEEL - Only visible after VIP login -->
+        <div class="menu-box casino-box" id="casino-section" style="display: none;">
+            <h3 style="color: gold;"><i class="fas fa-crown"></i> Roulette VIP Luxe</h3>
+            <div class="wheel-container">
+                <canvas id="wheelCanvas" width="300" height="300"></canvas>
+                <div class="wheel-pointer">▼</div>
             </div>
+            <button class="spin-button" id="spin-wheel-btn">
+                <i class="fas fa-dice"></i> Lancer la Roulette
+            </button>
+            <div id="wheel-result"></div>
         </div>
-    </div>
+    </aside>
 
-    <!-- MEMBERS SIDEBAR -->
-    <div class="members-sidebar">
-        <div class="members-title">En ligne — <span id="online-count">0</span></div>
-        <ul class="member-list" id="members-list">
-            <!-- Members will be dynamically added here -->
-        </ul>
-    </div>
 </div>
 
 <!-- PSEUDO SCREEN - VIP ACCESS -->
@@ -735,8 +595,19 @@ function renderMessage(data) {
             <div class="message-text">${escapeHtml(data.message)}</div>
         </div>
     `;
+    document.getElementById("send-btn").onclick = sendMessage;
+    document.getElementById("message").addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
+    listenMessages();
     
-    return messageDiv;
+    // Show casino section after successful login
+    const casinoSection = document.getElementById('casino-section');
+    if (casinoSection) {
+        casinoSection.style.display = 'block';
+        // Re-initialize wheel after showing
+        setTimeout(() => {
+            initWheel();
+        }, 100);
+    }
 }
 
 function listenMessages() {
@@ -841,21 +712,57 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Send message
-    sendBtn.addEventListener('click', sendMessage);
+    // Random spin
+    const spins = 5 + Math.random() * 3; // 5-8 full rotations
+    const extraDegrees = Math.random() * FULL_CIRCLE;
+    const totalRotation = spins * FULL_CIRCLE + extraDegrees;
+    const duration = 4500; // 4.5 seconds for more realistic feel
+    const startTime = Date.now();
     
-    messageInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Cubic ease-out function for smooth deceleration (slow down at the end)
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const rotation = currentRotation + totalRotation * easeOut;
+        
+        window.wheelData.drawWheel(rotation);
+        
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            currentRotation = (currentRotation + totalRotation) % FULL_CIRCLE;
+            window.wheelData.drawWheel(currentRotation);
+            
+            // Determine winning number
+            const normalizedRotation = (FULL_CIRCLE - (currentRotation % FULL_CIRCLE)) % FULL_CIRCLE;
+            const segmentAngle = FULL_CIRCLE / window.wheelData.rouletteNumbers.length;
+            const winningIndex = Math.floor(normalizedRotation / segmentAngle);
+            const winningNumber = window.wheelData.rouletteNumbers[winningIndex];
+            const winningColor = window.wheelData.getRouletteColor(winningNumber);
+            
+            setTimeout(() => {
+                let colorName = 'VERT';
+                if (winningColor === '#B91C1C') colorName = 'ROUGE';
+                else if (winningColor === '#0A0A0A') colorName = 'NOIR';
+                
+                resultDiv.textContent = `🎰 ${winningNumber} ${colorName} 🎰`;
+                resultDiv.className = 'result-win';
+                
+                isSpinning = false;
+                button.disabled = false;
+            }, 500);
         }
-    });
+    }
     
-    // Auto-resize textarea
-    messageInput.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-    });
+    animate();
+}
+
+// Load saved theme (wheel initialization moved to after login)
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    const themeIcon = document.getElementById('theme-icon');
     
     // Initialize Casino Roulette
     initWheel();
