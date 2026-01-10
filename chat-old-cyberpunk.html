@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Net – Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        /* STYLES SPECIFIQUES AU CHAT CYBERPUNK */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .home-link {
+            background: transparent;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid var(--neon-cyan);
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            border-radius: 8px;
+        }
+
+        .home-link:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        .chat-container {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(10, 10, 20, 0.9));
+            padding: 20px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            height: 75vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border-radius: 16px;
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.7),
+                0 0 30px rgba(0, 243, 255, 0.1),
+                inset 0 1px 0 rgba(0, 243, 255, 0.2);
+        }
+        
+        /* Grille de fond dans le chat */
+        .chat-container::after {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(transparent 95%, var(--neon-cyan) 100%);
+            background-size: 100% 20px;
+            opacity: 0.03;
+            pointer-events: none;
+            border-radius: 16px;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+
+        /* Scrollbar Cyberpunk Premium */
+        #messages::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        
+        #messages::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, var(--neon-cyan), var(--neon-pink)); 
+            border-radius: 4px; 
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        
+        #messages::-webkit-scrollbar-thumb:hover { 
+            background: linear-gradient(180deg, #00f3ff, #ff006e);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.8);
+        }
+        
+        #messages::-webkit-scrollbar-track { 
+            background: rgba(0, 0, 0, 0.3); 
+            border-radius: 4px;
+        }
+
+        .message-row {
+            display: flex;
+            gap: 14px;
+            animation: slideInMessage 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 4px;
+        }
+        
+        @keyframes slideInMessage { 
+            from { 
+                opacity: 0; 
+                transform: translateY(15px) scale(0.95); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            } 
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(15, 15, 30, 0.9));
+            border: 2px solid var(--neon-pink);
+            color: var(--neon-pink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 
+                0 4px 12px rgba(255, 0, 110, 0.3),
+                0 0 20px rgba(255, 0, 110, 0.15),
+                inset 0 1px 0 rgba(255, 0, 110, 0.3);
+            clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+            flex-shrink: 0;
+        }
+
+        .message-card {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(0, 243, 255, 0.03));
+            padding: 14px 18px;
+            max-width: 75%;
+            border-left: 3px solid var(--neon-cyan);
+            color: #e5e7eb;
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                0 1px 3px rgba(0, 243, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .message-card:hover {
+            transform: translateX(4px);
+            box-shadow: 
+                0 6px 16px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        .message-header {
+            font-size: 0.85rem;
+            color: var(--neon-cyan);
+            margin-bottom: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-body {
+            font-size: 0.98rem;
+            font-family: 'Share Tech Mono', monospace;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .smart-input-bar {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(10, 10, 20, 0.95));
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            margin-top: 16px;
+            gap: 12px;
+            box-shadow: 
+                0 -4px 20px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(0, 243, 255, 0.1),
+                inset 0 1px 0 rgba(0, 243, 255, 0.2);
+            border-radius: 12px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .smart-input-bar:focus-within {
+            border-color: var(--neon-cyan);
+            box-shadow: 
+                0 -4px 20px rgba(0, 0, 0, 0.5),
+                0 0 25px rgba(0, 243, 255, 0.3),
+                inset 0 1px 0 rgba(0, 243, 255, 0.3);
+        }
+
+        .smart-input-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--neon-cyan);
+            font-size: 16px;
+            font-family: 'Share Tech Mono', monospace;
+            outline: none;
+            padding: 8px 0;
+        }
+        
+        .smart-input-bar input::placeholder { 
+            color: rgba(255, 255, 255, 0.3); 
+        }
+
+        #send-btn {
+            width: 48px;
+            height: 48px;
+            border: 2px solid var(--neon-cyan);
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(0, 243, 255, 0.05));
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 243, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        #send-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--neon-cyan);
+            transition: all 0.3s ease;
+        }
+
+        #send-btn:hover {
+            background: var(--neon-cyan);
+            box-shadow: 
+                0 6px 20px rgba(0, 243, 255, 0.4),
+                0 0 30px rgba(0, 243, 255, 0.6);
+            transform: translateY(-2px);
+        }
+        
+        #send-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+        
+        #send-btn:hover svg { 
+            fill: #000; 
+            transform: scale(1.1);
+        }
+
+        /* Ecran de pseudo */
+        #pseudo-screen {
+            background: rgba(0,0,0,0.8);
+            padding: 30px;
+            border: 1px solid var(--neon-cyan);
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        #pseudo-screen input {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            color: white;
+            font-family: 'Share Tech Mono', monospace;
+            text-align: center;
+            font-size: 1.1rem;
+            border-radius: 8px;
+        }
+
+        #pseudo-screen input:focus {
+            border-color: var(--neon-cyan);
+            outline: none;
+        }
+
+        #pseudo-screen button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--neon-cyan);
+            border: none;
+            color: #000;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        #pseudo-screen button:hover {
+            background: white;
+            box-shadow: 0 0 15px white;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-left">
+        <div>
+            <h1>Lycée de l'Europe</h1>
+            <p>Canal Public [OPEN]</p>
+        </div>
+    </div>
+    <div class="header-right">
+        <a href="index.html" class="home-link">
+            <i class="fas fa-house"></i> Retour
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+</header>
+
+<div class="container">
+
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="la-classe-de-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="la-prepa-ptsi-pt.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html" class="active"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <article class="card">
+            <div id="pseudo-screen">
+                <h2><i class="fas fa-fingerprint"></i> Identification</h2>
+                <p>Entrez votre identifiant réseau pour rejoindre le canal.</p>
+                <input type="text" id="pseudo" placeholder="Votre Pseudo...">
+                <button onclick="enterChat()">Se Connecter</button>
+            </div>
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+    </aside>
+
+</div>
+
+<footer>
+    <p>System v2.0 // BTS CIEL</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
+  authDomain: "lycee-europe-private.firebaseapp.com",
+  projectId: "lycee-europe-private",
+  storageBucket: "lycee-europe-private.firebasestorage.app",
+  messagingSenderId: "259168134432",
+  appId: "1:259168134432:web:470f5536d9305b4cf86345",
+  measurementId: "G-X323CMQRZR"
+});
+
+const db = firebase.firestore();
+const messagesRef = db.collection("messages");
+let currentPseudo = null;
+
+function enterChat() {
+    const pseudo = document.getElementById("pseudo").value.trim();
+    if (!pseudo) { alert("ERREUR: Identifiant requis."); return; }
+    currentPseudo = pseudo;
+    loadChatUI();
+}
+
+function loadChatUI() {
+    const article = document.querySelector("main article");
+    article.innerHTML = `
+        <h2><i class="fas fa-wifi"></i> Canal Public</h2>
+        <div class="chat-container">
+            <div id="messages"></div>
+            <div class="smart-input-bar">
+                <input type="text" id="message" placeholder="Transmettre données...">
+                <button id="send-btn">
+                    <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+                </button>
+            </div>
+        </div>
+    `;
+    document.getElementById("send-btn").onclick = sendMessage;
+    document.getElementById("message").addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
+    listenMessages();
+}
+
+function listenMessages() {
+    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+        const messagesDiv = document.getElementById("messages");
+        if (!messagesDiv) return;
+        messagesDiv.innerHTML = "";
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const row = document.createElement("div");
+            row.className = "message-row";
+            const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}) : "--:--";
+            
+            row.innerHTML = `
+                <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
+                <div class="message-card">
+                    <div class="message-header">${data.pseudo} <span style="opacity:0.5; font-size:0.7em">[${time}]</span></div>
+                    <div class="message-body">${data.message}</div>
+                </div>
+            `;
+            messagesDiv.appendChild(row);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+}
+
+async function sendMessage() {
+    const input = document.getElementById("message");
+    const text = input.value.trim();
+    if (!text) return;
+    
+    await messagesRef.add({
+        pseudo: currentPseudo,
+        message: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    input.value = "";
+    
+    // AI Bot Response
+    checkForBotResponse(text);
+}
+
+// Simple AI Bot
+async function checkForBotResponse(message) {
+    const msg = message.toLowerCase();
+    let botResponse = null;
+    
+    // Questions about the lycée
+    if (msg.includes('horaires') || msg.includes('heures') || msg.includes('ouverture')) {
+        botResponse = "📅 Le lycée est ouvert du lundi au vendredi de 8h à 18h. Les cours commencent à 8h30.";
+    } else if (msg.includes('contact') || msg.includes('téléphone') || msg.includes('email')) {
+        botResponse = "📞 Pour nous contacter : 03 28 58 83 00 ou visitez notre page Pronote pour plus d'informations.";
+    } else if (msg.includes('bts') || msg.includes('formation')) {
+        botResponse = "🎓 Nous proposons plusieurs BTS dont BTS CIEL. Consultez la section 'Les BTS' pour plus de détails.";
+    } else if (msg.includes('erasmus')) {
+        botResponse = "🌍 Le lycée participe au programme Erasmus+ avec 15 projets actifs. Renseignez-vous auprès de vos professeurs !";
+    } else if (msg.includes('bonjour') || msg.includes('salut') || msg.includes('hello') || msg.includes('hi')) {
+        botResponse = "👋 Bonjour ! Je suis l'assistant virtuel du Lycée de l'Europe. Comment puis-je vous aider ?";
+    } else if (msg.includes('aide') || msg.includes('help') || msg.includes('?')) {
+        botResponse = "💡 Je peux vous aider avec : horaires, contact, BTS, Erasmus, règlement intérieur, événements. Posez-moi vos questions !";
+    } else if (msg.includes('règlement') || msg.includes('reglement')) {
+        botResponse = "📋 Le règlement intérieur est disponible dans le menu 'Accès Rapide' à droite.";
+    } else if (msg.includes('événements') || msg.includes('evenements') || msg.includes('activités')) {
+        botResponse = "🎉 Consultez la section 'Événements' pour voir les activités à venir. Notre dernier voyage était à Londres !";
+    } else if (msg.includes('pronote')) {
+        botResponse = "💻 Accédez à Pronote via le lien dans 'Accès Rapide' : https://0590072h.index-education.net/pronote/";
+    }
+    
+    // If we found a response, send it after a short delay
+    if (botResponse) {
+        setTimeout(async () => {
+            await messagesRef.add({
+                pseudo: "🤖 Assistant LDE",
+                message: botResponse,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }, 1500); // 1.5 second delay for realistic effect
+    }
+}
+
+// Theme Toggle
+function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('theme-icon');
+    body.classList.toggle('light-mode');
+    
+    if (body.classList.contains('light-mode')) {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+        localStorage.setItem('theme', 'light');
+    } else {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// Load saved theme
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    const themeIcon = document.getElementById('theme-icon');
+    
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+    }
+});
+</script>
+</body>
+</html>
