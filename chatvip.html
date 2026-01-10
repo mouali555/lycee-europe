@@ -656,13 +656,18 @@ function initWheel() {
             
             // Draw number
             ctx.save();
-            ctx.rotate(startAngle + (endAngle - startAngle) / 2);
+            const midAngle = startAngle + (endAngle - startAngle) / 2;
+            ctx.rotate(midAngle);
+            ctx.translate(radius * 0.75, 0);
+            // Rotate text to keep it upright (facing outward from center)
+            ctx.rotate(Math.PI / 2);
             ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = '#FFFFFF';
             ctx.font = 'bold 14px Arial'; // Increased from 11px to 14px
             ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
             ctx.shadowBlur = 4;
-            ctx.fillText(num.toString(), radius * 0.75, 5);
+            ctx.fillText(num.toString(), 0, 0);
             ctx.shadowBlur = 0;
             ctx.restore();
         });
