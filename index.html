@@ -14,153 +14,49 @@
 <body>
 
     <header>
-        <div>
-            <h1 aria-label="Lycée de l'Europe - Dunkerque">✨ Lycée de l'Europe – Dunkerque ✨</h1>
-            <p aria-label="Meilleurs vœux pour une année 2026 exceptionnelle">🎊 Meilleurs vœux pour une année 2026 exceptionnelle 🎊</p>
+        <div class="header-top">
+            <div>
+                <h1 aria-label="Lycée de l'Europe - Dunkerque">Lycée de l'Europe – Dunkerque</h1>
+                <p aria-label="Meilleurs vœux pour une année 2026 exceptionnelle">Meilleurs vœux pour une année 2026 exceptionnelle</p>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
         </div>
-        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-            <i class="fas fa-moon" id="theme-icon"></i>
-        </button>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="la-classe-de-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="la-prepa-ptsi-pt.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat</a></li>
+            </ul>
+        </nav>
     </header>
 
     <div class="container">
-        
-        <!-- MENU GAUCHE -->
-        <aside>
-            <nav class="menu-box">
-                <ul>
-                    <li>
-                        <a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a>
-                    </li>
-                    <li>
-                        <a href="la-classe-de-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a>
-                    </li>
-                    <li>
-                        <a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a>
-                    </li>
-                    <li>
-                        <a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a>
-                    </li>
-                    <li>
-                        <a href="la-prepa-ptsi-pt.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a>
-                    </li>
-                    <li>
-                        <a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a>
-                    </li>
-
-                    <!-- CHAT PUBLIC -->
-                    <li>
-                        <a href="chat.html"><i class="fas fa-comments"></i> Chat</a>
-                    </li>
-
-                    <!-- CHAT VIP -->
-                    <li>
-                        <a href="chatvip.html"><i class="fas fa-lock"></i> Chat VIP</a>
-                    </li>
-
-                    <!-- ANNIVERSAIRE JOHANN -->
-                    <li>
-                        <a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a>
-                    </li>
-
-                    <!-- LE RENARD ET LA BELETTE -->
-                    <li>
-                        <a href="le-renard-et-la-belette.html"><i class="fas fa-video"></i> Le renard et la belette</a>
-                    </li>
-                    
-                    <li>
-                        <a href="permis-rate.html"><i class="fas fa-car"></i> Le permis de romeo</a>
-                    </li>
-
-                </ul>
-            </nav>
-
-            <!-- CERTIFICATIONS & LABELS -->
-            <div class="menu-box" style="margin-top: 20px;">
-                <h3>Certifications & Labels</h3>
-                <div class="certifications-list">
-                    <div class="certification-item">
-                        <i class="fas fa-landmark"></i>
-                        <span>Éducation Nationale</span>
-                    </div>
-                    <div class="certification-item">
-                        <i class="fas fa-flag"></i>
-                        <span>Programme Erasmus+</span>
-                    </div>
-                    <div class="certification-item">
-                        <i class="fas fa-award"></i>
-                        <span>Label Lycée des Métiers</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CONTACT RAPIDE -->
-            <div class="menu-box" style="margin-top: 20px;">
-                <h3>Contact Rapide</h3>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>530 Av. de l'Université<br>59140 Dunkerque</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>03 28 58 72 00</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>ce.0590072h@ac-lille.fr</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIE AU LYCÉE -->
-            <div class="menu-box" style="margin-top: 20px;">
-                <h3>Vie au Lycée</h3>
-                <div class="school-life-list">
-                    <div class="school-life-item">
-                        <i class="fas fa-utensils"></i>
-                        <span>Restauration</span>
-                    </div>
-                    <div class="school-life-item">
-                        <i class="fas fa-home"></i>
-                        <span>Internat</span>
-                    </div>
-                    <div class="school-life-item">
-                        <i class="fas fa-book"></i>
-                        <span>CDI</span>
-                    </div>
-                    <div class="school-life-item">
-                        <i class="fas fa-camera"></i>
-                        <span>Club Photo</span>
-                    </div>
-                    <div class="school-life-item">
-                        <i class="fas fa-masks-theater"></i>
-                        <span>Activités culturelles</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
         <!-- CONTENU CENTRAL -->
         <main>
             <!-- HERO SECTION -->
             <article class="card hero-section">
                 <div class="hero-content">
                     <div class="hero-badge">
-                        <i class="fas fa-crown"></i>
-                        <span>Excellence • Innovation • Prestige</span>
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Excellence • Innovation • Ouverture</span>
                     </div>
                     <h1 class="hero-title">Bienvenue au Lycée de l'Europe</h1>
                     <p class="hero-description">
                         Une institution d'excellence où chaque élève forge son avenir. 
-                        Découvrez un environnement prestigieux alliant tradition académique, 
-                        innovation pédagogique et ouverture internationale. 
+                        Découvrez un environnement académique alliant tradition pédagogique, 
+                        innovation et ouverture internationale. 
                         Votre succès commence ici.
                     </p>
                     <div class="hero-cta-group">
                         <a href="formations.html" class="cta-primary">
                             <i class="fas fa-graduation-cap"></i>
-                            <span>Nos Formations d'Excellence</span>
+                            <span>Nos Formations</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
                         <a href="chat.html" class="cta-secondary">
@@ -181,7 +77,7 @@
                 </div>
 
                 <div class="alert-box">
-                    🎆 L'ensemble du personnel vous souhaite une magnifique année 2026 placée sous le signe de la réussite 🎆
+                    L'ensemble du personnel vous souhaite une magnifique année 2026 placée sous le signe de la réussite
                 </div>
             </article>
 
@@ -362,7 +258,7 @@
         </div>
         <div class="footer-bottom">
             <p>© 2026 Lycée de l'Europe - Dunkerque. Tous droits non réservés.</p>
-            <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+            <p>Site réalisé par les BTS CIEL</p>
         </div>
     </footer>
 
