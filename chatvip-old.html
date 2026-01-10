@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat VIP – Lycée de l'Europe | Espace Exclusif</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS SPECIFIQUE VIP - THEME LUXE OR */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .home-link {
+            background: transparent;
+            color: var(--luxury-gold);
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px solid var(--luxury-gold);
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            border-radius: 12px;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .home-link:hover {
+            background: var(--luxury-gradient);
+            color: var(--luxury-black);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .chat-container {
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.92), rgba(26, 26, 26, 0.88));
+            padding: 24px;
+            border: 2px solid var(--luxury-gold);
+            height: 75vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border-radius: 20px;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.7), 
+                0 0 40px rgba(212, 175, 55, 0.25),
+                inset 0 2px 0 rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(15px);
+        }
+        
+        /* Grille VIP luxe premium */
+        .chat-container::after {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(transparent 95%, var(--luxury-gold) 100%);
+            background-size: 100% 25px;
+            opacity: 0.06;
+            pointer-events: none;
+            border-radius: 20px;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            scroll-behavior: smooth;
+        }
+        
+        /* Scrollbar VIP Premium */
+        #messages::-webkit-scrollbar { 
+            width: 10px; 
+        }
+        
+        #messages::-webkit-scrollbar-thumb { 
+            background: var(--luxury-gradient); 
+            border-radius: 5px; 
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+        
+        #messages::-webkit-scrollbar-thumb:hover { 
+            background: linear-gradient(135deg, var(--accent-gold), var(--luxury-gold-dark));
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+        }
+        
+        #messages::-webkit-scrollbar-track { 
+            background: rgba(10, 10, 10, 0.6); 
+            border-radius: 5px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .message-row { 
+            display: flex; 
+            gap: 14px; 
+            animation: slideInVIP 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            margin-bottom: 4px;
+        }
+        
+        @keyframes slideInVIP { 
+            from { 
+                opacity: 0; 
+                transform: translateX(-20px) scale(0.95); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateX(0) scale(1); 
+            } 
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(26, 26, 26, 0.9));
+            border: 2px solid var(--luxury-gold);
+            color: var(--luxury-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 
+                0 6px 15px rgba(212, 175, 55, 0.3),
+                0 0 25px rgba(212, 175, 55, 0.15),
+                inset 0 1px 0 rgba(212, 175, 55, 0.4);
+            border-radius: 14px;
+            font-family: 'Playfair Display', serif;
+            flex-shrink: 0;
+        }
+
+        .message-card {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.14), rgba(10, 10, 10, 0.7));
+            padding: 16px 20px;
+            max-width: 75%;
+            border-left: 4px solid var(--luxury-gold);
+            color: var(--text-color);
+            border-radius: 14px;
+            box-shadow: 
+                0 6px 18px rgba(0, 0, 0, 0.4),
+                0 2px 4px rgba(212, 175, 55, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .message-card:hover {
+            transform: translateX(6px);
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.5),
+                0 0 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .message-header {
+            font-size: 0.9rem;
+            color: var(--luxury-gold);
+            margin-bottom: 8px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-body {
+            font-size: 1.02rem;
+            font-family: 'Lato', sans-serif;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .smart-input-bar {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(26, 26, 26, 0.92));
+            padding: 14px 18px;
+            border: 2px solid var(--luxury-gold);
+            margin-top: 18px;
+            gap: 14px;
+            box-shadow: 
+                0 -6px 25px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(212, 175, 55, 0.25),
+                inset 0 2px 0 rgba(212, 175, 55, 0.2);
+            border-radius: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .smart-input-bar:focus-within {
+            border-color: var(--accent-gold);
+            box-shadow: 
+                0 -6px 25px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(212, 175, 55, 0.4),
+                inset 0 2px 0 rgba(212, 175, 55, 0.3);
+        }
+
+        .smart-input-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--luxury-gold-light);
+            font-size: 16px;
+            font-family: 'Lato', sans-serif;
+            outline: none;
+            padding: 8px 0;
+        }
+        
+        .smart-input-bar input::placeholder { 
+            color: var(--text-muted); 
+            opacity: 0.6;
+        }
+
+        #send-btn {
+            width: 52px;
+            height: 52px;
+            border: 2px solid var(--luxury-gold);
+            background: var(--luxury-gradient);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 13px;
+            box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+            flex-shrink: 0;
+        }
+        
+        #send-btn svg { 
+            width: 24px; 
+            height: 24px; 
+            fill: var(--luxury-black); 
+            transition: transform 0.3s ease;
+        }
+        
+        #send-btn:hover { 
+            background: linear-gradient(135deg, var(--accent-gold), var(--luxury-gold-dark)); 
+            box-shadow: 
+                0 8px 20px rgba(212, 175, 55, 0.5), 
+                0 0 30px rgba(212, 175, 55, 0.6); 
+            transform: translateY(-2px);
+        }
+        
+        #send-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+        
+        #send-btn:hover svg {
+            transform: scale(1.15);
+        }
+
+        #access-screen {
+            background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(26, 26, 26, 0.90));
+            padding: 40px;
+            border: 3px solid var(--luxury-gold);
+            text-align: center;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+        }
+
+        #access-screen h2 {
+            color: var(--luxury-gold);
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        #access-screen p {
+            color: var(--text-muted);
+            font-family: 'Lato', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        #access-screen input {
+            width: 100%;
+            margin-top: 15px;
+            padding: 14px;
+            background: rgba(10, 10, 10, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            color: var(--luxury-gold-light);
+            text-align: center;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+        
+        #access-screen input:focus { 
+            border-color: var(--luxury-gold); 
+            outline: none; 
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        #access-screen button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background: var(--luxury-gradient);
+            border: 2px solid var(--luxury-gold);
+            color: var(--luxury-black);
+            font-weight: bold;
+            font-family: 'Playfair Display', serif;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        #access-screen button:hover { 
+            background: linear-gradient(135deg, var(--accent-gold), var(--luxury-gold)); 
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); 
+            transform: scale(1.02); 
+        }
+
+        #error { 
+            margin-top: 15px; 
+            color: #ff4444; 
+            font-weight: bold; 
+            text-shadow: 0 0 5px #ff4444; 
+            font-family: 'Lato', sans-serif;
+        }
+
+        /* CASINO WHEEL STYLES - LUXURY GOLD */
+        :root {
+            --casino-gold: #FFD700;
+            --casino-gold-dark: #DAA520;
+        }
+        
+        .casino-box {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, rgba(218, 165, 32, 0.12) 100%);
+            border: 3px solid var(--casino-gold);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+            margin-top: 20px;
+        }
+
+        .casino-box h3 {
+            color: var(--casino-gold) !important;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 30px auto;
+            padding: 15px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 30px rgba(255, 215, 0, 0.7), 
+                0 0 60px rgba(255, 215, 0, 0.5),
+                inset 0 0 20px rgba(0, 0, 0, 0.3);
+            border: 6px solid var(--casino-gold);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            color: var(--casino-gold);
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+            z-index: 10;
+            animation: pointerBounce 1s ease-in-out infinite;
+        }
+
+        @keyframes pointerBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(6px); }
+        }
+
+        .spin-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold-dark));
+            border: 3px solid var(--casino-gold);
+            color: #000;
+            font-weight: 900;
+            font-size: 1.05rem;
+            cursor: pointer;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .spin-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 35px rgba(255, 215, 0, 0.7);
+            background: linear-gradient(135deg, var(--casino-gold), var(--casino-gold));
+        }
+
+        .spin-button:active {
+            transform: scale(0.98);
+        }
+
+        .spin-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        #wheel-result {
+            margin-top: 18px;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 12px;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.05rem;
+        }
+
+        .result-win {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.25), rgba(218, 165, 32, 0.25));
+            color: var(--casino-gold);
+            border: 2px solid var(--casino-gold);
+            animation: resultPulse 0.6s ease-out;
+        }
+
+        .result-lose {
+            background: rgba(255, 68, 68, 0.15);
+            color: #ff4444;
+            border: 2px solid #ff4444;
+            animation: resultPulse 0.6s ease-out;
+        }
+
+        @keyframes resultPulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-left">
+        <div>
+            <h1 aria-label="Lycée de l'Europe">✨ Lycée de l'Europe ✨</h1>
+            <p style="color:var(--luxury-gold)" aria-label="Espace VIP Sécurisé">🔐 Espace VIP Sécurisé</p>
+        </div>
+    </div>
+    <div class="header-right">
+        <a href="index.html" class="home-link">
+            <i class="fas fa-house"></i> Accueil
+        </a>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </div>
+</header>
+
+<div class="container">
+
+    <aside>
+        <nav class="menu-box">
+            <ul>
+                <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                <li><a href="la-classe-de-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                <li><a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                <li><a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                <li><a href="la-prepa-ptsi-pt.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                <li><a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                <li><a href="chat.html"><i class="fas fa-comments"></i> Chat Public</a></li>
+                <li><a href="chatvip.html" class="active"><i class="fas fa-lock"></i> Chat VIP</a></li>
+                <li><a href="joyeux-anniversaire.html"><i class="fas fa-cake-candles"></i> Anniversaire Johann</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main>
+        <article class="card" style="border-color: var(--luxury-gold);">
+            <div id="access-screen">
+                <h2><i class="fas fa-crown"></i> Accès VIP Exclusif</h2>
+                <p>Espace réservé aux membres privilégiés. Authentification requise.</p>
+                <input type="password" id="access-code" placeholder="CODE D'ACCÈS VIP">
+                <input type="text" id="pseudo" placeholder="IDENTIFIANT MEMBRE">
+                <button onclick="enterChat()">
+                    <i class="fas fa-key"></i> Déverrouiller l'Accès
+                </button>
+                <p id="error"></p>
+            </div>
+        </article>
+    </main>
+
+    <aside>
+        <div class="menu-box">
+            <h3>Accès Rapide</h3>
+            <ul>
+                <li><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a></li>
+                <li><a href="https://drive.google.com/file/d/188IWSw_6AFNLvImWNN1cW7tSTpEjjDXx/view?usp=sharing"><i class="fas fa-balance-scale"></i> Règlement</a></li>
+                <li><a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr"><i class="fas fa-camera"></i> Club Photo</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-globe-europe"></i> Erasmus +</a></li>
+                <li><a href="en-construction.html"><i class="fas fa-tools"></i> Maintenance</a></li>
+            </ul>
+        </div>
+
+        <!-- CASINO SPIN THE WHEEL - Only visible after VIP login -->
+        <div class="menu-box casino-box" id="casino-section" style="display: none;">
+            <h3 style="color: gold;"><i class="fas fa-crown"></i> Roulette VIP Luxe</h3>
+            <div class="wheel-container">
+                <canvas id="wheelCanvas" width="300" height="300"></canvas>
+                <div class="wheel-pointer">▼</div>
+            </div>
+            <button class="spin-button" id="spin-wheel-btn">
+                <i class="fas fa-dice"></i> Lancer la Roulette
+            </button>
+            <div id="wheel-result"></div>
+        </div>
+    </aside>
+
+</div>
+
+<footer>
+    <p>✨ Connexion Sécurisée - BTS CIEL ✨</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
+  authDomain: "lycee-europe-private.firebaseapp.com",
+  projectId: "lycee-europe-private",
+  storageBucket: "lycee-europe-private.firebasestorage.app",
+  messagingSenderId: "259168134432",
+  appId: "1:259168134432:web:470f5536d9305b4cf86345",
+  measurementId: "G-X323CMQRZR"
+});
+
+const db = firebase.firestore();
+const messagesRef = db.collection("messages_prives");
+let ACCESS_CODE = null;
+let currentPseudo = null;
+
+async function loadAccessCode() {
+    const doc = await db.collection("config").doc("access").get();
+    if(doc.exists) ACCESS_CODE = doc.data().code;
+}
+
+async function enterChat() {
+    const code = document.getElementById("access-code").value.trim();
+    const pseudo = document.getElementById("pseudo").value.trim();
+    const error = document.getElementById("error");
+
+    if (!code || !pseudo) {
+        error.textContent = "CHAMPS REQUIS MANQUANTS.";
+        return;
+    }
+    
+    // Si pas encore chargé, on charge
+    if (!ACCESS_CODE) await loadAccessCode();
+
+    if (code !== ACCESS_CODE) {
+        error.textContent = "ACCÈS REFUSÉ : CODE INVALIDE.";
+        return;
+    }
+
+    currentPseudo = pseudo;
+    loadChatUI();
+}
+
+function loadChatUI() {
+    const article = document.querySelector("main article");
+    article.innerHTML = `
+        <h2><i class="fas fa-crown"></i> Salon VIP Exclusif</h2>
+        <div class="chat-container">
+            <div id="messages"></div>
+            <div class="smart-input-bar">
+                <input type="text" id="message" placeholder="Message privé...">
+                <button id="send-btn">
+                    <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+                </button>
+            </div>
+        </div>
+    `;
+    document.getElementById("send-btn").onclick = sendMessage;
+    document.getElementById("message").addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
+    listenMessages();
+    
+    // Show casino section after successful login
+    const casinoSection = document.getElementById('casino-section');
+    if (casinoSection) {
+        casinoSection.style.display = 'block';
+        // Re-initialize wheel after showing
+        setTimeout(() => {
+            initWheel();
+        }, 100);
+    }
+}
+
+function listenMessages() {
+    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+        const messagesDiv = document.getElementById("messages");
+        if (!messagesDiv) return;
+        messagesDiv.innerHTML = "";
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const row = document.createElement("div");
+            row.className = "message-row";
+            const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}) : "--:--";
+            
+            row.innerHTML = `
+                <div class="avatar">${data.pseudo.charAt(0).toUpperCase()}</div>
+                <div class="message-card">
+                    <div class="message-header">${data.pseudo} <span style="opacity:0.5">[${time}]</span></div>
+                    <div class="message-body">${data.message}</div>
+                </div>
+            `;
+            messagesDiv.appendChild(row);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+}
+
+async function sendMessage() {
+    const input = document.getElementById("message");
+    const text = input.value.trim();
+    if (!text) return;
+    await messagesRef.add({
+        pseudo: currentPseudo,
+        message: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    input.value = "";
+}
+
+// Theme Toggle
+function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('theme-icon');
+    body.classList.toggle('light-mode');
+    
+    if (body.classList.contains('light-mode')) {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+        localStorage.setItem('theme', 'light');
+    } else {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// REALISTIC EUROPEAN ROULETTE GAME
+let isSpinning = false;
+let currentRotation = 0;
+const FULL_CIRCLE = 360;
+
+function initWheel() {
+    const canvas = document.getElementById('wheelCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 140; // Increased from 110 to match larger canvas
+    
+    // European Roulette numbers in wheel order
+    const rouletteNumbers = [
+        0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10,
+        5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
+    ];
+    
+    // Color mapping for European roulette (0 is green, odd/even pattern)
+    function getRouletteColor(num) {
+        if (num === 0) return '#2F8D2F'; // Green for 0
+        const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+        return redNumbers.includes(num) ? '#B91C1C' : '#0A0A0A'; // Red or Black
+    }
+    
+    function drawWheel(rotation = 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(rotation * Math.PI / 180);
+        
+        const anglePerSegment = FULL_CIRCLE / rouletteNumbers.length;
+        
+        // Draw outer golden rim
+        ctx.beginPath();
+        ctx.arc(0, 0, radius + 8, 0, 2 * Math.PI); // Increased from radius + 5
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 8; // Increased from 6 to 8
+        ctx.stroke();
+        
+        // Draw segments
+        rouletteNumbers.forEach((num, i) => {
+            const startAngle = (i * anglePerSegment) * Math.PI / 180;
+            const endAngle = ((i + 1) * anglePerSegment) * Math.PI / 180;
+            
+            // Draw segment
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.arc(0, 0, radius, startAngle, endAngle);
+            ctx.closePath();
+            ctx.fillStyle = getRouletteColor(num);
+            ctx.fill();
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            
+            // Draw number
+            ctx.save();
+            const midAngle = startAngle + (endAngle - startAngle) / 2;
+            ctx.rotate(midAngle);
+            ctx.translate(radius * 0.75, 0);
+            // Rotate text to keep it upright (facing outward from center)
+            ctx.rotate(Math.PI / 2);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 14px Arial'; // Increased from 11px to 14px
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+            ctx.shadowBlur = 4;
+            ctx.fillText(num.toString(), 0, 0);
+            ctx.shadowBlur = 0;
+            ctx.restore();
+        });
+        
+        // Center decorative circle
+        ctx.beginPath();
+        ctx.arc(0, 0, 28, 0, 2 * Math.PI); // Increased from 20 to 28
+        ctx.fillStyle = '#FFD700';
+        ctx.fill();
+        ctx.strokeStyle = '#DAA520';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        
+        // Center star decoration
+        ctx.fillStyle = '#0A0A0A';
+        ctx.font = 'bold 20px Arial'; // Increased from 16px to 20px
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('★', 0, 0);
+        
+        ctx.restore();
+    }
+    
+    drawWheel();
+    
+    // Store for global access
+    window.wheelData = { canvas, ctx, rouletteNumbers, getRouletteColor, drawWheel };
+}
+
+function spinWheel() {
+    if (isSpinning) return;
+    
+    const button = document.querySelector('.spin-button');
+    const resultDiv = document.getElementById('wheel-result');
+    
+    isSpinning = true;
+    button.disabled = true;
+    resultDiv.textContent = '';
+    resultDiv.className = '';
+    
+    // Random spin
+    const spins = 5 + Math.random() * 3; // 5-8 full rotations
+    const extraDegrees = Math.random() * FULL_CIRCLE;
+    const totalRotation = spins * FULL_CIRCLE + extraDegrees;
+    const duration = 4500; // 4.5 seconds for more realistic feel
+    const startTime = Date.now();
+    
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Cubic ease-out function for smooth deceleration (slow down at the end)
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const rotation = currentRotation + totalRotation * easeOut;
+        
+        window.wheelData.drawWheel(rotation);
+        
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            currentRotation = (currentRotation + totalRotation) % FULL_CIRCLE;
+            window.wheelData.drawWheel(currentRotation);
+            
+            // Determine winning number
+            const normalizedRotation = (FULL_CIRCLE - (currentRotation % FULL_CIRCLE)) % FULL_CIRCLE;
+            const segmentAngle = FULL_CIRCLE / window.wheelData.rouletteNumbers.length;
+            const winningIndex = Math.floor(normalizedRotation / segmentAngle);
+            const winningNumber = window.wheelData.rouletteNumbers[winningIndex];
+            const winningColor = window.wheelData.getRouletteColor(winningNumber);
+            
+            setTimeout(() => {
+                let colorName = 'VERT';
+                if (winningColor === '#B91C1C') colorName = 'ROUGE';
+                else if (winningColor === '#0A0A0A') colorName = 'NOIR';
+                
+                resultDiv.textContent = `🎰 ${winningNumber} ${colorName} 🎰`;
+                resultDiv.className = 'result-win';
+                
+                isSpinning = false;
+                button.disabled = false;
+            }, 500);
+        }
+    }
+    
+    animate();
+}
+
+// Load saved theme (wheel initialization moved to after login)
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    const themeIcon = document.getElementById('theme-icon');
+    
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+    }
+    
+    // Attach spin wheel button event (will only work after login shows the casino)
+    const spinBtn = document.getElementById('spin-wheel-btn');
+    if (spinBtn) {
+        spinBtn.addEventListener('click', spinWheel);
+    }
+});
+</script>
+
+</body>
+</html>
