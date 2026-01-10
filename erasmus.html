@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programme Erasmus+ - Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1 aria-label="Lycée de l'Europe - Dunkerque">✨ Lycée de l'Europe – Dunkerque ✨</h1>
+            <p aria-label="Programme Erasmus+">🌍 Programme Erasmus+ 🌍</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </header>
+
+    <div class="container">
+        
+        <!-- MENU GAUCHE -->
+        <aside>
+            <nav class="menu-box">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                    <li><a href="formations.html"><i class="fas fa-graduation-cap"></i> Nos Formations</a></li>
+                    <li><a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                </ul>
+            </nav>
+
+            <!-- PAYS PARTENAIRES -->
+            <div class="menu-box" style="margin-top: 20px;">
+                <h3>Pays Partenaires</h3>
+                <div class="certification-list">
+                    <div class="certification-item">
+                        <i class="fas fa-flag"></i>
+                        <span>Allemagne</span>
+                    </div>
+                    <div class="certification-item">
+                        <i class="fas fa-flag"></i>
+                        <span>Espagne</span>
+                    </div>
+                    <div class="certification-item">
+                        <i class="fas fa-flag"></i>
+                        <span>Italie</span>
+                    </div>
+                    <div class="certification-item">
+                        <i class="fas fa-flag"></i>
+                        <span>Pays-Bas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTACT -->
+            <div class="menu-box" style="margin-top: 20px;">
+                <h3>Contact Erasmus+</h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-user"></i>
+                        <span>Coordinateur Erasmus+</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>ce.0590072h@ac-lille.fr</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>03 28 58 72 00</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENU CENTRAL -->
+        <main>
+            <!-- HERO SECTION -->
+            <article class="card hero-section">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-globe-europe"></i>
+                        <span>Mobilité • Ouverture • Europe</span>
+                    </div>
+                    <h1 class="hero-title">Programme Erasmus+</h1>
+                    <p class="hero-description">
+                        Le Lycée de l'Europe s'engage pleinement dans la dimension européenne de l'éducation avec 
+                        15 projets Erasmus+ actifs. Partez à la découverte de l'Europe, enrichissez votre parcours 
+                        et développez vos compétences interculturelles.
+                    </p>
+                </div>
+            </article>
+
+            <!-- PRÉSENTATION DU PROGRAMME -->
+            <article class="card">
+                <h2><i class="fas fa-info-circle"></i> Qu'est-ce qu'Erasmus+ ?</h2>
+                <p>
+                    Erasmus+ est le programme européen pour l'éducation, la formation, la jeunesse et le sport. 
+                    Il offre des opportunités de mobilité et de coopération en Europe pour les élèves, étudiants, 
+                    enseignants et personnels éducatifs.
+                </p>
+                <p>
+                    Au Lycée de l'Europe, nous participons activement à ce programme avec <strong style="color: var(--luxury-gold);">15 projets en cours</strong>, 
+                    permettant à nos élèves de vivre des expériences enrichissantes à l'étranger.
+                </p>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-bullseye"></i> Objectifs du programme
+                </h3>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Favoriser la mobilité européenne des élèves et des enseignants</li>
+                    <li>Développer les compétences linguistiques et interculturelles</li>
+                    <li>Renforcer l'ouverture internationale de notre établissement</li>
+                    <li>Créer des partenariats durables avec des établissements européens</li>
+                    <li>Enrichir les pratiques pédagogiques par l'échange d'expériences</li>
+                </ul>
+            </article>
+
+            <!-- NOS 15 PROJETS ACTIFS -->
+            <article class="card">
+                <h2><i class="fas fa-project-diagram"></i> Nos 15 Projets Erasmus+ Actifs</h2>
+                <p>
+                    Le Lycée de l'Europe coordonne et participe à <strong style="color: var(--luxury-gold);">15 projets Erasmus+</strong> 
+                    couvrant différents domaines et niveaux d'enseignement.
+                </p>
+
+                <div class="stats-grid" style="margin-top: 20px; grid-template-columns: repeat(3, 1fr);">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">Projets Actifs</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-globe-europe"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number">4</div>
+                            <div class="stat-label">Pays Partenaires</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-number">200+</div>
+                            <div class="stat-label">Élèves Mobilisés</div>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 20px;">
+                    Ces projets concernent tous les niveaux de formation : du lycée général et technologique aux BTS 
+                    et classes préparatoires. Ils incluent des échanges scolaires, des stages en entreprise à l'étranger, 
+                    et des projets de coopération pédagogique.
+                </p>
+            </article>
+
+            <!-- TYPES DE MOBILITÉS -->
+            <article class="card">
+                <h2><i class="fas fa-plane-departure"></i> Types de Mobilités</h2>
+                
+                <h3 style="color: var(--luxury-gold); margin-top: 20px; margin-bottom: 15px;">
+                    <i class="fas fa-exchange-alt"></i> Échanges Scolaires
+                </h3>
+                <p>
+                    Séjours de 1 à 2 semaines chez nos partenaires européens pour les élèves de lycée. 
+                    Au programme : découverte culturelle, cours en immersion, activités pédagogiques et hébergement 
+                    en famille d'accueil ou en structure collective.
+                </p>
+                <div class="alert-box">
+                    <strong>Avantages :</strong> Immersion linguistique • Découverte culturelle • 
+                    Nouveaux amis européens • Ouverture d'esprit
+                </div>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-briefcase"></i> Stages en Entreprise
+                </h3>
+                <p>
+                    Périodes de stage de 2 à 8 semaines en entreprise à l'étranger, principalement pour les étudiants 
+                    de BTS et de classes préparatoires. Ces stages permettent d'acquérir une expérience professionnelle 
+                    internationale valorisante.
+                </p>
+                <div class="alert-box">
+                    <strong>Avantages :</strong> Expérience professionnelle internationale • 
+                    Pratique de la langue en contexte professionnel • CV enrichi • Réseau professionnel européen
+                </div>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-chalkboard-teacher"></i> Mobilités Enseignantes
+                </h3>
+                <p>
+                    Nos enseignants participent également à des périodes d'observation et d'enseignement dans nos 
+                    établissements partenaires, enrichissant ainsi leurs pratiques pédagogiques.
+                </p>
+            </article>
+
+            <!-- TÉMOIGNAGES -->
+            <article class="card">
+                <h2><i class="fas fa-comments"></i> Témoignages d'Élèves</h2>
+                
+                <div class="testimonials-list">
+                    <div class="testimonial-item">
+                        <div class="testimonial-quote">
+                            <i class="fas fa-quote-left"></i>
+                            <p>"Mon stage de 6 semaines à Barcelone dans une entreprise d'électronique a été une 
+                            expérience incroyable ! J'ai pu pratiquer l'espagnol au quotidien et découvrir de nouvelles 
+                            méthodes de travail. C'est un plus énorme sur mon CV !"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Léa B., BTS CIEL - Stage en Espagne</span>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-item">
+                        <div class="testimonial-quote">
+                            <i class="fas fa-quote-left"></i>
+                            <p>"L'échange de 2 semaines en Allemagne m'a permis de me faire des amis dans toute l'Europe 
+                            et de découvrir une culture différente. J'ai progressé énormément en allemand et je garde 
+                            contact avec ma famille d'accueil !"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Thomas D., Première Générale - Échange en Allemagne</span>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-item">
+                        <div class="testimonial-quote">
+                            <i class="fas fa-quote-left"></i>
+                            <p>"Grâce à Erasmus+, j'ai pu effectuer un stage de 3 mois aux Pays-Bas dans une entreprise 
+                            d'ingénierie. Cette expérience a renforcé ma motivation pour devenir ingénieur et m'a ouvert 
+                            des perspectives internationales."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Marie L., Prépa PTSI/PT - Stage aux Pays-Bas</span>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-item">
+                        <div class="testimonial-quote">
+                            <i class="fas fa-quote-left"></i>
+                            <p>"Le voyage à Rome organisé dans le cadre d'un projet Erasmus+ était fantastique ! 
+                            Nous avons travaillé avec des élèves italiens sur un projet commun tout en découvrant 
+                            les richesses culturelles de l'Italie."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Karim H., Terminale Technologique - Projet en Italie</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- COMMENT PARTICIPER -->
+            <article class="card">
+                <h2><i class="fas fa-hand-point-up"></i> Comment Participer ?</h2>
+                
+                <h3 style="color: var(--luxury-gold); margin-top: 20px; margin-bottom: 15px;">
+                    <i class="fas fa-check-circle"></i> Conditions de participation
+                </h3>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li>Être élève ou étudiant régulièrement inscrit au Lycée de l'Europe</li>
+                    <li>Avoir un bon niveau de comportement et d'assiduité</li>
+                    <li>Être motivé et ouvert à la découverte d'autres cultures</li>
+                    <li>Avoir un niveau suffisant dans la langue du pays d'accueil (selon le projet)</li>
+                    <li>S'engager à respecter les règles du programme et de l'établissement d'accueil</li>
+                </ul>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-clipboard-list"></i> Démarches à suivre
+                </h3>
+                <ol style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Se renseigner :</strong> Consultez les projets disponibles auprès du coordinateur Erasmus+ de l'établissement</li>
+                    <li><strong style="color: var(--luxury-gold);">Candidater :</strong> Remplissez le dossier de candidature avec lettre de motivation</li>
+                    <li><strong style="color: var(--luxury-gold);">Sélection :</strong> Les candidatures sont examinées par une commission</li>
+                    <li><strong style="color: var(--luxury-gold);">Préparation :</strong> Participez aux réunions de préparation au départ</li>
+                    <li><strong style="color: var(--luxury-gold);">Partir :</strong> Profitez de votre expérience européenne !</li>
+                    <li><strong style="color: var(--luxury-gold);">Valoriser :</strong> À votre retour, partagez votre expérience et obtenez votre attestation Europass</li>
+                </ol>
+
+                <div class="alert-box" style="margin-top: 25px;">
+                    <i class="fas fa-info-circle"></i> <strong>Financement :</strong> Les mobilités Erasmus+ bénéficient 
+                    d'une bourse européenne qui couvre une partie des frais (voyage, hébergement, restauration). 
+                    Des aides complémentaires peuvent être accordées selon la situation des familles.
+                </div>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 25px; margin-bottom: 15px;">
+                    <i class="fas fa-envelope"></i> Pour plus d'informations
+                </h3>
+                <p>
+                    Contactez le coordinateur Erasmus+ du lycée :
+                </p>
+                <ul style="margin-left: 30px; line-height: 1.8; color: var(--text-muted);">
+                    <li><strong style="color: var(--luxury-gold);">Email :</strong> ce.0590072h@ac-lille.fr</li>
+                    <li><strong style="color: var(--luxury-gold);">Téléphone :</strong> 03 28 58 72 00</li>
+                    <li><strong style="color: var(--luxury-gold);">Sur place :</strong> Bureau du coordinateur Erasmus+, Lycée de l'Europe</li>
+                </ul>
+            </article>
+
+        </main>
+
+        <!-- MENU DROIT -->
+        <aside>
+            <div class="menu-box">
+                <h3>En Chiffres</h3>
+                <div class="news-items">
+                    <div class="news-item">
+                        <div class="news-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="news-content">
+                            <h4>15 Projets</h4>
+                            <p>Projets Erasmus+ actifs</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="news-content">
+                            <h4>4 Pays</h4>
+                            <p>Partenaires européens</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="news-content">
+                            <h4>200+ Élèves</h4>
+                            <p>Mobilisés chaque année</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESSOURCES -->
+            <div class="menu-box" style="margin-top: 20px;">
+                <h3>Ressources Utiles</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;">
+                        <a href="https://erasmus-plus.ec.europa.eu" target="_blank" rel="noopener noreferrer" 
+                           style="color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 6px; transition: all 0.3s;">
+                            <i class="fas fa-external-link-alt"></i> Site officiel Erasmus+
+                        </a>
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <a href="https://www.generation-erasmus.fr" target="_blank" rel="noopener noreferrer" 
+                           style="color: var(--text-muted); text-decoration: none; display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 6px; transition: all 0.3s;">
+                            <i class="fas fa-external-link-alt"></i> Génération Erasmus
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Lycée de l'Europe</h4>
+                <p>530 Av. de l'Université<br>59140 Dunkerque</p>
+                <p><i class="fas fa-phone"></i> 03 28 58 72 00</p>
+                <p><i class="fas fa-envelope"></i> ce.0590072h@ac-lille.fr</p>
+            </div>
+            <div class="footer-section">
+                <h4>Liens Utiles</h4>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="le-lycee.html">Le Lycée</a></li>
+                    <li><a href="formations.html">Nos Formations</a></li>
+                    <li><a href="evenements.html">Événements</a></li>
+                    <li><a href="mentions-legales.html">Mentions Légales</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Suivez-nous</h4>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://discord.gg/vp9ZrBk2Ja" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Lycée de l'Europe - Dunkerque. Tous droits réservés.</p>
+            <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        });
+    </script>
+
+</body>
+</html>

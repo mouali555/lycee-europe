@@ -90,6 +90,10 @@ html, body {
 body {
   font-family: 'Playfair Display', 'Georgia', serif;
   background: radial-gradient(ellipse at top, #1a1a1a 0%, #0A0A0A 50%, #000000 100%);
+  background-image: 
+    radial-gradient(ellipse at 0% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at top, #1a1a1a 0%, #0A0A0A 50%, #000000 100%);
   color: var(--text-color);
   transition: background 0.3s ease, color 0.3s ease;
   position: relative;
@@ -614,6 +618,43 @@ main {
 header, footer {
   position: relative;
   z-index: 2;
+}
+
+/* Vertical decorative golden lines on the sides */
+html::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  right: 20px;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, 
+    transparent 0%, 
+    var(--luxury-gold) 20%, 
+    var(--luxury-gold-light) 50%, 
+    var(--luxury-gold) 80%, 
+    transparent 100%);
+  opacity: 0.3;
+  z-index: 100;
+  pointer-events: none;
+}
+
+html::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 20px;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, 
+    transparent 0%, 
+    var(--luxury-gold) 20%, 
+    var(--luxury-gold-light) 50%, 
+    var(--luxury-gold) 80%, 
+    transparent 100%);
+  opacity: 0.3;
+  z-index: 100;
+  pointer-events: none;
 }
 
 /* RESPONSIVE */
