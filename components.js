@@ -1,164 +1,60 @@
 /**
- * Lycée de l'Europe - Reusable Components & Cookie Banner
- * Luxury black & gold theme with glassmorphism
+ * Lycée de l'Europe - Modern Professional Components
+ * Educational Theme 2026
  */
 
 // ===========================
-// COOKIE CONSENT BANNER
+// INITIALIZATION
 // ===========================
 
-function initCookieBanner() {
-    // Check if user already made a choice
-    const cookieConsent = localStorage.getItem('cookieConsent');
-    
-    if (cookieConsent) {
-        return; // User already made a choice, don't show banner
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    initScrollAnimations();
+    initCounters();
+    initStickyHeader();
+    initSmoothScroll();
+    initLazyLoading();
+    initCookieBanner();
+});
 
-    // Create cookie banner
-    const banner = document.createElement('div');
-    banner.id = 'cookie-banner';
-    banner.className = 'cookie-banner';
-    banner.innerHTML = `
-        <div class="cookie-content">
-            <div class="cookie-icon">
-                <i class="fas fa-cookie-bite"></i>
-            </div>
-            <div class="cookie-text">
-                <h3>🍪 Respect de Votre Vie Privée</h3>
-                <p>
-                    Nous utilisons des cookies pour améliorer votre expérience de navigation, 
-                    mémoriser vos préférences et analyser notre trafic. 
-                    En acceptant, vous consentez à l'utilisation de tous les cookies.
-                </p>
-            </div>
-            <div class="cookie-actions">
-                <button class="cookie-btn cookie-accept" onclick="acceptCookies()">
-                    <i class="fas fa-check"></i> Accepter
-                </button>
-                <button class="cookie-btn cookie-refuse" onclick="refuseCookies()">
-                    <i class="fas fa-times"></i> Refuser
-                </button>
-                <button class="cookie-btn cookie-customize" onclick="customizeCookies()">
-                    <i class="fas fa-cog"></i> Personnaliser
-                </button>
-            </div>
-        </div>
-    `;
+// ===========================
+// THEME TOGGLE (DARK/LIGHT MODE)
+// ===========================
+
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    document.body.appendChild(banner);
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.body.classList.add('dark-mode');
+        updateThemeIcon('dark');
+    }
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const isDark = body.classList.toggle('dark-mode');
     
-    // Trigger slide-up animation
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon(isDark ? 'dark' : 'light');
+    
+    // Smooth transition
+    body.style.transition = 'background 0.3s ease, color 0.3s ease';
     setTimeout(() => {
-        banner.classList.add('show');
-    }, 500);
+        body.style.transition = '';
+    }, 300);
 }
 
-function acceptCookies() {
-    localStorage.setItem('cookieConsent', 'accepted');
-    hideCookieBanner();
-}
-
-function refuseCookies() {
-    localStorage.setItem('cookieConsent', 'refused');
-    hideCookieBanner();
-}
-
-function customizeCookies() {
-    // Simple implementation - for demo purposes
-    // In production, this would open a detailed preferences modal
-    const essentialOnly = confirm(
-        'Souhaitez-vous autoriser uniquement les cookies essentiels ?\n\n' +
-        'Cookies essentiels : Requis pour le bon fonctionnement du site\n' +
-        'Cookies analytics : Nous aident à améliorer le site\n\n' +
-        'Cliquez "OK" pour essentiels uniquement, "Annuler" pour tous les cookies'
-    );
+function updateThemeIcon(theme) {
+    const themeIcon = document.getElementById('theme-icon');
+    if (!themeIcon) return;
     
-    if (essentialOnly) {
-        localStorage.setItem('cookieConsent', 'essential');
+    if (theme === 'dark') {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
     } else {
-        localStorage.setItem('cookieConsent', 'accepted');
-    }
-    hideCookieBanner();
-}
-
-function hideCookieBanner() {
-    const banner = document.getElementById('cookie-banner');
-    if (banner) {
-        banner.classList.remove('show');
-        setTimeout(() => {
-            banner.remove();
-        }, 400);
-    }
-}
-
-// ===========================
-// MOBILE NAVIGATION
-// ===========================
-
-function initMobileNavigation() {
-    // Always create hamburger menu, CSS will control visibility
-    const header = document.querySelector('header');
-    if (!header) return;
-
-    // Check if hamburger already exists
-    let hamburger = header.querySelector('.hamburger-menu');
-    
-    if (!hamburger) {
-        // Find the first aside with navigation
-        const aside = document.querySelector('aside');
-        if (!aside) return;
-
-        // Create hamburger menu button
-        hamburger = document.createElement('button');
-        hamburger.className = 'hamburger-menu';
-        hamburger.setAttribute('aria-label', 'Toggle menu');
-        hamburger.innerHTML = `
-            <span></span>
-            <span></span>
-            <span></span>
-        `;
-
-        // Insert hamburger in header
-        header.appendChild(hamburger);
-
-        // Create mobile overlay if not exists
-        let overlay = document.querySelector('.mobile-nav-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'mobile-nav-overlay';
-            document.body.appendChild(overlay);
-        }
-
-        // Toggle navigation
-        hamburger.addEventListener('click', () => {
-            aside.classList.toggle('mobile-nav-open');
-            hamburger.classList.toggle('active');
-            overlay.classList.toggle('show');
-            document.body.classList.toggle('nav-open');
-        });
-
-        // Close on overlay click
-        overlay.addEventListener('click', () => {
-            aside.classList.remove('mobile-nav-open');
-            hamburger.classList.remove('active');
-            overlay.classList.remove('show');
-            document.body.classList.remove('nav-open');
-        });
-
-        // Handle window resize
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                if (window.innerWidth >= 768) {
-                    aside.classList.remove('mobile-nav-open');
-                    hamburger.classList.remove('active');
-                    overlay.classList.remove('show');
-                    document.body.classList.remove('nav-open');
-                }
-            }, 250);
-        });
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
     }
 }
 
@@ -171,268 +67,332 @@ function initScrollAnimations() {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
+                entry.target.classList.add('visible');
                 observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
-
-    // Observe all cards
-    document.querySelectorAll('.card').forEach(card => {
-        card.classList.add('animate-on-scroll');
-        observer.observe(card);
-    });
-
-    // Observe menu boxes
-    document.querySelectorAll('.menu-box').forEach(box => {
-        box.classList.add('animate-on-scroll');
-        observer.observe(box);
-    });
     
-    // Observe fade-in-scroll elements
-    document.querySelectorAll('.fade-in-scroll').forEach(el => {
+    // Observe all elements with animate-on-scroll class
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
         observer.observe(el);
-        // Add 'visible' class when intersecting
-        const fadeObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    fadeObserver.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-        fadeObserver.observe(el);
     });
     
-    // Observe slide animations
-    document.querySelectorAll('.slide-in-left, .slide-in-right').forEach(el => {
-        const slideObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    slideObserver.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-        slideObserver.observe(el);
+    // Observe cards for stagger animation
+    document.querySelectorAll('.card').forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
     });
 }
 
 // ===========================
-// IMAGE LAZY LOADING ENHANCEMENT
+// ANIMATED COUNTERS
 // ===========================
 
-function enhanceImages() {
+function initCounters() {
+    const counters = document.querySelectorAll('.counter, .stat-number[data-target]');
+    
+    if (counters.length === 0) return;
+    
+    const observerOptions = {
+        threshold: 0.5
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = parseInt(entry.target.getAttribute('data-target'));
+                animateCounter(entry.target, target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    counters.forEach(counter => observer.observe(counter));
+}
+
+function animateCounter(element, target) {
+    let current = 0;
+    const increment = target / 50;
+    const duration = 2000; // 2 seconds
+    const stepTime = duration / 50;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            element.textContent = target;
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current);
+        }
+    }, stepTime);
+}
+
+// ===========================
+// STICKY HEADER
+// ===========================
+
+function initStickyHeader() {
+    const header = document.querySelector('header');
+    if (!header) return;
+    
+    let lastScroll = 0;
+    
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        // Add scrolled class when scrolled down
+        if (currentScroll > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+        
+        lastScroll = currentScroll;
+    });
+}
+
+// ===========================
+// SMOOTH SCROLL
+// ===========================
+
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            // Skip empty anchors
+            if (href === '#' || href === '#!') return;
+            
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+}
+
+// ===========================
+// LAZY LOADING IMAGES
+// ===========================
+
+function initLazyLoading() {
     const images = document.querySelectorAll('img[loading="lazy"]');
     
-    // Use Intersection Observer for better lazy loading
     if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
+        const imageObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
-                    img.addEventListener('load', () => {
-                        img.classList.add('loaded');
-                    });
-                    
-                    // If already loaded
-                    if (img.complete) {
-                        img.classList.add('loaded');
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
                     }
-                    
-                    observer.unobserve(img);
+                    imageObserver.unobserve(img);
                 }
             });
-        }, {
-            rootMargin: '50px 0px',
-            threshold: 0.01
         });
         
-        images.forEach(img => {
-            imageObserver.observe(img);
-        });
-    } else {
-        // Fallback for browsers without Intersection Observer
-        images.forEach(img => {
-            img.addEventListener('load', () => {
-                img.classList.add('loaded');
-            });
-            
-            // If already loaded
-            if (img.complete) {
-                img.classList.add('loaded');
-            }
-        });
+        images.forEach(img => imageObserver.observe(img));
     }
 }
 
 // ===========================
-// THEME TOGGLE (if not already in page)
+// COOKIE CONSENT BANNER
 // ===========================
 
-function initThemeToggle() {
-    // Only init if not already defined
-    if (typeof window.toggleTheme !== 'function') {
-        window.toggleTheme = function() {
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            const themeButton = document.querySelector('.theme-toggle');
-            body.classList.toggle('light-mode');
-            
-            if (body.classList.contains('light-mode')) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-                themeButton.setAttribute('aria-pressed', 'true');
-                themeButton.setAttribute('aria-label', 'Passer au mode sombre');
-                localStorage.setItem('theme', 'light');
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-                themeButton.setAttribute('aria-pressed', 'false');
-                themeButton.setAttribute('aria-label', 'Passer au mode clair');
-                localStorage.setItem('theme', 'dark');
-            }
-        };
-    }
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme');
-    const themeIcon = document.getElementById('theme-icon');
-    const themeButton = document.querySelector('.theme-toggle');
+function initCookieBanner() {
+    const cookieConsent = localStorage.getItem('cookieConsent');
     
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        if (themeIcon) {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-        if (themeButton) {
-            themeButton.setAttribute('aria-pressed', 'true');
-            themeButton.setAttribute('aria-label', 'Passer au mode sombre');
-        }
-    } else if (themeButton) {
-        themeButton.setAttribute('aria-label', 'Passer au mode clair');
-    }
-}
-
-// ===========================
-// LOADING ANIMATION
-// ===========================
-
-function showLoadingAnimation() {
-    const loader = document.createElement('div');
-    loader.className = 'page-loader';
-    loader.innerHTML = `
-        <div class="loader-content">
-            <div class="loader-spinner"></div>
-            <div class="loader-text">Lycée de l'Europe</div>
+    if (cookieConsent) return;
+    
+    // Create cookie banner with modern styling
+    const banner = document.createElement('div');
+    banner.id = 'cookie-banner';
+    banner.style.cssText = `
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 1.5rem;
+        box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+    `;
+    
+    banner.innerHTML = `
+        <div style="flex: 1; min-width: 300px;">
+            <p style="margin: 0; color: #1f2937; font-size: 0.95rem;">
+                🍪 Nous utilisons des cookies pour améliorer votre expérience. 
+                En continuant, vous acceptez notre utilisation des cookies.
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button onclick="acceptCookies()" style="
+                background: #1e3a5f;
+                color: white;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+            ">
+                Accepter
+            </button>
+            <button onclick="refuseCookies()" style="
+                background: #e5e7eb;
+                color: #1f2937;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+            ">
+                Refuser
+            </button>
         </div>
     `;
-    document.body.appendChild(loader);
+    
+    document.body.appendChild(banner);
+    
+    // Show banner with animation
+    setTimeout(() => {
+        banner.style.transform = 'translateY(0)';
+    }, 500);
+    
+    // Apply dark mode styles if active
+    if (document.body.classList.contains('dark-mode')) {
+        banner.style.background = '#1f2937';
+        banner.style.color = '#f9fafb';
+    }
+}
 
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            loader.classList.add('fade-out');
-            setTimeout(() => {
-                loader.remove();
-            }, 600);
-        }, 300);
-    });
+function acceptCookies() {
+    localStorage.setItem('cookieConsent', 'accepted');
+    hideCookieBanner();
+}
+
+function refuseCookies() {
+    localStorage.setItem('cookieConsent', 'refused');
+    hideCookieBanner();
+}
+
+function hideCookieBanner() {
+    const banner = document.getElementById('cookie-banner');
+    if (banner) {
+        banner.style.transform = 'translateY(100%)';
+        setTimeout(() => banner.remove(), 300);
+    }
 }
 
 // ===========================
-// INITIALIZE ALL COMPONENTS
+// MOBILE NAVIGATION
 // ===========================
 
-// Scroll to top button
-function initScrollToTop() {
-    // Create scroll to top button
-    const scrollBtn = document.createElement('button');
-    scrollBtn.className = 'scroll-to-top';
-    scrollBtn.innerHTML = '<i class="fas fa-arrow-up" aria-hidden="true"></i>';
-    scrollBtn.setAttribute('aria-label', 'Retour en haut de la page');
-    document.body.appendChild(scrollBtn);
+function initMobileNavigation() {
+    const header = document.querySelector('header');
+    const aside = document.querySelector('aside');
     
-    // Show/hide on scroll
-    let lastScrollPosition = 0;
-    let ticking = false;
+    if (!header || !aside) return;
     
-    window.addEventListener('scroll', () => {
-        lastScrollPosition = window.scrollY;
+    // Create hamburger menu if not exists
+    let hamburger = header.querySelector('.hamburger-menu');
+    if (!hamburger) {
+        hamburger = document.createElement('button');
+        hamburger.className = 'hamburger-menu';
+        hamburger.setAttribute('aria-label', 'Menu');
+        hamburger.style.cssText = `
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        `;
+        hamburger.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        `;
+        header.appendChild(hamburger);
         
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                if (lastScrollPosition > 300) {
-                    scrollBtn.classList.add('visible');
-                } else {
-                    scrollBtn.classList.remove('visible');
-                }
-                ticking = false;
-            });
-            ticking = true;
+        // Show on mobile
+        const mediaQuery = window.matchMedia('(max-width: 1024px)');
+        const handleMediaChange = (e) => {
+            hamburger.style.display = e.matches ? 'block' : 'none';
+        };
+        mediaQuery.addListener(handleMediaChange);
+        handleMediaChange(mediaQuery);
+    }
+}
+
+// ===========================
+// FORM VALIDATION
+// ===========================
+
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function validatePhone(phone) {
+    const re = /^[\d\s\-\+\(\)]{10,}$/;
+    return re.test(phone);
+}
+
+// ===========================
+// UTILITIES
+// ===========================
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const args = arguments;
+        const context = this;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
         }
-    });
-    
-    // Smooth scroll to top
-    scrollBtn.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
+    };
 }
 
-// Performance monitoring
-function logPerformanceMetrics() {
-    if ('performance' in window && 'PerformanceObserver' in window) {
-        // Log navigation timing
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const perfData = performance.getEntriesByType('navigation')[0];
-                if (perfData) {
-                    console.log('🚀 Performance Metrics:');
-                    console.log(`  - DOM Content Loaded: ${Math.round(perfData.domContentLoadedEventEnd - perfData.fetchStart)}ms`);
-                    console.log(`  - Page Load Time: ${Math.round(perfData.loadEventEnd - perfData.fetchStart)}ms`);
-                    console.log(`  - DNS Lookup: ${Math.round(perfData.domainLookupEnd - perfData.domainLookupStart)}ms`);
-                }
-            }, 0);
-        });
-    }
-}
+// ===========================
+// EXPORT FUNCTIONS (if using modules)
+// ===========================
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Show loading animation
-    showLoadingAnimation();
-    
-    // Initialize cookie banner
-    initCookieBanner();
-    
-    // Initialize mobile navigation
-    initMobileNavigation();
-    
-    // Initialize scroll animations
-    initScrollAnimations();
-    
-    // Enhance images
-    enhanceImages();
-    
-    // Initialize theme toggle
-    initThemeToggle();
-    
-    // Initialize scroll to top button
-    initScrollToTop();
-    
-    // Log performance metrics (dev mode)
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        logPerformanceMetrics();
-    }
-});
-
-// Export functions for use in HTML pages
+// Make functions available globally
+window.toggleTheme = toggleTheme;
 window.acceptCookies = acceptCookies;
 window.refuseCookies = refuseCookies;
-window.customizeCookies = customizeCookies;
+window.validateEmail = validateEmail;
+window.validatePhone = validatePhone;
