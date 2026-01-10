@@ -54,14 +54,18 @@
         }
 
         .chat-container {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px;
-            border: 1px solid #333;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(10, 10, 20, 0.9));
+            padding: 20px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
             height: 75vh;
             display: flex;
             flex-direction: column;
             position: relative;
-            border-radius: 12px;
+            border-radius: 16px;
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.7),
+                0 0 30px rgba(0, 243, 255, 0.1),
+                inset 0 1px 0 rgba(0, 243, 255, 0.2);
         }
         
         /* Grille de fond dans le chat */
@@ -71,79 +75,142 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(transparent 95%, var(--neon-cyan) 100%);
             background-size: 100% 20px;
-            opacity: 0.05;
+            opacity: 0.03;
             pointer-events: none;
+            border-radius: 16px;
         }
 
         #messages {
             flex: 1;
             overflow-y: auto;
-            padding-right: 10px;
+            overflow-x: hidden;
+            padding-right: 12px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            scroll-behavior: smooth;
         }
 
-        /* Scrollbar Cyberpunk */
-        #messages::-webkit-scrollbar { width: 6px; }
-        #messages::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 3px; }
-        #messages::-webkit-scrollbar-track { background: #111; }
+        /* Scrollbar Cyberpunk Premium */
+        #messages::-webkit-scrollbar { 
+            width: 8px; 
+        }
+        
+        #messages::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, var(--neon-cyan), var(--neon-pink)); 
+            border-radius: 4px; 
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        
+        #messages::-webkit-scrollbar-thumb:hover { 
+            background: linear-gradient(180deg, #00f3ff, #ff006e);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.8);
+        }
+        
+        #messages::-webkit-scrollbar-track { 
+            background: rgba(0, 0, 0, 0.3); 
+            border-radius: 4px;
+        }
 
         .message-row {
             display: flex;
-            gap: 12px;
-            animation: fadeIn 0.3s ease-out;
+            gap: 14px;
+            animation: slideInMessage 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 4px;
         }
         
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInMessage { 
+            from { 
+                opacity: 0; 
+                transform: translateY(15px) scale(0.95); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            } 
+        }
 
         .avatar {
-            width: 40px;
-            height: 40px;
-            background: #000;
-            border: 1px solid var(--neon-pink);
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(15, 15, 30, 0.9));
+            border: 2px solid var(--neon-pink);
             color: var(--neon-pink);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 1.2rem;
-            box-shadow: 0 0 5px var(--neon-pink);
+            font-size: 1.1rem;
+            box-shadow: 
+                0 4px 12px rgba(255, 0, 110, 0.3),
+                0 0 20px rgba(255, 0, 110, 0.15),
+                inset 0 1px 0 rgba(255, 0, 110, 0.3);
             clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px);
+            flex-shrink: 0;
         }
 
         .message-card {
-            background: rgba(0, 243, 255, 0.05);
-            padding: 12px 16px;
-            max-width: 80%;
-            border-left: 2px solid var(--neon-cyan);
-            color: #d1d5db;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(0, 243, 255, 0.03));
+            padding: 14px 18px;
+            max-width: 75%;
+            border-left: 3px solid var(--neon-cyan);
+            color: #e5e7eb;
             position: relative;
-            border-radius: 8px;
+            border-radius: 12px;
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                0 1px 3px rgba(0, 243, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .message-card:hover {
+            transform: translateX(4px);
+            box-shadow: 
+                0 6px 16px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(0, 243, 255, 0.2);
         }
 
         .message-header {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--neon-cyan);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .message-body {
-            font-size: 0.95rem;
+            font-size: 0.98rem;
             font-family: 'Share Tech Mono', monospace;
+            line-height: 1.5;
+            word-wrap: break-word;
         }
 
         .smart-input-bar {
             display: flex;
             align-items: center;
-            background: #000;
-            padding: 10px;
-            border: 1px solid #444;
-            margin-top: 15px;
-            gap: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(10, 10, 20, 0.95));
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            margin-top: 16px;
+            gap: 12px;
+            box-shadow: 
+                0 -4px 20px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(0, 243, 255, 0.1),
+                inset 0 1px 0 rgba(0, 243, 255, 0.2);
+            border-radius: 12px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .smart-input-bar:focus-within {
+            border-color: var(--neon-cyan);
+            box-shadow: 
+                0 -4px 20px rgba(0, 0, 0, 0.5),
+                0 0 25px rgba(0, 243, 255, 0.3),
+                inset 0 1px 0 rgba(0, 243, 255, 0.3);
         }
 
         .smart-input-bar input {
@@ -154,34 +221,51 @@
             font-size: 16px;
             font-family: 'Share Tech Mono', monospace;
             outline: none;
+            padding: 8px 0;
         }
         
-        .smart-input-bar input::placeholder { color: #555; }
+        .smart-input-bar input::placeholder { 
+            color: rgba(255, 255, 255, 0.3); 
+        }
 
         #send-btn {
-            width: 45px;
-            height: 45px;
-            border: 1px solid var(--neon-cyan);
-            background: rgba(0, 243, 255, 0.1);
+            width: 48px;
+            height: 48px;
+            border: 2px solid var(--neon-cyan);
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(0, 243, 255, 0.05));
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
-            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 243, 255, 0.2);
+            flex-shrink: 0;
         }
 
         #send-btn svg {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             fill: var(--neon-cyan);
+            transition: all 0.3s ease;
         }
 
         #send-btn:hover {
             background: var(--neon-cyan);
-            box-shadow: 0 0 15px var(--neon-cyan);
+            box-shadow: 
+                0 6px 20px rgba(0, 243, 255, 0.4),
+                0 0 30px rgba(0, 243, 255, 0.6);
+            transform: translateY(-2px);
         }
-        #send-btn:hover svg { fill: #000; }
+        
+        #send-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+        
+        #send-btn:hover svg { 
+            fill: #000; 
+            transform: scale(1.1);
+        }
 
         /* Ecran de pseudo */
         #pseudo-screen {
