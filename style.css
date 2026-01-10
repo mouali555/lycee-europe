@@ -5,6 +5,33 @@
   padding: 0;
 }
 
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 3px solid var(--luxury-gold);
+  outline-offset: 2px;
+}
+
+/* SKIP TO MAIN CONTENT - ACCESSIBILITY */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--luxury-gold);
+  color: var(--luxury-black);
+  padding: 12px 20px;
+  text-decoration: none;
+  font-weight: 700;
+  z-index: 10000;
+  border-radius: 0 0 8px 0;
+  transition: top 0.3s ease;
+  font-family: 'Lato', sans-serif;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--luxury-gold-light);
+}
+
 /* CSS VARIABLES - LUXURY THEME */
 :root {
   /* Luxury Colors */

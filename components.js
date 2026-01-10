@@ -201,16 +201,45 @@ function initScrollAnimations() {
 function enhanceImages() {
     const images = document.querySelectorAll('img[loading="lazy"]');
     
-    images.forEach(img => {
-        img.addEventListener('load', () => {
-            img.classList.add('loaded');
+    // Use Intersection Observer for better lazy loading
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                    
+                    // If already loaded
+                    if (img.complete) {
+                        img.classList.add('loaded');
+                    }
+                    
+                    observer.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '50px 0px',
+            threshold: 0.01
         });
         
-        // If already loaded
-        if (img.complete) {
-            img.classList.add('loaded');
-        }
-    });
+        images.forEach(img => {
+            imageObserver.observe(img);
+        });
+    } else {
+        // Fallback for browsers without Intersection Observer
+        images.forEach(img => {
+            img.addEventListener('load', () => {
+                img.classList.add('loaded');
+            });
+            
+            // If already loaded
+            if (img.complete) {
+                img.classList.add('loaded');
+            }
+        });
+    }
 }
 
 // ===========================
@@ -223,15 +252,20 @@ function initThemeToggle() {
         window.toggleTheme = function() {
             const body = document.body;
             const themeIcon = document.getElementById('theme-icon');
+            const themeButton = document.querySelector('.theme-toggle');
             body.classList.toggle('light-mode');
             
             if (body.classList.contains('light-mode')) {
                 themeIcon.classList.remove('fa-moon');
                 themeIcon.classList.add('fa-sun');
+                themeButton.setAttribute('aria-pressed', 'true');
+                themeButton.setAttribute('aria-label', 'Passer au mode sombre');
                 localStorage.setItem('theme', 'light');
             } else {
                 themeIcon.classList.remove('fa-sun');
                 themeIcon.classList.add('fa-moon');
+                themeButton.setAttribute('aria-pressed', 'false');
+                themeButton.setAttribute('aria-label', 'Passer au mode clair');
                 localStorage.setItem('theme', 'dark');
             }
         };
@@ -240,6 +274,7 @@ function initThemeToggle() {
     // Load saved theme
     const savedTheme = localStorage.getItem('theme');
     const themeIcon = document.getElementById('theme-icon');
+    const themeButton = document.querySelector('.theme-toggle');
     
     if (savedTheme === 'light') {
         document.body.classList.add('light-mode');
@@ -247,6 +282,12 @@ function initThemeToggle() {
             themeIcon.classList.remove('fa-moon');
             themeIcon.classList.add('fa-sun');
         }
+        if (themeButton) {
+            themeButton.setAttribute('aria-pressed', 'true');
+            themeButton.setAttribute('aria-label', 'Passer au mode sombre');
+        }
+    } else if (themeButton) {
+        themeButton.setAttribute('aria-label', 'Passer au mode clair');
     }
 }
 
@@ -279,6 +320,24 @@ function showLoadingAnimation() {
 // INITIALIZE ALL COMPONENTS
 // ===========================
 
+// Performance monitoring
+function logPerformanceMetrics() {
+    if ('performance' in window && 'PerformanceObserver' in window) {
+        // Log navigation timing
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const perfData = performance.getEntriesByType('navigation')[0];
+                if (perfData) {
+                    console.log('🚀 Performance Metrics:');
+                    console.log(`  - DOM Content Loaded: ${Math.round(perfData.domContentLoadedEventEnd - perfData.fetchStart)}ms`);
+                    console.log(`  - Page Load Time: ${Math.round(perfData.loadEventEnd - perfData.fetchStart)}ms`);
+                    console.log(`  - DNS Lookup: ${Math.round(perfData.domainLookupEnd - perfData.domainLookupStart)}ms`);
+                }
+            }, 0);
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Show loading animation
     showLoadingAnimation();
@@ -297,6 +356,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize theme toggle
     initThemeToggle();
+    
+    // Log performance metrics (dev mode)
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        logPerformanceMetrics();
+    }
 });
 
 // Export functions for use in HTML pages
