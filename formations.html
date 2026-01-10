@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Formations d'Excellence - Lycée de l'Europe</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1 aria-label="Lycée de l'Europe - Dunkerque">✨ Lycée de l'Europe – Dunkerque ✨</h1>
+            <p aria-label="Nos Formations d'Excellence">🎓 Nos Formations d'Excellence 🎓</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+    </header>
+
+    <div class="container">
+        
+        <!-- MENU GAUCHE -->
+        <aside>
+            <nav class="menu-box">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                    <li><a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a></li>
+                    <li><a href="la-classe-de-seconde.html"><i class="fas fa-book-open"></i> La Classe de Seconde</a></li>
+                    <li><a href="les-baccalaureats.html"><i class="fas fa-graduation-cap"></i> Les Baccalauréats</a></li>
+                    <li><a href="les-bts.html"><i class="fas fa-briefcase"></i> Les BTS</a></li>
+                    <li><a href="la-prepa-ptsi-pt.html"><i class="fas fa-cogs"></i> La Prépa PTSI/PT</a></li>
+                    <li><a href="evenements.html"><i class="fas fa-calendar-alt"></i> Événements</a></li>
+                </ul>
+            </nav>
+
+            <!-- CONTACT RAPIDE -->
+            <div class="menu-box" style="margin-top: 20px;">
+                <h3>Contact Rapide</h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>530 Av. de l'Université<br>59140 Dunkerque</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>03 28 58 72 00</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>ce.0590072h@ac-lille.fr</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENU CENTRAL -->
+        <main>
+            <!-- HERO SECTION -->
+            <article class="card hero-section">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-crown"></i>
+                        <span>Excellence • Innovation • Réussite</span>
+                    </div>
+                    <h1 class="hero-title">Nos Formations d'Excellence</h1>
+                    <p class="hero-description">
+                        Du lycée général et technologique aux classes préparatoires, en passant par nos BTS reconnus, 
+                        le Lycée de l'Europe vous offre un parcours complet vers la réussite. 
+                        Découvrez nos formations d'excellence adaptées à vos ambitions.
+                    </p>
+                </div>
+            </article>
+
+            <!-- LA CLASSE DE SECONDE -->
+            <article class="card">
+                <h2><i class="fas fa-book-open"></i> La Classe de Seconde</h2>
+                <p>
+                    La classe de Seconde est une année charnière qui permet aux élèves de découvrir de nouvelles matières 
+                    et de construire progressivement leur projet d'orientation. Elle offre un tronc commun d'enseignements 
+                    et des enseignements optionnels pour personnaliser son parcours.
+                </p>
+                <div class="alert-box">
+                    <strong>Points forts :</strong> Accompagnement personnalisé • Découverte des spécialités • 
+                    Orientation progressive • Projets innovants
+                </div>
+                <a href="la-classe-de-seconde.html" class="cta-primary" style="display: inline-flex; margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Découvrir la Seconde</span>
+                </a>
+            </article>
+
+            <!-- LES BACCALAUREATS -->
+            <article class="card">
+                <h2><i class="fas fa-graduation-cap"></i> Les Baccalauréats</h2>
+                <p>
+                    Le Lycée de l'Europe propose les voies générales et technologiques du Baccalauréat. 
+                    Nos élèves bénéficient d'un enseignement de qualité et d'un accompagnement individualisé 
+                    pour réussir leur examen avec un taux de réussite de 92%.
+                </p>
+                
+                <h3 style="color: var(--luxury-gold); margin-top: 20px; margin-bottom: 10px;">
+                    <i class="fas fa-book"></i> Baccalauréat Général
+                </h3>
+                <p style="color: var(--text-muted);">
+                    Avec un large choix de spécialités : Mathématiques, Physique-Chimie, SVT, Sciences de l'Ingénieur, 
+                    NSI (Numérique et Sciences Informatiques), Sciences Économiques et Sociales, Histoire-Géographie, 
+                    Langues, Littérature et Philosophie.
+                </p>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 20px; margin-bottom: 10px;">
+                    <i class="fas fa-cog"></i> Baccalauréat Technologique
+                </h3>
+                <p style="color: var(--text-muted);">
+                    Formations technologiques dans les domaines de l'industrie, du numérique et des sciences appliquées, 
+                    offrant une approche concrète et professionnalisante.
+                </p>
+
+                <a href="les-baccalaureats.html" class="cta-primary" style="display: inline-flex; margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Découvrir les Baccalauréats</span>
+                </a>
+            </article>
+
+            <!-- LES BTS -->
+            <article class="card">
+                <h2><i class="fas fa-briefcase"></i> Les BTS</h2>
+                <p>
+                    Nos BTS (Brevets de Technicien Supérieur) allient théorie et pratique pour former des professionnels 
+                    qualifiés en 2 ans. Le Lycée de l'Europe est particulièrement reconnu pour son BTS CIEL 
+                    (Cybersécurité, Informatique et réseaux, ÉLectronique).
+                </p>
+                
+                <h3 style="color: var(--luxury-gold); margin-top: 20px; margin-bottom: 10px;">
+                    <i class="fas fa-microchip"></i> BTS CIEL
+                </h3>
+                <p style="color: var(--text-muted);">
+                    Formation d'excellence dans les domaines de la cybersécurité, de l'informatique, des réseaux et de 
+                    l'électronique. Nos étudiants développent des compétences très recherchées par les entreprises.
+                </p>
+
+                <div class="alert-box" style="margin-top: 15px;">
+                    <strong>Atouts :</strong> Équipements modernes • Partenariats entreprises • 
+                    Stages professionnalisants • Taux d'insertion élevé
+                </div>
+
+                <a href="les-bts.html" class="cta-primary" style="display: inline-flex; margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Découvrir les BTS</span>
+                </a>
+            </article>
+
+            <!-- LA PREPA PTSI/PT -->
+            <article class="card">
+                <h2><i class="fas fa-cogs"></i> La Prépa PTSI/PT</h2>
+                <p>
+                    La classe préparatoire PTSI/PT (Physique, Technologie et Sciences de l'Ingénieur / Physique et Technologie) 
+                    prépare aux concours des grandes écoles d'ingénieurs. C'est une formation exigeante mais gratifiante, 
+                    avec un encadrement de qualité et des résultats remarquables.
+                </p>
+
+                <h3 style="color: var(--luxury-gold); margin-top: 20px; margin-bottom: 10px;">
+                    <i class="fas fa-trophy"></i> Excellence et Réussite
+                </h3>
+                <p style="color: var(--text-muted);">
+                    Nos étudiants intègrent régulièrement les meilleures écoles d'ingénieurs grâce à un enseignement 
+                    de haut niveau dispensé par des professeurs passionnés et investis.
+                </p>
+
+                <div class="alert-box" style="margin-top: 15px;">
+                    <strong>Points forts :</strong> Petits effectifs • Suivi personnalisé • 
+                    Équipements scientifiques de pointe • Préparation intensive aux concours
+                </div>
+
+                <a href="la-prepa-ptsi-pt.html" class="cta-primary" style="display: inline-flex; margin-top: 15px;">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>Découvrir la Prépa</span>
+                </a>
+            </article>
+
+        </main>
+
+        <!-- MENU DROIT -->
+        <aside>
+            <div class="menu-box">
+                <h3>Chiffres Clés</h3>
+                <div class="news-items">
+                    <div class="news-item">
+                        <div class="news-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="news-content">
+                            <h4>92% de Réussite</h4>
+                            <p>Taux de réussite au Baccalauréat 2025</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="news-content">
+                            <h4>1250 Élèves</h4>
+                            <p>Du lycée aux classes prépas</p>
+                        </div>
+                    </div>
+                    <div class="news-item">
+                        <div class="news-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="news-content">
+                            <h4>85 Professeurs</h4>
+                            <p>Une équipe pédagogique d'excellence</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INSCRIPTIONS -->
+            <div class="menu-box" style="margin-top: 20px;">
+                <h3>S'inscrire</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                    Les inscriptions pour l'année 2026-2027 sont ouvertes. Contactez-nous pour plus d'informations 
+                    ou pour planifier une visite de l'établissement.
+                </p>
+                <div class="contact-item" style="margin-top: 15px;">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Portes Ouvertes : Samedi 15 mars 2026</span>
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Lycée de l'Europe</h4>
+                <p>530 Av. de l'Université<br>59140 Dunkerque</p>
+                <p><i class="fas fa-phone"></i> 03 28 58 72 00</p>
+                <p><i class="fas fa-envelope"></i> ce.0590072h@ac-lille.fr</p>
+            </div>
+            <div class="footer-section">
+                <h4>Liens Utiles</h4>
+                <ul>
+                    <li><a href="index.html">Accueil</a></li>
+                    <li><a href="le-lycee.html">Le Lycée</a></li>
+                    <li><a href="formations.html">Nos Formations</a></li>
+                    <li><a href="evenements.html">Événements</a></li>
+                    <li><a href="mentions-legales.html">Mentions Légales</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Suivez-nous</h4>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/clubphotodunkerque/?utm_source=qr" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://discord.gg/vp9ZrBk2Ja" target="_blank" rel="noopener noreferrer" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Lycée de l'Europe - Dunkerque. Tous droits réservés.</p>
+            <p>✨ Site réalisé avec excellence par les BTS CIEL ✨</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        });
+    </script>
+
+</body>
+</html>
