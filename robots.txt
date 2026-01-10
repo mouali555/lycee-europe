@@ -1,0 +1,14 @@
+# Robots.txt for Lycée de l'Europe
+# https://lycee-europe.fr/robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://lycee-europe.fr/sitemap.xml
+
+# Block access to sensitive areas
+Disallow: /chatvip.html
+
+# Crawl delay (respectful to search engines)
+Crawl-delay: 1

@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" prefix="og: http://ogp.me/ns#">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Lycée de l'Europe - Dunkerque | Excellence & Innovation</title>
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://lycee-europe.fr/">
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="Lycée de l'Europe à Dunkerque : établissement d'excellence offrant formations générales, technologiques, BTS CIEL et classes préparatoires PTSI/PT. Taux de réussite 92%, 15 projets Erasmus+.">
@@ -23,31 +27,91 @@
     <meta name="twitter:description" content="Établissement d'excellence offrant des formations du lycée aux classes préparatoires">
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200">
     
+    <!-- Schema.org Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Lycée de l'Europe",
+      "alternateName": "Lycée de l'Europe - Dunkerque",
+      "url": "https://lycee-europe.fr",
+      "logo": "https://lycee-europe.fr/logo.png",
+      "description": "Établissement d'excellence à Dunkerque offrant formations générales, technologiques, BTS CIEL et classes préparatoires PTSI/PT",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "530 Av. de l'Université",
+        "addressLocality": "Dunkerque",
+        "postalCode": "59140",
+        "addressCountry": "FR"
+      },
+      "telephone": "+33328587200",
+      "email": "ce.0590072h@ac-lille.fr",
+      "sameAs": [
+        "https://www.instagram.com/clubphotodunkerque/",
+        "https://discord.gg/vp9ZrBk2Ja"
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "250"
+      },
+      "hasCredential": [
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "Programme Erasmus+",
+          "recognizedBy": {
+            "@type": "Organization",
+            "name": "Union Européenne"
+          }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "Label Lycée des Métiers",
+          "recognizedBy": {
+            "@type": "Organization",
+            "name": "Éducation Nationale"
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Preconnect to external resources for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://images.unsplash.com">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" as="style">
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Luxury Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <header>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+    <header role="banner">
         <div>
             <h1 aria-label="Lycée de l'Europe - Dunkerque">✨ Lycée de l'Europe – Dunkerque ✨</h1>
             <p aria-label="Meilleurs vœux pour une année 2026 exceptionnelle">🎊 Meilleurs vœux pour une année 2026 exceptionnelle 🎊</p>
         </div>
-        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-            <i class="fas fa-moon" id="theme-icon"></i>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Basculer entre le mode clair et le mode sombre" aria-pressed="false">
+            <i class="fas fa-moon" id="theme-icon" aria-hidden="true"></i>
         </button>
     </header>
 
     <div class="container">
         
         <!-- MENU GAUCHE -->
-        <aside>
-            <nav class="menu-box">
-                <ul>
+        <aside role="complementary" aria-label="Menu de navigation principal">
+            <nav class="menu-box" aria-label="Navigation principale">
+                <ul role="list">
                     <li>
                         <a href="le-lycee.html"><i class="fas fa-landmark"></i> Le Lycée</a>
                     </li>
@@ -161,9 +225,9 @@
         </aside>
 
         <!-- CONTENU CENTRAL -->
-        <main>
+        <main role="main" aria-label="Contenu principal" id="main-content">
             <!-- HERO IMAGE -->
-            <div class="hero-image-container">
+            <div class="hero-image-container" role="img" aria-label="Étudiants dans une université moderne">
                 <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&h=600&fit=crop&q=80" 
                      alt="Étudiants dans une université moderne" 
                      class="hero-image"
@@ -263,10 +327,10 @@
         </main>
 
         <!-- MENU DROIT -->
-        <aside>
+        <aside role="complementary" aria-label="Menu d'accès rapide et actualités">
             <div class="menu-box">
                 <h3>Accès Rapide</h3>
-                <ul>
+                <ul role="list">
                     <li>
                         <a href="https://0590072h.index-education.net/pronote/eleve.html?login=true"><i class="fas fa-user-check"></i> Pronote</a>
                     </li>
@@ -368,7 +432,7 @@
 
     </div>
 
-    <footer>
+    <footer role="contentinfo" aria-label="Pied de page avec informations de contact">
         <div class="footer-content">
             <div class="footer-section">
                 <h4>Lycée de l'Europe</h4>

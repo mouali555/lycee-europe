@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="animated-logo">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B8941E;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Outer circle with animation -->
+  <circle cx="100" cy="100" r="90" fill="none" stroke="url(#goldGradient)" stroke-width="3" opacity="0.3">
+    <animate attributeName="r" from="85" to="95" dur="3s" repeatCount="indefinite" />
+    <animate attributeName="opacity" from="0.2" to="0.4" dur="3s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Middle decorative stars -->
+  <g fill="url(#goldGradient)" filter="url(#glow)">
+    <path d="M100,30 L105,45 L120,45 L108,54 L113,69 L100,60 L87,69 L92,54 L80,45 L95,45 Z" opacity="0.8">
+      <animateTransform attributeName="transform" type="rotate" from="0 100 100" to="360 100 100" dur="20s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- Center book icon -->
+  <g fill="url(#goldGradient)" transform="translate(100, 100)">
+    <!-- Book shape -->
+    <rect x="-30" y="-25" width="60" height="50" rx="3" opacity="0.9"/>
+    <line x1="-30" y1="-25" x2="-30" y2="25" stroke="#0A0A0A" stroke-width="2"/>
+    <line x1="30" y1="-25" x2="30" y2="25" stroke="#0A0A0A" stroke-width="2"/>
+    <line x1="0" y1="-25" x2="0" y2="25" stroke="#0A0A0A" stroke-width="1" opacity="0.5"/>
+    
+    <!-- Pages lines -->
+    <line x1="-20" y1="-10" x2="20" y2="-10" stroke="#0A0A0A" stroke-width="1.5" opacity="0.5"/>
+    <line x1="-20" y1="0" x2="20" y2="0" stroke="#0A0A0A" stroke-width="1.5" opacity="0.5"/>
+    <line x1="-20" y1="10" x2="20" y2="10" stroke="#0A0A0A" stroke-width="1.5" opacity="0.5"/>
+  </g>
+  
+  <!-- Bottom stars -->
+  <g fill="url(#goldGradient)" opacity="0.6">
+    <circle cx="50" cy="170" r="3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="0s"/>
+    </circle>
+    <circle cx="150" cy="170" r="3">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin="1s"/>
+    </circle>
+  </g>
+  
+  <!-- Text -->
+  <text x="100" y="185" font-family="Playfair Display, serif" font-size="16" fill="url(#goldGradient)" text-anchor="middle" font-weight="700">
+    Excellence
+  </text>
+</svg>

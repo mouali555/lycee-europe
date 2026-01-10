@@ -192,6 +192,34 @@ function initScrollAnimations() {
         box.classList.add('animate-on-scroll');
         observer.observe(box);
     });
+    
+    // Observe fade-in-scroll elements
+    document.querySelectorAll('.fade-in-scroll').forEach(el => {
+        observer.observe(el);
+        // Add 'visible' class when intersecting
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    fadeObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        fadeObserver.observe(el);
+    });
+    
+    // Observe slide animations
+    document.querySelectorAll('.slide-in-left, .slide-in-right').forEach(el => {
+        const slideObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    slideObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        slideObserver.observe(el);
+    });
 }
 
 // ===========================
@@ -201,16 +229,45 @@ function initScrollAnimations() {
 function enhanceImages() {
     const images = document.querySelectorAll('img[loading="lazy"]');
     
-    images.forEach(img => {
-        img.addEventListener('load', () => {
-            img.classList.add('loaded');
+    // Use Intersection Observer for better lazy loading
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+                    
+                    // If already loaded
+                    if (img.complete) {
+                        img.classList.add('loaded');
+                    }
+                    
+                    observer.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '50px 0px',
+            threshold: 0.01
         });
         
-        // If already loaded
-        if (img.complete) {
-            img.classList.add('loaded');
-        }
-    });
+        images.forEach(img => {
+            imageObserver.observe(img);
+        });
+    } else {
+        // Fallback for browsers without Intersection Observer
+        images.forEach(img => {
+            img.addEventListener('load', () => {
+                img.classList.add('loaded');
+            });
+            
+            // If already loaded
+            if (img.complete) {
+                img.classList.add('loaded');
+            }
+        });
+    }
 }
 
 // ===========================
@@ -223,15 +280,20 @@ function initThemeToggle() {
         window.toggleTheme = function() {
             const body = document.body;
             const themeIcon = document.getElementById('theme-icon');
+            const themeButton = document.querySelector('.theme-toggle');
             body.classList.toggle('light-mode');
             
             if (body.classList.contains('light-mode')) {
                 themeIcon.classList.remove('fa-moon');
                 themeIcon.classList.add('fa-sun');
+                themeButton.setAttribute('aria-pressed', 'true');
+                themeButton.setAttribute('aria-label', 'Passer au mode sombre');
                 localStorage.setItem('theme', 'light');
             } else {
                 themeIcon.classList.remove('fa-sun');
                 themeIcon.classList.add('fa-moon');
+                themeButton.setAttribute('aria-pressed', 'false');
+                themeButton.setAttribute('aria-label', 'Passer au mode clair');
                 localStorage.setItem('theme', 'dark');
             }
         };
@@ -240,6 +302,7 @@ function initThemeToggle() {
     // Load saved theme
     const savedTheme = localStorage.getItem('theme');
     const themeIcon = document.getElementById('theme-icon');
+    const themeButton = document.querySelector('.theme-toggle');
     
     if (savedTheme === 'light') {
         document.body.classList.add('light-mode');
@@ -247,6 +310,12 @@ function initThemeToggle() {
             themeIcon.classList.remove('fa-moon');
             themeIcon.classList.add('fa-sun');
         }
+        if (themeButton) {
+            themeButton.setAttribute('aria-pressed', 'true');
+            themeButton.setAttribute('aria-label', 'Passer au mode sombre');
+        }
+    } else if (themeButton) {
+        themeButton.setAttribute('aria-label', 'Passer au mode clair');
     }
 }
 
@@ -279,6 +348,62 @@ function showLoadingAnimation() {
 // INITIALIZE ALL COMPONENTS
 // ===========================
 
+// Scroll to top button
+function initScrollToTop() {
+    // Create scroll to top button
+    const scrollBtn = document.createElement('button');
+    scrollBtn.className = 'scroll-to-top';
+    scrollBtn.innerHTML = '<i class="fas fa-arrow-up" aria-hidden="true"></i>';
+    scrollBtn.setAttribute('aria-label', 'Retour en haut de la page');
+    document.body.appendChild(scrollBtn);
+    
+    // Show/hide on scroll
+    let lastScrollPosition = 0;
+    let ticking = false;
+    
+    window.addEventListener('scroll', () => {
+        lastScrollPosition = window.scrollY;
+        
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                if (lastScrollPosition > 300) {
+                    scrollBtn.classList.add('visible');
+                } else {
+                    scrollBtn.classList.remove('visible');
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    // Smooth scroll to top
+    scrollBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+// Performance monitoring
+function logPerformanceMetrics() {
+    if ('performance' in window && 'PerformanceObserver' in window) {
+        // Log navigation timing
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const perfData = performance.getEntriesByType('navigation')[0];
+                if (perfData) {
+                    console.log('🚀 Performance Metrics:');
+                    console.log(`  - DOM Content Loaded: ${Math.round(perfData.domContentLoadedEventEnd - perfData.fetchStart)}ms`);
+                    console.log(`  - Page Load Time: ${Math.round(perfData.loadEventEnd - perfData.fetchStart)}ms`);
+                    console.log(`  - DNS Lookup: ${Math.round(perfData.domainLookupEnd - perfData.domainLookupStart)}ms`);
+                }
+            }, 0);
+        });
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Show loading animation
     showLoadingAnimation();
@@ -297,6 +422,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize theme toggle
     initThemeToggle();
+    
+    // Initialize scroll to top button
+    initScrollToTop();
+    
+    // Log performance metrics (dev mode)
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        logPerformanceMetrics();
+    }
 });
 
 // Export functions for use in HTML pages
