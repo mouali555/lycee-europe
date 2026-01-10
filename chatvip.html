@@ -572,6 +572,33 @@
                 </a>
             </li>
         </ul>
+
+        <!-- CASINO ROULETTE VIP - Luxury Gold Theme -->
+        <div style="margin-top: var(--space-8); padding: var(--space-6); background: rgba(255, 215, 0, 0.05); border: 2px solid var(--stellar-gold); border-radius: 16px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);">
+            <h3 style="color: var(--stellar-gold); text-align: center; margin-bottom: var(--space-4); font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 0.1em;">
+                <i class="fas fa-crown"></i> Roulette VIP Luxe
+            </h3>
+            <div style="position: relative; margin: var(--space-4) auto;">
+                <canvas id="wheelCanvas" width="220" height="220" style="display: block; margin: 0 auto; border-radius: 50%; box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);"></canvas>
+                <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 2rem; color: var(--quantum-pink); filter: drop-shadow(0 0 10px var(--quantum-pink));">▼</div>
+            </div>
+            <button id="spin-wheel-btn" style="width: 100%; padding: var(--space-3); background: linear-gradient(135deg, var(--stellar-gold), #daa520); color: var(--space-black); border: 2px solid var(--stellar-gold); border-radius: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Orbitron', sans-serif; transition: all 0.3s ease; margin-top: var(--space-4); box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);">
+                <i class="fas fa-dice"></i> Lancer la Roulette
+            </button>
+            <div id="wheel-result" style="text-align: center; margin-top: var(--space-4); font-weight: 700; font-size: 1.1rem; color: var(--stellar-gold); min-height: 30px; text-shadow: 0 0 10px currentColor;"></div>
+        </div>
+
+        <style>
+            #spin-wheel-btn:hover {
+                background: linear-gradient(135deg, #ffd700, #ff006e);
+                box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+                transform: scale(1.05);
+            }
+            #spin-wheel-btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        </style>
     </div>
 
     <!-- MAIN CHAT -->
@@ -609,11 +636,18 @@
     </div>
 </div>
 
-<!-- PSEUDO SCREEN -->
+<!-- PSEUDO SCREEN - VIP ACCESS -->
 <div id="pseudo-screen">
     <div class="pseudo-modal">
-        <h2>Accès VIP</h2>
-        <p>Choisissez votre nom d'utilisateur pour accéder au salon VIP</p>
+        <h2><i class="fas fa-crown"></i> Accès VIP Exclusif</h2>
+        <p>Code d'accès requis pour le salon privé</p>
+        <input 
+            type="password" 
+            id="access-code" 
+            class="pseudo-input" 
+            placeholder="Code d'accès VIP..."
+            maxlength="20"
+        >
         <input 
             type="text" 
             id="pseudo-input" 
@@ -621,20 +655,50 @@
             placeholder="Votre pseudo..."
             maxlength="20"
         >
-        <button id="join-btn" class="pseudo-button">Rejoindre</button>
+        <button id="join-btn" class="pseudo-button">
+            <i class="fas fa-unlock"></i> Accéder
+        </button>
+        <p id="error" style="color: #ff006e; margin-top: 10px; font-size: 0.9rem;"></p>
     </div>
 </div>
 
 <script src="components.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
 <script>
-// MODERN CHAT FUNCTIONALITY
-let pseudo = '';
-let messages = [];
-let onlineUsers = new Set();
+// Firebase Configuration - VIP CHAT
+firebase.initializeApp({
+  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
+  authDomain: "lycee-europe-private.firebaseapp.com",
+  projectId: "lycee-europe-private",
+  storageBucket: "lycee-europe-private.firebasestorage.app",
+  messagingSenderId: "259168134432",
+  appId: "1:259168134432:web:470f5536d9305b4cf86345",
+  measurementId: "G-X323CMQRZR"
+});
+
+const db = firebase.firestore();
+const messagesRef = db.collection("messages_prives");
+let ACCESS_CODE = null;
+let currentPseudo = null;
+
+// Load ACCESS_CODE from Firebase
+async function loadAccessCode() {
+    try {
+        const doc = await db.collection("config").doc("access").get();
+        if(doc.exists) {
+            ACCESS_CODE = doc.data().code;
+        }
+    } catch (error) {
+        console.error("Error loading access code:", error);
+    }
+}
 
 // Color palette for avatars
 const avatarColors = [
-    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+    '#ffd700', '#ff006e', '#00f5ff', '#7b2cbf', 
     '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
 ];
 
@@ -646,31 +710,10 @@ function getAvatarColor(username) {
     return avatarColors[Math.abs(hash) % avatarColors.length];
 }
 
-function formatTime(date) {
+function formatTime(timestamp) {
+    if (!timestamp) return '--:--';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-}
-
-function renderMessage(msg) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message';
-    
-    const avatarColor = getAvatarColor(msg.author);
-    const initials = msg.author.substring(0, 2).toUpperCase();
-    
-    messageDiv.innerHTML = `
-        <div class="message-avatar" style="background: ${avatarColor}">
-            ${initials}
-        </div>
-        <div class="message-content">
-            <div class="message-header">
-                <span class="message-author">${msg.author}</span>
-                <span class="message-time">${formatTime(msg.time)}</span>
-            </div>
-            <div class="message-text">${escapeHtml(msg.text)}</div>
-        </div>
-    `;
-    
-    return messageDiv;
 }
 
 function escapeHtml(text) {
@@ -679,83 +722,128 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function addMessage(author, text) {
-    const msg = {
-        author: author,
-        text: text,
-        time: new Date()
-    };
+function renderMessage(data) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message';
     
-    messages.push(msg);
-    const messagesContainer = document.getElementById('messages');
-    messagesContainer.appendChild(renderMessage(msg));
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    const avatarColor = getAvatarColor(data.pseudo);
+    const initials = data.pseudo.substring(0, 2).toUpperCase();
+    
+    messageDiv.innerHTML = `
+        <div class="message-avatar" style="background: ${avatarColor}">
+            ${initials}
+        </div>
+        <div class="message-content">
+            <div class="message-header">
+                <span class="message-author">${escapeHtml(data.pseudo)}</span>
+                <span class="message-time">${formatTime(data.timestamp)}</span>
+            </div>
+            <div class="message-text">${escapeHtml(data.message)}</div>
+        </div>
+    `;
+    
+    return messageDiv;
 }
 
-function updateMembersList() {
-    const membersList = document.getElementById('members-list');
-    const onlineCount = document.getElementById('online-count');
-    
-    membersList.innerHTML = '';
-    onlineCount.textContent = onlineUsers.size;
-    
-    Array.from(onlineUsers).sort().forEach(username => {
-        const li = document.createElement('li');
-        li.className = 'member-item';
+function listenMessages() {
+    messagesRef.orderBy("timestamp").onSnapshot(snapshot => {
+        const messagesContainer = document.getElementById('messages');
+        if (!messagesContainer) return;
         
-        const avatarColor = getAvatarColor(username);
-        const initials = username.substring(0, 2).toUpperCase();
+        messagesContainer.innerHTML = '';
         
-        li.innerHTML = `
-            <div class="member-avatar" style="background: ${avatarColor}">
-                ${initials}
-            </div>
-            <span class="member-name">${username}</span>
-        `;
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            messagesContainer.appendChild(renderMessage(data));
+        });
         
-        membersList.appendChild(li);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Update member count
+        const uniqueUsers = new Set();
+        snapshot.forEach(doc => {
+            uniqueUsers.add(doc.data().pseudo);
+        });
+        const onlineCount = document.getElementById('online-count');
+        if (onlineCount) {
+            onlineCount.textContent = uniqueUsers.size;
+        }
     });
 }
 
-function sendMessage() {
+async function sendMessage() {
     const input = document.getElementById('message-input');
     const text = input.value.trim();
     
-    if (text && pseudo) {
-        addMessage(pseudo, text);
-        input.value = '';
-        input.style.height = 'auto';
+    if (!text || !currentPseudo) return;
+    
+    await messagesRef.add({
+        pseudo: currentPseudo,
+        message: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    input.value = '';
+    input.style.height = 'auto';
+}
+
+// VIP Access Control
+async function enterChat() {
+    const code = document.getElementById("access-code").value.trim();
+    const pseudo = document.getElementById("pseudo-input").value.trim();
+    const error = document.getElementById("error");
+
+    if (!code || !pseudo) {
+        error.textContent = "⚠️ Code d'accès et pseudo requis";
+        return;
     }
+    
+    // Load access code if not loaded
+    if (!ACCESS_CODE) await loadAccessCode();
+
+    // Check access code (CIELVIP992)
+    if (code !== ACCESS_CODE) {
+        error.textContent = "🚫 ACCÈS REFUSÉ : Code invalide";
+        return;
+    }
+
+    currentPseudo = pseudo;
+    
+    // Hide access screen
+    document.getElementById('pseudo-screen').classList.add('hidden');
+    
+    // Start listening to messages
+    listenMessages();
+    
+    // Send join message
+    messagesRef.add({
+        pseudo: 'Système VIP',
+        message: `✨ ${currentPseudo} a rejoint le salon VIP ! ✨`,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
 }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    const pseudoScreen = document.getElementById('pseudo-screen');
-    const pseudoInput = document.getElementById('pseudo-input');
     const joinBtn = document.getElementById('join-btn');
     const sendBtn = document.getElementById('send-btn');
     const messageInput = document.getElementById('message-input');
+    const accessCode = document.getElementById('access-code');
+    const pseudoInput = document.getElementById('pseudo-input');
     
     // Join chat
-    joinBtn.addEventListener('click', () => {
-        const username = pseudoInput.value.trim();
-        if (username.length >= 2) {
-            pseudo = username;
-            pseudoScreen.classList.add('hidden');
-            onlineUsers.add(pseudo);
-            updateMembersList();
-            
-            // Welcome message
-            addMessage('Système', `${pseudo} a rejoint le chat ! 👋`);
-        } else {
-            alert('Le pseudo doit contenir au moins 2 caractères');
+    joinBtn.addEventListener('click', enterChat);
+    
+    // Send with Enter on access screen
+    accessCode.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            pseudoInput.focus();
         }
     });
     
-    // Send with Enter
     pseudoInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            joinBtn.click();
+            enterChat();
         }
     });
     
@@ -775,19 +863,163 @@ document.addEventListener('DOMContentLoaded', () => {
         this.style.height = Math.min(this.scrollHeight, 120) + 'px';
     });
     
-    // Add some demo users
-    ['Marie', 'Thomas', 'Sophie', 'Lucas'].forEach(name => {
-        onlineUsers.add(name);
-    });
-    updateMembersList();
-    
-    // Welcome message
-    setTimeout(() => {
-        if (!pseudo) {
-            addMessage('Système', 'Bienvenue sur le chat du Lycée de l\'Europe ! 🎓');
-        }
-    }, 500);
+    // Initialize Casino Roulette
+    initWheel();
+    const spinBtn = document.getElementById('spin-wheel-btn');
+    if (spinBtn) {
+        spinBtn.addEventListener('click', spinWheel);
+    }
 });
+
+// REALISTIC EUROPEAN ROULETTE GAME
+let isSpinning = false;
+let currentRotation = 0;
+const FULL_CIRCLE = 360;
+
+// European Roulette numbers in wheel order
+const rouletteNumbers = [
+    0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10,
+    5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26
+];
+
+// Color mapping for European roulette
+function getRouletteColor(num) {
+    if (num === 0) return '#2F8D2F'; // Green for 0
+    const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+    return redNumbers.includes(num) ? '#DC2626' : '#0A0A0A'; // Red or Black
+}
+
+function initWheel() {
+    const canvas = document.getElementById('wheelCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 100;
+    
+    drawWheel(ctx, centerX, centerY, radius, 0);
+}
+
+function drawWheel(ctx, centerX, centerY, radius, rotation = 0) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.rotate(rotation * Math.PI / 180);
+    
+    const anglePerSegment = FULL_CIRCLE / rouletteNumbers.length;
+    
+    // Draw outer golden rim
+    ctx.beginPath();
+    ctx.arc(0, 0, radius + 6, 0, 2 * Math.PI);
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 6;
+    ctx.stroke();
+    
+    // Draw segments
+    rouletteNumbers.forEach((num, i) => {
+        const startAngle = (i * anglePerSegment) * Math.PI / 180;
+        const endAngle = ((i + 1) * anglePerSegment) * Math.PI / 180;
+        
+        // Draw segment
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = getRouletteColor(num);
+        ctx.fill();
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        
+        // Draw number
+        ctx.save();
+        const midAngle = startAngle + (endAngle - startAngle) / 2;
+        ctx.rotate(midAngle);
+        ctx.translate(radius * 0.7, 0);
+        ctx.rotate(Math.PI / 2);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 11px Arial';
+        ctx.fillText(num.toString(), 0, 0);
+        ctx.restore();
+    });
+    
+    // Draw center circle (gold)
+    ctx.beginPath();
+    ctx.arc(0, 0, 15, 0, 2 * Math.PI);
+    ctx.fillStyle = '#FFD700';
+    ctx.fill();
+    ctx.strokeStyle = '#DAA520';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    ctx.restore();
+}
+
+function spinWheel() {
+    if (isSpinning) return;
+    
+    const canvas = document.getElementById('wheelCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = 100;
+    const button = document.querySelector('#spin-wheel-btn');
+    const resultDiv = document.getElementById('wheel-result');
+    
+    isSpinning = true;
+    button.disabled = true;
+    resultDiv.textContent = '';
+    
+    // Random spin
+    const spins = 5 + Math.random() * 3; // 5-8 full rotations
+    const extraDegrees = Math.random() * FULL_CIRCLE;
+    const totalRotation = spins * FULL_CIRCLE + extraDegrees;
+    const duration = 4500;
+    const startTime = Date.now();
+    
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Cubic ease-out
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const rotation = currentRotation + totalRotation * easeOut;
+        
+        drawWheel(ctx, centerX, centerY, radius, rotation);
+        
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
+            currentRotation = (currentRotation + totalRotation) % FULL_CIRCLE;
+            drawWheel(ctx, centerX, centerY, radius, currentRotation);
+            
+            // Determine winning number
+            const normalizedRotation = (FULL_CIRCLE - (currentRotation % FULL_CIRCLE)) % FULL_CIRCLE;
+            const segmentAngle = FULL_CIRCLE / rouletteNumbers.length;
+            const winningIndex = Math.floor(normalizedRotation / segmentAngle);
+            const winningNumber = rouletteNumbers[winningIndex];
+            const winningColor = getRouletteColor(winningNumber);
+            
+            setTimeout(() => {
+                let colorName = 'VERT';
+                if (winningColor === '#DC2626') colorName = 'ROUGE';
+                else if (winningColor === '#0A0A0A') colorName = 'NOIR';
+                
+                resultDiv.textContent = `🎰 ${winningNumber} ${colorName} 🎰`;
+                
+                isSpinning = false;
+                button.disabled = false;
+            }, 500);
+        }
+    }
+    
+    animate();
+}
 </script>
 
 </body>
