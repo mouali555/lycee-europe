@@ -666,20 +666,10 @@
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 
 <script>
-// Firebase Configuration - VIP CHAT
-firebase.initializeApp({
-  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
-  authDomain: "lycee-europe-private.firebaseapp.com",
-  projectId: "lycee-europe-private",
-  storageBucket: "lycee-europe-private.firebasestorage.app",
-  messagingSenderId: "259168134432",
-  appId: "1:259168134432:web:470f5536d9305b4cf86345",
-  measurementId: "G-X323CMQRZR"
-});
-
-const db = firebase.firestore();
+// Firebase Configuration loaded from firebase-config.js
 const messagesRef = db.collection("messages_prives");
 let ACCESS_CODE = null;
 let currentPseudo = null;
