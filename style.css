@@ -92,7 +92,8 @@ body {
   background: radial-gradient(ellipse at top, #1a1a1a 0%, #0A0A0A 50%, #000000 100%);
   background-image: 
     radial-gradient(ellipse at 0% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 100% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+    radial-gradient(ellipse at 100% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at top, #1a1a1a 0%, #0A0A0A 50%, #000000 100%);
   color: var(--text-color);
   transition: background 0.3s ease, color 0.3s ease;
   position: relative;
