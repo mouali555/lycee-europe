@@ -1911,11 +1911,15 @@ body.light-mode .cookie-customize {
   backdrop-filter: blur(5px);
   z-index: 999;
   opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
   transition: opacity 0.3s ease;
 }
 
 .mobile-nav-overlay.show {
   opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
 }
 
 /* ============================================
@@ -2762,4 +2766,3 @@ select:focus {
 .flip-card-back {
   transform: rotateY(180deg);
 }
-
