@@ -97,65 +97,69 @@ function hideCookieBanner() {
 // ===========================
 
 function initMobileNavigation() {
-    // Check if we're on mobile
-    if (window.innerWidth >= 768) {
-        return;
-    }
-
-    // Find the first aside with navigation
-    const aside = document.querySelector('aside');
-    if (!aside) return;
-
-    // Create hamburger menu button
-    const hamburger = document.createElement('button');
-    hamburger.className = 'hamburger-menu';
-    hamburger.setAttribute('aria-label', 'Toggle menu');
-    hamburger.innerHTML = `
-        <span></span>
-        <span></span>
-        <span></span>
-    `;
-
-    // Insert hamburger in header
+    // Always create hamburger menu, CSS will control visibility
     const header = document.querySelector('header');
-    if (header) {
+    if (!header) return;
+
+    // Check if hamburger already exists
+    let hamburger = header.querySelector('.hamburger-menu');
+    
+    if (!hamburger) {
+        // Find the first aside with navigation
+        const aside = document.querySelector('aside');
+        if (!aside) return;
+
+        // Create hamburger menu button
+        hamburger = document.createElement('button');
+        hamburger.className = 'hamburger-menu';
+        hamburger.setAttribute('aria-label', 'Toggle menu');
+        hamburger.innerHTML = `
+            <span></span>
+            <span></span>
+            <span></span>
+        `;
+
+        // Insert hamburger in header
         header.appendChild(hamburger);
+
+        // Create mobile overlay if not exists
+        let overlay = document.querySelector('.mobile-nav-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'mobile-nav-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        // Toggle navigation
+        hamburger.addEventListener('click', () => {
+            aside.classList.toggle('mobile-nav-open');
+            hamburger.classList.toggle('active');
+            overlay.classList.toggle('show');
+            document.body.classList.toggle('nav-open');
+        });
+
+        // Close on overlay click
+        overlay.addEventListener('click', () => {
+            aside.classList.remove('mobile-nav-open');
+            hamburger.classList.remove('active');
+            overlay.classList.remove('show');
+            document.body.classList.remove('nav-open');
+        });
+
+        // Handle window resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (window.innerWidth >= 768) {
+                    aside.classList.remove('mobile-nav-open');
+                    hamburger.classList.remove('active');
+                    overlay.classList.remove('show');
+                    document.body.classList.remove('nav-open');
+                }
+            }, 250);
+        });
     }
-
-    // Create mobile overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'mobile-nav-overlay';
-    document.body.appendChild(overlay);
-
-    // Toggle navigation
-    hamburger.addEventListener('click', () => {
-        aside.classList.toggle('mobile-nav-open');
-        hamburger.classList.toggle('active');
-        overlay.classList.toggle('show');
-        document.body.classList.toggle('nav-open');
-    });
-
-    // Close on overlay click
-    overlay.addEventListener('click', () => {
-        aside.classList.remove('mobile-nav-open');
-        hamburger.classList.remove('active');
-        overlay.classList.remove('show');
-        document.body.classList.remove('nav-open');
-    });
-
-    // Handle window resize
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            if (window.innerWidth >= 768) {
-                aside.classList.remove('mobile-nav-open');
-                hamburger.classList.remove('active');
-                overlay.classList.remove('show');
-                document.body.classList.remove('nav-open');
-            }
-        }, 250);
-    });
 }
 
 // ===========================
