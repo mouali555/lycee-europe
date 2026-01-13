@@ -1,0 +1,141 @@
+/* ======================================
+   APP LAYOUT – console pro
+   ====================================== */
+
+.topbar{
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+  margin:10px;
+}
+
+.topbar-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.topbar-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand{
+  letter-spacing:4px;
+  font-size:14px;
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  background:var(--danger);
+  border-radius:50%;
+  box-shadow:0 0 12px rgba(255,0,60,.7);
+}
+
+.user-tag{
+  font-size:12px;
+  letter-spacing:2px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns: 280px 1fr;
+  gap:10px;
+  padding:0 10px 10px;
+  height: calc(100vh - 68px);
+}
+
+.sidebar{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.content{
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+/* Lists */
+.list{
+  flex:1;
+  overflow-y:auto;
+  border-top:1px solid rgba(0,255,136,.15);
+  border-bottom:1px solid rgba(0,255,136,.15);
+}
+
+.list .item{
+  padding:8px 10px;
+  cursor:pointer;
+  border-bottom:1px solid rgba(0,255,136,.08);
+}
+
+.list .item:hover{
+  background: rgba(0,255,136,.08);
+}
+
+.list .item.active{
+  background: rgba(0,255,136,.18);
+}
+
+/* Messages */
+.messages{
+  flex:1;
+  overflow-y:auto;
+  padding:12px;
+  font-family: var(--mono);
+  font-size:13px;
+}
+
+.msg{
+  margin-bottom:6px;
+}
+
+.msg .user{
+  color: var(--text);
+}
+
+.msg .me{
+  color:#00ffaa;
+}
+
+.msg .system{
+  color: var(--danger);
+  font-style:italic;
+}
+
+/* Composer */
+.composer{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  border-top:1px solid rgba(0,255,136,.25);
+}
+
+.composer .field{
+  flex:1;
+}
+
+/* Terminal line */
+.terminal-line{
+  font-size:11px;
+  padding:6px 10px;
+  border-top:1px solid rgba(0,255,136,.15);
+  font-family: var(--mono);
+}
+
+/* Mobile */
+@media (max-width: 900px){
+  .layout{
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar{
+    height:200px;
+  }
+}
