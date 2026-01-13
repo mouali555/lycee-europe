@@ -148,6 +148,7 @@ setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 renderStaticNav();
 setTerminal("type: login");
 addSystem("BOOT_OK");
+addSystem("MODE: Firebase Auth + Firestore (persist)");
 
 // Auth watch
 watchAuth((user) => {
