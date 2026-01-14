@@ -2,69 +2,78 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SECURE CONSOLE // APP</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Secure Console — Lycée Europe</title>
 
-  <!-- CSS (on les fera à l’étape 2) -->
-  <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/theme-terminal.css">
-  <link rel="stylesheet" href="./css/app.css">
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/theme-terminal.css" />
+  <link rel="stylesheet" href="css/app.css" />
 </head>
 
 <body>
-  <!-- Overlays CRT -->
-  <div id="crt-screen"></div>
-  <div id="scanlines"></div>
-  <div id="vignette"></div>
-  <div id="noise"></div>
-
-  <header class="panel topbar">
-    <div class="topbar-left">
-      <span class="dot"></span>
-      <span class="brand">SECURE_CONSOLE</span>
-      <span class="muted" id="clock">0000-00-00 00:00:00</span>
-    </div>
-
-    <div class="topbar-right">
-      <span class="user-tag" id="userTag">OFFLINE</span>
-      <button class="btn" id="btn-login">LOGIN</button>
-      <button class="btn danger" id="btn-logout" style="display:none">LOGOUT</button>
-    </div>
-  </header>
-
-  <div class="layout">
-    <aside class="panel sidebar">
-      <div class="panel-header"><span>SPACES</span><span class="muted">PRIVATE</span></div>
-
-      <div class="block">
-        <input id="inviteCode" class="field" placeholder="Code invitation (ex: ABC123)" autocomplete="off">
-        <button id="joinBtn" class="btn">REJOINDRE</button>
-        <div class="hint muted" id="joinHint">Connecte-toi puis rejoins un espace.</div>
+  <div id="crt-screen">
+    <header class="topbar">
+      <div class="left">
+        <span class="dot"></span>
+        <span class="brand">SECURE_CONSOLE</span>
+        <span id="clock" class="clock">—</span>
       </div>
 
-      <div id="spacesList" class="list"></div>
-
-      <div class="panel-header"><span>ROOMS</span><span id="spaceName" class="muted">—</span></div>
-      <div id="roomsList" class="list"></div>
-    </aside>
-
-    <section class="panel content">
-      <div class="panel-header"><span>CHAT</span><span id="roomName" class="muted">—</span></div>
-
-      <div id="messages" class="messages"></div>
-
-      <div class="composer">
-        <input id="msg" class="field" placeholder="> message" autocomplete="off" />
-        <button id="send" class="btn">SEND</button>
+      <div class="right">
+        <span id="userTag" class="userTag">OFFLINE</span>
+        <button id="btn-login" class="btn danger">LOGIN</button>
+        <button id="btn-logout" class="btn danger" style="display:none;">LOGOUT</button>
       </div>
+    </header>
 
-      <div class="terminal-line muted" id="terminalLine">
-        root@console:~# <span id="terminalStatus">type /help</span>
-      </div>
-    </section>
+    <main class="layout">
+      <!-- LEFT PANEL -->
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panelTitle">SPACES</div>
+
+          <div class="joinBox">
+            <input id="inviteCode" class="input" placeholder="Code invitation (ex: ADMINCIEL)" autocomplete="off" />
+            <button id="joinBtn" class="btn">REJOINDRE</button>
+            <div class="hint">Connecte-toi puis colle un code d’invitation.</div>
+          </div>
+
+          <div id="spacesList" class="list"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panelTitle row">
+            <span>ROOMS</span>
+            <span class="mini" id="spaceName">—</span>
+          </div>
+          <div id="roomsList" class="list"></div>
+        </div>
+      </aside>
+
+      <!-- CHAT PANEL -->
+      <section class="chat">
+        <div class="chatHeader">
+          <div class="roomTag">
+            <span class="mini">#</span>
+            <span id="roomName">—</span>
+          </div>
+          <div class="statusLine">
+            <span class="mini">STATUS:</span>
+            <span id="terminalStatus">offline</span>
+          </div>
+        </div>
+
+        <div id="messages" class="messages"></div>
+
+        <div class="composer">
+          <input id="msg" class="input msgInput" placeholder="> message" autocomplete="off" />
+          <button id="send" class="btn">SEND</button>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <!-- JS (on le fera plus tard) -->
-  <script type="module" src="./js/app.js"></script>
+  <!-- IMPORTANT: app.js utilise des imports => type="module" -->
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
