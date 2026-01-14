@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Secure Console — Lycée Europe</title>
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/theme-terminal.css" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+  <!-- ✅ Overlays CRT (VIDES, pas de contenu dedans) -->
+  <div id="crt-screen"></div>
+  <div id="scanlines"></div>
+  <div id="vignette"></div>
+  <div id="noise"></div>
+
+  <!-- ✅ APP (cliquable) -->
+  <div id="app">
+    <header class="topbar">
+      <div class="left">
+        <span class="dot"></span>
+        <span class="brand">SECURE_CONSOLE</span>
+        <span id="clock" class="clock">—</span>
+      </div>
+
+      <div class="right">
+        <span id="userTag" class="userTag">OFFLINE</span>
+        <button id="btn-login" class="btn danger">LOGIN</button>
+        <button id="btn-logout" class="btn danger" style="display:none;">LOGOUT</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- LEFT PANEL -->
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panelTitle">SPACES</div>
+
+          <div class="joinBox">
+            <input id="inviteCode" class="input" placeholder="Code invitation (ex: ADMINCIEL)" autocomplete="off" />
+            <button id="joinBtn" class="btn">REJOINDRE</button>
+            <div class="hint">Connecte-toi puis colle un code d’invitation.</div>
+          </div>
+
+          <div id="spacesList" class="list"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panelTitle row">
+            <span>ROOMS</span>
+            <span class="mini" id="spaceName">—</span>
+          </div>
+          <div id="roomsList" class="list"></div>
+        </div>
+      </aside>
+
+      <!-- CHAT PANEL -->
+      <section class="chat">
+        <div class="chatHeader">
+          <div class="roomTag">
+            <span class="mini">#</span>
+            <span id="roomName">—</span>
+          </div>
+          <div class="statusLine">
+            <span class="mini">STATUS:</span>
+            <span id="terminalStatus">offline</span>
+          </div>
+        </div>
+
+        <div id="messages" class="messages"></div>
+
+        <div class="composer">
+          <input id="msg" class="input msgInput" placeholder="> message" autocomplete="off" />
+          <button id="send" class="btn">SEND</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
