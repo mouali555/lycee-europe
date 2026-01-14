@@ -101,55 +101,41 @@ async function joinWithInvite(codeRaw){
   if (!code) return addSystem("INVITE_CODE_REQUIRED.");
 
   try {
-    // ✅ GET invite
+    // 1) Lire l'invite
     const invRef = doc(db, "invites", code);
     const invSnap = await getDoc(invRef);
-
     if (!invSnap.exists()) return addSystem("INVITE_INVALID.");
-    const inv = invSnap.data();
 
+    const inv = invSnap.data();
     if (inv.enabled !== true) return addSystem("INVITE_DISABLED.");
     if (!inv.spaceId) return addSystem("INVITE_BROKEN (no spaceId).");
 
-    // ✅ Create membership (allowed by rules)
+    // 2) ✅ Si déjà membre -> stop (sinon ça fait un update interdit)
     const memRef = doc(db, "spaces", inv.spaceId, "members", currentUser.uid);
+    const memSnap = await getDoc(memRef);
+
+    if (memSnap.exists()) {
+      addSystem("ALREADY_MEMBER: access ok");
+      setTerminal("authenticated");
+      return; // 👈 on ne touche rien
+    }
+
+    // 3) Créer membership (create only)
     await setDoc(memRef, {
       role: inv.role || "member",
       joinedAt: serverTimestamp(),
       displayName: currentUser.name
-    }, { merge: true });
+    });
 
     addSystem(`INVITE_OK: joined ${inv.spaceId}`);
     location.reload();
+
   } catch (e) {
     console.error(e);
     addSystem("INVITE_FAILED: " + (e?.code || e?.message || "unknown"));
   }
 }
 
-// Firestore messages
-function startListener(){
-  if (!currentUser) return;
-
-  if (unsub) { unsub(); unsub = null; }
-  clearMessages();
-  addSystem("CONNECTED: Firestore live feed");
-
-  const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
-  const q = query(msgRef, orderBy("createdAt"), limit(120));
-
-  unsub = onSnapshot(q, (snap) => {
-    clearMessages();
-    snap.forEach((docSnap) => {
-      const m = docSnap.data();
-      const me = m.uid === currentUser.uid;
-      addMessage(m.displayName || "user", m.text || "", me);
-    });
-  }, (err) => {
-    console.error(err);
-    addSystem("LISTEN_FAILED: " + (err?.code || err?.message || "unknown"));
-  });
-}
 
 async function sendMessage(){
   const text = (msgInput.value || "").trim();
