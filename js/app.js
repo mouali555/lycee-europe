@@ -1,10 +1,10 @@
-// js/app.js — Firebase Auth + Invites + Membership gate + Rooms list + Firestore chat
+// js/app.js — Firebase Auth + Invites + Membership gate + Rooms list + Anti-spam + Avatars + Mod delete
 import { loginGoogle, logout, watchAuth } from "./auth.js";
 import { db } from "./firebase.js";
 
 import {
   doc, getDoc, setDoc, serverTimestamp,
-  collection, query, orderBy, limit, onSnapshot, addDoc
+  collection, query, orderBy, limit, onSnapshot, addDoc, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 // ---------------- DOM ----------------
@@ -44,16 +44,53 @@ function esc(s){
 function clearMessages(){ messagesEl.innerHTML = ""; }
 function addSystem(text){
   const div = document.createElement("div");
-  div.className = "msg";
+  div.className = "msg systemline";
   div.innerHTML = `<span class="system">[SYSTEM]</span> ${esc(text)}`;
   messagesEl.appendChild(div);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
-function addMessage(user, text, me=false){
-  const div = document.createElement("div");
-  div.className = "msg";
-  div.innerHTML = `<span class="${me ? "me" : "user"}">${esc(user)}:</span> ${esc(text)}`;
-  messagesEl.appendChild(div);
+
+// Message UI avec avatar + bouton delete si mod
+function addMessage({ id, user, text, me=false, photoURL=null, canDelete=false }){
+  const row = document.createElement("div");
+  row.className = "msg";
+
+  const avatarHtml = photoURL
+    ? `<img class="avatar" src="${esc(photoURL)}" alt="avatar">`
+    : `<div class="avatar fallback"></div>`;
+
+  const delBtn = canDelete
+    ? `<button class="del" data-id="${esc(id)}" title="Supprimer">✕</button>`
+    : "";
+
+  row.innerHTML = `
+    ${avatarHtml}
+    <div class="bubble">
+      <div class="line">
+        <span class="${me ? "me" : "user"}">${esc(user)}:</span>
+        ${delBtn}
+      </div>
+      <div class="text">${esc(text)}</div>
+    </div>
+  `;
+
+  // handler delete
+  if (canDelete) {
+    const btn = row.querySelector("button.del");
+    btn.addEventListener("click", async () => {
+      if (!confirm("Supprimer ce message ?")) return;
+      try {
+        const ref = doc(db, "spaces", SPACE_ID, "rooms", currentRoomId, "messages", id);
+        await deleteDoc(ref);
+        addSystem("MOD_DELETE_OK");
+      } catch (e) {
+        console.error(e);
+        addSystem("MOD_DELETE_FAILED: " + (e?.code || e?.message || "unknown"));
+      }
+    });
+  }
+
+  messagesEl.appendChild(row);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
@@ -69,6 +106,13 @@ const SPACE_LABEL = "EUROPE_SPACE";
 let currentRoomId = "general";
 let currentRoomLabel = "general";
 
+// Anti-spam client
+let lastSentAt = 0;
+
+// Mod info
+let myRole = "member";
+let isMod = false;
+
 // ---------------- UI ----------------
 function renderSpaceStatic(){
   spacesList.innerHTML = "";
@@ -83,12 +127,17 @@ function renderRoomHeader(){
   roomName.textContent = "# " + currentRoomLabel;
 }
 
-// ---------------- Membership ----------------
-async function checkMembership(){
-  if (!currentUser) return false;
+// ---------------- Membership / Role ----------------
+async function getMyMemberDoc(){
+  if (!currentUser) return null;
   const memRef = doc(db, "spaces", SPACE_ID, "members", currentUser.uid);
   const snap = await getDoc(memRef);
-  return snap.exists();
+  return snap.exists() ? snap.data() : null;
+}
+
+async function checkMembership(){
+  const data = await getMyMemberDoc();
+  return !!data;
 }
 
 // Join with invite (reads invites/{CODE}, creates members doc if not exists)
@@ -113,6 +162,9 @@ async function joinWithInvite(codeRaw){
     if (memSnap.exists()) {
       addSystem("ALREADY_MEMBER: access ok");
       setTerminal("authenticated");
+      // cache la zone invite
+      if (inviteCode) inviteCode.style.display = "none";
+      if (joinBtn) joinBtn.style.display = "none";
       return;
     }
 
@@ -136,6 +188,7 @@ function renderRoomsList(roomDocs){
 
   roomDocs.forEach(({ id, name }) => {
     const label = name || id;
+
     const item = document.createElement("div");
     item.className = "item" + (id === currentRoomId ? " active" : "");
     item.textContent = "# " + label;
@@ -176,18 +229,15 @@ function startRoomsListener(){
       return;
     }
 
-    // fallback sur première room si current n'existe pas
     if (!list.some(r => r.id === currentRoomId)) {
       currentRoomId = list[0].id;
       currentRoomLabel = list[0].name || list[0].id;
-      renderRoomHeader();
     }
 
-    // label current
     const cur = list.find(r => r.id === currentRoomId);
     currentRoomLabel = cur?.name || currentRoomId;
-    renderRoomHeader();
 
+    renderRoomHeader();
     renderRoomsList(list);
   }, (err) => {
     console.error(err);
@@ -201,22 +251,35 @@ function startMessagesListener(){
 
   if (unsubMessages) { unsubMessages(); unsubMessages = null; }
 
-  clearMessages();
-  addSystem("ROOM: #" + currentRoomLabel);
-  addSystem("CONNECTED: Firestore live feed");
-
   const msgRef = collection(db, "spaces", SPACE_ID, "rooms", currentRoomId, "messages");
   const qMsg = query(msgRef, orderBy("createdAt"), limit(120));
 
   unsubMessages = onSnapshot(qMsg, (snap) => {
     clearMessages();
+    addSystem("ROOM: #" + currentRoomLabel);
+    addSystem("CONNECTED: Firestore live feed");
+
+    if (snap.empty) {
+      addSystem("NO_MESSAGES_YET");
+      return;
+    }
+
     snap.forEach((docSnap) => {
       const m = docSnap.data();
       const me = m.uid === currentUser.uid;
-      addMessage(m.displayName || "user", m.text || "", me);
+      addMessage({
+        id: docSnap.id,
+        user: m.displayName || "user",
+        text: m.text || "",
+        me,
+        photoURL: m.photoURL || null,
+        canDelete: isMod // mod/admin/owner
+      });
     });
   }, (err) => {
     console.error(err);
+    clearMessages();
+    addSystem("ROOM: #" + currentRoomLabel);
     addSystem("LISTEN_FAILED: " + (err?.code || err?.message || "unknown"));
   });
 }
@@ -227,11 +290,20 @@ async function sendMessage(){
   if (!text) return;
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
+  // anti-spam client (2s)
+  const now = Date.now();
+  if (now - lastSentAt < 2000) return addSystem("SLOW_DOWN: wait 2s");
+  lastSentAt = now;
+
+  // longueur client (en plus des rules)
+  if (text.length > 300) return addSystem("MESSAGE_TOO_LONG (300 max)");
+
   try{
     const msgRef = collection(db, "spaces", SPACE_ID, "rooms", currentRoomId, "messages");
     await addDoc(msgRef, {
       uid: currentUser.uid,
       displayName: currentUser.name,
+      photoURL: currentUser.photoURL || null,
       text,
       createdAt: serverTimestamp()
     });
@@ -268,12 +340,16 @@ renderSpaceStatic();
 renderRoomHeader();
 setTerminal("type: login");
 addSystem("BOOT_OK");
-addSystem("MODE: invites + members gate + rooms");
+addSystem("MODE: invites + members + rooms + anti-spam + avatars + mod");
 
 // ---------------- Auth ----------------
 watchAuth(async (user) => {
   if (user) {
-    currentUser = { uid: user.uid, name: (user.displayName || "USER").toUpperCase() };
+    currentUser = {
+      uid: user.uid,
+      name: (user.displayName || "USER").toUpperCase(),
+      photoURL: user.photoURL || null
+    };
     userTag.textContent = currentUser.name;
 
     btnLogin.style.display = "none";
@@ -283,19 +359,29 @@ watchAuth(async (user) => {
     addSystem("CHECKING_ACCESS...");
 
     try {
-      const ok = await checkMembership();
+      const member = await getMyMemberDoc();
 
-      if (!ok) {
+      if (!member) {
         clearMessages();
         addSystem("ACCESS_DENIED: invite required");
         addSystem("=> Enter code then click REJOINDRE");
         setTerminal("join required");
         roomsList.innerHTML = "";
+        if (inviteCode) inviteCode.style.display = "block";
+        if (joinBtn) joinBtn.style.display = "block";
         return;
       }
 
+      myRole = String(member.role || "member");
+      isMod = ["mod","admin","owner"].includes(myRole);
+
       addSystem("ACCESS_OK: member verified");
+      addSystem("ROLE: " + myRole);
       setTerminal("authenticated");
+
+      // cache invite UI
+      if (inviteCode) inviteCode.style.display = "none";
+      if (joinBtn) joinBtn.style.display = "none";
 
       startRoomsListener();
       startMessagesListener();
@@ -306,6 +392,8 @@ watchAuth(async (user) => {
       addSystem("ACCESS_DENIED: invite required");
       setTerminal("join required");
       roomsList.innerHTML = "";
+      if (inviteCode) inviteCode.style.display = "block";
+      if (joinBtn) joinBtn.style.display = "block";
     }
   } else {
     currentUser = null;
@@ -319,8 +407,10 @@ watchAuth(async (user) => {
 
     clearMessages();
     roomsList.innerHTML = "";
-
     addSystem("DISCONNECTED");
     setTerminal("offline");
+
+    if (inviteCode) inviteCode.style.display = "block";
+    if (joinBtn) joinBtn.style.display = "block";
   }
 });
