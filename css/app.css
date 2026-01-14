@@ -1,141 +1,141 @@
-/* ======================================
-   APP LAYOUT – console pro
-   ====================================== */
+/* =========================
+   APP (Chat UI) — PRO + AVATARS + MOD
+   ========================= */
 
-.topbar{
-  height:48px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 14px;
-  margin:10px;
+:root{
+  --green:#00ff9c;
+  --green-dim:#00ff9c55;
+  --red:#ff3355;
+  --bg:#020202;
+  --panel:#050505;
+  --text:#caffea;
 }
 
-.topbar-left{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.topbar-right{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.brand{
-  letter-spacing:4px;
-  font-size:14px;
-}
-
-.dot{
-  width:10px;
-  height:10px;
-  background:var(--danger);
-  border-radius:50%;
-  box-shadow:0 0 12px rgba(255,0,60,.7);
-}
-
-.user-tag{
-  font-size:12px;
-  letter-spacing:2px;
-}
-
-.layout{
-  display:grid;
-  grid-template-columns: 280px 1fr;
-  gap:10px;
-  padding:0 10px 10px;
-  height: calc(100vh - 68px);
-}
-
-.sidebar{
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-
-.content{
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-}
-
-/* Lists */
-.list{
-  flex:1;
+#messages{
+  padding:14px;
+  height:100%;
   overflow-y:auto;
-  border-top:1px solid rgba(0,255,136,.15);
-  border-bottom:1px solid rgba(0,255,136,.15);
+  background:#000;
+  border:1px solid rgba(0,255,156,.25);
 }
 
-.list .item{
-  padding:8px 10px;
-  cursor:pointer;
-  border-bottom:1px solid rgba(0,255,136,.08);
-}
-
-.list .item:hover{
-  background: rgba(0,255,136,.08);
-}
-
-.list .item.active{
-  background: rgba(0,255,136,.18);
-}
-
-/* Messages */
-.messages{
-  flex:1;
-  overflow-y:auto;
-  padding:12px;
-  font-family: var(--mono);
-  font-size:13px;
-}
-
+/* message row */
 .msg{
-  margin-bottom:6px;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  margin:8px 0;
 }
 
-.msg .user{
-  color: var(--text);
+/* system line */
+.msg.systemline{
+  display:block;
+  font-size:12px;
+  opacity:.9;
 }
-
-.msg .me{
-  color:#00ffaa;
-}
-
-.msg .system{
-  color: var(--danger);
+.system{
+  color:#ff7777;
   font-style:italic;
 }
 
-/* Composer */
-.composer{
+/* avatar */
+.avatar{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  border:1px solid var(--green-dim);
+  object-fit:cover;
+  flex:0 0 28px;
+  background:rgba(0,255,156,.08);
+}
+.avatar.fallback{
   display:flex;
-  gap:8px;
-  padding:10px;
-  border-top:1px solid rgba(0,255,136,.25);
-}
-
-.composer .field{
-  flex:1;
-}
-
-/* Terminal line */
-.terminal-line{
+  align-items:center;
+  justify-content:center;
   font-size:11px;
-  padding:6px 10px;
-  border-top:1px solid rgba(0,255,136,.15);
-  font-family: var(--mono);
+  color:rgba(0,255,156,.8);
 }
 
-/* Mobile */
-@media (max-width: 900px){
-  .layout{
-    grid-template-columns: 1fr;
-  }
+/* bubble */
+.bubble{
+  min-width:0;
+  width:100%;
+}
 
-  .sidebar{
-    height:200px;
-  }
+.line{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.user{
+  color:#7cffc8;
+  font-weight:bold;
+  font-size:12px;
+}
+.me{
+  color:#00ffaa;
+  font-weight:bold;
+  font-size:12px;
+}
+
+.meta{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  opacity:.7;
+  font-size:11px;
+}
+
+.text{
+  margin-top:2px;
+  font-size:13px;
+  line-height:1.4;
+  word-break:break-word;
+}
+
+/* moderation */
+button.del{
+  background:transparent;
+  border:1px solid rgba(255,0,60,.6);
+  color:rgba(255,0,60,.9);
+  font-size:11px;
+  cursor:pointer;
+  padding:2px 6px;
+  border-radius:6px;
+}
+button.del:hover{
+  box-shadow:0 0 12px rgba(255,0,60,.35);
+}
+
+/* input */
+#msg{
+  width:100%;
+  padding:10px;
+  background:#000;
+  border:1px solid var(--green);
+  color:var(--green);
+  outline:none;
+  font-family:inherit;
+}
+
+#send{
+  padding:10px 14px;
+  background:#000;
+  border:1px solid var(--green);
+  color:var(--green);
+  cursor:pointer;
+}
+#send:hover{
+  background:var(--green);
+  color:#000;
+  box-shadow:0 0 15px var(--green);
+}
+
+/* scrollbar */
+#messages::-webkit-scrollbar{ width:6px; }
+#messages::-webkit-scrollbar-thumb{
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
 }
