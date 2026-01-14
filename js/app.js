@@ -1,4 +1,4 @@
-// js/app.js — Firebase Auth + Invites + Membership gate + Firestore chat
+// js/app.js — Firebase Auth + Invites + Membership gate + Rooms list + Firestore chat
 import { loginGoogle, logout, watchAuth } from "./auth.js";
 import { db } from "./firebase.js";
 
@@ -7,7 +7,7 @@ import {
   collection, query, orderBy, limit, onSnapshot, addDoc
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-// DOM
+// ---------------- DOM ----------------
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
 
@@ -27,7 +27,7 @@ const messagesEl = document.getElementById("messages");
 const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send");
 
-// Utils
+// ---------------- Utils ----------------
 function pad(n){ return String(n).padStart(2, "0"); }
 function nowStamp(){
   const d = new Date();
@@ -57,35 +57,33 @@ function addMessage(user, text, me=false){
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
-// State
+// ---------------- State ----------------
 let currentUser = null;
-let unsub = null;
 
-// V1 fixed space/room (simple)
+let unsubMessages = null;
+let unsubRooms = null;
+
 const SPACE_ID = "europe";
 const SPACE_LABEL = "EUROPE_SPACE";
-const ROOM_ID = "general";
-const ROOM_LABEL = "general";
 
-function renderStaticNav(){
+let currentRoomId = "general";
+let currentRoomLabel = "general";
+
+// ---------------- UI ----------------
+function renderSpaceStatic(){
   spacesList.innerHTML = "";
-  roomsList.innerHTML = "";
-
   const sp = document.createElement("div");
   sp.className = "item active";
   sp.textContent = SPACE_LABEL;
   spacesList.appendChild(sp);
-
-  const rm = document.createElement("div");
-  rm.className = "item active";
-  rm.textContent = "# " + ROOM_LABEL;
-  roomsList.appendChild(rm);
-
   spaceName.textContent = SPACE_LABEL;
-  roomName.textContent = "# " + ROOM_LABEL;
 }
 
-// Membership check (needs allow get on members/{uid})
+function renderRoomHeader(){
+  roomName.textContent = "# " + currentRoomLabel;
+}
+
+// ---------------- Membership ----------------
 async function checkMembership(){
   if (!currentUser) return false;
   const memRef = doc(db, "spaces", SPACE_ID, "members", currentUser.uid);
@@ -93,7 +91,7 @@ async function checkMembership(){
   return snap.exists();
 }
 
-// Join with invite (reads invites/{CODE}, creates members doc)
+// Join with invite (reads invites/{CODE}, creates members doc if not exists)
 async function joinWithInvite(codeRaw){
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
@@ -101,7 +99,6 @@ async function joinWithInvite(codeRaw){
   if (!code) return addSystem("INVITE_CODE_REQUIRED.");
 
   try {
-    // 1) Lire l'invite
     const invRef = doc(db, "invites", code);
     const invSnap = await getDoc(invRef);
     if (!invSnap.exists()) return addSystem("INVITE_INVALID.");
@@ -110,17 +107,15 @@ async function joinWithInvite(codeRaw){
     if (inv.enabled !== true) return addSystem("INVITE_DISABLED.");
     if (!inv.spaceId) return addSystem("INVITE_BROKEN (no spaceId).");
 
-    // 2) ✅ Si déjà membre -> stop (sinon ça fait un update interdit)
     const memRef = doc(db, "spaces", inv.spaceId, "members", currentUser.uid);
     const memSnap = await getDoc(memRef);
 
     if (memSnap.exists()) {
       addSystem("ALREADY_MEMBER: access ok");
       setTerminal("authenticated");
-      return; // 👈 on ne touche rien
+      return;
     }
 
-    // 3) Créer membership (create only)
     await setDoc(memRef, {
       role: inv.role || "member",
       joinedAt: serverTimestamp(),
@@ -129,25 +124,91 @@ async function joinWithInvite(codeRaw){
 
     addSystem(`INVITE_OK: joined ${inv.spaceId}`);
     location.reload();
-
   } catch (e) {
     console.error(e);
     addSystem("INVITE_FAILED: " + (e?.code || e?.message || "unknown"));
   }
 }
 
-// Firestore messages (listener)
-function startListener(){
+// ---------------- Rooms List ----------------
+function renderRoomsList(roomDocs){
+  roomsList.innerHTML = "";
+
+  roomDocs.forEach(({ id, name }) => {
+    const label = name || id;
+    const item = document.createElement("div");
+    item.className = "item" + (id === currentRoomId ? " active" : "");
+    item.textContent = "# " + label;
+
+    item.onclick = () => {
+      currentRoomId = id;
+      currentRoomLabel = label;
+      renderRoomHeader();
+      renderRoomsList(roomDocs);
+      startMessagesListener();
+    };
+
+    roomsList.appendChild(item);
+  });
+}
+
+function startRoomsListener(){
   if (!currentUser) return;
 
-  if (unsub) { unsub(); unsub = null; }
+  if (unsubRooms) { unsubRooms(); unsubRooms = null; }
+
+  const roomsRef = collection(db, "spaces", SPACE_ID, "rooms");
+  const qRooms = query(roomsRef, orderBy("name"), limit(50));
+
+  unsubRooms = onSnapshot(qRooms, (snap) => {
+    const list = [];
+    snap.forEach(d => list.push({ id: d.id, name: d.data()?.name || d.id }));
+
+    if (list.length === 0) {
+      roomsList.innerHTML = "";
+      const item = document.createElement("div");
+      item.className = "item active";
+      item.textContent = "# general";
+      roomsList.appendChild(item);
+      currentRoomId = "general";
+      currentRoomLabel = "general";
+      renderRoomHeader();
+      return;
+    }
+
+    // fallback sur première room si current n'existe pas
+    if (!list.some(r => r.id === currentRoomId)) {
+      currentRoomId = list[0].id;
+      currentRoomLabel = list[0].name || list[0].id;
+      renderRoomHeader();
+    }
+
+    // label current
+    const cur = list.find(r => r.id === currentRoomId);
+    currentRoomLabel = cur?.name || currentRoomId;
+    renderRoomHeader();
+
+    renderRoomsList(list);
+  }, (err) => {
+    console.error(err);
+    addSystem("ROOMS_LIST_FAILED: " + (err?.code || err?.message || "unknown"));
+  });
+}
+
+// ---------------- Messages Listener ----------------
+function startMessagesListener(){
+  if (!currentUser) return;
+
+  if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+
   clearMessages();
+  addSystem("ROOM: #" + currentRoomLabel);
   addSystem("CONNECTED: Firestore live feed");
 
-  const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
-  const q = query(msgRef, orderBy("createdAt"), limit(120));
+  const msgRef = collection(db, "spaces", SPACE_ID, "rooms", currentRoomId, "messages");
+  const qMsg = query(msgRef, orderBy("createdAt"), limit(120));
 
-  unsub = onSnapshot(q, (snap) => {
+  unsubMessages = onSnapshot(qMsg, (snap) => {
     clearMessages();
     snap.forEach((docSnap) => {
       const m = docSnap.data();
@@ -160,13 +221,14 @@ function startListener(){
   });
 }
 
+// ---------------- Send ----------------
 async function sendMessage(){
   const text = (msgInput.value || "").trim();
   if (!text) return;
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
   try{
-    const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
+    const msgRef = collection(db, "spaces", SPACE_ID, "rooms", currentRoomId, "messages");
     await addDoc(msgRef, {
       uid: currentUser.uid,
       displayName: currentUser.name,
@@ -180,7 +242,7 @@ async function sendMessage(){
   }
 }
 
-// Events
+// ---------------- Events ----------------
 btnLogin?.addEventListener("click", async () => {
   try { await loginGoogle(); }
   catch(e){ console.error(e); addSystem("AUTH_FAILED: " + (e?.code || e?.message || "unknown")); }
@@ -198,16 +260,17 @@ joinBtn?.addEventListener("click", () => {
 sendBtn?.addEventListener("click", sendMessage);
 msgInput?.addEventListener("keydown", (e) => { if (e.key === "Enter") sendBtn.click(); });
 
-// Clock
+// ---------------- Clock ----------------
 setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 
-// Boot
-renderStaticNav();
+// ---------------- Boot ----------------
+renderSpaceStatic();
+renderRoomHeader();
 setTerminal("type: login");
 addSystem("BOOT_OK");
-addSystem("MODE: invites + members gate");
+addSystem("MODE: invites + members gate + rooms");
 
-// Auth
+// ---------------- Auth ----------------
 watchAuth(async (user) => {
   if (user) {
     currentUser = { uid: user.uid, name: (user.displayName || "USER").toUpperCase() };
@@ -221,29 +284,42 @@ watchAuth(async (user) => {
 
     try {
       const ok = await checkMembership();
+
       if (!ok) {
         clearMessages();
         addSystem("ACCESS_DENIED: invite required");
         addSystem("=> Enter code then click REJOINDRE");
         setTerminal("join required");
+        roomsList.innerHTML = "";
         return;
       }
+
       addSystem("ACCESS_OK: member verified");
       setTerminal("authenticated");
-      startListener();
+
+      startRoomsListener();
+      startMessagesListener();
+
     } catch (e) {
       console.error(e);
       clearMessages();
       addSystem("ACCESS_DENIED: invite required");
       setTerminal("join required");
+      roomsList.innerHTML = "";
     }
   } else {
     currentUser = null;
     userTag.textContent = "OFFLINE";
+
     btnLogin.style.display = "inline-block";
     btnLogout.style.display = "none";
-    if (unsub) { unsub(); unsub = null; }
+
+    if (unsubMessages) { unsubMessages(); unsubMessages = null; }
+    if (unsubRooms) { unsubRooms(); unsubRooms = null; }
+
     clearMessages();
+    roomsList.innerHTML = "";
+
     addSystem("DISCONNECTED");
     setTerminal("offline");
   }
