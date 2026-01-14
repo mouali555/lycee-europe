@@ -1,4 +1,4 @@
-// js/app.js — Firebase Auth + Invites + Membership + Firestore chat + Avatars + IA (@ai)
+// js/app.js — Firebase Auth + Invites + Membership + Firestore chat + Avatars + Anti-spam + IA (@ai)
 import { loginGoogle, logout, watchAuth } from "./auth.js";
 import { db } from "./firebase.js";
 
@@ -11,16 +11,16 @@ import {
    CONFIG
    ========================= */
 
-// ✅ TON ENDPOINT IA (déjà mis)
+// ✅ TON endpoint IA Cloud Run (POST only)
 const AI_ENDPOINT = "https://aireply-mtjtt4jn5q-uc.a.run.app";
 
-// V1: salon fixe
+// V1 salon fixe
 const SPACE_ID = "europe";
 const SPACE_LABEL = "EUROPE_SPACE";
 const ROOM_ID = "general";
 const ROOM_LABEL = "general";
 
-// Anti-spam client (tu peux changer)
+// Anti-spam client
 const COOLDOWN_MS = 2500;
 
 /* =========================
@@ -84,7 +84,7 @@ function addSystem(text){
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
-// Affichage message (avatar + bubble)
+// UI message row
 function addMessage(user, text, me=false, photoURL=null){
   const row = document.createElement("div");
   row.className = "msgRow" + (me ? " meRow" : "");
@@ -113,7 +113,7 @@ let currentUser = null;
 let unsub = null;
 let lastSentAt = 0;
 
-// Avatar cache pour anciens messages (si photoURL manquant)
+// avatar cache pour anciens messages
 const avatarCache = new Map();
 async function getAvatarForUid(uid){
   if (!uid) return null;
@@ -130,7 +130,7 @@ async function getAvatarForUid(uid){
 }
 
 /* =========================
-   UI NAV
+   NAV
    ========================= */
 
 function renderStaticNav(){
@@ -154,7 +154,7 @@ function renderStaticNav(){
 }
 
 /* =========================
-   MEMBERSHIP + INVITES
+   MEMBERSHIP / INVITES
    ========================= */
 
 async function checkMembership(){
@@ -222,8 +222,11 @@ function startListener(){
 
     for (const docSnap of snap.docs) {
       const m = docSnap.data();
+
       let photo = m.photoURL || null;
-      if (!photo && m.uid && m.uid !== "AI_BOT") photo = await getAvatarForUid(m.uid);
+      if (!photo && m.uid && m.uid !== "AI_BOT") {
+        photo = await getAvatarForUid(m.uid);
+      }
 
       addMessage(
         m.displayName || "USER",
@@ -239,31 +242,45 @@ function startListener(){
 }
 
 /* =========================
-   IA CALL
+   IA CALL (POST)
    ========================= */
 
 async function callAI(prompt){
   addSystem("AI_THINKING...");
 
+  const payload = {
+    // ton backend original attend souvent prompt + spaceId + roomId
+    prompt: String(prompt).slice(0, 1200),
+    spaceId: SPACE_ID,
+    roomId: ROOM_ID
+  };
+
   try{
     const res = await fetch(AI_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        spaceId: SPACE_ID,
-        roomId: ROOM_ID,
-        prompt: String(prompt).slice(0, 1200)
-      })
+      body: JSON.stringify(payload)
     });
 
+    addSystem("AI_HTTP_STATUS: " + res.status);
+
+    const txt = await res.text().catch(() => "");
+    // On log le body (utile si OpenAI error)
     if (!res.ok) {
-      const t = await res.text().catch(()=> "");
-      addSystem("AI_HTTP_STATUS: " + res.status);
-      addSystem("AI_HTTP_BODY: " + (t ? t.slice(0, 140) : "(empty)"));
+      addSystem("AI_HTTP_BODY: " + (txt ? txt.slice(0, 180) : "(empty)"));
       throw new Error("HTTP_" + res.status);
     }
 
+    // Si ton backend renvoie json, on essaye de parser
+    let data = null;
+    try { data = JSON.parse(txt); } catch {}
+
+    // Ton backend peut soit renvoyer "ok", soit {reply:"..."}
+    // Dans ton cas, la function écrit dans Firestore, donc le front n’a rien à afficher ici.
+    // On confirme juste.
     addSystem("AI_OK (bot posted)");
+
+    return data;
   }catch(e){
     console.error(e);
     addSystem("AI_FAILED: " + (e?.message || "unknown"));
@@ -271,7 +288,7 @@ async function callAI(prompt){
 }
 
 /* =========================
-   SEND MESSAGE
+   SEND
    ========================= */
 
 async function sendMessage(){
@@ -283,7 +300,7 @@ async function sendMessage(){
   if (now - lastSentAt < COOLDOWN_MS) return addSystem(`SLOWMODE ${COOLDOWN_MS/1000}s`);
   lastSentAt = now;
 
-  // ✅ IA trigger: @ai ... ou @ia ...
+  // IA trigger
   if (/^@ai\b/i.test(text) || /^@ia\b/i.test(text)) {
     const prompt = text.replace(/^@ai\s*/i, "").replace(/^@ia\s*/i, "").trim();
     msgInput.value = "";
@@ -292,6 +309,7 @@ async function sendMessage(){
     return;
   }
 
+  // Normal message -> Firestore
   try{
     const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
     await addDoc(msgRef, {
@@ -328,7 +346,7 @@ msgInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMessage
 joinBtn?.addEventListener("click", () => joinWithInvite(inviteCode?.value || ""));
 
 /* =========================
-   CLOCK + BOOT
+   BOOT
    ========================= */
 
 setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
@@ -336,7 +354,7 @@ setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 renderStaticNav();
 setTerminal("type: login");
 addSystem("BOOT_OK");
-addSystem("TIP: @ai <message> (example: @ai dis bonjour)");
+addSystem("TIP: @ai <message>");
 
 /* =========================
    AUTH WATCH
@@ -365,6 +383,7 @@ watchAuth(async (user) => {
         setTerminal("join required");
         return;
       }
+
       addSystem("ACCESS_OK");
       setTerminal("authenticated");
       startListener();
