@@ -1,11 +1,10 @@
-// js/app.js — Firebase Auth + Invites + Membership gate + Firestore chat + Avatars + Anti-spam
+// js/app.js — SAFE BOOT (ne bloque pas l'UI si erreur)
 import { loginGoogle, logout, watchAuth } from "./auth.js";
 import { db } from "./firebase.js";
 
 import {
-  doc, getDoc, setDoc,
-  collection, query, orderBy, limit, onSnapshot, addDoc,
-  serverTimestamp
+  doc, getDoc, setDoc, serverTimestamp,
+  collection, query, orderBy, limit, onSnapshot, addDoc
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 // DOM
@@ -28,6 +27,18 @@ const messagesEl = document.getElementById("messages");
 const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send");
 
+// ---- guard DOM (si un id manque, on te le dit)
+function must(el, name){
+  if (!el) throw new Error(`MISSING_DOM_ID: #${name}`);
+  return el;
+}
+must(btnLogin, "btn-login");
+must(btnLogout, "btn-logout");
+must(userTag, "userTag");
+must(messagesEl, "messages");
+must(msgInput, "msg");
+must(sendBtn, "send");
+
 // Utils
 function pad(n){ return String(n).padStart(2, "0"); }
 function nowStamp(){
@@ -42,13 +53,6 @@ function esc(s){
     "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
   }[m]));
 }
-function safeUrl(u){
-  // simple garde-fou (évite javascript:)
-  const s = String(u || "").trim();
-  if (!s) return "";
-  if (s.startsWith("http://") || s.startsWith("https://")) return s;
-  return "";
-}
 function clearMessages(){ messagesEl.innerHTML = ""; }
 function addSystem(text){
   const div = document.createElement("div");
@@ -57,25 +61,25 @@ function addSystem(text){
   messagesEl.appendChild(div);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
-function addMessage({ displayName, text, photoURL, me }){
-  const div = document.createElement("div");
-  div.className = "msgRow" + (me ? " meRow" : "");
 
-  const avatar = safeUrl(photoURL)
-    ? `<img class="avatar" src="${esc(photoURL)}" alt="">`
-    : `<div class="avatar fallback">${esc((displayName || "U").slice(0,1).toUpperCase())}</div>`;
+// Avatar message
+function addMessage(user, text, me=false, photoURL=null){
+  const row = document.createElement("div");
+  row.className = "msgRow" + (me ? " meRow" : "");
 
-  div.innerHTML = `
-    ${avatar}
+  const avatarHTML = photoURL
+    ? `<img class="avatar" src="${photoURL}" referrerpolicy="no-referrer">`
+    : `<div class="avatar fallback">${esc((user?.[0] || "?").toUpperCase())}</div>`;
+
+  row.innerHTML = `
+    ${avatarHTML}
     <div class="bubble">
-      <div class="meta">
-        <span class="name">${esc(displayName || "USER")}</span>
-      </div>
+      <div class="meta"><span class="name">${esc(user || "USER")}</span></div>
       <div class="text">${esc(text || "")}</div>
     </div>
   `;
 
-  messagesEl.appendChild(div);
+  messagesEl.appendChild(row);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
@@ -83,31 +87,19 @@ function addMessage({ displayName, text, photoURL, me }){
 let currentUser = null;
 let unsub = null;
 
-// Anti-spam (client side) — simple & efficace
-let lastSendAt = 0;
-let streak = 0;
-function canSendNow(){
-  const now = Date.now();
-  const delta = now - lastSendAt;
-
-  // 1 msg / 900ms minimum
-  if (delta < 900) return { ok:false, reason:"SLOW_DOWN" };
-
-  // limite “rafale”
-  if (delta < 3500) streak++; else streak = 0;
-  if (streak >= 6) return { ok:false, reason:"FLOOD_DETECTED" };
-
-  lastSendAt = now;
-  return { ok:true };
-}
-
-// V1 fixed space/room
+// Space/room
 const SPACE_ID = "europe";
 const SPACE_LABEL = "EUROPE_SPACE";
 const ROOM_ID = "general";
 const ROOM_LABEL = "general";
 
+// Anti-spam
+let lastSentAt = 0;
+const COOLDOWN_MS = 2500;
+
+// UI nav
 function renderStaticNav(){
+  if (!spacesList || !roomsList || !spaceName || !roomName) return;
   spacesList.innerHTML = "";
   roomsList.innerHTML = "";
 
@@ -125,35 +117,33 @@ function renderStaticNav(){
   roomName.textContent = "# " + ROOM_LABEL;
 }
 
-// Membership check
+// Membership
 async function checkMembership(){
-  if (!currentUser) return false;
   const memRef = doc(db, "spaces", SPACE_ID, "members", currentUser.uid);
   const snap = await getDoc(memRef);
   return snap.exists();
 }
 
-// Join with invite
+// Join invite
 async function joinWithInvite(codeRaw){
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
   const code = (codeRaw || "").trim().toUpperCase();
   if (!code) return addSystem("INVITE_CODE_REQUIRED.");
 
-  try {
+  try{
     const invRef = doc(db, "invites", code);
     const invSnap = await getDoc(invRef);
     if (!invSnap.exists()) return addSystem("INVITE_INVALID.");
 
     const inv = invSnap.data();
     if (inv.enabled !== true) return addSystem("INVITE_DISABLED.");
-    if (!inv.spaceId) return addSystem("INVITE_BROKEN (no spaceId).");
+    if (!inv.spaceId) return addSystem("INVITE_BROKEN.");
 
     const memRef = doc(db, "spaces", inv.spaceId, "members", currentUser.uid);
     const memSnap = await getDoc(memRef);
-
-    if (memSnap.exists()) {
-      addSystem("ALREADY_MEMBER: access ok");
+    if (memSnap.exists()){
+      addSystem("ALREADY_MEMBER");
       setTerminal("authenticated");
       startListener();
       return;
@@ -165,22 +155,21 @@ async function joinWithInvite(codeRaw){
       displayName: currentUser.name
     });
 
-    addSystem(`INVITE_OK: joined ${inv.spaceId}`);
-    // reload pour que le checkMembership repasse clean
-    location.reload();
-  } catch (e) {
+    addSystem("INVITE_OK");
+    startListener();
+  }catch(e){
     console.error(e);
     addSystem("INVITE_FAILED: " + (e?.code || e?.message || "unknown"));
   }
 }
 
-// Firestore listener
+// Listener
 function startListener(){
   if (!currentUser) return;
 
   if (unsub) { unsub(); unsub = null; }
   clearMessages();
-  addSystem("CONNECTED: Firestore live feed");
+  addSystem("CONNECTED");
 
   const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
   const q = query(msgRef, orderBy("createdAt"), limit(150));
@@ -189,12 +178,12 @@ function startListener(){
     clearMessages();
     snap.forEach((docSnap) => {
       const m = docSnap.data();
-      addMessage({
-        displayName: m.displayName || "USER",
-        text: m.text || "",
-        photoURL: m.photoURL || "",
-        me: (m.uid === currentUser.uid),
-      });
+      addMessage(
+        m.displayName || "USER",
+        m.text || "",
+        m.uid === currentUser.uid,
+        m.photoURL || null
+      );
     });
   }, (err) => {
     console.error(err);
@@ -202,48 +191,44 @@ function startListener(){
   });
 }
 
-// Send message (+ avatar)
+// Send
 async function sendMessage(){
   const text = (msgInput.value || "").trim();
   if (!text) return;
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
-  const gate = canSendNow();
-  if (!gate.ok) return addSystem(gate.reason);
+  const now = Date.now();
+  if (now - lastSentAt < COOLDOWN_MS) return addSystem("SLOWMODE 2.5s");
+  lastSentAt = now;
 
   try{
     const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
     await addDoc(msgRef, {
       uid: currentUser.uid,
       displayName: currentUser.name,
-      photoURL: currentUser.photoURL || "",
-      text,
+      photoURL: currentUser.photoURL || null,
+      text: text.slice(0, 300),
       createdAt: serverTimestamp()
     });
     msgInput.value = "";
-  } catch(e){
+  }catch(e){
     console.error(e);
     addSystem("SEND_FAILED: " + (e?.code || e?.message || "unknown"));
   }
 }
 
 // Events
-btnLogin?.addEventListener("click", async () => {
+btnLogin.addEventListener("click", async () => {
   try { await loginGoogle(); }
   catch(e){ console.error(e); addSystem("AUTH_FAILED: " + (e?.code || e?.message || "unknown")); }
 });
-
-btnLogout?.addEventListener("click", async () => {
+btnLogout.addEventListener("click", async () => {
   try { await logout(); }
   catch(e){ console.error(e); addSystem("LOGOUT_FAILED"); }
 });
-
-joinBtn?.addEventListener("click", () => {
-  joinWithInvite(inviteCode?.value || "");
-});
-
-sendBtn?.addEventListener("click", sendMessage);
-msgInput?.addEventListener("keydown", (e) => { if (e.key === "Enter") sendBtn.click(); });
+sendBtn.addEventListener("click", sendMessage);
+msgInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendBtn.click(); });
+joinBtn?.addEventListener("click", () => joinWithInvite(inviteCode?.value || ""));
 
 // Clock
 setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
@@ -252,7 +237,6 @@ setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 renderStaticNav();
 setTerminal("type: login");
 addSystem("BOOT_OK");
-addSystem("MODE: avatars + anti-spam + members gate");
 
 // Auth watch
 watchAuth(async (user) => {
@@ -260,7 +244,7 @@ watchAuth(async (user) => {
     currentUser = {
       uid: user.uid,
       name: (user.displayName || "USER").toUpperCase(),
-      photoURL: user.photoURL || ""
+      photoURL: user.photoURL || null
     };
 
     userTag.textContent = currentUser.name;
@@ -270,22 +254,21 @@ watchAuth(async (user) => {
     addSystem("AUTH_OK: " + currentUser.name);
     addSystem("CHECKING_ACCESS...");
 
-    try {
+    try{
       const ok = await checkMembership();
       if (!ok) {
         clearMessages();
         addSystem("ACCESS_DENIED: invite required");
-        addSystem("=> Enter code then click REJOINDRE");
         setTerminal("join required");
         return;
       }
-      addSystem("ACCESS_OK: member verified");
+      addSystem("ACCESS_OK");
       setTerminal("authenticated");
       startListener();
-    } catch (e) {
+    }catch(e){
       console.error(e);
       clearMessages();
-      addSystem("ACCESS_DENIED: invite required");
+      addSystem("ACCESS_DENIED");
       setTerminal("join required");
     }
   } else {
@@ -298,4 +281,13 @@ watchAuth(async (user) => {
     addSystem("DISCONNECTED");
     setTerminal("offline");
   }
+});
+
+// If anything throws at top-level, show it
+window.addEventListener("error", (ev) => {
+  addSystem("JS_CRASH: " + (ev?.message || "unknown"));
+});
+window.addEventListener("unhandledrejection", (ev) => {
+  addSystem("JS_PROMISE_CRASH");
+  console.error(ev.reason);
 });
