@@ -1,96 +1,94 @@
-// functions/index.js (COMMONJS) — IA + écriture Firestore + CORS + secrets
+// functions/index.js
 const { onRequest } = require("firebase-functions/v2/https");
-const admin = require("firebase-admin");
+const logger = require("firebase-functions/logger");
 
-admin.initializeApp();
-
+// Node 20 a fetch natif (OK). Pas besoin de node-fetch.
 exports.aiReply = onRequest(
   {
     region: "us-central1",
-    cors: true,
-    secrets: ["OPENAI_API_KEY"], // ✅ IMPORTANT pour que process.env.OPENAI_API_KEY existe
+    secrets: ["OPENAI_API_KEY"],
+    // (optionnel) tu peux augmenter si besoin
+    timeoutSeconds: 60,
+    memory: "256MiB",
   },
   async (req, res) => {
+    // ✅ CORS
+    res.set("Access-Control-Allow-Origin", "*");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.set("Access-Control-Allow-Methods", "POST, OPTIONS");
+
+    if (req.method === "OPTIONS") {
+      return res.status(204).send("");
+    }
+
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed. Use POST." });
+    }
+
     try {
-      if (req.method !== "POST") {
-        return res.status(405).send("Method not allowed");
+      const key = process.env.OPENAI_API_KEY;
+      if (!key) {
+        logger.error("OPENAI_API_KEY missing (secret not available).");
+        return res.status(500).json({ error: "OPENAI_API_KEY missing" });
       }
 
       const body = req.body || {};
-      const prompt = String(body.prompt || body.message || "").trim();
+      const prompt = body.prompt;
 
-      // on accepte soit spaceId/roomId, soit par défaut europe/general
-      const spaceId = String(body.spaceId || "europe").trim();
-      const roomId = String(body.roomId || "general").trim();
-
-      if (!prompt) {
-        return res.status(400).json({ error: "Missing prompt/message" });
+      if (!prompt || typeof prompt !== "string") {
+        return res.status(400).json({ error: "Missing prompt (string) in JSON body" });
       }
 
-      const apiKey = process.env.OPENAI_API_KEY;
-      if (!apiKey) {
-        return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
-      }
-
-      // ✅ Node 20 => fetch intégré, pas besoin de node-fetch
-      const r = await fetch("https://api.openai.com/v1/responses", {
+      // ✅ Appel OpenAI (format moderne stable)
+      // On utilise /v1/chat/completions (simple, marche bien)
+      const openaiResp = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${key}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gpt-4.1-mini",
-          input: [
-            {
-              role: "system",
-              content:
-                "Tu es une IA utile et sympa dans un chat privé entre élèves. Réponds court, clair, pas de contenu dangereux, pas de doxx.",
-            },
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "Tu es une IA utile et concise." },
             { role: "user", content: prompt },
           ],
           temperature: 0.7,
         }),
       });
 
-      const data = await r.json().catch(() => null);
+      const text = await openaiResp.text();
 
-      if (!r.ok) {
+      // ✅ Si OpenAI renvoie une erreur, on log TOUT
+      if (!openaiResp.ok) {
+        logger.error("OpenAI HTTP error", {
+          status: openaiResp.status,
+          body: text,
+        });
         return res.status(500).json({
           error: "OpenAI error",
-          status: r.status,
-          details: data,
+          openai_status: openaiResp.status,
+          openai_body: text,
         });
       }
 
-      // récup texte de sortie
+      // ✅ Parsing JSON
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        logger.error("OpenAI response not JSON", { raw: text });
+        return res.status(500).json({ error: "OpenAI response not JSON", raw: text });
+      }
+
       const answer =
-        data?.output_text ||
-        data?.output?.[0]?.content?.[0]?.text ||
-        "…";
+        data?.choices?.[0]?.message?.content?.trim() ||
+        "(no answer from model)";
 
-      const safe = String(answer).slice(0, 800);
-
-      // ✅ écrit dans Firestore => visible dans ton chat (listener)
-      await admin
-        .firestore()
-        .collection("spaces")
-        .doc(spaceId)
-        .collection("rooms")
-        .doc(roomId)
-        .collection("messages")
-        .add({
-          uid: "AI_BOT",
-          displayName: "IA",
-          photoURL: null,
-          text: safe,
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
-
-      return res.json({ ok: true, posted: true });
-    } catch (e) {
-      console.error(e);
-      return res.status(500).json({ error: "Server crash", details: String(e) });
+      return res.status(200).json({ answer });
+    } catch (err) {
+      logger.error("Function crash", err);
+      return res.status(500).json({ error: "Server error", details: String(err?.message || err) });
     }
   }
 );
