@@ -1,4 +1,4 @@
-// js/app.js — SAFE BOOT + Avatars for ALL (messages.photoURL OR users/{uid}.photoURL)
+// js/app.js — Chat + Avatars + Invites + IA via Cloud Function (HTTP)
 import { loginGoogle, logout, watchAuth } from "./auth.js";
 import { db } from "./firebase.js";
 
@@ -96,8 +96,7 @@ function renderStaticNav(){
   roomName.textContent = "# " + ROOM_LABEL;
 }
 
-// ===== AVATAR FIX FOR ALL USERS =====
-// cache avatars: uid -> photoURL|null
+// ===== Avatars for old messages (users/{uid}) =====
 const avatarCache = new Map();
 
 async function getAvatarForUid(uid){
@@ -110,8 +109,7 @@ async function getAvatarForUid(uid){
     const photo = usnap.exists() ? (usnap.data().photoURL || null) : null;
     avatarCache.set(uid, photo);
     return photo;
-  }catch(e){
-    // if rules deny read -> null
+  }catch{
     avatarCache.set(uid, null);
     return null;
   }
@@ -121,7 +119,6 @@ async function renderMessage({ uid, user, text, me=false, photoURL=null }){
   const row = document.createElement("div");
   row.className = "msgRow" + (me ? " meRow" : "");
 
-  // If message has no photoURL (old messages), fetch from users/{uid}
   let finalPhoto = photoURL || null;
   if (!finalPhoto) finalPhoto = await getAvatarForUid(uid);
 
@@ -200,8 +197,6 @@ function startListener(){
 
   unsub = onSnapshot(q, async (snap) => {
     clearMessages();
-
-    // render sequentially to keep order + async avatar fetch
     for (const docSnap of snap.docs) {
       const m = docSnap.data();
       await renderMessage({
@@ -212,12 +207,45 @@ function startListener(){
         photoURL: m.photoURL || null
       });
     }
-
     messagesEl.scrollTop = messagesEl.scrollHeight;
   }, (err) => {
     console.error(err);
     addSystem("LISTEN_FAILED: " + (err?.code || err?.message || "unknown"));
   });
+}
+
+// ===== IA CALL =====
+// ⚠️ Mets ici l'URL de ta Cloud Function une fois déployée
+// Exemple: https://europe-west1-TONPROJET.cloudfunctions.net/aiReply
+const AI_ENDPOINT = "PASTE_YOUR_FUNCTION_URL_HERE";
+
+async function callAI(prompt){
+  if (AI_ENDPOINT.includes("PASTE_")) {
+    addSystem("AI_DISABLED: set AI_ENDPOINT in app.js");
+    return;
+  }
+  try{
+    const res = await fetch(AI_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        spaceId: SPACE_ID,
+        roomId: ROOM_ID,
+        uid: currentUser.uid,
+        displayName: currentUser.name,
+        photoURL: currentUser.photoURL || null,
+        prompt
+      })
+    });
+
+    if (!res.ok) {
+      const t = await res.text().catch(()=> "");
+      throw new Error(`HTTP_${res.status} ${t}`);
+    }
+  }catch(e){
+    console.error(e);
+    addSystem("AI_FAILED: " + (e?.message || "unknown"));
+  }
 }
 
 // Send
@@ -230,12 +258,22 @@ async function sendMessage(){
   if (now - lastSentAt < COOLDOWN_MS) return addSystem("SLOWMODE 2.5s");
   lastSentAt = now;
 
+  // ✅ Commande IA: "@ia ..."
+  if (text.toLowerCase().startsWith("@ia")) {
+    const prompt = text.replace(/^@ia\s*/i, "").trim();
+    if (!prompt) return addSystem("AI_USAGE: @ia ton message");
+    msgInput.value = "";
+    addSystem("AI_THINKING...");
+    await callAI(prompt);
+    return;
+  }
+
   try{
     const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
     await addDoc(msgRef, {
       uid: currentUser.uid,
       displayName: currentUser.name,
-      photoURL: currentUser.photoURL || null, // ✅ stored in message for everyone
+      photoURL: currentUser.photoURL || null,
       text: text.slice(0, 300),
       createdAt: serverTimestamp()
     });
@@ -268,6 +306,7 @@ setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 renderStaticNav();
 setTerminal("type: login");
 addSystem("BOOT_OK");
+addSystem("TIP: use @ia <message>");
 
 // Auth watch
 watchAuth(async (user) => {
