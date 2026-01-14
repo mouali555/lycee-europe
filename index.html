@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>LYCEE EUROPE — Console</title>
 
-  <!-- CSS -->
   <link rel="stylesheet" href="./css/base.css" />
   <link rel="stylesheet" href="./css/theme-terminal.css" />
   <link rel="stylesheet" href="./css/app.css" />
 </head>
 
 <body>
-  <!-- CRT overlays (optionnel, liés à ton theme-terminal.css) -->
+  <!-- CRT overlays -->
   <div id="crt-screen"></div>
   <div id="scanlines"></div>
   <div id="vignette"></div>
@@ -35,10 +34,9 @@
 
   <!-- MAIN -->
   <main class="layout">
-
     <!-- SIDEBAR -->
     <aside class="sidebar">
-      <!-- JOIN / INVITE -->
+      <!-- ACCESS -->
       <section class="panel">
         <div class="panelTitle row">
           <span>ACCESS</span>
@@ -47,11 +45,15 @@
 
         <div class="joinBox">
           <div class="hint">
-            Si tu n’as pas accès, demande un <b>code d’invitation</b> puis clique JOIN.
+            Entre un <b>code d’invitation</b> puis clique JOIN.
           </div>
 
           <input class="input" id="inviteCode" placeholder="INVITE CODE" autocomplete="off" />
           <button class="btn" id="joinBtn" type="button">JOIN</button>
+
+          <div class="mini muted">
+            IA: tape <b>@ai</b> puis ton message (ex: <b>@ai résume ce salon</b>)
+          </div>
         </div>
       </section>
 
@@ -76,31 +78,18 @@
           <span class="muted">/</span>
           <span id="roomName"># general</span>
         </div>
-
-        <div class="statusLine">
-          <span class="mini">Status:</span>
-          <span class="mini" id="terminalStatus">offline</span>
-        </div>
       </div>
 
-      <!-- messages -->
       <div class="messages" id="messages"></div>
 
-      <!-- composer -->
       <div class="composer">
-        <input
-          class="input msgInput"
-          id="msg"
-          placeholder="Écris un message… (Enter pour envoyer)"
-          autocomplete="off"
-        />
+        <input class="input msgInput" id="msg" placeholder="Message… (Enter pour envoyer) — @ai pour l'IA" autocomplete="off" />
         <button class="btn" id="send" type="button">SEND</button>
       </div>
     </section>
-
   </main>
 
-  <!-- JS (modules) -->
-  <script type="module" src="./js/app.js"></script>
+  <!-- IMPORTANT: module + cache-bust -->
+  <script type="module" src="./js/app.js?v=7"></script>
 </body>
 </html>
