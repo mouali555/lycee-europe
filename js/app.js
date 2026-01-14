@@ -136,6 +136,29 @@ async function joinWithInvite(codeRaw){
   }
 }
 
+// Firestore messages (listener)
+function startListener(){
+  if (!currentUser) return;
+
+  if (unsub) { unsub(); unsub = null; }
+  clearMessages();
+  addSystem("CONNECTED: Firestore live feed");
+
+  const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
+  const q = query(msgRef, orderBy("createdAt"), limit(120));
+
+  unsub = onSnapshot(q, (snap) => {
+    clearMessages();
+    snap.forEach((docSnap) => {
+      const m = docSnap.data();
+      const me = m.uid === currentUser.uid;
+      addMessage(m.displayName || "user", m.text || "", me);
+    });
+  }, (err) => {
+    console.error(err);
+    addSystem("LISTEN_FAILED: " + (err?.code || err?.message || "unknown"));
+  });
+}
 
 async function sendMessage(){
   const text = (msgInput.value || "").trim();
