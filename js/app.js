@@ -1,4 +1,4 @@
-// js/app.js — Chat + Avatars + Invites + IA via Cloud Function (HTTP)
+// js/app.js — Firebase Auth + Invites + Membership + Firestore chat + Avatars + IA (@ai)
 import { loginGoogle, logout, watchAuth } from "./auth.js";
 import { db } from "./firebase.js";
 
@@ -7,7 +7,26 @@ import {
   collection, query, orderBy, limit, onSnapshot, addDoc
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-// DOM
+/* =========================
+   CONFIG
+   ========================= */
+
+// ✅ TON ENDPOINT IA (déjà mis)
+const AI_ENDPOINT = "https://aireply-mtjtt4jn5q-uc.a.run.app";
+
+// V1: salon fixe
+const SPACE_ID = "europe";
+const SPACE_LABEL = "EUROPE_SPACE";
+const ROOM_ID = "general";
+const ROOM_LABEL = "general";
+
+// Anti-spam client (tu peux changer)
+const COOLDOWN_MS = 2500;
+
+/* =========================
+   DOM
+   ========================= */
+
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
 
@@ -27,9 +46,8 @@ const messagesEl = document.getElementById("messages");
 const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send");
 
-// Guard DOM
-function must(el, name){
-  if (!el) throw new Error(`MISSING_DOM_ID: #${name}`);
+function must(el, id){
+  if (!el) throw new Error(`MISSING_DOM_ID: #${id}`);
   return el;
 }
 must(btnLogin, "btn-login");
@@ -39,7 +57,10 @@ must(messagesEl, "messages");
 must(msgInput, "msg");
 must(sendBtn, "send");
 
-// Utils
+/* =========================
+   UTILS
+   ========================= */
+
 function pad(n){ return String(n).padStart(2, "0"); }
 function nowStamp(){
   const d = new Date();
@@ -54,6 +75,7 @@ function esc(s){
   }[m]));
 }
 function clearMessages(){ messagesEl.innerHTML = ""; }
+
 function addSystem(text){
   const div = document.createElement("div");
   div.className = "msg sys";
@@ -62,23 +84,58 @@ function addSystem(text){
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
-// State
+// Affichage message (avatar + bubble)
+function addMessage(user, text, me=false, photoURL=null){
+  const row = document.createElement("div");
+  row.className = "msgRow" + (me ? " meRow" : "");
+
+  const avatarHTML = photoURL
+    ? `<img class="avatar" src="${photoURL}" referrerpolicy="no-referrer">`
+    : `<div class="avatar fallback">${esc((user?.[0] || "?").toUpperCase())}</div>`;
+
+  row.innerHTML = `
+    ${avatarHTML}
+    <div class="bubble">
+      <div class="meta"><span class="name">${esc(user || "USER")}</span></div>
+      <div class="text">${esc(text || "")}</div>
+    </div>
+  `;
+
+  messagesEl.appendChild(row);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+/* =========================
+   STATE
+   ========================= */
+
 let currentUser = null;
 let unsub = null;
-
-// Space/room fixed
-const SPACE_ID = "europe";
-const SPACE_LABEL = "EUROPE_SPACE";
-const ROOM_ID = "general";
-const ROOM_LABEL = "general";
-
-// Anti-spam (client)
 let lastSentAt = 0;
-const COOLDOWN_MS = 2500;
 
-// UI nav
+// Avatar cache pour anciens messages (si photoURL manquant)
+const avatarCache = new Map();
+async function getAvatarForUid(uid){
+  if (!uid) return null;
+  if (avatarCache.has(uid)) return avatarCache.get(uid);
+  try{
+    const snap = await getDoc(doc(db, "users", uid));
+    const photo = snap.exists() ? (snap.data().photoURL || null) : null;
+    avatarCache.set(uid, photo);
+    return photo;
+  }catch{
+    avatarCache.set(uid, null);
+    return null;
+  }
+}
+
+/* =========================
+   UI NAV
+   ========================= */
+
 function renderStaticNav(){
   if (!spacesList || !roomsList || !spaceName || !roomName) return;
+
   spacesList.innerHTML = "";
   roomsList.innerHTML = "";
 
@@ -96,55 +153,17 @@ function renderStaticNav(){
   roomName.textContent = "# " + ROOM_LABEL;
 }
 
-// ===== Avatars for old messages (users/{uid}) =====
-const avatarCache = new Map();
+/* =========================
+   MEMBERSHIP + INVITES
+   ========================= */
 
-async function getAvatarForUid(uid){
-  if (!uid) return null;
-  if (avatarCache.has(uid)) return avatarCache.get(uid);
-
-  try{
-    const uref = doc(db, "users", uid);
-    const usnap = await getDoc(uref);
-    const photo = usnap.exists() ? (usnap.data().photoURL || null) : null;
-    avatarCache.set(uid, photo);
-    return photo;
-  }catch{
-    avatarCache.set(uid, null);
-    return null;
-  }
-}
-
-async function renderMessage({ uid, user, text, me=false, photoURL=null }){
-  const row = document.createElement("div");
-  row.className = "msgRow" + (me ? " meRow" : "");
-
-  let finalPhoto = photoURL || null;
-  if (!finalPhoto) finalPhoto = await getAvatarForUid(uid);
-
-  const avatarHTML = finalPhoto
-    ? `<img class="avatar" src="${finalPhoto}" referrerpolicy="no-referrer">`
-    : `<div class="avatar fallback">${esc((user?.[0] || "?").toUpperCase())}</div>`;
-
-  row.innerHTML = `
-    ${avatarHTML}
-    <div class="bubble">
-      <div class="meta"><span class="name">${esc(user || "USER")}</span></div>
-      <div class="text">${esc(text || "")}</div>
-    </div>
-  `;
-
-  messagesEl.appendChild(row);
-}
-
-// Membership
 async function checkMembership(){
+  if (!currentUser) return false;
   const memRef = doc(db, "spaces", SPACE_ID, "members", currentUser.uid);
   const snap = await getDoc(memRef);
   return snap.exists();
 }
 
-// Join invite
 async function joinWithInvite(codeRaw){
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
@@ -184,7 +203,10 @@ async function joinWithInvite(codeRaw){
   }
 }
 
-// Listener
+/* =========================
+   FIRESTORE LISTENER
+   ========================= */
+
 function startListener(){
   if (!currentUser) return;
 
@@ -197,33 +219,32 @@ function startListener(){
 
   unsub = onSnapshot(q, async (snap) => {
     clearMessages();
+
     for (const docSnap of snap.docs) {
       const m = docSnap.data();
-      await renderMessage({
-        uid: m.uid,
-        user: m.displayName || "USER",
-        text: m.text || "",
-        me: m.uid === currentUser.uid,
-        photoURL: m.photoURL || null
-      });
+      let photo = m.photoURL || null;
+      if (!photo && m.uid && m.uid !== "AI_BOT") photo = await getAvatarForUid(m.uid);
+
+      addMessage(
+        m.displayName || "USER",
+        m.text || "",
+        m.uid === currentUser.uid,
+        photo
+      );
     }
-    messagesEl.scrollTop = messagesEl.scrollHeight;
   }, (err) => {
     console.error(err);
     addSystem("LISTEN_FAILED: " + (err?.code || err?.message || "unknown"));
   });
 }
 
-// ===== IA CALL =====
-// ⚠️ Mets ici l'URL de ta Cloud Function une fois déployée
-// Exemple: https://europe-west1-TONPROJET.cloudfunctions.net/aiReply
-const AI_ENDPOINT = "PASTE_YOUR_FUNCTION_URL_HERE";
+/* =========================
+   IA CALL
+   ========================= */
 
 async function callAI(prompt){
-  if (AI_ENDPOINT.includes("PASTE_")) {
-    addSystem("AI_DISABLED: set AI_ENDPOINT in app.js");
-    return;
-  }
+  addSystem("AI_THINKING...");
+
   try{
     const res = await fetch(AI_ENDPOINT, {
       method: "POST",
@@ -231,39 +252,42 @@ async function callAI(prompt){
       body: JSON.stringify({
         spaceId: SPACE_ID,
         roomId: ROOM_ID,
-        uid: currentUser.uid,
-        displayName: currentUser.name,
-        photoURL: currentUser.photoURL || null,
-        prompt
+        prompt: String(prompt).slice(0, 1200)
       })
     });
 
     if (!res.ok) {
       const t = await res.text().catch(()=> "");
-      throw new Error(`HTTP_${res.status} ${t}`);
+      addSystem("AI_HTTP_STATUS: " + res.status);
+      addSystem("AI_HTTP_BODY: " + (t ? t.slice(0, 140) : "(empty)"));
+      throw new Error("HTTP_" + res.status);
     }
+
+    addSystem("AI_OK (bot posted)");
   }catch(e){
     console.error(e);
     addSystem("AI_FAILED: " + (e?.message || "unknown"));
   }
 }
 
-// Send
+/* =========================
+   SEND MESSAGE
+   ========================= */
+
 async function sendMessage(){
   const text = (msgInput.value || "").trim();
   if (!text) return;
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
   const now = Date.now();
-  if (now - lastSentAt < COOLDOWN_MS) return addSystem("SLOWMODE 2.5s");
+  if (now - lastSentAt < COOLDOWN_MS) return addSystem(`SLOWMODE ${COOLDOWN_MS/1000}s`);
   lastSentAt = now;
 
-  // ✅ Commande IA: "@ia ..."
-  if (text.toLowerCase().startsWith("@ia")) {
-    const prompt = text.replace(/^@ia\s*/i, "").trim();
-    if (!prompt) return addSystem("AI_USAGE: @ia ton message");
+  // ✅ IA trigger: @ai ... ou @ia ...
+  if (/^@ai\b/i.test(text) || /^@ia\b/i.test(text)) {
+    const prompt = text.replace(/^@ai\s*/i, "").replace(/^@ia\s*/i, "").trim();
     msgInput.value = "";
-    addSystem("AI_THINKING...");
+    if (!prompt) return addSystem("AI_USAGE: @ai ton message");
     await callAI(prompt);
     return;
   }
@@ -284,7 +308,10 @@ async function sendMessage(){
   }
 }
 
-// Events
+/* =========================
+   EVENTS
+   ========================= */
+
 btnLogin.addEventListener("click", async () => {
   try { await loginGoogle(); }
   catch(e){ console.error(e); addSystem("AUTH_FAILED: " + (e?.code || e?.message || "unknown")); }
@@ -296,19 +323,25 @@ btnLogout.addEventListener("click", async () => {
 });
 
 sendBtn.addEventListener("click", sendMessage);
-msgInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendBtn.click(); });
+msgInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMessage(); });
+
 joinBtn?.addEventListener("click", () => joinWithInvite(inviteCode?.value || ""));
 
-// Clock
+/* =========================
+   CLOCK + BOOT
+   ========================= */
+
 setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 
-// Boot
 renderStaticNav();
 setTerminal("type: login");
 addSystem("BOOT_OK");
-addSystem("TIP: use @ia <message>");
+addSystem("TIP: @ai <message> (example: @ai dis bonjour)");
 
-// Auth watch
+/* =========================
+   AUTH WATCH
+   ========================= */
+
 watchAuth(async (user) => {
   if (user) {
     currentUser = {
@@ -353,7 +386,10 @@ watchAuth(async (user) => {
   }
 });
 
-// Crash reporting into UI
+/* =========================
+   CRASH REPORT UI
+   ========================= */
+
 window.addEventListener("error", (ev) => {
   try { addSystem("JS_CRASH: " + (ev?.message || "unknown")); } catch {}
 });
