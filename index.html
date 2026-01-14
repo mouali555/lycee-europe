@@ -1,47 +1,80 @@
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SECURE CONSOLE</title>
+// functions/index.js (Node 20 / Functions v2 / Secret Manager)
+const admin = require("firebase-admin");
+admin.initializeApp();
 
-  <!-- CSS (on les fera à l’étape 2) -->
-  <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/theme-terminal.css">
-</head>
+const { onRequest } = require("firebase-functions/v2/https");
+const { defineSecret } = require("firebase-functions/params");
 
-<body>
-  <!-- Overlays CRT -->
-  <div id="crt-screen"></div>
-  <div id="scanlines"></div>
-  <div id="vignette"></div>
-  <div id="noise"></div>
+const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
 
-  <main class="landing">
-    <section class="panel landing-card">
-      <div class="panel-header">
-        <span>SECURE_CONSOLE</span>
-        <span class="status-pill">SAFE MODE</span>
-      </div>
+exports.aiReply = onRequest(
+  {
+    region: "us-central1",
+    secrets: [OPENAI_API_KEY],
+    cors: true,
+  },
+  async (req, res) => {
+    try {
+      if (req.method !== "POST") return res.status(405).send("Method not allowed");
 
-      <div class="landing-body">
-        <h1>ESPACES PRIVÉS</h1>
-        <p class="muted">
-          Une console pour discuter en privé, par espaces et salons.
-          <br>Accès par connexion + invitation.
-        </p>
+      const key = OPENAI_API_KEY.value();
+      if (!key) return res.status(500).send("Missing OPENAI_API_KEY secret");
 
-        <div class="landing-actions">
-          <a class="btn" href="./console.html">ENTRER DANS LA CONSOLE</a>
-          <a class="btn ghost" href="./rules.html">RÈGLES</a>
-          <a class="btn ghost" href="./privacy.html">CONFIDENTIALITÉ</a>
-        </div>
+      const body = req.body || {};
+      const prompt = String(body.prompt || "").trim();
+      const spaceId = String(body.spaceId || "").trim();
+      const roomId = String(body.roomId || "").trim();
 
-        <div class="landing-foot muted">
-          Aucun tracking automatique. Pas de caméra. Pas de géolocalisation.
-        </div>
-      </div>
-    </section>
-  </main>
-</body>
-</html>
+      if (!prompt || !spaceId || !roomId) return res.status(400).send("Bad request");
+
+      // Appel OpenAI
+      const r = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${key}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            {
+              role: "system",
+              content:
+                "Tu es une IA utile et sympa dans un chat privé. Réponds court, clair. Pas de doxx, pas de contenu illégal/dangereux.",
+            },
+            { role: "user", content: prompt },
+          ],
+          temperature: 0.7,
+        }),
+      });
+
+      if (!r.ok) {
+        const t = await r.text().catch(() => "");
+        return res.status(500).send("OpenAI error: " + t);
+      }
+
+      const data = await r.json();
+      const answer = data?.choices?.[0]?.message?.content?.trim() || "…";
+
+      await admin
+        .firestore()
+        .collection("spaces")
+        .doc(spaceId)
+        .collection("rooms")
+        .doc(roomId)
+        .collection("messages")
+        .add({
+          uid: "AI_BOT",
+          displayName: "IA",
+          photoURL: null,
+          text: String(answer).slice(0, 800),
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+      return res.status(200).json({ ok: true });
+    } catch (e) {
+      console.error(e);
+      return res.status(500).send("Server error");
+    }
+  }
+);
