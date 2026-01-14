@@ -11,7 +11,14 @@
 </head>
 
 <body>
-  <div id="crt-screen">
+  <!-- ✅ Overlays CRT (VIDES, pas de contenu dedans) -->
+  <div id="crt-screen"></div>
+  <div id="scanlines"></div>
+  <div id="vignette"></div>
+  <div id="noise"></div>
+
+  <!-- ✅ APP (cliquable) -->
+  <div id="app">
     <header class="topbar">
       <div class="left">
         <span class="dot"></span>
@@ -73,7 +80,6 @@
     </main>
   </div>
 
-  <!-- IMPORTANT: app.js utilise des imports => type="module" -->
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
