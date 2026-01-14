@@ -1,80 +1,106 @@
-// functions/index.js (Node 20 / Functions v2 / Secret Manager)
-const admin = require("firebase-admin");
-admin.initializeApp();
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>LYCEE EUROPE — Console</title>
 
-const { onRequest } = require("firebase-functions/v2/https");
-const { defineSecret } = require("firebase-functions/params");
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/base.css" />
+  <link rel="stylesheet" href="./css/theme-terminal.css" />
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
 
-const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
+<body>
+  <!-- CRT overlays (optionnel, liés à ton theme-terminal.css) -->
+  <div id="crt-screen"></div>
+  <div id="scanlines"></div>
+  <div id="vignette"></div>
+  <div id="noise"></div>
 
-exports.aiReply = onRequest(
-  {
-    region: "us-central1",
-    secrets: [OPENAI_API_KEY],
-    cors: true,
-  },
-  async (req, res) => {
-    try {
-      if (req.method !== "POST") return res.status(405).send("Method not allowed");
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="left">
+      <div class="dot" aria-hidden="true"></div>
+      <div class="brand">LYCEE EUROPE</div>
+      <div class="clock" id="clock">--:--:--</div>
+    </div>
 
-      const key = OPENAI_API_KEY.value();
-      if (!key) return res.status(500).send("Missing OPENAI_API_KEY secret");
+    <div class="right">
+      <span class="userTag" id="userTag">OFFLINE</span>
+      <button class="btn" id="btn-login" type="button">LOGIN</button>
+      <button class="btn danger" id="btn-logout" type="button" style="display:none;">LOGOUT</button>
+    </div>
+  </header>
 
-      const body = req.body || {};
-      const prompt = String(body.prompt || "").trim();
-      const spaceId = String(body.spaceId || "").trim();
-      const roomId = String(body.roomId || "").trim();
+  <!-- MAIN -->
+  <main class="layout">
 
-      if (!prompt || !spaceId || !roomId) return res.status(400).send("Bad request");
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <!-- JOIN / INVITE -->
+      <section class="panel">
+        <div class="panelTitle row">
+          <span>ACCESS</span>
+          <span class="mini" id="terminalStatus">offline</span>
+        </div>
 
-      // Appel OpenAI
-      const r = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${key}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content:
-                "Tu es une IA utile et sympa dans un chat privé. Réponds court, clair. Pas de doxx, pas de contenu illégal/dangereux.",
-            },
-            { role: "user", content: prompt },
-          ],
-          temperature: 0.7,
-        }),
-      });
+        <div class="joinBox">
+          <div class="hint">
+            Si tu n’as pas accès, demande un <b>code d’invitation</b> puis clique JOIN.
+          </div>
 
-      if (!r.ok) {
-        const t = await r.text().catch(() => "");
-        return res.status(500).send("OpenAI error: " + t);
-      }
+          <input class="input" id="inviteCode" placeholder="INVITE CODE" autocomplete="off" />
+          <button class="btn" id="joinBtn" type="button">JOIN</button>
+        </div>
+      </section>
 
-      const data = await r.json();
-      const answer = data?.choices?.[0]?.message?.content?.trim() || "…";
+      <!-- SPACES -->
+      <section class="panel">
+        <div class="panelTitle">SPACES</div>
+        <div class="list" id="spacesList"></div>
+      </section>
 
-      await admin
-        .firestore()
-        .collection("spaces")
-        .doc(spaceId)
-        .collection("rooms")
-        .doc(roomId)
-        .collection("messages")
-        .add({
-          uid: "AI_BOT",
-          displayName: "IA",
-          photoURL: null,
-          text: String(answer).slice(0, 800),
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
+      <!-- ROOMS -->
+      <section class="panel">
+        <div class="panelTitle">ROOMS</div>
+        <div class="list" id="roomsList"></div>
+      </section>
+    </aside>
 
-      return res.status(200).json({ ok: true });
-    } catch (e) {
-      console.error(e);
-      return res.status(500).send("Server error");
-    }
-  }
-);
+    <!-- CHAT -->
+    <section class="chat">
+      <div class="chatHeader">
+        <div class="roomTag">
+          <span id="spaceName">EUROPE_SPACE</span>
+          <span class="muted">/</span>
+          <span id="roomName"># general</span>
+        </div>
+
+        <div class="statusLine">
+          <span class="mini">Status:</span>
+          <span class="mini" id="terminalStatus">offline</span>
+        </div>
+      </div>
+
+      <!-- messages -->
+      <div class="messages" id="messages"></div>
+
+      <!-- composer -->
+      <div class="composer">
+        <input
+          class="input msgInput"
+          id="msg"
+          placeholder="Écris un message… (Enter pour envoyer)"
+          autocomplete="off"
+        />
+        <button class="btn" id="send" type="button">SEND</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JS (modules) -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
