@@ -11,13 +11,11 @@
 </head>
 
 <body>
-  <!-- CRT overlays -->
   <div id="crt-screen"></div>
   <div id="scanlines"></div>
   <div id="vignette"></div>
   <div id="noise"></div>
 
-  <!-- TOP BAR -->
   <header class="topbar">
     <div class="left">
       <div class="dot" aria-hidden="true"></div>
@@ -32,11 +30,8 @@
     </div>
   </header>
 
-  <!-- MAIN -->
   <main class="layout">
-    <!-- SIDEBAR -->
     <aside class="sidebar">
-      <!-- ACCESS -->
       <section class="panel">
         <div class="panelTitle row">
           <span>ACCESS</span>
@@ -51,26 +46,23 @@
           <input class="input" id="inviteCode" placeholder="INVITE CODE" autocomplete="off" />
           <button class="btn" id="joinBtn" type="button">JOIN</button>
 
-          <div class="mini muted">
-            IA: tape <b>@ai</b> puis ton message (ex: <b>@ai résume ce salon</b>)
+          <div class="mini muted" style="margin-top:6px;">
+            IA : tape <b>@ai</b> puis ton message (ex: <b>@ai résume</b>)
           </div>
         </div>
       </section>
 
-      <!-- SPACES -->
       <section class="panel">
         <div class="panelTitle">SPACES</div>
         <div class="list" id="spacesList"></div>
       </section>
 
-      <!-- ROOMS -->
       <section class="panel">
         <div class="panelTitle">ROOMS</div>
         <div class="list" id="roomsList"></div>
       </section>
     </aside>
 
-    <!-- CHAT -->
     <section class="chat">
       <div class="chatHeader">
         <div class="roomTag">
@@ -83,13 +75,13 @@
       <div class="messages" id="messages"></div>
 
       <div class="composer">
-        <input class="input msgInput" id="msg" placeholder="Message… (Enter pour envoyer) — @ai pour l'IA" autocomplete="off" />
+        <input class="input msgInput" id="msg" placeholder="Message… (@ai pour IA)" autocomplete="off" />
         <button class="btn" id="send" type="button">SEND</button>
       </div>
     </section>
   </main>
 
-  <!-- IMPORTANT: module + cache-bust -->
-  <script type="module" src="./js/app.js?v=7"></script>
+  <!-- module + cache bust -->
+  <script type="module" src="./js/app.js?v=100"></script>
 </body>
 </html>
