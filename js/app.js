@@ -1,10 +1,11 @@
-// js/app.js — Firebase Auth + Invites + Membership gate + Firestore chat + Anti-spam + Avatars
+// js/app.js — Firebase Auth + Invites + Membership gate + Firestore chat + Avatars + Anti-spam
 import { loginGoogle, logout, watchAuth } from "./auth.js";
 import { db } from "./firebase.js";
 
 import {
-  doc, getDoc, setDoc, serverTimestamp,
-  collection, query, orderBy, limit, onSnapshot, addDoc
+  doc, getDoc, setDoc,
+  collection, query, orderBy, limit, onSnapshot, addDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 // DOM
@@ -41,62 +42,40 @@ function esc(s){
     "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
   }[m]));
 }
+function safeUrl(u){
+  // simple garde-fou (évite javascript:)
+  const s = String(u || "").trim();
+  if (!s) return "";
+  if (s.startsWith("http://") || s.startsWith("https://")) return s;
+  return "";
+}
 function clearMessages(){ messagesEl.innerHTML = ""; }
 function addSystem(text){
   const div = document.createElement("div");
-  div.className = "msg systemline";
+  div.className = "msg sys";
   div.innerHTML = `<span class="system">[SYSTEM]</span> ${esc(text)}`;
   messagesEl.appendChild(div);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
-function avatarEl(photoURL, fallbackText){
-  if (photoURL) {
-    const img = document.createElement("img");
-    img.className = "avatar";
-    img.src = photoURL;
-    img.alt = "avatar";
-    img.referrerPolicy = "no-referrer";
-    return img;
-  }
+function addMessage({ displayName, text, photoURL, me }){
   const div = document.createElement("div");
-  div.className = "avatar fallback";
-  div.textContent = (fallbackText || "U").slice(0,2);
-  return div;
-}
-function addMessage({displayName, text, me, photoURL, createdAtLabel}){
-  const row = document.createElement("div");
-  row.className = "msg";
+  div.className = "msgRow" + (me ? " meRow" : "");
 
-  const av = avatarEl(photoURL, displayName ? displayName.toUpperCase() : "U");
+  const avatar = safeUrl(photoURL)
+    ? `<img class="avatar" src="${esc(photoURL)}" alt="">`
+    : `<div class="avatar fallback">${esc((displayName || "U").slice(0,1).toUpperCase())}</div>`;
 
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
+  div.innerHTML = `
+    ${avatar}
+    <div class="bubble">
+      <div class="meta">
+        <span class="name">${esc(displayName || "USER")}</span>
+      </div>
+      <div class="text">${esc(text || "")}</div>
+    </div>
+  `;
 
-  const line = document.createElement("div");
-  line.className = "line";
-
-  const name = document.createElement("span");
-  name.className = me ? "me" : "user";
-  name.textContent = (displayName || "USER") + ":";
-
-  const meta = document.createElement("span");
-  meta.className = "meta";
-  meta.textContent = createdAtLabel ? createdAtLabel : "";
-
-  line.appendChild(name);
-  line.appendChild(meta);
-
-  const content = document.createElement("div");
-  content.className = "text";
-  content.textContent = text || "";
-
-  bubble.appendChild(line);
-  bubble.appendChild(content);
-
-  row.appendChild(av);
-  row.appendChild(bubble);
-
-  messagesEl.appendChild(row);
+  messagesEl.appendChild(div);
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
@@ -104,21 +83,29 @@ function addMessage({displayName, text, me, photoURL, createdAtLabel}){
 let currentUser = null;
 let unsub = null;
 
-// V1 fixed space/room (simple)
+// Anti-spam (client side) — simple & efficace
+let lastSendAt = 0;
+let streak = 0;
+function canSendNow(){
+  const now = Date.now();
+  const delta = now - lastSendAt;
+
+  // 1 msg / 900ms minimum
+  if (delta < 900) return { ok:false, reason:"SLOW_DOWN" };
+
+  // limite “rafale”
+  if (delta < 3500) streak++; else streak = 0;
+  if (streak >= 6) return { ok:false, reason:"FLOOD_DETECTED" };
+
+  lastSendAt = now;
+  return { ok:true };
+}
+
+// V1 fixed space/room
 const SPACE_ID = "europe";
 const SPACE_LABEL = "EUROPE_SPACE";
 const ROOM_ID = "general";
 const ROOM_LABEL = "general";
-
-// Anti-spam (client side)
-const SPAM = {
-  cooldownMs: 1800,         // 1.8s entre messages
-  sameMsgWindowMs: 12000,   // interdit de renvoyer EXACTEMENT le même msg pendant 12s
-  maxLen: 300,
-  lastSentAt: 0,
-  lastText: "",
-  lastTextAt: 0
-};
 
 function renderStaticNav(){
   spacesList.innerHTML = "";
@@ -146,7 +133,7 @@ async function checkMembership(){
   return snap.exists();
 }
 
-// Join with invite (reads invites/{CODE}, creates members doc)
+// Join with invite
 async function joinWithInvite(codeRaw){
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
@@ -154,7 +141,6 @@ async function joinWithInvite(codeRaw){
   if (!code) return addSystem("INVITE_CODE_REQUIRED.");
 
   try {
-    // read invite
     const invRef = doc(db, "invites", code);
     const invSnap = await getDoc(invRef);
     if (!invSnap.exists()) return addSystem("INVITE_INVALID.");
@@ -163,9 +149,9 @@ async function joinWithInvite(codeRaw){
     if (inv.enabled !== true) return addSystem("INVITE_DISABLED.");
     if (!inv.spaceId) return addSystem("INVITE_BROKEN (no spaceId).");
 
-    // if already member, stop
     const memRef = doc(db, "spaces", inv.spaceId, "members", currentUser.uid);
     const memSnap = await getDoc(memRef);
+
     if (memSnap.exists()) {
       addSystem("ALREADY_MEMBER: access ok");
       setTerminal("authenticated");
@@ -173,7 +159,6 @@ async function joinWithInvite(codeRaw){
       return;
     }
 
-    // create membership
     await setDoc(memRef, {
       role: inv.role || "member",
       joinedAt: serverTimestamp(),
@@ -181,16 +166,15 @@ async function joinWithInvite(codeRaw){
     });
 
     addSystem(`INVITE_OK: joined ${inv.spaceId}`);
-    // recharge simple pour que l'accès se mette bien
+    // reload pour que le checkMembership repasse clean
     location.reload();
-
   } catch (e) {
     console.error(e);
     addSystem("INVITE_FAILED: " + (e?.code || e?.message || "unknown"));
   }
 }
 
-// Firestore messages (listener)
+// Firestore listener
 function startListener(){
   if (!currentUser) return;
 
@@ -199,29 +183,17 @@ function startListener(){
   addSystem("CONNECTED: Firestore live feed");
 
   const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
-  const q = query(msgRef, orderBy("createdAt"), limit(200));
+  const q = query(msgRef, orderBy("createdAt"), limit(150));
 
   unsub = onSnapshot(q, (snap) => {
     clearMessages();
     snap.forEach((docSnap) => {
       const m = docSnap.data();
-      const me = m.uid === currentUser.uid;
-
-      // affichage timestamp simple si dispo
-      let label = "";
-      try {
-        if (m.createdAt && m.createdAt.toDate) {
-          const d = m.createdAt.toDate();
-          label = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        }
-      } catch {}
-
       addMessage({
         displayName: m.displayName || "USER",
         text: m.text || "",
-        me,
         photoURL: m.photoURL || "",
-        createdAtLabel: label
+        me: (m.uid === currentUser.uid),
       });
     });
   }, (err) => {
@@ -230,35 +202,17 @@ function startListener(){
   });
 }
 
-function canSend(text){
-  const now = Date.now();
-  if (text.length > SPAM.maxLen) return { ok:false, why:`MSG_TOO_LONG (${SPAM.maxLen})` };
-
-  if (now - SPAM.lastSentAt < SPAM.cooldownMs) {
-    const left = Math.ceil((SPAM.cooldownMs - (now - SPAM.lastSentAt))/1000);
-    return { ok:false, why:`SLOW_DOWN (${left}s)` };
-  }
-
-  // same message spam
-  if (SPAM.lastText && text === SPAM.lastText && (now - SPAM.lastTextAt) < SPAM.sameMsgWindowMs) {
-    return { ok:false, why:"DUPLICATE_BLOCKED" };
-  }
-
-  return { ok:true, why:"" };
-}
-
+// Send message (+ avatar)
 async function sendMessage(){
-  const raw = (msgInput.value || "");
-  const text = raw.trim();
+  const text = (msgInput.value || "").trim();
   if (!text) return;
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
-  const verdict = canSend(text);
-  if (!verdict.ok) return addSystem("SPAM_BLOCKED: " + verdict.why);
+  const gate = canSendNow();
+  if (!gate.ok) return addSystem(gate.reason);
 
   try{
     const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
-
     await addDoc(msgRef, {
       uid: currentUser.uid,
       displayName: currentUser.name,
@@ -266,11 +220,6 @@ async function sendMessage(){
       text,
       createdAt: serverTimestamp()
     });
-
-    SPAM.lastSentAt = Date.now();
-    SPAM.lastText = text;
-    SPAM.lastTextAt = Date.now();
-
     msgInput.value = "";
   } catch(e){
     console.error(e);
@@ -303,9 +252,9 @@ setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 renderStaticNav();
 setTerminal("type: login");
 addSystem("BOOT_OK");
-addSystem("MODE: invites + members gate + anti-spam + avatars");
+addSystem("MODE: avatars + anti-spam + members gate");
 
-// Auth
+// Auth watch
 watchAuth(async (user) => {
   if (user) {
     currentUser = {
