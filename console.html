@@ -2,11 +2,143 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="refresh" content="0; url=./app.html" />
-  <title>Redirect…</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Secure Console — Lycée Europe</title>
+
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/theme-terminal.css" />
+  <link rel="stylesheet" href="css/app.css" />
 </head>
+
 <body>
-  <p>Redirection… <a href="./app.html">ouvrir le chat</a></p>
+  <!-- ✅ Overlays CRT (VIDES, pas de contenu dedans) -->
+  <div id="crt-screen"></div>
+  <div id="scanlines"></div>
+  <div id="vignette"></div>
+  <div id="noise"></div>
+
+  <!-- Cinematic boot (10s max, auto skip) -->
+  <div class="boot" id="bootOverlay" aria-hidden="false">
+    <div class="bootCard">
+      <div class="bootTitle">SECURE_CONSOLE</div>
+      <div class="bootLines" id="bootLines">
+        <div class="bootLine">Connexion sécurisée…</div>
+        <div class="bootLine">Synchronisation…</div>
+        <div class="bootLine">Vérification des clés…</div>
+        <div class="bootLine">Chargement de @ia…</div>
+        <div class="bootLine">Statut : <span class="accent">READY</span></div>
+      </div>
+      <button class="btn" id="skipBoot" type="button">SKIP</button>
+      <div class="mini bootHint">Astuce : <b>/help</b> • <b>/keys</b> • <b>@ia</b></div>
+    </div>
+  </div>
+
+  <!-- ✅ APP (cliquable) -->
+  <div id="app">
+    <header class="topbar">
+      <div class="left">
+        <span class="dot"></span>
+        <span class="brand">SECURE_CONSOLE</span>
+        <span id="clock" class="clock">—</span>
+      </div>
+
+      <div class="right">
+        <span id="userTag" class="userTag">OFFLINE</span>
+        <button id="btn-login" class="btn danger">LOGIN</button>
+        <button id="btn-logout" class="btn danger" style="display:none;">LOGOUT</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- LEFT PANEL -->
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panelTitle">SPACES</div>
+
+          <div class="joinBox">
+            <input id="inviteCode" class="input" placeholder="Code invitation (ex: ADMINCIEL)" autocomplete="off" />
+            <button id="joinBtn" class="btn">REJOINDRE</button>
+            <div class="hint">Connecte-toi puis colle un code d’invitation.</div>
+          </div>
+
+          <div id="spacesList" class="list"></div>
+        </div>
+
+        <!-- MISSIONS / KEYS quick panel -->
+        <div class="panel">
+          <div class="panelTitle row">
+            <span>MISSIONS</span>
+            <span class="mini">+KEY</span>
+          </div>
+          <div class="joinBox">
+            <div class="hint">
+              Mission rapide : aide 2 personnes aujourd’hui.<br />
+              Récompense : <b>1 clé</b> (demo).
+            </div>
+            <button id="missionBtn" class="btn" type="button">CLAIM</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelTitle row">
+            <span>ROOMS</span>
+            <span class="mini" id="spaceName">—</span>
+          </div>
+          <div id="roomsList" class="list"></div>
+        </div>
+      </aside>
+
+      <!-- CHAT PANEL -->
+      <section class="chat">
+        <div class="chatHeader">
+          <div class="roomTag">
+            <span class="mini">#</span>
+            <span id="roomName">—</span>
+          </div>
+          <div class="statusLine">
+            <span class="mini">STATUS:</span>
+            <span id="terminalStatus">offline</span>
+          </div>
+        </div>
+
+        <div id="messages" class="messages"></div>
+
+        <div class="composer">
+          <input id="msg" class="input msgInput" placeholder="> message" autocomplete="off" />
+          <button id="send" class="btn">SEND</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Profile modal -->
+  <div class="modal" id="profileModal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true">
+      <div class="modalTop">
+        <b>Profil</b>
+        <button class="iconBtn" id="closeProfile" aria-label="Fermer">✕</button>
+      </div>
+      <div class="profileGrid">
+        <div class="profileItem">
+          <div class="mini">USER</div>
+          <div id="profileName" class="profileValue">—</div>
+        </div>
+        <div class="profileItem">
+          <div class="mini">RANK</div>
+          <div id="profileRank" class="profileValue">BRONZE</div>
+        </div>
+      </div>
+      <div class="profileItem" style="margin-top:10px;">
+        <div class="mini">KEYS</div>
+        <div id="profileKeys" class="profileKeys">—</div>
+      </div>
+      <div class="mini" style="margin-top:10px; opacity:.8;">
+        Commandes : <b>/help</b> • <b>/keys</b> • <b>/use &lt;clé&gt;</b> • <b>/drop</b>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/boot.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

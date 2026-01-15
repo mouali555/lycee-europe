@@ -62,16 +62,29 @@ exports.aiReply = onRequest(
       const data = await r.json();
       const answer = data?.choices?.[0]?.message?.content?.trim() || "…";
 
+<<<<<<< HEAD
       // ✅ Message IA dans Firestore
       await admin
         .firestore()
         .collection("spaces").doc(spaceId)
         .collection("rooms").doc(roomId)
+=======
+      await admin
+        .firestore()
+        .collection("spaces")
+        .doc(spaceId)
+        .collection("rooms")
+        .doc(roomId)
+>>>>>>> dc08ff2 (zed)
         .collection("messages")
         .add({
           uid: "AI_BOT",
           displayName: "IA",
+<<<<<<< HEAD
           photoURL: AI_AVATAR, // ✅ avatar IA
+=======
+          photoURL: null,
+>>>>>>> dc08ff2 (zed)
           text: String(answer).slice(0, 800),
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });

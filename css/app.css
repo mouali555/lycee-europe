@@ -294,6 +294,118 @@
   letter-spacing:1px;
 }
 
+/* IA / Bot badges */
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid rgba(120,255,120,.22);
+  background: rgba(0,0,0,.25);
+  font-size:12px;
+  letter-spacing:1px;
+  opacity:.95;
+}
+
+.msgRow.iaRow .bubble{
+  border-color: rgba(140,255,210,.32);
+  background: rgba(120,255,160,.08);
+}
+
+.msgRow.keyRow .bubble{
+  border-color: rgba(255,220,120,.26);
+  background: rgba(255,220,120,.06);
+}
+
+/* Boot overlay */
+.boot{
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 18px;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(10px);
+}
+
+.boot.hidden{ display:none; }
+
+.bootCard{
+  width: min(760px, 100%);
+  border:1px solid rgba(120,255,120,.22);
+  background: rgba(0,0,0,.55);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.bootTitle{
+  letter-spacing: 2px;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+.bootLines{ opacity: .9; margin-bottom: 14px; }
+.bootLine{ margin-bottom: 8px; }
+.bootHint{ margin-top: 10px; }
+
+/* Profile modal */
+.modal{
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding: 18px;
+  background: rgba(0,0,0,.65);
+}
+
+.modal[aria-hidden="false"]{ display:flex; }
+
+.modalCard{
+  width: min(640px, 100%);
+  border:1px solid rgba(120,255,120,.22);
+  background: rgba(0,0,0,.55);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.modalTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.iconBtn{
+  border: 1px solid rgba(120,255,120,.22);
+  background: rgba(0,0,0,.28);
+  color: rgba(210,255,210,.92);
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor:pointer;
+}
+
+.profileGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.profileItem{
+  border:1px solid rgba(120,255,120,.14);
+  background: rgba(0,0,0,.25);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.profileValue{ font-weight: 900; letter-spacing: 1px; margin-top: 4px; }
+.profileKeys{ color: rgba(170,255,170,.82); line-height: 1.4; }
+
 /* Composer (input + send) */
 .composer{
   border-top:1px solid var(--panelBorder);
@@ -346,19 +458,5 @@
     width:30px;
     height:30px;
     flex:0 0 30px;
-  }
-}
-
-/* Invite quick access (mobile) */
-#inviteFab{
-  padding:8px 10px;
-  border-radius:10px;
-}
-@media (max-width: 940px){
-  /* make ACCESS panel always visible when not member: keep it near top */
-  .sidebar .panel:first-child{
-    position: sticky;
-    top: 8px;
-    z-index: 5;
   }
 }
