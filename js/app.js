@@ -1,4 +1,4 @@
-// js/app.js — Chat + Avatars + Invites + IA via Cloud Function (HTTP)
+// js/app.js — Chat + Avatars + Invites + IA via Cloud Run (HTTP)
 import { loginGoogle, logout, watchAuth } from "./auth.js";
 import { db } from "./firebase.js";
 
@@ -65,6 +65,7 @@ function addSystem(text){
 // State
 let currentUser = null;
 let unsub = null;
+let isMember = false;
 
 // Space/room fixed
 const SPACE_ID = "europe";
@@ -165,6 +166,7 @@ async function joinWithInvite(codeRaw){
 
     if (memSnap.exists()){
       addSystem("ALREADY_MEMBER");
+      isMember = true;
       setTerminal("authenticated");
       startListener();
       return;
@@ -177,6 +179,8 @@ async function joinWithInvite(codeRaw){
     });
 
     addSystem("INVITE_OK");
+    isMember = true;
+    setTerminal("authenticated");
     startListener();
   }catch(e){
     console.error(e);
@@ -187,6 +191,7 @@ async function joinWithInvite(codeRaw){
 // Listener
 function startListener(){
   if (!currentUser) return;
+  if (!isMember) return;
 
   if (unsub) { unsub(); unsub = null; }
   clearMessages();
@@ -214,20 +219,25 @@ function startListener(){
   });
 }
 
-// ===== IA CALL =====
-// ⚠️ Mets ici l'URL de ta Cloud Function une fois déployée
-// Exemple: https://europe-west1-TONPROJET.cloudfunctions.net/aiReply
-const AI_ENDPOINT = "PASTE_YOUR_FUNCTION_URL_HERE";
+// ===== IA CALL (Cloud Run / HTTP) =====
+const AI_ENDPOINT = "https://aireply-mtjtt4jn5q-uc.a.run.app"; // ✅ ton endpoint
 
 async function callAI(prompt){
-  if (AI_ENDPOINT.includes("PASTE_")) {
+  if (!AI_ENDPOINT || AI_ENDPOINT.includes("PASTE_")) {
     addSystem("AI_DISABLED: set AI_ENDPOINT in app.js");
     return;
   }
+  if (!currentUser) return addSystem("AUTH_REQUIRED.");
+  if (!isMember) return addSystem("ACCESS_DENIED: invite required");
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000); // 20s
+
   try{
     const res = await fetch(AI_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      signal: controller.signal,
       body: JSON.stringify({
         spaceId: SPACE_ID,
         roomId: ROOM_ID,
@@ -240,11 +250,15 @@ async function callAI(prompt){
 
     if (!res.ok) {
       const t = await res.text().catch(()=> "");
-      throw new Error(`HTTP_${res.status} ${t}`);
+      throw new Error(`HTTP_${res.status} ${t}`.slice(0, 220));
     }
+
+    addSystem("AI_OK");
   }catch(e){
     console.error(e);
-    addSystem("AI_FAILED: " + (e?.message || "unknown"));
+    addSystem("AI_FAILED: " + (e?.name === "AbortError" ? "timeout" : (e?.message || "unknown")));
+  }finally{
+    clearTimeout(timeout);
   }
 }
 
@@ -258,15 +272,19 @@ async function sendMessage(){
   if (now - lastSentAt < COOLDOWN_MS) return addSystem("SLOWMODE 2.5s");
   lastSentAt = now;
 
-  // ✅ Commande IA: "@ia ..."
-  if (text.toLowerCase().startsWith("@ia")) {
-    const prompt = text.replace(/^@ia\s*/i, "").trim();
+  // ✅ Commande IA: "@ia ..." ou "@ai ..."
+  const lower = text.toLowerCase();
+  if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
+    const prompt = text.slice(4).trim();
     if (!prompt) return addSystem("AI_USAGE: @ia ton message");
     msgInput.value = "";
     addSystem("AI_THINKING...");
     await callAI(prompt);
     return;
   }
+
+  // (Optionnel) empêcher d'envoyer dans le chat tant que pas membre
+  if (!isMember) return addSystem("ACCESS_DENIED: invite required");
 
   try{
     const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
@@ -302,7 +320,7 @@ joinBtn?.addEventListener("click", () => joinWithInvite(inviteCode?.value || "")
 // Clock
 setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 
-// Boot
+// Boot (si tu as un mode “locked nav”, tu peux appeler renderLockedNav() ici)
 renderStaticNav();
 setTerminal("type: login");
 addSystem("BOOT_OK");
@@ -326,27 +344,34 @@ watchAuth(async (user) => {
 
     try{
       const ok = await checkMembership();
+      isMember = !!ok;
+
       if (!ok) {
         clearMessages();
         addSystem("ACCESS_DENIED: invite required");
         setTerminal("join required");
         return;
       }
+
       addSystem("ACCESS_OK");
       setTerminal("authenticated");
       startListener();
     }catch(e){
       console.error(e);
+      isMember = false;
       clearMessages();
       addSystem("ACCESS_DENIED");
       setTerminal("join required");
     }
   } else {
     currentUser = null;
+    isMember = false;
+
     userTag.textContent = "OFFLINE";
     btnLogin.style.display = "inline-block";
     btnLogout.style.display = "none";
     if (unsub) { unsub(); unsub = null; }
+
     clearMessages();
     addSystem("DISCONNECTED");
     setTerminal("offline");
