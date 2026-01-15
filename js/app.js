@@ -278,7 +278,10 @@ async function sendMessage(){
   const prompt = text.slice(4).trim();
   if (!prompt) return addSystem("AI_USAGE: @ia ton message");
 
-  // 1) Afficher la question dans le chat pour tout le monde
+  // 0) interdit si pas membre
+  if (!isMember) return addSystem("ACCESS_DENIED: invite required");
+
+  // 1) Enregistrer la question dans Firestore (visible par tous)
   try {
     const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
     await addDoc(msgRef, {
@@ -293,6 +296,13 @@ async function sendMessage(){
     addSystem("SEND_FAILED: " + (e?.code || e?.message || "unknown"));
     return;
   }
+
+  // 2) Puis appeler l'IA (elle répondra ensuite dans le chat via ton backend)
+  msgInput.value = "";
+  addSystem("AI_THINKING...");
+  await callAI(prompt);
+  return;
+}
 
   // 2) Appeler l'IA (qui répondra ensuite dans Firestore)
   msgInput.value = "";
