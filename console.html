@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/theme-terminal.css" />
   <link rel="stylesheet" href="css/app.css" />
+
+  <!-- XP Midnight overrides (premium Windows vibe) -->
+  <link rel="stylesheet" href="css/theme-xp-midnight.css" />
+  <link rel="stylesheet" href="css/xp-app.css" />
 </head>
 
 <body>
@@ -49,7 +53,7 @@
       </div>
     </header>
 
-    <main class="layout">
+    <main class="layout xpLayout">
       <!-- LEFT PANEL -->
       <aside class="sidebar">
         <div class="panel">
@@ -89,7 +93,7 @@
       </aside>
 
       <!-- CHAT PANEL -->
-      <section class="chat">
+      <section class="chat xpChat">
         <div class="chatHeader">
           <div class="roomTag">
             <span class="mini">#</span>
@@ -101,13 +105,63 @@
           </div>
         </div>
 
+        <div id="offlineBanner" class="offlineBanner" aria-hidden="true">
+          OFFLINE — tes messages seront envoyés au retour du réseau
+        </div>
+
         <div id="messages" class="messages"></div>
 
-        <div class="composer">
-          <input id="msg" class="input msgInput" placeholder="> message" autocomplete="off" />
+        <button id="newMsgBtn" class="newMsgBtn" type="button" style="display:none;">⬇️ Nouveaux messages</button>
+
+        <div class="composer xpComposer">
+          <button id="iaBtn" class="btn ghost" type="button" title="Ajouter @ia">@IA</button>
+          <input id="msg" class="input msgInput" placeholder="> message" autocomplete="off" maxlength="800" />
           <button id="send" class="btn">SEND</button>
         </div>
+        <div class="composerMeta">
+          <span id="charCount" class="mini">0/800</span>
+        </div>
       </section>
+
+      <!-- HUD (mini-game léger) -->
+      <aside class="hud" aria-label="Progression">
+        <div class="panel">
+          <div class="panelTitle row">
+            <span>PLAYER</span>
+            <span class="mini" id="hudStatus">—</span>
+          </div>
+          <div class="hudRow">
+            <div class="hudCol">
+              <div class="mini">LEVEL</div>
+              <div class="hudValue" id="hudLevel">1</div>
+            </div>
+            <div class="hudCol">
+              <div class="mini">STREAK</div>
+              <div class="hudValue" id="hudStreak">0</div>
+            </div>
+          </div>
+          <div class="xpBar" aria-hidden="true">
+            <div class="xpFill" id="hudXpFill" style="width:0%"></div>
+          </div>
+          <div class="mini" id="hudXpText">0/25 XP</div>
+        </div>
+
+        <div class="panel">
+          <div class="panelTitle">MISSION DU JOUR</div>
+          <div class="hint" id="hudMissionText">—</div>
+          <button id="hudMissionClaim" class="btn" type="button">CLAIM</button>
+          <div class="mini" id="hudMissionMeta" style="opacity:.8; margin-top:6px;">Récompense : +10 XP</div>
+        </div>
+
+        <div class="panel">
+          <div class="panelTitle row">
+            <span>VAULT</span>
+            <span class="mini">🔒 LVL 3</span>
+          </div>
+          <div class="hint">Débloque le Vault au niveau 3.</div>
+          <div class="mini" id="hudVaultState" style="margin-top:6px;">État : verrouillé</div>
+        </div>
+      </aside>
     </main>
   </div>
 

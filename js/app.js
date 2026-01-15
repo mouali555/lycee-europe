@@ -28,6 +28,23 @@ const messagesEl = document.getElementById("messages");
 const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send");
 
+// UX extras (XP Midnight)
+const offlineBanner = document.getElementById("offlineBanner");
+const newMsgBtn = document.getElementById("newMsgBtn");
+const iaBtn = document.getElementById("iaBtn");
+const charCount = document.getElementById("charCount");
+
+// HUD (mini-game léger)
+const hudStatus = document.getElementById("hudStatus");
+const hudLevel = document.getElementById("hudLevel");
+const hudStreak = document.getElementById("hudStreak");
+const hudXpFill = document.getElementById("hudXpFill");
+const hudXpText = document.getElementById("hudXpText");
+const hudMissionText = document.getElementById("hudMissionText");
+const hudMissionClaim = document.getElementById("hudMissionClaim");
+const hudMissionMeta = document.getElementById("hudMissionMeta");
+const hudVaultState = document.getElementById("hudVaultState");
+
 // Optional (console extras)
 const missionBtn = document.getElementById("missionBtn");
 const profileModal = document.getElementById("profileModal");
@@ -71,6 +88,20 @@ function addSystem(text){
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
+// Connectivity banner
+function updateConnectivityUI(){
+  const online = navigator.onLine !== false;
+  if (offlineBanner) offlineBanner.setAttribute("aria-hidden", online ? "true" : "false");
+  if (hudStatus) hudStatus.textContent = online ? "ONLINE" : "OFFLINE";
+}
+
+// Character counter
+function updateCharCount(){
+  if (!charCount) return;
+  const n = (msgInput.value || "").length;
+  charCount.textContent = `${n}/800`;
+}
+
 // State
 let currentUser = null;
 let unsub = null;
@@ -84,9 +115,135 @@ const SPACE_LABEL = "EUROPE_SPACE";
 const ROOM_ID = "general";
 const ROOM_LABEL = "general";
 
+// ===== Mini-game (léger, local) =====
+const LS_PREFIX = "le_xp_midnight_";
+const XP_PER_LEVEL = 25;
+
+function lsGet(key, fallback){
+  try{
+    const v = localStorage.getItem(LS_PREFIX + key);
+    return v == null ? fallback : JSON.parse(v);
+  }catch{ return fallback; }
+}
+function lsSet(key, value){
+  try{ localStorage.setItem(LS_PREFIX + key, JSON.stringify(value)); }catch{}
+}
+
+let xp = lsGet("xp", 0);
+let streak = lsGet("streak", 0);
+let lastCheckin = lsGet("lastCheckin", "");
+let missionClaimed = lsGet("missionClaimed", "");
+let msgToday = lsGet("msgToday", { date: "", count: 0 });
+let aiUsed = lsGet("aiUsed", "");
+
+function todayStr(){
+  const d = new Date();
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+
+function getLevel(){
+  return Math.floor(xp / XP_PER_LEVEL) + 1;
+}
+
+function addXP(amount){
+  xp = Math.max(0, xp + (amount || 0));
+  lsSet("xp", xp);
+  renderHUD();
+}
+
+function dailyCheckin(){
+  const t = todayStr();
+  if (lastCheckin === t) return;
+
+  // streak update
+  const prev = lastCheckin;
+  lastCheckin = t;
+  lsSet("lastCheckin", lastCheckin);
+
+  if (!prev) {
+    streak = 1;
+  } else {
+    const prevDate = new Date(prev + "T00:00:00");
+    const curDate = new Date(t + "T00:00:00");
+    const diffDays = Math.round((curDate - prevDate) / (1000*60*60*24));
+    streak = diffDays === 1 ? (streak + 1) : 1;
+  }
+  lsSet("streak", streak);
+
+  // daily drop: small XP
+  addXP(3);
+}
+
+function getMissionOfDay(){
+  // simple rotating missions
+  const missions = [
+    { id: "m1", text: "Écris 2 messages aujourd’hui", goal: 2, rewardXp: 10 },
+    { id: "m2", text: "Utilise @ia une fois", goal: 1, rewardXp: 10 },
+    { id: "m3", text: "Aide quelqu’un (réponds à un message)", goal: 1, rewardXp: 10 }
+  ];
+  const daySeed = Math.floor(Date.now() / (1000*60*60*24));
+  return missions[daySeed % missions.length];
+}
+
+function getMissionProgress(m){
+  resetMsgTodayIfNeeded();
+  const t = todayStr();
+  if (m.id === "m1") return msgToday.count; // messages
+  if (m.id === "m2") return aiUsed === t ? 1 : 0; // @ia
+  if (m.id === "m3") return msgToday.count > 0 ? 1 : 0; // simple reply
+  return 0;
+}
+
+function canClaimMission(){
+  const m = getMissionOfDay();
+  return getMissionProgress(m) >= m.goal;
+}
+
+function resetMsgTodayIfNeeded(){
+  const t = todayStr();
+  if (msgToday.date !== t) {
+    msgToday = { date: t, count: 0 };
+    lsSet("msgToday", msgToday);
+  }
+}
+
+function canUnlockVault(){
+  return getLevel() >= 3;
+}
+
+function renderHUD(){
+  const lvl = getLevel();
+  const within = xp % XP_PER_LEVEL;
+
+  if (hudLevel) hudLevel.textContent = String(lvl);
+  if (hudStreak) hudStreak.textContent = String(streak);
+  if (hudXpText) hudXpText.textContent = `${within}/${XP_PER_LEVEL} XP`;
+  if (hudXpFill) hudXpFill.style.width = `${Math.round((within / XP_PER_LEVEL) * 100)}%`;
+
+  const m = getMissionOfDay();
+  const prog = getMissionProgress(m);
+  if (hudMissionText) hudMissionText.textContent = `${m.text}  (${prog}/${m.goal})`;
+  if (hudMissionMeta) {
+    const t = todayStr();
+    const claimed = missionClaimed === t;
+    hudMissionMeta.textContent = claimed ? "Récompense : déjà récupérée ✅" : `Récompense : +${m.rewardXp} XP`;
+  }
+  if (hudMissionClaim) {
+    const claimed = missionClaimed === todayStr();
+    hudMissionClaim.disabled = claimed || !canClaimMission();
+    hudMissionClaim.textContent = claimed ? "DONE" : (canClaimMission() ? "CLAIM" : "LOCKED");
+  }
+  if (hudVaultState) {
+    hudVaultState.textContent = canUnlockVault() ? "État : déverrouillé ✅" : "État : verrouillé";
+  }
+}
+
 // Anti-spam (client)
 let lastSentAt = 0;
 const COOLDOWN_MS = 2500;
+
+let lastXPAt = 0;
+const XP_COOLDOWN_MS = 10000;
 
 // UI nav
 function renderStaticNav(){
@@ -314,11 +471,15 @@ function startListener(){
   addSystem("CONNECTED");
 
   const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
-  // ✅ On prend les 150 derniers messages (plus robuste + plus rapide)
+  // ✅ On prend les 80 derniers messages (rapide + fluide)
   // Puis on inverse pour afficher du plus ancien au plus récent.
-  const q = query(msgRef, orderBy("createdAt", "desc"), limit(150));
+  const q = query(msgRef, orderBy("createdAt", "desc"), limit(80));
 
   unsub = onSnapshot(q, async (snap) => {
+    // keep scroll position if user is reading older messages
+    const distFromBottom = (messagesEl.scrollHeight - messagesEl.scrollTop - messagesEl.clientHeight);
+    const wasAtBottom = distFromBottom < 80;
+
     clearMessages();
     const docs = [...snap.docs].reverse();
     for (const docSnap of docs) {
@@ -331,7 +492,14 @@ function startListener(){
         photoURL: m.photoURL || null
       });
     }
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    if (wasAtBottom) {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      if (newMsgBtn) newMsgBtn.style.display = "none";
+    } else {
+      // restore distance from bottom to avoid jump
+      messagesEl.scrollTop = Math.max(0, messagesEl.scrollHeight - messagesEl.clientHeight - distFromBottom);
+      if (newMsgBtn) newMsgBtn.style.display = "inline-block";
+    }
   }, (err) => {
     console.error(err);
     addSystem("LISTEN_FAILED: " + (err?.code || err?.message || "unknown"));
@@ -389,6 +557,8 @@ async function sendMessage(){
   if (!text) return;
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
+  resetMsgTodayIfNeeded();
+
   const now = Date.now();
   if (now - lastSentAt < COOLDOWN_MS) return addSystem("SLOWMODE 2.5s");
   lastSentAt = now;
@@ -440,6 +610,10 @@ async function sendMessage(){
         text: `@IA: ${prompt}`.slice(0, 800),
         createdAt: serverTimestamp()
       });
+
+      // mini-game: @ia question counts as a message
+      msgToday.count += 1;
+      lsSet("msgToday", msgToday);
     }catch(e){
       console.error(e);
       addSystem("SEND_FAILED: " + (e?.code || e?.message || "unknown"));
@@ -448,6 +622,10 @@ async function sendMessage(){
 
     // 2) appeler l'IA (elle répondra ensuite via ton backend)
     msgInput.value = "";
+    // mission progress
+    aiUsed = todayStr();
+    lsSet("aiUsed", aiUsed);
+    renderHUD();
     addSystem("AI_THINKING...");
     await callAI(prompt);
     return;
@@ -465,6 +643,16 @@ async function sendMessage(){
       createdAt: serverTimestamp()
     });
     msgInput.value = "";
+
+    // mini-game progress
+    msgToday.count += 1;
+    lsSet("msgToday", msgToday);
+    const nowXP = Date.now();
+    if (nowXP - lastXPAt > XP_COOLDOWN_MS) {
+      lastXPAt = nowXP;
+      addXP(1);
+    }
+    renderHUD();
   }catch(e){
     console.error(e);
     addSystem("SEND_FAILED: " + (e?.code || e?.message || "unknown"));
@@ -484,6 +672,23 @@ btnLogout.addEventListener("click", async () => {
 
 sendBtn.addEventListener("click", sendMessage);
 msgInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendBtn.click(); });
+msgInput.addEventListener("input", updateCharCount);
+
+iaBtn?.addEventListener("click", () => {
+  // prepend @ia quickly
+  if (!currentUser) return addSystem("AUTH_REQUIRED.");
+  const t = msgInput.value || "";
+  if (!t.toLowerCase().startsWith("@ia")) {
+    msgInput.value = "@ia " + t;
+    updateCharCount();
+  }
+  msgInput.focus();
+});
+
+newMsgBtn?.addEventListener("click", () => {
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  newMsgBtn.style.display = "none";
+});
 joinBtn?.addEventListener("click", () => joinWithInvite(inviteCode?.value || ""));
 
 // Clock
@@ -494,6 +699,14 @@ renderStaticNav();
 setTerminal("type: login");
 addSystem("BOOT_OK");
 addSystem("TIP: @ia <message> • /help");
+
+// initial UI state
+updateConnectivityUI();
+renderHUD();
+updateCharCount();
+
+window.addEventListener("online", updateConnectivityUI);
+window.addEventListener("offline", updateConnectivityUI);
 
 // Auth watch
 watchAuth(async (user) => {
@@ -513,6 +726,10 @@ watchAuth(async (user) => {
 
     await ensureUserDoc();
     await refreshProfile();
+
+    // mini-game daily drop
+    dailyCheckin();
+    renderHUD();
 
     try{
       const ok = await checkMembership();
@@ -578,6 +795,19 @@ missionBtn?.addEventListener("click", async () => {
     console.error(e);
     addSystem("MISSION_FAILED");
   }
+});
+
+// HUD mission claim (mini-game)
+hudMissionClaim?.addEventListener("click", () => {
+  const t = todayStr();
+  if (missionClaimed === t) return;
+  if (!canClaimMission()) return addSystem("MISSION_LOCKED: complète la mission du jour");
+
+  const m = getMissionOfDay();
+  missionClaimed = t;
+  lsSet("missionClaimed", missionClaimed);
+  addXP(m.rewardXp);
+  addSystem(`MISSION_OK: +${m.rewardXp} XP ✅`);
 });
 
 // Crash reporting into UI

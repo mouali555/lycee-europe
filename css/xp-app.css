@@ -1,0 +1,89 @@
+/* XP Midnight — app layout & components */
+
+.xpLayout{
+  display: grid !important;
+  grid-template-columns: 320px minmax(420px, 1fr) 300px;
+  gap: 14px;
+  padding: 14px;
+}
+
+@media (max-width: 1100px){
+  .xpLayout{ grid-template-columns: 300px 1fr; }
+  .hud{ display:none; }
+}
+
+@media (max-width: 850px){
+  .xpLayout{ grid-template-columns: 1fr; }
+  .sidebar{ display:none; }
+  .hud{ display:none; }
+}
+
+/* Chat */
+.xpChat{
+  position: relative;
+}
+
+.offlineBanner{
+  display: none;
+  margin: 10px 10px 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(239,68,68,0.30);
+  background: linear-gradient(180deg, rgba(239,68,68,0.22), rgba(239,68,68,0.10));
+  color: rgba(255,255,255,0.93);
+  font-size: 12px;
+}
+.offlineBanner[aria-hidden="false"]{ display:block; }
+
+.newMsgBtn{
+  position: absolute;
+  right: 18px;
+  bottom: 90px;
+  z-index: 5;
+  border-radius: 999px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.35);
+  color: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+}
+
+.xpComposer{
+  display:flex;
+  gap: 10px;
+}
+
+.composerMeta{
+  display:flex;
+  justify-content: flex-end;
+  padding: 0 12px 10px;
+}
+
+/* HUD */
+.hud .panel{ margin-bottom: 12px; }
+.hudRow{
+  display:flex;
+  gap: 14px;
+  padding: 10px 12px 6px;
+}
+.hudCol{ flex:1; }
+.hudValue{
+  font-size: 22px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.95);
+}
+
+.xpBar{
+  margin: 0 12px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+  overflow:hidden;
+}
+.xpFill{
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(59,130,246,0.95), rgba(147,197,253,0.9));
+}
