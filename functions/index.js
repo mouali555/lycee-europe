@@ -7,6 +7,10 @@ const { defineSecret } = require("firebase-functions/params");
 
 const GROQ_API_KEY = defineSecret("GROQ_API_KEY");
 
+// ✅ IMPORTANT : mets une URL ABSOLUE pour être sûr que ça marche partout
+// Si ton image est dans ton site: https://lycee-europe.com/photoia.png
+const AI_AVATAR = "https://lycee-europe.com/photoia.png";
+
 exports.aiReply = onRequest(
   {
     region: "us-central1",
@@ -25,9 +29,11 @@ exports.aiReply = onRequest(
       const spaceId = String(body.spaceId || "").trim();
       const roomId = String(body.roomId || "").trim();
 
-      if (!prompt || !spaceId || !roomId) return res.status(400).send("Bad request");
+      if (!prompt || !spaceId || !roomId) {
+        return res.status(400).send("Bad request");
+      }
 
-      // ✅ Call GROQ (OpenAI compatible endpoint)
+      // ✅ GROQ OpenAI-compatible
       const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -40,7 +46,7 @@ exports.aiReply = onRequest(
             {
               role: "system",
               content:
-                "Tu es une IA utile et sympa dans un chat privé. Réponds court, clair, et naturel. Pas de doxx, pas d'illégal.",
+                "Tu es une IA utile et sympa dans un chat privé. Réponds court, clair et naturel. Pas de doxx, pas d'illégal.",
             },
             { role: "user", content: prompt },
           ],
@@ -56,17 +62,18 @@ exports.aiReply = onRequest(
       const data = await r.json();
       const answer = data?.choices?.[0]?.message?.content?.trim() || "…";
 
-      // ✅ message IA dans Firestore
-      await admin.firestore()
+      // ✅ Message IA dans Firestore
+      await admin
+        .firestore()
         .collection("spaces").doc(spaceId)
         .collection("rooms").doc(roomId)
         .collection("messages")
         .add({
           uid: "AI_BOT",
           displayName: "IA",
-          photoURL: "/photoia.png", // ✅ avatar IA
+          photoURL: AI_AVATAR, // ✅ avatar IA
           text: String(answer).slice(0, 800),
-          createdAt: admin.firestore.FieldValue.serverTimestamp()
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
 
       return res.status(200).json({ ok: true });
