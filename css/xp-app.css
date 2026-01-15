@@ -14,9 +14,40 @@
 
 @media (max-width: 850px){
   .xpLayout{ grid-template-columns: 1fr; }
-  .sidebar{ display:none; }
   .hud{ display:none; }
+
+  /* Sidebar becomes a drawer (mobile-first UX) */
+  .navToggle{ display:inline-flex; }
+
+  .sidebar{
+    display:block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(360px, 88vw);
+    padding: 14px;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(14px);
+    z-index: 80;
+    transform: translateX(-110%);
+    transition: transform .18s ease;
+    overflow: auto;
+  }
+
+  .sidebar.open{ transform: translateX(0); }
 }
+
+/* Backdrop */
+.drawerBackdrop{
+  display:none;
+  position: fixed;
+  inset: 0;
+  z-index: 79;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(2px);
+}
+.drawerBackdrop[aria-hidden="false"]{ display:block; }
 
 /* Chat */
 .xpChat{
