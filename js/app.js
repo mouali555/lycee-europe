@@ -10,6 +10,7 @@ import {
 // DOM
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
+const chatStatusEl = document.getElementById("chatStatus");
 
 const btnLogin = document.getElementById("btn-login");
 const btnLogout = document.getElementById("btn-logout");
@@ -26,6 +27,7 @@ const roomName = document.getElementById("roomName");
 const messagesEl = document.getElementById("messages");
 const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send");
+const inviteFab = document.getElementById("inviteFab");
 
 // Guard DOM
 function must(el, name){
@@ -47,6 +49,7 @@ function nowStamp(){
 }
 function setTerminal(text){
   if (terminalStatus) terminalStatus.textContent = text;
+  if (chatStatusEl) chatStatusEl.textContent = text;
 }
 function esc(s){
   return String(s).replace(/[&<>"']/g, m => ({
@@ -78,6 +81,14 @@ let lastSentAt = 0;
 const COOLDOWN_MS = 2500;
 
 // UI nav
+function renderLockedNav(){
+  // Hide room list until membership is verified
+  if (spacesList) spacesList.innerHTML = "";
+  if (roomsList) roomsList.innerHTML = "";
+  if (spaceName) spaceName.textContent = "LOCKED";
+  if (roomName) roomName.textContent = "—";
+}
+
 function renderStaticNav(){
   if (!spacesList || !roomsList || !spaceName || !roomName) return;
   spacesList.innerHTML = "";
@@ -334,12 +345,17 @@ btnLogout.addEventListener("click", async () => {
 sendBtn.addEventListener("click", sendMessage);
 msgInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendBtn.click(); });
 joinBtn?.addEventListener("click", () => joinWithInvite(inviteCode?.value || ""));
+inviteFab?.addEventListener("click", () => {
+  // Quick access on mobile: scroll to invite input
+  inviteCode?.scrollIntoView({ behavior: "smooth", block: "center" });
+  setTimeout(() => inviteCode?.focus(), 250);
+});
 
 // Clock
 setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 
 // Boot
-renderStaticNav();
+renderLockedNav();
 setTerminal("type: login");
 addSystem("BOOT_OK");
 addSystem("TIP: use @ia <message>");
@@ -366,11 +382,16 @@ watchAuth(async (user) => {
 
       if (!ok) {
         clearMessages();
+        renderLockedNav();
+        inviteFab && (inviteFab.style.display = "inline-block");
         addSystem("ACCESS_DENIED: invite required");
+        addSystem("=> Entre un code puis clique JOIN");
         setTerminal("join required");
         return;
       }
 
+      inviteFab && (inviteFab.style.display = "none");
+      renderStaticNav();
       addSystem("ACCESS_OK");
       setTerminal("authenticated");
       startListener();
@@ -391,6 +412,8 @@ watchAuth(async (user) => {
     if (unsub) { unsub(); unsub = null; }
 
     clearMessages();
+    renderLockedNav();
+    inviteFab && (inviteFab.style.display = "none");
     addSystem("DISCONNECTED");
     setTerminal("offline");
   }

@@ -348,3 +348,17 @@
     flex:0 0 30px;
   }
 }
+
+/* Invite quick access (mobile) */
+#inviteFab{
+  padding:8px 10px;
+  border-radius:10px;
+}
+@media (max-width: 940px){
+  /* make ACCESS panel always visible when not member: keep it near top */
+  .sidebar .panel:first-child{
+    position: sticky;
+    top: 8px;
+    z-index: 5;
+  }
+}

@@ -1,0 +1,6 @@
+.lead{margin-top:10px;line-height:1.6;opacity:.92}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.card{border:1px solid rgba(0,255,136,.18);border-radius:10px;padding:12px;background:rgba(0,0,0,.35)}
+.cardTitle{letter-spacing:2px;font-weight:700;margin-bottom:6px}
+.cardText{opacity:.85;line-height:1.4}
+@media (max-width:900px){.grid3{grid-template-columns:1fr}}
