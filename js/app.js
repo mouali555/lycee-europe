@@ -1,4 +1,4 @@
-// js/app.js — Chat + Avatars + Invites + IA via Cloud Function (HTTP) ✅ GROQ
+// js/app.js — Chat + Avatars + Invites + IA via Cloud Run (HTTP) ✅ FIXED PRO
 import { loginGoogle, logout, watchAuth } from "./auth.js";
 import { db } from "./firebase.js";
 
@@ -10,6 +10,7 @@ import {
 // DOM
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
+const chatStatusEl = document.getElementById("chatStatus");
 
 const btnLogin = document.getElementById("btn-login");
 const btnLogout = document.getElementById("btn-logout");
@@ -17,6 +18,7 @@ const userTag = document.getElementById("userTag");
 
 const inviteCode = document.getElementById("inviteCode");
 const joinBtn = document.getElementById("joinBtn");
+const inviteFab = document.getElementById("inviteFab");
 
 const spacesList = document.getElementById("spacesList");
 const roomsList = document.getElementById("roomsList");
@@ -47,6 +49,7 @@ function nowStamp(){
 }
 function setTerminal(text){
   if (terminalStatus) terminalStatus.textContent = text;
+  if (chatStatusEl) chatStatusEl.textContent = text;
 }
 function esc(s){
   return String(s).replace(/[&<>"']/g, m => ({
@@ -62,6 +65,25 @@ function addSystem(text){
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
+// ===== UI LOCK/UNLOCK =====
+function setChatLocked(locked){
+  // locked = true -> pas de messages, pas d'envoi
+  msgInput.disabled = locked;
+  sendBtn.disabled = locked;
+
+  if (locked){
+    msgInput.placeholder = "Invite requis — mets ton code puis JOIN";
+    msgInput.style.opacity = "0.55";
+    sendBtn.style.opacity = "0.55";
+    sendBtn.style.pointerEvents = "none";
+  } else {
+    msgInput.placeholder = "Écris un message… (Enter pour envoyer)";
+    msgInput.style.opacity = "1";
+    sendBtn.style.opacity = "1";
+    sendBtn.style.pointerEvents = "auto";
+  }
+}
+
 // State
 let currentUser = null;
 let unsub = null;
@@ -73,11 +95,18 @@ const SPACE_LABEL = "EUROPE_SPACE";
 const ROOM_ID = "general";
 const ROOM_LABEL = "general";
 
-// Anti-spam
+// Anti-spam (client)
 let lastSentAt = 0;
-const COOLDOWN_MS = 800;
+const COOLDOWN_MS = 2500;
 
-// UI nav
+// Nav
+function renderLockedNav(){
+  if (spacesList) spacesList.innerHTML = `<div class="item active">🔒 LOCKED</div>`;
+  if (roomsList) roomsList.innerHTML = `<div class="item">—</div>`;
+  if (spaceName) spaceName.textContent = "LOCKED";
+  if (roomName) roomName.textContent = "—";
+}
+
 function renderStaticNav(){
   if (!spacesList || !roomsList || !spaceName || !roomName) return;
   spacesList.innerHTML = "";
@@ -97,7 +126,7 @@ function renderStaticNav(){
   roomName.textContent = "# " + ROOM_LABEL;
 }
 
-// ===== Avatars =====
+// ===== Avatars for old messages (users/{uid}) =====
 const avatarCache = new Map();
 
 async function getAvatarForUid(uid){
@@ -121,12 +150,6 @@ async function renderMessage({ uid, user, text, me=false, photoURL=null }){
   row.className = "msgRow" + (me ? " meRow" : "");
 
   let finalPhoto = photoURL || null;
-
-  // ✅ IMPORTANT : avatar IA forcé, garanti
-  if (uid === "AI_BOT") {
-    finalPhoto = "/photoia.png";
-  }
-
   if (!finalPhoto) finalPhoto = await getAvatarForUid(uid);
 
   const avatarHTML = finalPhoto
@@ -146,7 +169,6 @@ async function renderMessage({ uid, user, text, me=false, photoURL=null }){
 
 // Membership
 async function checkMembership(){
-  if (!currentUser) return false;
   const memRef = doc(db, "spaces", SPACE_ID, "members", currentUser.uid);
   const snap = await getDoc(memRef);
   return snap.exists();
@@ -175,6 +197,8 @@ async function joinWithInvite(codeRaw){
       addSystem("ALREADY_MEMBER");
       isMember = true;
       setTerminal("authenticated");
+      renderStaticNav();
+      setChatLocked(false);
       startListener();
       return;
     }
@@ -188,6 +212,8 @@ async function joinWithInvite(codeRaw){
     addSystem("INVITE_OK");
     isMember = true;
     setTerminal("authenticated");
+    renderStaticNav();
+    setChatLocked(false);
     startListener();
   }catch(e){
     console.error(e);
@@ -226,39 +252,44 @@ function startListener(){
   });
 }
 
-// ===== IA CALL =====
-// ✅ TON URL Cloud Function (aiReply)
-const AI_ENDPOINT = "https://aireply-mtjtt4jn5q-uc.a.run.app"; // change pas si c la tienne
+// ===== IA CALL (Cloud Run / HTTP) =====
+const AI_ENDPOINT = "https://aireply-mtjtt4jn5q-uc.a.run.app"; // ✅ ton endpoint
 
 async function callAI(prompt){
   if (!AI_ENDPOINT) {
-    addSystem("AI_DISABLED: missing endpoint");
+    addSystem("AI_DISABLED: endpoint missing");
     return;
   }
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
   if (!isMember) return addSystem("ACCESS_DENIED: invite required");
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 25000);
+
   try{
     const res = await fetch(AI_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      signal: controller.signal,
       body: JSON.stringify({
         spaceId: SPACE_ID,
         roomId: ROOM_ID,
-        prompt,
         uid: currentUser.uid,
         displayName: currentUser.name,
-        photoURL: currentUser.photoURL || null
+        photoURL: currentUser.photoURL || null,
+        prompt
       })
     });
 
     if (!res.ok) {
       const t = await res.text().catch(()=> "");
-      throw new Error(`HTTP_${res.status} ${t}`.slice(0, 250));
+      throw new Error(`HTTP_${res.status} ${t}`.slice(0, 220));
     }
   }catch(e){
     console.error(e);
-    addSystem("AI_FAILED: " + (e?.message || "unknown"));
+    addSystem("AI_FAILED: " + (e?.name === "AbortError" ? "timeout" : (e?.message || "unknown")));
+  }finally{
+    clearTimeout(timeout);
   }
 }
 
@@ -269,45 +300,26 @@ async function sendMessage(){
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
   const now = Date.now();
-  if (now - lastSentAt < COOLDOWN_MS) return;
-  lastSentAt = now;
-
-  const lower = text.toLowerCase();
-
-  // ✅ Command IA: @ia ... / @ai ...
-  if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
-    const prompt = text.slice(4).trim();
-    if (!prompt) return addSystem("AI_USAGE: @ia ton message");
-    if (!isMember) return addSystem("ACCESS_DENIED: invite required");
-
-    // ✅ 1) on garde le message visible dans le chat
-    async function sendMessage(){
-  const text = (msgInput.value || "").trim();
-  if (!text) return;
-  if (!currentUser) return addSystem("AUTH_REQUIRED.");
-
-  const now = Date.now();
   if (now - lastSentAt < COOLDOWN_MS) return addSystem("SLOWMODE 2.5s");
   lastSentAt = now;
 
-  // Interdire chat si pas membre
+  // Bloqué si pas membre
   if (!isMember) return addSystem("ACCESS_DENIED: invite required");
-
-  const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
 
   // ✅ Commande IA: "@ia ..." ou "@ai ..."
   const lower = text.toLowerCase();
-  if (lower.startsWith("@ia") || lower.startsWith("@ai")) {
-    const prompt = text.replace(/^@ia\s*/i, "").replace(/^@ai\s*/i, "").trim();
+  if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
+    const prompt = text.slice(4).trim();
     if (!prompt) return addSystem("AI_USAGE: @ia ton message");
 
-    // 1) ✅ On enregistre ton message DANS LE CHAT (visible par tous)
+    // ✅ IMPORTANT: on enregistre la QUESTION du user dans Firestore
     try{
+      const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
       await addDoc(msgRef, {
         uid: currentUser.uid,
         displayName: currentUser.name,
         photoURL: currentUser.photoURL || null,
-        text: `@IA ${prompt}`.slice(0, 300),
+        text: `@IA: ${prompt}`.slice(0, 300),
         createdAt: serverTimestamp()
       });
     }catch(e){
@@ -316,33 +328,14 @@ async function sendMessage(){
       return;
     }
 
-    // 2) Puis on appelle l'IA
+    // ensuite IA
     msgInput.value = "";
     addSystem("AI_THINKING...");
-    const ok = await callAI(prompt);
-
-    if (!ok) addSystem("AI_NO_REPLY (check function logs)");
+    await callAI(prompt);
     return;
   }
 
-  // ✅ Message normal
-  try{
-    await addDoc(msgRef, {
-      uid: currentUser.uid,
-      displayName: currentUser.name,
-      photoURL: currentUser.photoURL || null,
-      text: text.slice(0, 300),
-      createdAt: serverTimestamp()
-    });
-    msgInput.value = "";
-  }catch(e){
-    console.error(e);
-    addSystem("SEND_FAILED: " + (e?.code || e?.message || "unknown"));
-  }
-}
-  // ✅ normal message
-  if (!isMember) return addSystem("ACCESS_DENIED: invite required");
-
+  // Message normal
   try{
     const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
     await addDoc(msgRef, {
@@ -364,6 +357,7 @@ btnLogin.addEventListener("click", async () => {
   try { await loginGoogle(); }
   catch(e){ console.error(e); addSystem("AUTH_FAILED: " + (e?.code || e?.message || "unknown")); }
 });
+
 btnLogout.addEventListener("click", async () => {
   try { await logout(); }
   catch(e){ console.error(e); addSystem("LOGOUT_FAILED"); }
@@ -371,16 +365,22 @@ btnLogout.addEventListener("click", async () => {
 
 sendBtn.addEventListener("click", sendMessage);
 msgInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendBtn.click(); });
+
 joinBtn?.addEventListener("click", () => joinWithInvite(inviteCode?.value || ""));
+inviteFab?.addEventListener("click", () => {
+  inviteCode?.scrollIntoView({ behavior: "smooth", block: "center" });
+  setTimeout(() => inviteCode?.focus(), 250);
+});
 
 // Clock
 setInterval(() => { if (clockEl) clockEl.textContent = nowStamp(); }, 250);
 
 // Boot
-renderStaticNav();
-setTerminal("type: login");
+renderLockedNav();
+setChatLocked(true);
+setTerminal("offline");
 addSystem("BOOT_OK");
-addSystem("TIP: use @ia <message>");
+addSystem("TIP: @ia <message>");
 
 // Auth watch
 watchAuth(async (user) => {
@@ -397,6 +397,7 @@ watchAuth(async (user) => {
 
     addSystem("AUTH_OK: " + currentUser.name);
     addSystem("CHECKING_ACCESS...");
+    setTerminal("checking");
 
     try{
       const ok = await checkMembership();
@@ -404,11 +405,18 @@ watchAuth(async (user) => {
 
       if (!ok) {
         clearMessages();
+        renderLockedNav();
+        inviteFab && (inviteFab.style.display = "inline-block");
+        setChatLocked(true);
         addSystem("ACCESS_DENIED: invite required");
+        addSystem("=> Entre un code puis clique JOIN");
         setTerminal("join required");
         return;
       }
 
+      inviteFab && (inviteFab.style.display = "none");
+      renderStaticNav();
+      setChatLocked(false);
       addSystem("ACCESS_OK");
       setTerminal("authenticated");
       startListener();
@@ -416,6 +424,8 @@ watchAuth(async (user) => {
       console.error(e);
       isMember = false;
       clearMessages();
+      renderLockedNav();
+      setChatLocked(true);
       addSystem("ACCESS_DENIED");
       setTerminal("join required");
     }
@@ -426,9 +436,12 @@ watchAuth(async (user) => {
     userTag.textContent = "OFFLINE";
     btnLogin.style.display = "inline-block";
     btnLogout.style.display = "none";
-
     if (unsub) { unsub(); unsub = null; }
+
     clearMessages();
+    renderLockedNav();
+    inviteFab && (inviteFab.style.display = "none");
+    setChatLocked(true);
     addSystem("DISCONNECTED");
     setTerminal("offline");
   }
