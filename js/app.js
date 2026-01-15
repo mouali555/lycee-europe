@@ -275,13 +275,31 @@ async function sendMessage(){
   // ✅ Commande IA: "@ia ..." ou "@ai ..."
   const lower = text.toLowerCase();
   if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
-    const prompt = text.slice(4).trim();
-    if (!prompt) return addSystem("AI_USAGE: @ia ton message");
-    msgInput.value = "";
-    addSystem("AI_THINKING...");
-    await callAI(prompt);
+  const prompt = text.slice(4).trim();
+  if (!prompt) return addSystem("AI_USAGE: @ia ton message");
+
+  // 1) Afficher la question dans le chat pour tout le monde
+  try {
+    const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
+    await addDoc(msgRef, {
+      uid: currentUser.uid,
+      displayName: currentUser.name,
+      photoURL: currentUser.photoURL || null,
+      text: `@IA: ${prompt}`.slice(0, 300),
+      createdAt: serverTimestamp()
+    });
+  } catch (e) {
+    console.error(e);
+    addSystem("SEND_FAILED: " + (e?.code || e?.message || "unknown"));
     return;
   }
+
+  // 2) Appeler l'IA (qui répondra ensuite dans Firestore)
+  msgInput.value = "";
+  addSystem("AI_THINKING...");
+  await callAI(prompt);
+  return;
+}
 
   // (Optionnel) empêcher d'envoyer dans le chat tant que pas membre
   if (!isMember) return addSystem("ACCESS_DENIED: invite required");
