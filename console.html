@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Secure Console — Lycée Europe</title>
 
-  <meta name="description" content="Console privée: salons, messages, missions et @ia. Accès par clé." />
-  <meta name="theme-color" content="#07121f" />
-
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/theme-terminal.css" />
   <link rel="stylesheet" href="css/app.css" />
@@ -44,28 +41,17 @@
   <div id="app">
     <header class="topbar">
       <div class="left">
-        <!-- Mobile: drawer menu (sidebar) -->
-        <button id="navToggle" class="btn ghost navToggle" type="button" aria-label="Ouvrir le menu">☰</button>
-
         <span class="dot"></span>
         <span class="brand">SECURE_CONSOLE</span>
         <span id="clock" class="clock">—</span>
       </div>
 
       <div class="right">
-        <!-- ✅ Toujours visible : retour accueil -->
-        <a class="btn ghost" href="./index.html" id="homeBtn" aria-label="Retour à l’accueil">ACCUEIL</a>
-
-        <button class="btn ghost" id="helpBtn" type="button" aria-label="Aide">/HELP</button>
-
         <span id="userTag" class="userTag">OFFLINE</span>
         <button id="btn-login" class="btn danger">LOGIN</button>
         <button id="btn-logout" class="btn danger" style="display:none;">LOGOUT</button>
       </div>
     </header>
-
-    <!-- Mobile backdrop for drawer sidebar -->
-    <div id="drawerBackdrop" class="drawerBackdrop" aria-hidden="true"></div>
 
     <main class="layout xpLayout">
       <!-- LEFT PANEL -->
