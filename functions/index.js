@@ -56,20 +56,17 @@ exports.aiReply = onRequest(
       const data = await r.json();
       const answer = data?.choices?.[0]?.message?.content?.trim() || "…";
 
-      await admin
-        .firestore()
-        .collection("spaces")
-        .doc(spaceId)
-        .collection("rooms")
-        .doc(roomId)
-        .collection("messages")
-        .add({
-          uid: "AI_BOT",
-          displayName: "IA",
-          photoURL: null,
-          text: String(answer).slice(0, 800),
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
+      await admin.firestore()
+.collection("spaces").doc(spaceId)
+.collection("rooms").doc(roomId)
+.collection("messages")
+.add({
+uid: "AI_BOT",
+displayName: "IA",
+photoURL: "/photoia.png", // ✅ IMPORTANT : avatar IA
+text: String(answer).slice(0, 800),
+createdAt: admin.firestore.FieldValue.serverTimestamp()
+});
 
       return res.status(200).json({ ok: true });
     } catch (e) {
