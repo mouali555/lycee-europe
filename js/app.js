@@ -7,9 +7,7 @@ import {
   collection, query, orderBy, limit, onSnapshot, addDoc
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-/* =========================
-   DOM
-========================= */
+// DOM
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
 
@@ -29,7 +27,7 @@ const messagesEl = document.getElementById("messages");
 const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send");
 
-// Guard DOM (si un id manque, on bloque direct et on sait pourquoi)
+// Guard DOM
 function must(el, name){
   if (!el) throw new Error(`MISSING_DOM_ID: #${name}`);
   return el;
@@ -41,9 +39,7 @@ must(messagesEl, "messages");
 must(msgInput, "msg");
 must(sendBtn, "send");
 
-/* =========================
-   Utils
-========================= */
+// Utils
 function pad(n){ return String(n).padStart(2, "0"); }
 function nowStamp(){
   const d = new Date();
@@ -66,9 +62,7 @@ function addSystem(text){
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
-/* =========================
-   State
-========================= */
+// State
 let currentUser = null;
 let unsub = null;
 let isMember = false;
@@ -79,13 +73,11 @@ const SPACE_LABEL = "EUROPE_SPACE";
 const ROOM_ID = "general";
 const ROOM_LABEL = "general";
 
-// Anti-spam
+// Anti-spam (client)
 let lastSentAt = 0;
 const COOLDOWN_MS = 2500;
 
-/* =========================
-   Nav
-========================= */
+// UI nav
 function renderStaticNav(){
   if (!spacesList || !roomsList || !spaceName || !roomName) return;
   spacesList.innerHTML = "";
@@ -105,9 +97,7 @@ function renderStaticNav(){
   roomName.textContent = "# " + ROOM_LABEL;
 }
 
-/* =========================
-   Avatars + messages rendering
-========================= */
+// ===== Avatars for old messages (users/{uid}) =====
 const avatarCache = new Map();
 
 async function getAvatarForUid(uid){
@@ -148,18 +138,14 @@ async function renderMessage({ uid, user, text, me=false, photoURL=null }){
   messagesEl.appendChild(row);
 }
 
-/* =========================
-   Membership
-========================= */
+// Membership
 async function checkMembership(){
   const memRef = doc(db, "spaces", SPACE_ID, "members", currentUser.uid);
   const snap = await getDoc(memRef);
   return snap.exists();
 }
 
-/* =========================
-   Join with invite
-========================= */
+// Join invite
 async function joinWithInvite(codeRaw){
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
 
@@ -202,9 +188,7 @@ async function joinWithInvite(codeRaw){
   }
 }
 
-/* =========================
-   Listener Firestore
-========================= */
+// Listener
 function startListener(){
   if (!currentUser) return;
   if (!isMember) return;
@@ -224,7 +208,7 @@ function startListener(){
         uid: m.uid,
         user: m.displayName || "USER",
         text: m.text || "",
-        me: currentUser && m.uid === currentUser.uid,
+        me: m.uid === currentUser.uid,
         photoURL: m.photoURL || null
       });
     }
@@ -235,20 +219,25 @@ function startListener(){
   });
 }
 
-/* =========================
-   IA
-========================= */
+// ===== IA CALL (Cloud Run / HTTP) =====
 const AI_ENDPOINT = "https://aireply-mtjtt4jn5q-uc.a.run.app";
 
 async function callAI(prompt){
-  if (!AI_ENDPOINT) return addSystem("AI_DISABLED: missing endpoint");
+  if (!AI_ENDPOINT || AI_ENDPOINT.includes("PASTE_")) {
+    addSystem("AI_DISABLED: set AI_ENDPOINT in app.js");
+    return;
+  }
   if (!currentUser) return addSystem("AUTH_REQUIRED.");
   if (!isMember) return addSystem("ACCESS_DENIED: invite required");
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000); // 20s
 
   try{
     const res = await fetch(AI_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      signal: controller.signal,
       body: JSON.stringify({
         spaceId: SPACE_ID,
         roomId: ROOM_ID,
@@ -261,18 +250,19 @@ async function callAI(prompt){
 
     if (!res.ok) {
       const t = await res.text().catch(()=> "");
-      addSystem("AI_HTTP_" + res.status + ": " + t.slice(0,120));
-      return;
+      throw new Error(`HTTP_${res.status} ${t}`.slice(0, 220));
     }
+
+    addSystem("AI_OK");
   }catch(e){
     console.error(e);
-    addSystem("AI_FAILED");
+    addSystem("AI_FAILED: " + (e?.name === "AbortError" ? "timeout" : (e?.message || "unknown")));
+  }finally{
+    clearTimeout(timeout);
   }
 }
 
-/* =========================
-   SEND (FIXED, NO DUPLICATE)
-========================= */
+// Send
 async function sendMessage(){
   const text = (msgInput.value || "").trim();
   if (!text) return;
@@ -282,15 +272,14 @@ async function sendMessage(){
   if (now - lastSentAt < COOLDOWN_MS) return addSystem("SLOWMODE 2.5s");
   lastSentAt = now;
 
+  // ✅ Commande IA: "@ia ..." ou "@ai ..."
   const lower = text.toLowerCase();
-
-  // IA command
   if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
     const prompt = text.slice(4).trim();
     if (!prompt) return addSystem("AI_USAGE: @ia ton message");
     if (!isMember) return addSystem("ACCESS_DENIED: invite required");
 
-    // 1) Save the prompt in Firestore (so it does NOT disappear)
+    // 1) enregistrer la question dans Firestore pour qu'elle reste visible
     try{
       const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
       await addDoc(msgRef, {
@@ -306,14 +295,13 @@ async function sendMessage(){
       return;
     }
 
-    // 2) Call AI
+    // 2) appeler l'IA (elle répondra ensuite via ton backend)
     msgInput.value = "";
     addSystem("AI_THINKING...");
     await callAI(prompt);
     return;
   }
 
-  // Normal messages
   if (!isMember) return addSystem("ACCESS_DENIED: invite required");
 
   try{
@@ -332,9 +320,7 @@ async function sendMessage(){
   }
 }
 
-/* =========================
-   Events
-========================= */
+// Events
 btnLogin.addEventListener("click", async () => {
   try { await loginGoogle(); }
   catch(e){ console.error(e); addSystem("AUTH_FAILED: " + (e?.code || e?.message || "unknown")); }
