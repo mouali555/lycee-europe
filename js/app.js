@@ -281,8 +281,28 @@ async function sendMessage(){
     if (!isMember) return addSystem("ACCESS_DENIED: invite required");
 
     // ✅ 1) on garde le message visible dans le chat
+    async function sendMessage(){
+  const text = (msgInput.value || "").trim();
+  if (!text) return;
+  if (!currentUser) return addSystem("AUTH_REQUIRED.");
+
+  const now = Date.now();
+  if (now - lastSentAt < COOLDOWN_MS) return addSystem("SLOWMODE 2.5s");
+  lastSentAt = now;
+
+  // Interdire chat si pas membre
+  if (!isMember) return addSystem("ACCESS_DENIED: invite required");
+
+  const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
+
+  // ✅ Commande IA: "@ia ..." ou "@ai ..."
+  const lower = text.toLowerCase();
+  if (lower.startsWith("@ia") || lower.startsWith("@ai")) {
+    const prompt = text.replace(/^@ia\s*/i, "").replace(/^@ai\s*/i, "").trim();
+    if (!prompt) return addSystem("AI_USAGE: @ia ton message");
+
+    // 1) ✅ On enregistre ton message DANS LE CHAT (visible par tous)
     try{
-      const msgRef = collection(db, "spaces", SPACE_ID, "rooms", ROOM_ID, "messages");
       await addDoc(msgRef, {
         uid: currentUser.uid,
         displayName: currentUser.name,
@@ -296,12 +316,30 @@ async function sendMessage(){
       return;
     }
 
+    // 2) Puis on appelle l'IA
     msgInput.value = "";
     addSystem("AI_THINKING...");
-    await callAI(prompt);
+    const ok = await callAI(prompt);
+
+    if (!ok) addSystem("AI_NO_REPLY (check function logs)");
     return;
   }
 
+  // ✅ Message normal
+  try{
+    await addDoc(msgRef, {
+      uid: currentUser.uid,
+      displayName: currentUser.name,
+      photoURL: currentUser.photoURL || null,
+      text: text.slice(0, 300),
+      createdAt: serverTimestamp()
+    });
+    msgInput.value = "";
+  }catch(e){
+    console.error(e);
+    addSystem("SEND_FAILED: " + (e?.code || e?.message || "unknown"));
+  }
+}
   // ✅ normal message
   if (!isMember) return addSystem("ACCESS_DENIED: invite required");
 
