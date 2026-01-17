@@ -9,6 +9,10 @@ export class MessageList {
     this.rendered = new Set();
     this.nodes = new Map();
     this.firstRender = true;
+
+    // UI-only state
+    this.typingNode = null;
+    this.reactions = new Map(); // id -> Set(emoji)
   }
 
   clear() {
@@ -62,6 +66,41 @@ export class MessageList {
     this.scrollToBottom();
   }
 
+  showTyping(label = "IA") {
+    // Avoid duplicates
+    if (this.typingNode && this.typingNode.isConnected) return;
+
+    const row = document.createElement("div");
+    row.className = "msgRow iaRow typingRow popIn";
+
+    const avatarHTML = `<img class="avatar" src="./photoia.png" referrerpolicy="no-referrer">`;
+
+    row.innerHTML = `
+      ${avatarHTML}
+      <div class="bubble">
+        <div class="meta">
+          <span class="name">${esc(label)}</span>
+          <span class="badge">🤖 IA</span>
+        </div>
+        <div class="typingDots" aria-label="En train d'écrire">
+          <i></i><i></i><i></i>
+        </div>
+      </div>
+    `;
+
+    this.root.appendChild(row);
+    this.typingNode = row;
+    this.scrollToBottom();
+  }
+
+  hideTyping() {
+    if (!this.typingNode) return;
+    try {
+      this.typingNode.remove();
+    } catch {}
+    this.typingNode = null;
+  }
+
   async appendMessage({
     id,
     uid,
@@ -91,12 +130,14 @@ export class MessageList {
       (isAI ? " iaRow" : "") +
       (isKey ? " keyRow" : "");
 
+    row.classList.add("popIn");
+
     row.dataset.msgId = id;
 
     // Avatar (IA utilise une image fixe)
     let finalPhoto = photoURL || null;
     if (isAI) {
-      finalPhoto = "https://lycee-europe.com/photoia.png";
+      finalPhoto = "./photoia.png";
     }
 
     const avatarHTML = finalPhoto
@@ -121,10 +162,21 @@ export class MessageList {
         `
         : "";
 
+    // Lightweight UI reactions (client-side only)
+    const reactionBar = `
+      <div class="reactionBar" aria-hidden="true">
+        <button class="reactBtn" data-react="👍" title="Réagir : 👍">👍</button>
+        <button class="reactBtn" data-react="❤️" title="Réagir : ❤️">❤️</button>
+        <button class="reactBtn" data-react="😂" title="Réagir : 😂">😂</button>
+      </div>
+      <div class="reactionChips" aria-hidden="true"></div>
+    `;
+
     row.innerHTML = `
       ${avatarHTML}
       <div class="bubble">
         ${actionsHtml}
+        ${reactionBar}
         <div class="meta">
           <span class="name">${esc(displayName || "USER")}</span>
           ${
@@ -149,6 +201,41 @@ export class MessageList {
         this.onDelete({ id, uid, displayName, text, imageURL });
       });
     }
+
+    // Reactions
+    const chips = row.querySelector(".reactionChips");
+    const updateChips = () => {
+      if (!chips) return;
+      const set = this.reactions.get(id) || new Set();
+      chips.innerHTML = "";
+      if (!set.size) {
+        chips.style.display = "none";
+        return;
+      }
+      chips.style.display = "flex";
+      for (const em of set) {
+        const el = document.createElement("span");
+        el.className = "chip";
+        el.textContent = em;
+        chips.appendChild(el);
+      }
+    };
+
+    row.querySelectorAll(".reactBtn").forEach((b) => {
+      b.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const em = b.getAttribute("data-react");
+        if (!em) return;
+        const set = new Set(this.reactions.get(id) || []);
+        if (set.has(em)) set.delete(em);
+        else set.add(em);
+        this.reactions.set(id, set);
+        updateChips();
+      });
+    });
+
+    updateChips();
 
     this.root.appendChild(row);
     this.nodes.set(id, row);

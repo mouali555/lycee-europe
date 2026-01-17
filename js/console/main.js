@@ -25,6 +25,10 @@ import { HUD } from "../ui/hud.js";
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
 
+// Preferences toggles
+const themeToggle = document.getElementById("themeToggle");
+const soundToggle = document.getElementById("soundToggle");
+
 const btnLogin = document.getElementById("btn-login");
 const btnLogout = document.getElementById("btn-logout");
 const userTag = document.getElementById("userTag");
@@ -142,6 +146,75 @@ const msgList = new MessageList({
   },
 });
 
+// ===== Preferences (theme / sound) =====
+const PREF_THEME = "xpchat_theme";
+const PREF_SOUND = "xpchat_sound";
+
+function getPref(key, fallback) {
+  try {
+    const v = localStorage.getItem(key);
+    return v === null ? fallback : v;
+  } catch {
+    return fallback;
+  }
+}
+
+function setPref(key, val) {
+  try {
+    localStorage.setItem(key, String(val));
+  } catch {}
+}
+
+function applyTheme(theme) {
+  const t = theme === "light" ? "light" : "dark";
+  document.body.classList.toggle("theme-light", t === "light");
+  document.body.classList.toggle("theme-dark", t !== "light");
+  if (themeToggle) themeToggle.textContent = t === "light" ? "🌙" : "☀️";
+  setPref(PREF_THEME, t);
+}
+
+let soundEnabled = getPref(PREF_SOUND, "1") === "1";
+
+function applySoundUI() {
+  if (soundToggle) soundToggle.textContent = soundEnabled ? "🔊" : "🔇";
+  setPref(PREF_SOUND, soundEnabled ? "1" : "0");
+}
+
+function playTone(freq = 520, dur = 0.06) {
+  if (!soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sine";
+    o.frequency.value = freq;
+    g.gain.value = 0.02;
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.start();
+    setTimeout(() => {
+      o.stop();
+      ctx.close().catch(() => {});
+    }, Math.max(20, dur * 1000));
+  } catch {}
+}
+
+// Init preferences
+applyTheme(getPref(PREF_THEME, "dark"));
+applySoundUI();
+
+themeToggle?.addEventListener("click", () => {
+  const isLight = document.body.classList.contains("theme-light");
+  applyTheme(isLight ? "dark" : "light");
+  playTone(isLight ? 480 : 640, 0.05);
+});
+
+soundToggle?.addEventListener("click", () => {
+  soundEnabled = !soundEnabled;
+  applySoundUI();
+  if (soundEnabled) playTone(720, 0.05);
+});
+
 let currentUser = null;
 let isMember = false;
 let unsub = null;
@@ -199,6 +272,16 @@ function startListener() {
       return;
     }
 
+    // Hide typing when the AI response lands
+    const isAI =
+      ev?.uid === "AI_BOT" || String(ev?.displayName || "").toUpperCase() === "IA";
+    if (isAI) msgList.hideTyping();
+
+    // UI sounds (receive)
+    if (type === "added" && currentUser?.uid && ev?.uid && ev.uid !== currentUser.uid) {
+      playTone(isAI ? 680 : 560, 0.05);
+    }
+
     msgList.appendMessage({
       id: ev.id,
       uid: ev.uid,
@@ -208,6 +291,11 @@ function startListener() {
       imageURL: ev.imageURL || null,
       meUid: currentUser?.uid,
     });
+
+    // SFX: receive message (not mine)
+    if (ev?.uid && currentUser?.uid && ev.uid !== currentUser.uid) {
+      playTone(isAI ? 680 : 520, 0.045);
+    }
   });
 
   setTimeout(() => {
@@ -291,6 +379,7 @@ async function sendMessage() {
         text: `@IA: ${prompt}`.slice(0, CONFIG.MAX_MESSAGE_LEN),
       });
       hud.onSentMessage();
+      playTone(740, 0.05);
     } catch (e) {
       console.error(e);
       msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
@@ -300,7 +389,7 @@ async function sendMessage() {
     msgInput.value = "";
     updateCharCount();
     hud.onUsedAI();
-    msgList.addSystem("AI_THINKING...");
+    msgList.showTyping("IA");
 
     try {
       await callAI({
@@ -309,9 +398,11 @@ async function sendMessage() {
         user: currentUser,
         prompt,
       });
+      msgList.hideTyping();
       msgList.addSystem("AI_OK");
     } catch (e) {
       console.error(e);
+      msgList.hideTyping();
       msgList.addSystem(`AI_FAILED: ${e?.message || "unknown"}`);
     }
     return;
@@ -330,6 +421,7 @@ async function sendMessage() {
     updateCharCount();
     hud.onSentMessage();
     hud.addXP(1);
+    playTone(740, 0.05);
   } catch (e) {
     console.error(e);
     msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
@@ -426,6 +518,7 @@ imgInput?.addEventListener("change", async (e) => {
 
     hud.onSentMessage();
     hud.addXP(1);
+    playTone(780, 0.05);
     msgList.addSystem("IMAGE_OK");
   } catch (err) {
     console.error(err);

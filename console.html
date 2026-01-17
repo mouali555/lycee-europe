@@ -38,6 +38,10 @@
         <span id="clock" class="clock">--:--:--</span>
         <span id="terminalStatus" class="terminal">booting…</span>
 
+        <!-- Toggles UI (préférences locales) -->
+        <button id="themeToggle" class="appHeader-btn" type="button" title="Basculer thème (clair/sombre)">🌙</button>
+        <button id="soundToggle" class="appHeader-btn" type="button" title="Activer/Désactiver les sons">🔊</button>
+
         <div class="appStatusDot online" aria-hidden="true"></div>
         <div id="userTag" class="appUserTag">OFFLINE</div>
 
@@ -143,6 +147,12 @@
             </p>
           </div>
         </header>
+
+        <!-- Background decorative bubbles -->
+        <div class="chatBgBubbles" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
 
         <!-- Messages -->
         <div id="messages" class="messages"></div>
