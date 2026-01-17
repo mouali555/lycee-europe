@@ -202,6 +202,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  position: relative; /* pour le bouton "Nouveau message" */
   background: radial-gradient(circle at top center, #020617 0, #020617 50%, #000 100%);
 }
 
@@ -285,6 +286,48 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(148, 163, 184, 0.45);
   background: rgba(15, 23, 42, 0.96);
+  position: relative;
+}
+
+/* Actions (supprimer) */
+
+.msgActions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.msgRow:hover .msgActions,
+.msgRow:focus-within .msgActions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.iconBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  background: rgba(2, 6, 23, 0.55);
+  color: var(--text-main);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.iconBtn:hover {
+  border-color: rgba(79, 70, 229, 0.85);
+}
+
+.iconBtn.danger:hover {
+  border-color: rgba(248, 113, 113, 0.9);
+  color: #fecaca;
 }
 
 .meta {
@@ -455,4 +498,14 @@ body {
 
 .mini {
   font-size: 10px;
+}
+
+/* Header (console) - petits overrides mobile */
+@media (max-width: 720px) {
+  .appHeader-right .terminal {
+    display: none;
+  }
+  .appHeader-right .appUserTag {
+    display: inline-flex; /* on garde le profil visible dans la console */
+  }
 }

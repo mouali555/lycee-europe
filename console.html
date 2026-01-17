@@ -14,21 +14,34 @@
     />
 
     <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/header.css" />
     <link rel="stylesheet" href="./css/app.css" />
   </head>
   <body class="theme-dark">
-    <header class="topbar">
-      <div class="topbar-left">
-        <a href="./index.html" class="btn small ghost" style="margin-right:10px">Accueil</a>
+    <!-- Header global (même style que l'accueil) -->
+    <header class="appHeader">
+      <div class="appHeader-left">
+        <div class="appLogoDot" aria-hidden="true"></div>
+        <div class="appBrand">LYCÉE EUROPE • IA</div>
+      </div>
+
+      <div class="appHeader-center">
+        <nav class="appNav" aria-label="Navigation principale">
+          <a href="./index.html" class="appNav-link"><span>Accueil</span></a>
+          <a href="./console.html" class="appNav-link active"><span>Console IA</span></a>
+          <a href="./hub.html" class="appNav-link"><span>Projets</span></a>
+        </nav>
+      </div>
+
+      <div class="appHeader-right">
         <span id="clock" class="clock">--:--:--</span>
         <span id="terminalStatus" class="terminal">booting…</span>
-      </div>
-      <div class="topbar-right">
-        <span id="userTag" class="userTag">OFFLINE</span>
+
+        <div class="appStatusDot online" aria-hidden="true"></div>
+        <div id="userTag" class="appUserTag">OFFLINE</div>
+
         <button id="btn-login" class="btn small">Login</button>
-        <button id="btn-logout" class="btn small ghost" style="display:none">
-          Logout
-        </button>
+        <button id="btn-logout" class="btn small ghost" style="display:none">Logout</button>
       </div>
     </header>
 

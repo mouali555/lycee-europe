@@ -2,17 +2,37 @@
 import { esc } from "../core/utils.js";
 
 export class MessageList {
-  constructor({ root, newMsgBtn }) {
+  constructor({ root, newMsgBtn, onDelete }) {
     this.root = root;
     this.newMsgBtn = newMsgBtn || null;
+    this.onDelete = typeof onDelete === "function" ? onDelete : null;
     this.rendered = new Set();
+    this.nodes = new Map();
     this.firstRender = true;
   }
 
   clear() {
     this.root.innerHTML = "";
     this.rendered.clear();
+    this.nodes.clear();
     this.firstRender = true;
+  }
+
+  removeMessage(id) {
+    if (!id) return;
+    const n = this.nodes.get(id);
+    if (n && n.parentNode) n.parentNode.removeChild(n);
+    this.nodes.delete(id);
+    this.rendered.delete(id);
+  }
+
+  updateMessage(id, patch = {}) {
+    // Pour l'instant : si ça change on re-render en simple
+    // (peu utilisé, mais utile si on masque un message).
+    const n = this.nodes.get(id);
+    if (!n) return;
+    const textEl = n.querySelector(".text");
+    if (textEl && typeof patch.text === "string") textEl.textContent = patch.text;
   }
 
   isNearBottom() {
@@ -71,6 +91,8 @@ export class MessageList {
       (isAI ? " iaRow" : "") +
       (isKey ? " keyRow" : "");
 
+    row.dataset.msgId = id;
+
     // Avatar (IA utilise une image fixe)
     let finalPhoto = photoURL || null;
     if (isAI) {
@@ -90,9 +112,19 @@ export class MessageList {
         )}" loading="lazy"></div>`
       : "";
 
+    const actionsHtml =
+      me && this.onDelete
+        ? `
+          <div class="msgActions">
+            <button class="iconBtn danger" data-action="delete" title="Supprimer">🗑️</button>
+          </div>
+        `
+        : "";
+
     row.innerHTML = `
       ${avatarHTML}
       <div class="bubble">
+        ${actionsHtml}
         <div class="meta">
           <span class="name">${esc(displayName || "USER")}</span>
           ${
@@ -108,7 +140,18 @@ export class MessageList {
       </div>
     `;
 
+    // Actions
+    if (me && this.onDelete) {
+      const del = row.querySelector('[data-action="delete"]');
+      del?.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.onDelete({ id, uid, displayName, text, imageURL });
+      });
+    }
+
     this.root.appendChild(row);
+    this.nodes.set(id, row);
 
     // Premier rendu : on descend tout en bas
     if (this.firstRender) {

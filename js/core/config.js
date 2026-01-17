@@ -10,6 +10,8 @@ export const CONFIG = {
   // Firebase Functions v2 (HTTP)
   // Format: https://<region>-<project>.cloudfunctions.net/<functionName>
   AI_ENDPOINT: "https://us-central1-lycee-europe-private.cloudfunctions.net/aiReply",
+  DELETE_ENDPOINT:
+    "https://us-central1-lycee-europe-private.cloudfunctions.net/deleteMessage",
 
   // UX
   MAX_MESSAGE_LEN: 800,

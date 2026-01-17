@@ -71,9 +71,8 @@ export function subscribeRoomMessages(spaceId, roomId, onChange) {
     (snap) => {
       const changes = snap.docChanges();
       for (const ch of changes) {
-        if (ch.type === "added") {
-          onChange({ id: ch.doc.id, ...ch.doc.data() });
-        }
+        // On forward aussi "removed" pour permettre la suppression côté UI
+        onChange({ type: ch.type, id: ch.doc.id, ...ch.doc.data() });
       }
     },
     (err) => {

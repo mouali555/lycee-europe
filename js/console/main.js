@@ -17,6 +17,7 @@ import {
 } from "../services/chatService.js";
 import { callAI } from "../services/aiService.js";
 import { uploadChatImage } from "../services/uploadService.js";
+import { deleteRoomMessage } from "../services/deleteService.js";
 import { MessageList } from "../ui/messageList.js";
 import { HUD } from "../ui/hud.js";
 
@@ -96,7 +97,29 @@ function closeProfileModal() {
 }
 
 // ===== State =====
-const msgList = new MessageList({ root: messagesEl, newMsgBtn });
+const msgList = new MessageList({
+  root: messagesEl,
+  newMsgBtn,
+  onDelete: async ({ id }) => {
+    if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
+    if (!id) return;
+
+    const ok = confirm("Supprimer ce message ? (irréversible)");
+    if (!ok) return;
+
+    try {
+      await deleteRoomMessage({
+        spaceId: CONFIG.SPACE_ID,
+        roomId: CONFIG.ROOM_ID,
+        messageId: id,
+      });
+      // Firestore enverra un event "removed" et l'UI va s'actualiser.
+    } catch (e) {
+      console.error(e);
+      msgList.addSystem(`DELETE_FAILED: ${e?.code || e?.message || "unknown"}`);
+    }
+  },
+});
 
 let currentUser = null;
 let isMember = false;
@@ -144,14 +167,24 @@ function startListener() {
   msgList.clear();
   msgList.addSystem("CONNECTED");
 
-  unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (m) => {
+  unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (ev) => {
+    const type = ev?.type || "added";
+    if (type === "removed") {
+      msgList.removeMessage(ev.id);
+      return;
+    }
+    if (type === "modified") {
+      msgList.updateMessage(ev.id, { text: ev.text || "" });
+      return;
+    }
+
     msgList.appendMessage({
-      id: m.id,
-      uid: m.uid,
-      displayName: m.displayName || "USER",
-      text: m.text || "",
-      photoURL: m.photoURL || null,
-      imageURL: m.imageURL || null,
+      id: ev.id,
+      uid: ev.uid,
+      displayName: ev.displayName || "USER",
+      text: ev.text || "",
+      photoURL: ev.photoURL || null,
+      imageURL: ev.imageURL || null,
       meUid: currentUser?.uid,
     });
   });

@@ -1,0 +1,11 @@
+/* css/theme-console-dark.css
+   Fichier de compatibilité (index.html le référence).
+   Il ajoute juste une couche "dark console" sans casser le design existant. */
+
+:root{
+  --console-glow: rgba(37,99,235,.35);
+}
+
+body{
+  background: radial-gradient(circle at top left, #020617 0%, #000 55%, #020617 100%);
+}

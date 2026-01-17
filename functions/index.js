@@ -176,3 +176,120 @@ exports.aiReply = onRequest(
     }
   }
 );
+
+// ===== Delete message (texte + image) =====
+// POST { spaceId, roomId, messageId }
+// - Auth via Firebase ID token (Bearer)
+// - Autorise la suppression si:
+//   • uid === message.uid
+//   • OU membre role: admin/moderator
+
+function storagePathFromDownloadURL(url) {
+  try {
+    const s = String(url || "");
+    // Firebase Storage download URL contient "/o/<encodedPath>?..."
+    const idx = s.indexOf("/o/");
+    if (idx < 0) return null;
+    const rest = s.slice(idx + 3);
+    const q = rest.indexOf("?");
+    const encoded = q >= 0 ? rest.slice(0, q) : rest;
+    return decodeURIComponent(encoded);
+  } catch {
+    return null;
+  }
+}
+
+exports.deleteMessage = onRequest(
+  {
+    region: "us-central1",
+    cors: true,
+  },
+  async (req, res) => {
+    try {
+      if (req.method !== "POST") {
+        return sendError(res, 405, "METHOD_NOT_ALLOWED", "Only POST is allowed");
+      }
+
+      const token = extractBearerToken(req);
+      if (!token) {
+        return sendError(res, 401, "AUTH_MISSING", "Missing Authorization Bearer token");
+      }
+
+      let decoded;
+      try {
+        decoded = await admin.auth().verifyIdToken(token);
+      } catch (e) {
+        console.warn("verifyIdToken_failed", e);
+        return sendError(res, 401, "AUTH_INVALID", "Invalid Firebase ID token");
+      }
+
+      const uid = decoded.uid;
+      const body = req.body || {};
+      const spaceId = String(body.spaceId || "").trim();
+      const roomId = String(body.roomId || "").trim();
+      const messageId = String(body.messageId || "").trim();
+
+      if (!spaceId || !roomId || !messageId) {
+        return sendError(res, 400, "BAD_REQUEST", "spaceId, roomId and messageId are required");
+      }
+
+      // membership
+      const memRef = admin
+        .firestore()
+        .collection("spaces")
+        .doc(spaceId)
+        .collection("members")
+        .doc(uid);
+
+      const memSnap = await memRef.get();
+      if (!memSnap.exists) {
+        return sendError(res, 403, "ACCESS_DENIED", "User is not a member of this space");
+      }
+
+      const memRole = String(memSnap.data()?.role || "member").toLowerCase();
+      const isMod = memRole === "admin" || memRole === "moderator";
+
+      const msgRef = admin
+        .firestore()
+        .collection("spaces")
+        .doc(spaceId)
+        .collection("rooms")
+        .doc(roomId)
+        .collection("messages")
+        .doc(messageId);
+
+      const msgSnap = await msgRef.get();
+      if (!msgSnap.exists) {
+        return sendError(res, 404, "NOT_FOUND", "Message not found");
+      }
+
+      const msg = msgSnap.data() || {};
+      const ownerUid = String(msg.uid || "");
+      if (!isMod && ownerUid !== uid) {
+        return sendError(res, 403, "FORBIDDEN", "You can only delete your own messages");
+      }
+
+      // delete firestore message
+      await msgRef.delete();
+
+      // delete image from storage if present
+      const imageURL = msg.imageURL;
+      if (imageURL) {
+        const path = storagePathFromDownloadURL(imageURL);
+        if (path) {
+          try {
+            await admin.storage().bucket().file(path).delete();
+          } catch (e) {
+            // Not fatal: file might already be gone
+            console.warn("delete_storage_failed", e?.message || e);
+          }
+        }
+      }
+
+      return res.status(200).json({ ok: true });
+    } catch (e) {
+      console.error("deleteMessage_unhandled", e);
+      return sendError(res, 500, "SERVER_ERROR", "Unexpected server error");
+    }
+  }
+);
