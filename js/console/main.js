@@ -9,28 +9,35 @@ import { callAI } from "../services/aiService.js";
 import { MessageList } from "../ui/messageList.js";
 import { HUD } from "../ui/hud.js";
 
+
 // ===== DOM =====
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
+
 
 const btnLogin = document.getElementById("btn-login");
 const btnLogout = document.getElementById("btn-logout");
 const userTag = document.getElementById("userTag");
 
+
 const inviteCode = document.getElementById("inviteCode");
 const joinBtn = document.getElementById("joinBtn");
 
+
 const spaceName = document.getElementById("spaceName");
 const roomName = document.getElementById("roomName");
+
 
 const messagesEl = document.getElementById("messages");
 const newMsgBtn = document.getElementById("newMsgBtn");
 const offlineBanner = document.getElementById("offlineBanner");
 
+
 const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send");
 const iaBtn = document.getElementById("iaBtn");
 const charCount = document.getElementById("charCount");
+
 
 // Profile modal
 const profileModal = document.getElementById("profileModal");
@@ -38,6 +45,7 @@ const closeProfile = document.getElementById("closeProfile");
 const profileName = document.getElementById("profileName");
 const profileRank = document.getElementById("profileRank");
 const profileKeys = document.getElementById("profileKeys");
+
 
 // HUD
 const hud = new HUD({
@@ -52,10 +60,12 @@ const hud = new HUD({
   vaultState: document.getElementById("hudVaultState"),
 });
 
+
 // ===== UI helpers =====
 function setTerminal(text) {
   if (terminalStatus) terminalStatus.textContent = text;
 }
+
 
 function updateConnectivityUI() {
   const online = navigator.onLine !== false;
@@ -63,24 +73,29 @@ function updateConnectivityUI() {
   hud.setOnlineState(online);
 }
 
+
 function updateCharCount() {
   if (!charCount) return;
   const n = (msgInput?.value || "").length;
   charCount.textContent = `${n}/${CONFIG.MAX_MESSAGE_LEN}`;
 }
 
+
 function openProfile() {
   if (!profileModal) return;
   profileModal.setAttribute("aria-hidden", "false");
 }
+
 
 function closeProfileModal() {
   if (!profileModal) return;
   profileModal.setAttribute("aria-hidden", "true");
 }
 
+
 // ===== State =====
 const msgList = new MessageList({ root: messagesEl, newMsgBtn });
+
 
 let currentUser = null;
 let isMember = false;
@@ -88,7 +103,9 @@ let unsub = null;
 let userKeys = [];
 let userRank = "BRONZE";
 
+
 let lastSentAt = 0;
+
 
 async function refreshProfile() {
   if (!currentUser) return;
@@ -100,11 +117,13 @@ async function refreshProfile() {
   if (profileKeys) profileKeys.textContent = userKeys.length ? userKeys.join(" • ") : "Aucune clé";
 }
 
+
 async function grantKeyToMe(tier = "BRONZE") {
   const code = await grantKey(currentUser.uid, tier);
   await refreshProfile();
   msgList.addSystem(`[KEYMASTER] Nouvelle clé ajoutée : ${code}`);
 }
+
 
 async function consumeKey(codeRaw) {
   const code = String(codeRaw || "").trim().toUpperCase();
@@ -115,6 +134,7 @@ async function consumeKey(codeRaw) {
   msgList.addSystem(`[KEYMASTER] Clé utilisée : ${code} ✅`);
 }
 
+
 function startListener() {
   if (unsub) {
     unsub();
@@ -122,6 +142,7 @@ function startListener() {
   }
   msgList.clear();
   msgList.addSystem("CONNECTED");
+
 
   unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (m) => {
     msgList.appendMessage({
@@ -133,7 +154,13 @@ function startListener() {
       meUid: currentUser?.uid,
     });
   });
+
+  // Scroll en bas après chargement initial des messages
+  setTimeout(() => {
+    msgList.scrollToBottom();
+  }, 300);
 }
+
 
 async function joinFlow() {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
@@ -155,16 +182,20 @@ async function joinFlow() {
   }
 }
 
+
 async function sendMessage() {
   const raw = (msgInput?.value || "").trim();
   if (!raw) return;
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
 
+
   const now = Date.now();
   if (now - lastSentAt < CONFIG.SEND_COOLDOWN_MS) return msgList.addSystem("SLOWMODE 2.5s");
   lastSentAt = now;
 
+
   const lower = raw.toLowerCase();
+
 
   // Slash commands
   if (lower === "/help") {
@@ -176,6 +207,7 @@ async function sendMessage() {
     return;
   }
 
+
   if (lower === "/keys") {
     msgInput.value = "";
     updateCharCount();
@@ -184,6 +216,7 @@ async function sendMessage() {
     return;
   }
 
+
   if (lower.startsWith("/use ")) {
     msgInput.value = "";
     updateCharCount();
@@ -191,11 +224,13 @@ async function sendMessage() {
     return;
   }
 
+
   // IA
   if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
     if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
     const prompt = raw.slice(4).trim();
     if (!prompt) return msgList.addSystem("AI_USAGE: @ia ton message");
+
 
     // 1) log question en message Firestore
     try {
@@ -212,10 +247,12 @@ async function sendMessage() {
       return;
     }
 
+
     msgInput.value = "";
     updateCharCount();
     hud.onUsedAI();
     msgList.addSystem("AI_THINKING...");
+
 
     try {
       await callAI({
@@ -232,7 +269,9 @@ async function sendMessage() {
     return;
   }
 
+
   if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
+
 
   try {
     await sendRoomMessage(CONFIG.SPACE_ID, CONFIG.ROOM_ID, {
@@ -252,20 +291,25 @@ async function sendMessage() {
   }
 }
 
+
 // ===== Init UI =====
 if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
 if (roomName) roomName.textContent = "# " + CONFIG.ROOM_LABEL;
+
 
 setInterval(() => {
   if (clockEl) clockEl.textContent = nowStamp();
 }, 250);
 
+
 updateConnectivityUI();
 hud.render();
 updateCharCount();
 
+
 window.addEventListener("online", updateConnectivityUI);
 window.addEventListener("offline", updateConnectivityUI);
+
 
 // Buttons
 btnLogin?.addEventListener("click", async () => {
@@ -277,6 +321,7 @@ btnLogin?.addEventListener("click", async () => {
   }
 });
 
+
 btnLogout?.addEventListener("click", async () => {
   try {
     await logout();
@@ -285,11 +330,13 @@ btnLogout?.addEventListener("click", async () => {
   }
 });
 
+
 sendBtn?.addEventListener("click", sendMessage);
 msgInput?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 msgInput?.addEventListener("input", updateCharCount);
+
 
 iaBtn?.addEventListener("click", () => {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
@@ -301,8 +348,10 @@ iaBtn?.addEventListener("click", () => {
   msgInput.focus();
 });
 
+
 newMsgBtn?.addEventListener("click", () => msgList.scrollToBottom());
 joinBtn?.addEventListener("click", joinFlow);
+
 
 // Profile modal
 userTag?.addEventListener("click", async () => {
@@ -311,10 +360,12 @@ userTag?.addEventListener("click", async () => {
   openProfile();
 });
 
+
 closeProfile?.addEventListener("click", closeProfileModal);
 profileModal?.addEventListener("click", (e) => {
   if (e.target === profileModal) closeProfileModal();
 });
+
 
 // HUD claim
 document.getElementById("hudMissionClaim")?.addEventListener("click", () => {
@@ -322,10 +373,12 @@ document.getElementById("hudMissionClaim")?.addEventListener("click", () => {
   else msgList.addSystem("MISSION_LOCKED");
 });
 
+
 // ===== Auth watcher =====
 setTerminal("type: login");
 msgList.addSystem("BOOT_OK");
 msgList.addSystem("TIP: @ia <message> • /help");
+
 
 watchAuth(async (user) => {
   if (user) {
@@ -335,18 +388,23 @@ watchAuth(async (user) => {
       photoURL: user.photoURL || null,
     };
 
+
     userTag.textContent = currentUser.name;
     btnLogin.style.display = "none";
     btnLogout.style.display = "inline-block";
 
+
     msgList.addSystem("AUTH_OK: " + currentUser.name);
     msgList.addSystem("CHECKING_ACCESS...");
+
 
     await ensureUserDoc(currentUser);
     await refreshProfile();
 
+
     hud.dailyCheckin();
     hud.render();
+
 
     try {
       isMember = await checkMembership(CONFIG.SPACE_ID, currentUser.uid);
@@ -356,6 +414,7 @@ watchAuth(async (user) => {
         setTerminal("join required");
         return;
       }
+
 
       msgList.addSystem("ACCESS_OK");
       setTerminal("authenticated");
@@ -373,6 +432,7 @@ watchAuth(async (user) => {
     userKeys = [];
     userRank = "BRONZE";
 
+
     userTag.textContent = "OFFLINE";
     btnLogin.style.display = "inline-block";
     btnLogout.style.display = "none";
@@ -381,32 +441,9 @@ watchAuth(async (user) => {
       unsub = null;
     }
 
+
     msgList.clear();
     msgList.addSystem("DISCONNECTED");
     setTerminal("offline");
   }
 });
-function startListener() {
-  if (unsub) {
-    unsub();
-    unsub = null;
-  }
-  msgList.clear();
-  msgList.addSystem("CONNECTED");
-
-  unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (m) => {
-    msgList.appendMessage({
-      id: m.id,
-      uid: m.uid,
-      displayName: m.displayName || "USER",
-      text: m.text || "",
-      photoURL: m.photoURL || null,
-      meUid: currentUser?.uid,
-    });
-  });
-
-  // Scroll en bas après chargement initial
-  setTimeout(() => {
-    msgList.scrollToBottom();
-  }, 300);
-}
