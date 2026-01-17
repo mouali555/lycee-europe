@@ -7,22 +7,12 @@ export class MessageList {
     this.newMsgBtn = newMsgBtn || null;
     this.onDelete = typeof onDelete === "function" ? onDelete : null;
     this.onReact = typeof onReact === "function" ? onReact : null;
-
     this.rendered = new Set();
     this.nodes = new Map();
     this.firstRender = true;
 
     // UI state
     this.typingNode = null;
-
-    // Gestion du bouton "nouveaux messages"
-    if (this.root && this.newMsgBtn) {
-      this.newMsgBtn.style.display = "none";
-      this.root.addEventListener("scroll", () => {
-        const nearBottom = this.isNearBottom();
-        this.newMsgBtn.style.display = nearBottom ? "none" : "inline-flex";
-      });
-    }
   }
 
   /**
@@ -30,9 +20,7 @@ export class MessageList {
    * Utile pour insérer / déplacer selon l'index Firestore.
    */
   _messageNodes() {
-    return Array.from(
-      this.root.querySelectorAll(".msgRow:not(.typingRow)")
-    );
+    return Array.from(this.root.querySelectorAll('.msgRow:not(.typingRow)'));
   }
 
   /**
@@ -41,14 +29,10 @@ export class MessageList {
    */
   _insertAt(node, index = null) {
     const nodes = this._messageNodes();
-    const i =
-      typeof index === "number" && index >= 0 ? index : nodes.length;
+    const i = typeof index === 'number' && index >= 0 ? index : nodes.length;
 
     // Typing indicator doit rester en bas
-    const typing =
-      this.typingNode && this.typingNode.isConnected
-        ? this.typingNode
-        : null;
+    const typing = this.typingNode && this.typingNode.isConnected ? this.typingNode : null;
 
     if (i >= nodes.length) {
       if (typing) {
@@ -64,20 +48,6 @@ export class MessageList {
   }
 
   /**
-   * Auto-scroll helpers
-   */
-  scrollToBottom() {
-    if (!this.root) return;
-    this.root.scrollTop = this.root.scrollHeight;
-  }
-
-  isNearBottom(threshold = 120) {
-    if (!this.root) return true;
-    const { scrollTop, scrollHeight, clientHeight } = this.root;
-    return scrollHeight - (scrollTop + clientHeight) < threshold;
-  }
-
-  /**
    * Crée un noeud message (DOM) sans l'insérer.
    */
   _buildMessageNode({
@@ -90,233 +60,305 @@ export class MessageList {
     reactions,
     meUid,
   }) {
-    const row = document.createElement("div");
+    const row = document.createElement('div');
     const me = uid && meUid && uid === meUid;
-    const isAI =
-      uid === "AI_BOT" ||
-      String(displayName || "").toUpperCase() === "IA";
-    const isKey =
-      uid === "KEYMASTER" ||
-      String(displayName || "").toUpperCase() === "KEYMASTER";
+    const isAI = uid === 'AI_BOT' || String(displayName || '').toUpperCase() === 'IA';
+    const isKey = uid === 'KEYMASTER' || String(displayName || '').toUpperCase() === 'KEYMASTER';
 
     row.className =
-      "msgRow" +
-      (me ? " meRow" : "") +
-      (isAI ? " iaRow" : "") +
-      (isKey ? " keyRow" : "");
-    row.classList.add("popIn");
+      'msgRow' +
+      (me ? ' meRow' : '') +
+      (isAI ? ' iaRow' : '') +
+      (isKey ? ' keyRow' : '');
+
+    row.classList.add('popIn');
     row.dataset.msgId = id;
 
     // Avatar (IA utilise une image fixe)
     let finalPhoto = photoURL || null;
-    if (isAI) finalPhoto = "./assets/img/photoia.png";
+    if (isAI) finalPhoto = './assets/img/photoia.png';
 
     const avatarHTML = finalPhoto
-      ? `<img src="${esc(finalPhoto)}" alt="" class="avatar" />`
-      : `<div class="avatar fallback">${esc(
-          (displayName || "U")[0].toUpperCase()
-        )}</div>`;
+      ? `<img class="avatar" src="${finalPhoto}" referrerpolicy="no-referrer">`
+      : `<div class="avatar fallback">${esc((displayName?.[0] || '?').toUpperCase())}</div>`;
 
-    const name = esc(displayName || "USER");
+    const hasText = (text || '').trim().length > 0;
+    const imgHtml = imageURL
+      ? `<div class="media"><img class="msgImage" src="${esc(imageURL)}" loading="lazy"></div>`
+      : '';
 
-    const badge = isAI
-      ? `<span class="badge system">IA</span>`
-      : isKey
-      ? `<span class="badge">KEYMASTER</span>`
-      : "";
+    const actionsHtml =
+      me && this.onDelete
+        ? `
+          <div class="msgActions">
+            <button class="iconBtn danger" data-action="delete" title="Supprimer">🗑️</button>
+          </div>
+        `
+        : '';
 
-    const safeText = esc(text || "");
+    const reactionBar = `
+      <div class="reactionBar" aria-hidden="true">
+        <button class="reactBtn" data-react="👍" title="Réagir : 👍">👍</button>
+        <button class="reactBtn" data-react="❤️" title="Réagir : ❤️">❤️</button>
+        <button class="reactBtn" data-react="😂" title="Réagir : 😂">😂</button>
+      </div>
+      <div class="reactionChips" aria-hidden="true"></div>
+    `;
 
-    const imgHTML = imageURL
-      ? `<div class="media"><img src="${esc(
-          imageURL
-        )}" class="msgImage" alt="Image envoyée" loading="lazy"></div>`
-      : "";
-
-    // Reactions chips
-    const reactionChips = this._buildReactionChips(reactions, meUid, id);
     row.innerHTML = `
       ${avatarHTML}
       <div class="bubble">
+        ${actionsHtml}
+        ${reactionBar}
         <div class="meta">
-          <span class="name">${name}</span>
-          ${badge}
-        </div>
-        <div class="text">${safeText}</div>
-        ${imgHTML}
-        ${reactionChips}
-        <div class="msgActions">
+          <span class="name">${esc(displayName || 'USER')}</span>
           ${
-            this.onReact
-              ? `<button class="iconBtn reactToggle" type="button" aria-label="Réagir">😊</button>`
-              : ""
-          }
-          ${
-            this.onDelete
-              ? `<button class="iconBtn danger deleteMsg" type="button" aria-label="Supprimer">✕</button>`
-              : ""
+            isAI
+              ? `<span class="badge">🤖 IA</span>`
+              : isKey
+              ? `<span class="badge">🔑 KEY</span>`
+              : ''
           }
         </div>
-        ${
-          this.onReact
-            ? `<div class="reactionBar">
-                 <button class="reactBtn" data-emoji="👍">👍</button>
-                 <button class="reactBtn" data-emoji="🔥">🔥</button>
-                 <button class="reactBtn" data-emoji="💡">💡</button>
-                 <button class="reactBtn" data-emoji="❤️">❤️</button>
-               </div>`
-            : ""
-        }
+        ${hasText ? `<div class="text">${esc(text || '')}</div>` : ''}
+        ${imgHtml}
       </div>
     `;
 
-    // Hooks boutons
-    if (this.onDelete) {
-      const btn = row.querySelector(".deleteMsg");
-      if (btn) {
-        btn.addEventListener("click", () => {
-          this.onDelete({ id });
-        });
-      }
+    // Delete
+    if (me && this.onDelete) {
+      const del = row.querySelector('[data-action="delete"]');
+      del?.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        this.onDelete({ id, uid, displayName, text, imageURL });
+      });
     }
 
-    if (this.onReact) {
-      const toggle = row.querySelector(".reactToggle");
-      const bar = row.querySelector(".reactionBar");
+    // Reactions
+    row.querySelectorAll('.reactBtn').forEach((b) => {
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const em = b.getAttribute('data-react');
+        if (!em) return;
+        if (this.onReact) this.onReact({ id, emoji: em });
+      });
+    });
 
-      if (toggle && bar) {
-        toggle.addEventListener("click", () => {
-          const isOpen = bar.style.opacity === "1";
-          bar.style.opacity = isOpen ? "0" : "1";
-          bar.style.pointerEvents = isOpen ? "none" : "auto";
-          bar.style.transform = isOpen ? "translateY(6px)" : "translateY(0)";
-        });
-
-        bar.querySelectorAll(".reactBtn").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const emoji = btn.dataset.emoji;
-            if (!emoji) return;
-            this.onReact({ id, emoji });
-          });
-        });
-      }
-    }
+    // First reactions state
+    this._renderReactions(row, reactions || {}, meUid);
 
     return row;
   }
 
-  _buildReactionChips(reactions = {}, meUid, msgId) {
-    const entries = Object.entries(reactions);
-    if (!entries.length) return `<div class="reactionChips"></div>`;
+  /**
+   * Upsert + place un message à l'index Firestore (résout le bug serverTimestamp -> index 0).
+   */
+  upsertMessage(payload, index = null) {
+    const { id } = payload || {};
+    if (!id) return;
 
-    const chips = entries
-      .map(([emoji, users]) => {
-        const count = Array.isArray(users) ? users.length : 0;
-        if (!count) return "";
-        const mine = meUid && Array.isArray(users) && users.includes(meUid);
-        const cls = mine ? "chip mine" : "chip";
-        return `<span class="${cls}" data-emoji="${esc(
-          emoji
-        )}" data-msgid="${esc(msgId)}">${esc(emoji)} <span>${count}</span></span>`;
-      })
-      .filter(Boolean)
-      .join("");
+    const wasAtBottom = this.isNearBottom();
 
-    return `<div class="reactionChips" style="display:flex;">${chips}</div>`;
-  }
+    // Existing node
+    const existing = this.nodes.get(id);
+    if (existing) {
+      // Reposition si l'index a changé
+      if (typeof index === 'number' && index >= 0) {
+        const nodes = this._messageNodes();
+        const currentIndex = nodes.indexOf(existing);
+        if (currentIndex !== -1 && currentIndex !== index) {
+          this._insertAt(existing, index);
+        }
+      }
 
-  addSystem(text) {
-    if (!this.root) return;
-    const div = document.createElement("div");
-    div.className = "msg sys";
-    div.textContent = text;
-    this.root.appendChild(div);
-    this.scrollToBottom();
+      // Patch content
+      this.updateMessage(id, {
+        text: typeof payload.text === 'string' ? payload.text : undefined,
+        reactions: payload.reactions || {},
+        meUid: payload.meUid || null,
+      });
+
+      if (wasAtBottom) this.scrollToBottom();
+      else this.showNewMsgBtn();
+
+      return;
+    }
+
+    // New node
+    const node = this._buildMessageNode(payload);
+    this._insertAt(node, index);
+    this.nodes.set(id, node);
+    this.rendered.add(id);
+
+    // Premier rendu : on descend tout en bas
+    if (this.firstRender) {
+      this.firstRender = false;
+      this.scrollToBottom();
+      return;
+    }
+
+    if (wasAtBottom) this.scrollToBottom();
+    else this.showNewMsgBtn();
   }
 
   clear() {
-    if (!this.root) return;
     this.root.innerHTML = "";
     this.rendered.clear();
     this.nodes.clear();
-    this.typingNode = null;
     this.firstRender = true;
   }
 
   removeMessage(id) {
-    const node = this.nodes.get(id);
-    if (node && node.parentNode) {
-      node.parentNode.removeChild(node);
-    }
+    if (!id) return;
+    const n = this.nodes.get(id);
+    if (n && n.parentNode) n.parentNode.removeChild(n);
     this.nodes.delete(id);
     this.rendered.delete(id);
   }
-  upsertMessage(payload, newIndex = null) {
-    if (!this.root) return;
 
-    const { id } = payload;
-    if (!id) return;
+  updateMessage(id, patch = {}) {
+    // Pour l'instant : si ça change on re-render en simple
+    // (peu utilisé, mais utile si on masque un message).
+    const n = this.nodes.get(id);
+    if (!n) return;
+    const textEl = n.querySelector(".text");
+    if (textEl && typeof patch.text === "string") textEl.textContent = patch.text;
 
-    const shouldStick = this.isNearBottom();
+    // Live reactions update (Firestore)
+    if (patch.reactions) {
+      this._renderReactions(n, patch.reactions, patch.meUid);
+    }
+  }
 
-    let node = this.nodes.get(id);
-    if (!node) {
-      node = this._buildMessageNode(payload);
-      this.nodes.set(id, node);
-      this._insertAt(node, newIndex);
-    } else {
-      const newNode = this._buildMessageNode(payload);
-      this.nodes.set(id, newNode);
-      this.root.replaceChild(newNode, node);
-      node = newNode;
-      if (typeof newIndex === "number") {
-        this._insertAt(node, newIndex);
-      }
+  _renderReactions(rowNode, reactions = {}, meUid = null) {
+    const chips = rowNode?.querySelector(".reactionChips");
+    if (!chips) return;
+
+    // reactions: { like: [uid], love:[uid], laugh:[uid] }
+    const map = {
+      like: "👍",
+      love: "❤️",
+      laugh: "😂",
+    };
+
+    const items = [];
+    for (const [key, emoji] of Object.entries(map)) {
+      const arr = Array.isArray(reactions?.[key]) ? reactions[key] : [];
+      if (arr.length) items.push({ key, emoji, count: arr.length, mine: !!(meUid && arr.includes(meUid)) });
     }
 
-    this.rendered.add(id);
+    chips.innerHTML = "";
+    if (!items.length) {
+      chips.style.display = "none";
+      return;
+    }
+    chips.style.display = "flex";
 
-    // Auto-scroll si l'utilisateur était en bas
-    if (shouldStick || this.firstRender) {
-      this.scrollToBottom();
+    for (const it of items) {
+      const el = document.createElement("span");
+      el.className = "chip" + (it.mine ? " mine" : "");
+      el.textContent = `${it.emoji} ${it.count}`;
+      chips.appendChild(el);
     }
 
-    this.firstRender = false;
+    // Highlight active buttons
+    rowNode.querySelectorAll(".reactBtn").forEach((b) => {
+      const em = b.getAttribute("data-react");
+      const key = em === "👍" ? "like" : em === "❤️" ? "love" : em === "😂" ? "laugh" : null;
+      if (!key) return;
+      const arr = Array.isArray(reactions?.[key]) ? reactions[key] : [];
+      b.classList.toggle("active", !!(meUid && arr.includes(meUid)));
+    });
+  }
+
+  isNearBottom() {
+    const el = this.root;
+    if (!el) return true;
+    if (el.scrollHeight <= el.clientHeight + 4) return true;
+    const dist = el.scrollHeight - el.scrollTop - el.clientHeight;
+    return dist < 80;
+  }
+
+  scrollToBottom() {
+    const el = this.root;
+    el.scrollTop = el.scrollHeight;
+    if (this.newMsgBtn) this.newMsgBtn.style.display = "none";
+  }
+
+  showNewMsgBtn() {
+    if (!this.newMsgBtn) return;
+    this.newMsgBtn.style.display = "inline-block";
+  }
+
+  addSystem(text) {
+    const div = document.createElement("div");
+    div.className = "msg sys";
+    div.innerHTML = `<span class="system">[SYSTEM]</span> ${esc(text)}`;
+    this.root.appendChild(div);
+    this.scrollToBottom();
   }
 
   showTyping(label = "IA") {
-    if (!this.root) return;
+    // Avoid duplicates
     if (this.typingNode && this.typingNode.isConnected) return;
 
     const row = document.createElement("div");
-    row.className = "msgRow typingRow";
+    row.className = "msgRow iaRow typingRow popIn";
+
+    // Keep avatar path relative to the HTML entry (static hosting friendly)
+    const avatarHTML = `<img class="avatar" src="./assets/img/photoia.png" referrerpolicy="no-referrer">`;
+
     row.innerHTML = `
-      <div class="avatar fallback">…</div>
+      ${avatarHTML}
       <div class="bubble">
         <div class="meta">
           <span class="name">${esc(label)}</span>
-          <span class="badge system">typing</span>
+          <span class="badge">🤖 IA</span>
         </div>
-        <div class="typingDots">
+        <div class="typingDots" aria-label="En train d'écrire">
           <i></i><i></i><i></i>
         </div>
       </div>
     `;
-    this.typingNode = row;
+
     this.root.appendChild(row);
+    this.typingNode = row;
     this.scrollToBottom();
   }
 
   hideTyping() {
-    if (this.typingNode && this.typingNode.parentNode) {
-      this.typingNode.parentNode.removeChild(this.typingNode);
-    }
+    if (!this.typingNode) return;
+    try {
+      this.typingNode.remove();
+    } catch {}
     this.typingNode = null;
   }
 
-  scrollIntoView(id) {
-    const node = this.nodes.get(id);
-    if (!node) return;
-    node.scrollIntoView({ behavior: "smooth", block: "center" });
+  async appendMessage({
+    id,
+    uid,
+    displayName,
+    text,
+    photoURL,
+    imageURL,
+    reactions,
+    meUid,
+  }) {
+    // Backward-compatible : append simple
+    this.upsertMessage(
+      {
+        id,
+        uid,
+        displayName,
+        text,
+        photoURL,
+        imageURL,
+        reactions,
+        meUid,
+      },
+      null
+    );
   }
 }

@@ -1,4 +1,5 @@
 // js/console/main.js — console XPCHAT + upload image
+
 import { CONFIG } from "../core/config.js";
 import { nowStamp } from "../core/utils.js";
 import { loginGoogle, logout, watchAuth } from "../services/authService.js";
@@ -140,16 +141,16 @@ const msgList = new MessageList({
       playTone(660, 0.04);
     } catch (e) {
       console.error(e);
-      msgList.addSystem(
-        `REACTION_FAILED: ${e?.code || e?.message || "unknown"}`
-      );
+      msgList.addSystem(`REACTION_FAILED: ${e?.code || e?.message || "unknown"}`);
     }
   },
   onDelete: async ({ id }) => {
     if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
     if (!id) return;
+
     const ok = confirm("Supprimer ce message ? (irréversible)");
     if (!ok) return;
+
     try {
       await deleteRoomMessage({
         spaceId: CONFIG.SPACE_ID,
@@ -159,9 +160,7 @@ const msgList = new MessageList({
       // Firestore enverra un event "removed" et l'UI va s'actualiser.
     } catch (e) {
       console.error(e);
-      msgList.addSystem(
-        `DELETE_FAILED: ${e?.code || e?.message || "unknown"}`
-      );
+      msgList.addSystem(`DELETE_FAILED: ${e?.code || e?.message || "unknown"}`);
     }
   },
 });
@@ -189,24 +188,21 @@ function applyTheme(theme) {
   const t = theme === "light" ? "light" : "dark";
   document.documentElement.dataset.theme = t;
   const willGoTo = t === "light" ? "dark" : "light";
-  if (themeToggle)
-    themeToggle.textContent = willGoTo === "light" ? "☀️" : "🌙";
+  if (themeToggle) themeToggle.textContent = willGoTo === "light" ? "☀️" : "🌙";
   setPref(PREF_THEME, t);
 }
 
 let soundEnabled = getPref(PREF_SOUND, "1") === "1";
 
 function applySoundUI() {
-  if (soundToggle)
-    soundToggle.textContent = soundEnabled ? "🔊" : "🔇";
+  if (soundToggle) soundToggle.textContent = soundEnabled ? "🔊" : "🔇";
   setPref(PREF_SOUND, soundEnabled ? "1" : "0");
 }
 
 function playTone(freq = 520, dur = 0.06) {
   if (!soundEnabled) return;
   try {
-    const Ctx = window.AudioContext || window.webkitAudioContext;
-    const ctx = new Ctx();
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const o = ctx.createOscillator();
     const g = ctx.createGain();
     o.type = "sine";
@@ -223,12 +219,7 @@ function playTone(freq = 520, dur = 0.06) {
 }
 
 // Init preferences
-applyTheme(
-  getPref(
-    PREF_THEME,
-    document.documentElement.dataset.theme || "dark"
-  )
-);
+applyTheme(getPref(PREF_THEME, document.documentElement.dataset.theme || systemTheme()));
 applySoundUI();
 
 themeToggle?.addEventListener("click", () => {
@@ -248,7 +239,52 @@ let isMember = false;
 let unsub = null;
 let userKeys = [];
 let userRank = "BRONZE";
+
 let lastSentAt = 0;
+
+// ===== Scroll behavior =====
+// Objectif UX: on arrive toujours en bas du chat, et on reste en bas tant que
+// l'utilisateur n'a pas volontairement scrollé vers le haut.
+//
+// Problèmes résolus :
+// - Batch initial Firestore (beaucoup de "added") => sans stick forcé, on reste en haut.
+// - Envoi d'un message => on veut revenir en bas immédiatement.
+
+let userScrolledUp = false;
+let stickToBottomUntil = 0;
+
+function stickToBottom(ms = 0) {
+  userScrolledUp = false;
+  if (ms > 0) stickToBottomUntil = Date.now() + ms;
+}
+
+function shouldStickNow() {
+  if (Date.now() < stickToBottomUntil) return true;
+  return !userScrolledUp;
+}
+
+function scrollBottomNextFrame() {
+  // Double RAF = fiable même quand Firestore injecte 100 nodes d'un coup.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      msgList.scrollToBottom();
+    });
+  });
+}
+
+// L'utilisateur scroll ? on désactive le stick si il remonte.
+messagesEl?.addEventListener(
+  "scroll",
+  () => {
+    const near = msgList.isNearBottom();
+    userScrolledUp = !near;
+    if (near) {
+      // cache le bouton "nouveau message"
+      msgList.scrollToBottom();
+    }
+  },
+  { passive: true }
+);
 
 // ===== Profile / Keys =====
 async function refreshProfile() {
@@ -256,7 +292,6 @@ async function refreshProfile() {
   const p = await getProfile(currentUser.uid);
   userKeys = p.keys || [];
   userRank = p.rank || "BRONZE";
-
   if (profileName) profileName.textContent = currentUser.name;
   if (profileRank) profileRank.textContent = userRank;
   if (profileKeys)
@@ -273,87 +308,85 @@ async function grantKeyToMe(tier = "BRONZE") {
 
 async function consumeKey(codeRaw) {
   const code = String(codeRaw || "").trim().toUpperCase();
-  if (!code) return msgList.addSystem("USAGE: /use ");
-  if (!userKeys.includes(code))
-    return msgList.addSystem("[KEYMASTER] Clé introuvable.");
+  if (!code) return msgList.addSystem("USAGE: /use <clé>");
+  if (!userKeys.includes(code)) return msgList.addSystem("[KEYMASTER] Clé introuvable.");
   await removeKey(currentUser.uid, code);
   await refreshProfile();
   msgList.addSystem(`[KEYMASTER] Clé utilisée : ${code} ✅`);
 }
+
 // ===== Messages listener =====
 function startListener() {
   if (unsub) {
     unsub();
     unsub = null;
   }
-
   msgList.clear();
   msgList.addSystem("CONNECTED");
 
-  unsub = subscribeRoomMessages(
-    CONFIG.SPACE_ID,
-    CONFIG.ROOM_ID,
-    (ev) => {
-      const type = ev?.type || "added";
+  // Pendant le chargement initial Firestore, on force le stick-to-bottom (sinon
+  // tu restes bloqué en haut et tu dois redescendre à la main).
+  stickToBottom(1600);
 
-      if (type === "removed") {
-        msgList.removeMessage(ev.id);
-        return;
-      }
-
-      // Payload normalisé pour l'UI
-      const payload = {
-        id: ev.id,
-        uid: ev.uid,
-        displayName: ev.displayName || "USER",
-        text: ev.text || "",
-        photoURL: ev.photoURL || null,
-        imageURL: ev.imageURL || null,
-        reactions: ev.reactions || {},
-        meUid: currentUser?.uid || null,
-      };
-
-      const newIndex =
-        typeof ev?.newIndex === "number" ? ev.newIndex : null;
-
-      const isAI =
-        ev?.uid === "AI_BOT" ||
-        String(ev?.displayName || "").toUpperCase() === "IA";
-
-      if (isAI) msgList.hideTyping();
-
-      const shouldStick = msgList.isNearBottom();
-
-      // Modified : update + reposition only (no SFX)
-      if (type === "modified") {
-        msgList.upsertMessage(payload, newIndex);
-        if (shouldStick) msgList.scrollToBottom();
-        return;
-      }
-
-      // Added : insert + SFX (receive only)
-      msgList.upsertMessage(payload, newIndex);
-
-      // SFX: receive message (not mine)
-      if (
-        type === "added" &&
-        ev?.uid &&
-        currentUser?.uid &&
-        ev.uid !== currentUser.uid
-      ) {
-        playTone(isAI ? 680 : 560, 0.045);
-      }
-
-      if (shouldStick) {
-        msgList.scrollToBottom();
-      }
+  unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (ev) => {
+    const type = ev?.type || "added";
+    if (type === "removed") {
+      msgList.removeMessage(ev.id);
+      return;
     }
-  );
+    // Payload normalisé pour l'UI
+    const payload = {
+      id: ev.id,
+      uid: ev.uid,
+      displayName: ev.displayName || "USER",
+      text: ev.text || "",
+      photoURL: ev.photoURL || null,
+      imageURL: ev.imageURL || null,
+      reactions: ev.reactions || {},
+      meUid: currentUser?.uid || null,
+    };
 
-  // Premier chargement : on force le bas après quelques ms
-  setTimeout(() => {
-    msgList.scrollToBottom();
-  }, 300);
+    // Fix ordering : Firestore peut réordonner un doc quand serverTimestamp se résout.
+    // on utilise newIndex (si fourni) pour insérer / déplacer au bon endroit.
+    const newIndex = typeof ev?.newIndex === "number" ? ev.newIndex : null;
+
+    const isAI =
+      ev?.uid === "AI_BOT" || String(ev?.displayName || "").toUpperCase() === "IA";
+
+    // Hide typing when the AI response lands
+    if (isAI) msgList.hideTyping();
+
+    // Auto-stick: si l'utilisateur est en bas (ou pendant le boot), on reste en bas.
+    const stick = shouldStickNow() || msgList.isNearBottom();
+
+    // Modified : update + reposition only (no SFX)
+    if (type === "modified") {
+      msgList.upsertMessage(payload, newIndex);
+      if (stick) scrollBottomNextFrame();
+      else msgList.showNewMsgBtn?.();
+      return;
+    }
+
+    // Added : insert + SFX (receive only)
+    msgList.upsertMessage(payload, newIndex);
+
+    // Si c'est ton message, on force le stick (évite le "jump" quand Firestore
+    // applique l'event après le clic).
+    if (type === "added" && ev?.uid && currentUser?.uid && ev.uid === currentUser.uid) {
+      stickToBottom(900);
+    }
+
+    // SFX: receive message (not mine)
+    if (type === "added" && ev?.uid && currentUser?.uid && ev.uid !== currentUser.uid) {
+      playTone(isAI ? 680 : 560, 0.045);
+    }
+
+    if (stick) scrollBottomNextFrame();
+    else msgList.showNewMsgBtn?.();
+  });
+
+  // Safety: même si le réseau est lent, on descend en bas après montage.
+  scrollBottomNextFrame();
 }
 
 // ===== Join via invite =====
@@ -361,11 +394,7 @@ async function joinFlow() {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
   const code = inviteCode?.value || "";
   try {
-    const r = await joinWithInvite(
-      CONFIG.SPACE_ID,
-      code,
-      currentUser
-    );
+    const r = await joinWithInvite(CONFIG.SPACE_ID, code, currentUser);
     isMember = true;
     msgList.addSystem(r.already ? "ALREADY_MEMBER" : "INVITE_OK");
     if (!r.already) {
@@ -376,9 +405,7 @@ async function joinFlow() {
     setTerminal("authenticated");
     startListener();
   } catch (e) {
-    msgList.addSystem(
-      `INVITE_FAILED: ${e?.message || "unknown"}`
-    );
+    msgList.addSystem(`INVITE_FAILED: ${e?.message || "unknown"}`);
   }
 }
 
@@ -399,7 +426,9 @@ async function sendMessage() {
   if (lower === "/help") {
     msgInput.value = "";
     updateCharCount();
-    msgList.addSystem("COMMANDS: /help • /keys • /use • @ia ");
+    msgList.addSystem(
+      "COMMANDS: /help • /keys • /use <key> • @ia <prompt>"
+    );
     return;
   }
 
@@ -424,31 +453,27 @@ async function sendMessage() {
 
   // IA
   if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
-    if (!isMember)
-      return msgList.addSystem(
-        "ACCESS_DENIED: invite required"
-      );
+    if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
     const prompt = raw.slice(4).trim();
-    if (!prompt)
-      return msgList.addSystem("AI_USAGE: @ia ton message");
+    if (!prompt) return msgList.addSystem("AI_USAGE: @ia ton message");
 
     try {
       await sendRoomMessage(CONFIG.SPACE_ID, CONFIG.ROOM_ID, {
         uid: currentUser.uid,
         displayName: currentUser.name,
         photoURL: currentUser.photoURL || null,
-        text: `@IA: ${prompt}`.slice(
-          0,
-          CONFIG.MAX_MESSAGE_LEN
-        ),
+        text: `@IA: ${prompt}`.slice(0, CONFIG.MAX_MESSAGE_LEN),
       });
+
+      // UX: après envoi, on revient en bas immédiatement.
+      stickToBottom(900);
+      scrollBottomNextFrame();
+
       hud.onSentMessage();
       playTone(740, 0.05);
     } catch (e) {
       console.error(e);
-      msgList.addSystem(
-        `SEND_FAILED: ${e?.code || e?.message || "unknown"}`
-      );
+      msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
       return;
     }
 
@@ -469,19 +494,12 @@ async function sendMessage() {
     } catch (e) {
       console.error(e);
       msgList.hideTyping();
-      msgList.addSystem(
-        `AI_FAILED: ${e?.message || "unknown"}`
-      );
+      msgList.addSystem(`AI_FAILED: ${e?.message || "unknown"}`);
     }
-
     return;
   }
 
-  // Message normal
-  if (!isMember)
-    return msgList.addSystem(
-      "ACCESS_DENIED: invite required"
-    );
+  if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
 
   try {
     await sendRoomMessage(CONFIG.SPACE_ID, CONFIG.ROOM_ID, {
@@ -490,6 +508,11 @@ async function sendMessage() {
       photoURL: currentUser.photoURL || null,
       text: raw.slice(0, CONFIG.MAX_MESSAGE_LEN),
     });
+
+    // UX: après envoi, on reste en bas.
+    stickToBottom(900);
+    scrollBottomNextFrame();
+
     msgInput.value = "";
     updateCharCount();
     hud.onSentMessage();
@@ -497,11 +520,10 @@ async function sendMessage() {
     playTone(740, 0.05);
   } catch (e) {
     console.error(e);
-    msgList.addSystem(
-      `SEND_FAILED: ${e?.code || e?.message || "unknown"}`
-    );
+    msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
   }
 }
+
 // ===== Init UI =====
 if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
 if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
@@ -523,10 +545,7 @@ btnLogin?.addEventListener("click", async () => {
     await loginGoogle();
   } catch (e) {
     console.error(e);
-    msgList.addSystem(
-      "AUTH_FAILED: " +
-        (e?.code || e?.message || "unknown")
-    );
+    msgList.addSystem("AUTH_FAILED: " + (e?.code || e?.message || "unknown"));
   }
 });
 
@@ -565,13 +584,11 @@ imgBtn?.addEventListener("click", () => {
 imgInput?.addEventListener("change", async (e) => {
   const file = e.target.files?.[0];
   if (!file) return;
-
   if (!currentUser) {
     msgList.addSystem("AUTH_REQUIRED.");
     imgInput.value = "";
     return;
   }
-
   if (!isMember) {
     msgList.addSystem("ACCESS_DENIED: invite required");
     imgInput.value = "";
@@ -579,7 +596,6 @@ imgInput?.addEventListener("change", async (e) => {
   }
 
   msgList.addSystem("UPLOAD_IMAGE...");
-
   try {
     const url = await uploadChatImage({
       spaceId: CONFIG.SPACE_ID,
@@ -596,6 +612,10 @@ imgInput?.addEventListener("change", async (e) => {
       imageURL: url,
     });
 
+    // UX: image envoyée => on revient en bas
+    stickToBottom(900);
+    scrollBottomNextFrame();
+
     hud.onSentMessage();
     hud.addXP(1);
     playTone(780, 0.05);
@@ -611,7 +631,10 @@ imgInput?.addEventListener("change", async (e) => {
 });
 
 // Misc
-newMsgBtn?.addEventListener("click", () => msgList.scrollToBottom());
+newMsgBtn?.addEventListener("click", () => {
+  stickToBottom(800);
+  scrollBottomNextFrame();
+});
 joinBtn?.addEventListener("click", joinFlow);
 
 // Profile modal
@@ -627,18 +650,15 @@ profileModal?.addEventListener("click", (e) => {
 });
 
 // HUD claim
-document
-  .getElementById("hudMissionClaim")
-  ?.addEventListener("click", () => {
-    if (hud.claimMission())
-      msgList.addSystem("MISSION_OK: +XP ✅");
-    else msgList.addSystem("MISSION_LOCKED");
-  });
+document.getElementById("hudMissionClaim")?.addEventListener("click", () => {
+  if (hud.claimMission()) msgList.addSystem("MISSION_OK: +XP ✅");
+  else msgList.addSystem("MISSION_LOCKED");
+});
 
 // ===== Auth watcher =====
 setTerminal("type: login");
 msgList.addSystem("BOOT_OK");
-msgList.addSystem("TIP: @ia • /help");
+msgList.addSystem("TIP: @ia <message> • /help");
 
 watchAuth(async (user) => {
   if (user) {
@@ -655,15 +675,15 @@ watchAuth(async (user) => {
     msgList.addSystem("AUTH_OK: " + currentUser.name);
     msgList.addSystem("CHECKING_ACCESS...");
 
+    // Si Firestore rencontre un souci (permissions / offline / mismatch libs),
+    // on évite de bloquer toute la console sur "CHECKING_ACCESS...".
     try {
       await ensureUserDoc(currentUser);
       await refreshProfile();
     } catch (e) {
       console.error("Profile init failed:", e);
       msgList.addSystem(
-        `PROFILE_INIT_FAILED: ${
-          e?.message || "unknown"
-        } (tu peux quand même tenter l'invite)`
+        `PROFILE_INIT_FAILED: ${e?.message || "unknown"} (tu peux quand même tenter l'invite)`
       );
     }
 
@@ -671,10 +691,7 @@ watchAuth(async (user) => {
     hud.render();
 
     try {
-      isMember = await checkMembership(
-        CONFIG.SPACE_ID,
-        currentUser.uid
-      );
+      isMember = await checkMembership(CONFIG.SPACE_ID, currentUser.uid);
       if (!isMember) {
         msgList.clear();
         msgList.addSystem("ACCESS_DENIED: invite required");
@@ -701,7 +718,6 @@ watchAuth(async (user) => {
     userTag.textContent = "OFFLINE";
     btnLogin.style.display = "inline-block";
     btnLogout.style.display = "none";
-
     if (unsub) {
       unsub();
       unsub = null;
