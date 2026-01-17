@@ -1,121 +1,60 @@
 /*
-  XP Midnight — Premium Windows vibe
-  This file overrides the terminal theme without breaking the existing layout.
+  XP Midnight — Skin doux sur le thème dark
+  Allège juste quelques composants (boutons, panels) sans casser la palette.
 */
 
+/* Accent léger */
 :root{
-  --xp-bg: #07121f;
-  --xp-bg-2: #0b1b2e;
-  --xp-win: rgba(210, 220, 235, 0.92);
-  --xp-win-2: rgba(235, 240, 248, 0.92);
-  --xp-border-dark: rgba(0,0,0,0.35);
-  --xp-border-light: rgba(255,255,255,0.75);
-  --xp-text: rgba(255,255,255,0.92);
-  --xp-text-dim: rgba(255,255,255,0.72);
-  --xp-ink: rgba(16,22,28,0.92);
-  --xp-accent: #3b82f6; /* electric blue */
-  --xp-accent-2: #16a34a; /* terminal green */
-  --xp-danger: #ef4444;
-  --xp-shadow: 0 18px 48px rgba(0,0,0,0.45);
-  --xp-radius: 14px;
-  --xp-radius-sm: 10px;
+  --xp-radius: 18px;
+  --xp-radius-sm: 12px;
 }
 
-html, body{
-  background: radial-gradient(1200px 600px at 20% 10%, rgba(59,130,246,0.12), transparent 60%),
-              radial-gradient(900px 500px at 80% 10%, rgba(22,163,74,0.08), transparent 55%),
-              linear-gradient(180deg, var(--xp-bg), #050b13);
-  color: var(--xp-text);
-}
-
-/* soften CRT overlays so the XP vibe stays premium */
-#scanlines{ opacity: .12 !important; }
-#noise{ opacity: .06 !important; }
-#vignette{ opacity: .45 !important; }
-
-/* Brand accent */
-.accent{ color: var(--xp-accent) !important; }
-
-/* Base elements */
-a{ color: rgba(147,197,253,.95); }
-a:hover{ color: #fff; }
-
-code{
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 8px;
-  padding: 2px 6px;
-}
-
-/* Buttons */
+/* Boutons : un peu plus “soft glass” */
 .btn{
-  border-radius: 12px !important;
-  border: 1px solid rgba(255,255,255,0.18) !important;
-  background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08)) !important;
-  color: rgba(255,255,255,0.94) !important;
+  border-radius: var(--xp-radius-sm) !important;
   box-shadow: 0 10px 26px rgba(0,0,0,0.32);
-  transition: transform .08s ease, filter .12s ease, box-shadow .12s ease;
 }
+
 .btn:hover{
-  filter: brightness(1.07);
   box-shadow: 0 16px 40px rgba(0,0,0,0.42);
-  transform: translateY(-1px);
-}
-.btn:active{
-  transform: translateY(0px);
-  filter: brightness(.98);
 }
 
 .btn.danger{
-  background: linear-gradient(180deg, rgba(239,68,68,0.26), rgba(239,68,68,0.14)) !important;
-  border-color: rgba(239,68,68,0.35) !important;
+  /* garde les couleurs du thème principal, on ne touche pas */
 }
 
 .btn.ghost{
-  background: transparent !important;
-  border-color: rgba(255,255,255,0.18) !important;
   box-shadow: none;
 }
 
 /* Inputs */
 .input{
-  border-radius: 12px !important;
-  background: rgba(255,255,255,0.10) !important;
-  border: 1px solid rgba(255,255,255,0.18) !important;
-  color: rgba(255,255,255,0.95) !important;
-}
-.input::placeholder{ color: rgba(255,255,255,0.55) !important; }
-.input:focus{
-  outline: none;
-  border-color: rgba(59,130,246,0.60) !important;
-  box-shadow: 0 0 0 4px rgba(59,130,246,0.16);
+  border-radius: var(--xp-radius-sm) !important;
 }
 
-/* Panels */
+/* Panels : coins un peu plus arrondis + léger blur */
 .panel{
   border-radius: var(--xp-radius) !important;
-  border: 1px solid rgba(255,255,255,0.14) !important;
-  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06)) !important;
-  box-shadow: var(--xp-shadow);
   backdrop-filter: blur(10px);
 }
+
+/* Titres de panel légèrement plus lisibles */
 .panelTitle{
   letter-spacing: .08em;
-  color: rgba(255,255,255,0.82) !important;
 }
 
 /* Modal */
 .modalCard{
   border-radius: var(--xp-radius) !important;
-  border: 1px solid rgba(255,255,255,0.18) !important;
-  background: linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.07)) !important;
   box-shadow: 0 30px 80px rgba(0,0,0,0.55);
 }
 
 /* Status + tags */
 .userTag{
-  background: rgba(255,255,255,0.08) !important;
-  border: 1px solid rgba(255,255,255,0.16) !important;
+  border-radius: 999px !important;
 }
 
-.mini{ color: var(--xp-text-dim) !important; }
+/* Texte secondaire un peu adouci */
+.mini{
+  opacity: .8;
+}

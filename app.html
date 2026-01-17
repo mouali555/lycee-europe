@@ -5,108 +5,26 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>LYCÉE EUROPE — Console</title>
 
-  <!-- ✅ app.html est conservé pour compat / anciens liens -->
+  <!-- Redirection immédiate vers la nouvelle console -->
   <meta http-equiv="refresh" content="0; url=./console.html" />
 
-  <!-- CSS -->
   <link rel="stylesheet" href="./css/base.css" />
-  <link rel="stylesheet" href="./css/theme-terminal.css" />
   <link rel="stylesheet" href="./css/app.css" />
 </head>
 
 <body>
-  <!-- CRT overlays (optionnel, liés à ton theme-terminal.css) -->
-  <div id="crt-screen"></div>
-  <div id="scanlines"></div>
-  <div id="vignette"></div>
-  <div id="noise"></div>
-
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <div class="left">
-      <div class="dot" aria-hidden="true"></div>
-      <div class="brand">LYCEE EUROPE</div>
-      <div class="clock" id="clock">--:--:--</div>
-    </div>
-
-    <div class="right">
-      <a class="btn ghost" href="./index.html" id="homeBtn">ACCUEIL</a>
-      
-      <span class="userTag" id="userTag">OFFLINE</span>
-      <button class="btn" id="btn-login" type="button">LOGIN</button>
-      <button class="btn danger" id="btn-logout" type="button" style="display:none;">LOGOUT</button>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <main class="layout">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <!-- JOIN / INVITE -->
-      <section class="panel">
-        <div class="panelTitle row">
-          <span>ACCESS</span>
-          <span class="mini" id="chatStatus">offline</span>
-          <button class="btn ghost" id="inviteFab" type="button" style="display:none">CODE</button>
-        </div>
-
-        <div class="joinBox">
-          <div class="hint">
-            Si tu n’as pas accès, demande un <b>code d’invitation</b> puis clique JOIN.
-          </div>
-
-          <input class="input" id="inviteCode" placeholder="INVITE CODE" autocomplete="off" />
-          <button class="btn" id="joinBtn" type="button">JOIN</button>
-        </div>
-      </section>
-
-      <!-- SPACES -->
-      <section class="panel">
-        <div class="panelTitle">SPACES</div>
-        <div class="list" id="spacesList"></div>
-      </section>
-
-      <!-- ROOMS -->
-      <section class="panel">
-        <div class="panelTitle">ROOMS</div>
-        <div class="list" id="roomsList"></div>
-      </section>
-    </aside>
-
-    <!-- CHAT -->
-    <section class="chat">
-      <div class="chatHeader">
-        <div class="roomTag">
-          <span id="spaceName">EUROPE_SPACE</span>
-          <span class="muted">/</span>
-          <span id="roomName"># general</span>
-        </div>
-
-        <div class="statusLine">
-          <span class="mini">Status:</span>
-          <span class="mini" id="terminalStatus">offline</span>
-        </div>
+  <main class="landing" style="text-align:center;">
+    <div class="panel" style="padding:18px; max-width:480px; margin:0 auto;">
+      <div class="panel-header">
+        <span>Redirection</span>
       </div>
-
-      <!-- messages -->
-      <div class="messages" id="messages"></div>
-
-      <!-- composer -->
-      <div class="composer">
-        <input
-          class="input msgInput"
-          id="msg"
-          placeholder="Écris un message… (Enter pour envoyer)"
-          autocomplete="off"
-        />
-        <button class="btn" id="send" type="button">SEND</button>
+      <div class="block">
+        <p class="muted">
+          La console a été déplacée. Si rien ne se passe,
+          <a href="./console.html">clique ici pour y accéder</a>.
+        </p>
       </div>
-    </section>
-
+    </div>
   </main>
-
-  <!-- JS (modules) -->
-  <script type="module" src="./js/app.js"></script>
 </body>
 </html>

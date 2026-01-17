@@ -3,28 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Secure Console — Lycée Europe</title>
+  <title>Console IA — Lycée Europe</title>
 
+  <!-- Base + thème console -->
   <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/theme-terminal.css" />
   <link rel="stylesheet" href="css/app.css" />
-
-  <!-- XP Midnight overrides (premium Windows vibe) -->
-  <link rel="stylesheet" href="css/theme-xp-midnight.css" />
+  <link rel="stylesheet" href="css/theme-console-dark.css" />
   <link rel="stylesheet" href="css/xp-app.css" />
 </head>
 
 <body>
-  <!-- ✅ Overlays CRT (VIDES, pas de contenu dedans) -->
-  <div id="crt-screen"></div>
-  <div id="scanlines"></div>
-  <div id="vignette"></div>
-  <div id="noise"></div>
-
-  <!-- Cinematic boot (10s max, auto skip) -->
+  <!-- Boot overlay -->
   <div class="boot" id="bootOverlay" aria-hidden="false">
     <div class="bootCard">
-      <div class="bootTitle">SECURE_CONSOLE</div>
+      <div class="bootTitle">CONSOLE IA</div>
       <div class="bootLines" id="bootLines">
         <div class="bootLine">Connexion sécurisée…</div>
         <div class="bootLine">Synchronisation…</div>
@@ -32,140 +24,196 @@
         <div class="bootLine">Chargement de @ia…</div>
         <div class="bootLine">Statut : <span class="accent">READY</span></div>
       </div>
-      <button class="btn" id="skipBoot" type="button">SKIP</button>
-      <div class="mini bootHint">Astuce : <b>/help</b> • <b>/keys</b> • <b>@ia</b></div>
+      <button class="btn" id="skipBoot" type="button">Passer</button>
+      <div class="mini bootHint">
+        Astuce : <b>/help</b> • <b>/keys</b> • <b>@ia</b>
+      </div>
     </div>
   </div>
 
-  <!-- ✅ APP (cliquable) -->
-  <div id="app">
-    <header class="topbar">
-      <div class="left">
-        <span class="dot"></span>
-        <span class="brand">SECURE_CONSOLE</span>
-        <span id="clock" class="clock">—</span>
+  <!-- Barre du haut -->
+  <header class="topbar">
+    <div class="left">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="brand">CONSOLE IA</span>
+      <span id="clock" class="clock">—</span>
+    </div>
+
+    <div class="right">
+      <span id="terminalStatus" class="mini">type: login</span>
+      <button id="btn-login" class="btn" type="button">Connexion</button>
+      <button id="btn-logout" class="btn ghost" type="button" style="display:none;">Déconnexion</button>
+      <span id="userTag" class="userTag">OFFLINE</span>
+    </div>
+  </header>
+
+  <!-- Layout principal -->
+  <main class="layout xpLayout">
+    <!-- Sidebar gauche -->
+    <aside class="sidebar">
+      <!-- Invitation / spaces -->
+      <div class="panel">
+        <div class="panelTitle">INVITATION</div>
+
+        <div class="joinBox">
+          <input
+            id="inviteCode"
+            class="input"
+            placeholder="Code d’invitation (ex : ADMINCIEL)"
+            autocomplete="off"
+          />
+          <button id="joinBtn" class="btn" type="button">Rejoindre</button>
+          <div class="hint">
+            Connecte-toi puis colle un code d’invitation.
+          </div>
+        </div>
+
+        <!-- Optionnel : liste de spaces si tu l’utilises plus tard -->
+        <div id="spacesList" class="list"></div>
       </div>
 
-      <div class="right">
-        <span id="userTag" class="userTag">OFFLINE</span>
-        <button id="btn-login" class="btn danger">LOGIN</button>
-        <button id="btn-logout" class="btn danger" style="display:none;">LOGOUT</button>
+      <!-- Missions / keys quick panel -->
+      <div class="panel">
+        <div class="panelTitle row">
+          <span>MISSIONS</span>
+          <span class="mini">+XP</span>
+        </div>
+        <div class="joinBox">
+          <div class="hint">
+            Mission rapide : aide 2 personnes aujourd’hui.<br />
+            Récompense : <b>XP + clé</b> (démo).
+          </div>
+          <button id="missionBtn" class="btn" type="button">Valider la mission</button>
+        </div>
       </div>
-    </header>
 
-    <main class="layout xpLayout">
-      <!-- LEFT PANEL -->
-      <aside class="sidebar">
-        <div class="panel">
-          <div class="panelTitle">SPACES</div>
-
-          <div class="joinBox">
-            <input id="inviteCode" class="input" placeholder="Code invitation (ex: ADMINCIEL)" autocomplete="off" />
-            <button id="joinBtn" class="btn">REJOINDRE</button>
-            <div class="hint">Connecte-toi puis colle un code d’invitation.</div>
-          </div>
-
-          <div id="spacesList" class="list"></div>
+      <!-- Rooms (si tu veux en afficher plusieurs plus tard) -->
+      <div class="panel">
+        <div class="panelTitle row">
+          <span>SALLES</span>
+          <span class="mini" id="spaceName">—</span>
         </div>
+        <div id="roomsList" class="list"></div>
+      </div>
+    </aside>
 
-        <!-- MISSIONS / KEYS quick panel -->
-        <div class="panel">
-          <div class="panelTitle row">
-            <span>MISSIONS</span>
-            <span class="mini">+KEY</span>
+    <!-- Chat -->
+    <section class="chat xpChat">
+      <div class="chatHeader">
+        <div class="roomTag">
+          <span class="mini">#</span>
+          <span id="roomName">—</span>
+        </div>
+        <div class="statusLine">
+          <span class="mini">Statut&nbsp;:</span>
+          <span id="terminalStatus">offline</span>
+        </div>
+      </div>
+
+      <div
+        id="offlineBanner"
+        class="offlineBanner"
+        aria-hidden="true"
+      >
+        Connexion instable. Tes messages seront envoyés au retour du réseau.
+      </div>
+
+      <div id="messages" class="messages"></div>
+
+      <button
+        id="newMsgBtn"
+        class="newMsgBtn"
+        type="button"
+        style="display:none;"
+      >
+        ⬇️ Nouveaux messages
+      </button>
+
+      <div class="composer xpComposer">
+        <button
+          id="iaBtn"
+          class="btn ghost"
+          type="button"
+          title="Préfixer ton message avec @ia"
+        >
+          IA
+        </button>
+        <input
+          id="msg"
+          class="input msgInput"
+          placeholder="Écris ton message ou tape @ia…"
+          autocomplete="off"
+          maxlength="800"
+        />
+        <button id="send" class="btn" type="button">Envoyer</button>
+      </div>
+      <div class="composerMeta">
+        <span id="charCount" class="mini">0/800</span>
+      </div>
+    </section>
+
+    <!-- HUD / progression -->
+    <aside class="hud" aria-label="Progression">
+      <div class="panel">
+        <div class="panelTitle row">
+          <span>PROFIL</span>
+          <span class="mini" id="hudStatus">—</span>
+        </div>
+        <div class="hudRow">
+          <div class="hudCol">
+            <div class="mini">NIVEAU</div>
+            <div class="hudValue" id="hudLevel">1</div>
           </div>
-          <div class="joinBox">
-            <div class="hint">
-              Mission rapide : aide 2 personnes aujourd’hui.<br />
-              Récompense : <b>1 clé</b> (demo).
-            </div>
-            <button id="missionBtn" class="btn" type="button">CLAIM</button>
+          <div class="hudCol">
+            <div class="mini">STREAK</div>
+            <div class="hudValue" id="hudStreak">0</div>
           </div>
         </div>
+        <div class="xpBar" aria-hidden="true">
+          <div class="xpFill" id="hudXpFill" style="width:0%"></div>
+        </div>
+        <div class="mini" id="hudXpText">0/25 XP</div>
+      </div>
 
-        <div class="panel">
-          <div class="panelTitle row">
-            <span>ROOMS</span>
-            <span class="mini" id="spaceName">—</span>
+      <div class="panel">
+        <div class="panelTitle row">
+          <span>MISSION DU JOUR</span>
+        </div>
+        <div class="block mini">
+          <div id="hudMissionText">—</div>
+          <button id="hudMissionClaim" class="btn" type="button" style="margin-top:10px;">
+            Récupérer la récompense
+          </button>
+          <div
+            class="mini"
+            id="hudMissionMeta"
+            style="opacity:.8; margin-top:6px;"
+          >
+            Récompense : +10 XP
           </div>
-          <div id="roomsList" class="list"></div>
         </div>
-      </aside>
+      </div>
 
-      <!-- CHAT PANEL -->
-      <section class="chat xpChat">
-        <div class="chatHeader">
-          <div class="roomTag">
-            <span class="mini">#</span>
-            <span id="roomName">—</span>
+      <div class="panel">
+        <div class="panelTitle row">
+          <span>VAULT</span>
+          <span class="mini">LVL 3</span>
+        </div>
+        <div class="block mini">
+          <div>Débloque le Vault au niveau 3.</div>
+          <div
+            class="mini"
+            id="hudVaultState"
+            style="margin-top:6px;"
+          >
+            État : verrouillé
           </div>
-          <div class="statusLine">
-            <span class="mini">STATUS:</span>
-            <span id="terminalStatus">offline</span>
-          </div>
         </div>
+      </div>
+    </aside>
+  </main>
 
-        <div id="offlineBanner" class="offlineBanner" aria-hidden="true">
-          OFFLINE — tes messages seront envoyés au retour du réseau
-        </div>
-
-        <div id="messages" class="messages"></div>
-
-        <button id="newMsgBtn" class="newMsgBtn" type="button" style="display:none;">⬇️ Nouveaux messages</button>
-
-        <div class="composer xpComposer">
-          <button id="iaBtn" class="btn ghost" type="button" title="Ajouter @ia">@IA</button>
-          <input id="msg" class="input msgInput" placeholder="> message" autocomplete="off" maxlength="800" />
-          <button id="send" class="btn">SEND</button>
-        </div>
-        <div class="composerMeta">
-          <span id="charCount" class="mini">0/800</span>
-        </div>
-      </section>
-
-      <!-- HUD (mini-game léger) -->
-      <aside class="hud" aria-label="Progression">
-        <div class="panel">
-          <div class="panelTitle row">
-            <span>PLAYER</span>
-            <span class="mini" id="hudStatus">—</span>
-          </div>
-          <div class="hudRow">
-            <div class="hudCol">
-              <div class="mini">LEVEL</div>
-              <div class="hudValue" id="hudLevel">1</div>
-            </div>
-            <div class="hudCol">
-              <div class="mini">STREAK</div>
-              <div class="hudValue" id="hudStreak">0</div>
-            </div>
-          </div>
-          <div class="xpBar" aria-hidden="true">
-            <div class="xpFill" id="hudXpFill" style="width:0%"></div>
-          </div>
-          <div class="mini" id="hudXpText">0/25 XP</div>
-        </div>
-
-        <div class="panel">
-          <div class="panelTitle">MISSION DU JOUR</div>
-          <div class="hint" id="hudMissionText">—</div>
-          <button id="hudMissionClaim" class="btn" type="button">CLAIM</button>
-          <div class="mini" id="hudMissionMeta" style="opacity:.8; margin-top:6px;">Récompense : +10 XP</div>
-        </div>
-
-        <div class="panel">
-          <div class="panelTitle row">
-            <span>VAULT</span>
-            <span class="mini">🔒 LVL 3</span>
-          </div>
-          <div class="hint">Débloque le Vault au niveau 3.</div>
-          <div class="mini" id="hudVaultState" style="margin-top:6px;">État : verrouillé</div>
-        </div>
-      </aside>
-    </main>
-  </div>
-
-  <!-- Profile modal -->
+  <!-- Modal profil -->
   <div class="modal" id="profileModal" aria-hidden="true">
     <div class="modalCard" role="dialog" aria-modal="true">
       <div class="modalTop">
@@ -174,17 +222,21 @@
       </div>
       <div class="profileGrid">
         <div class="profileItem">
-          <div class="mini">USER</div>
+          <div class="mini">Utilisateur</div>
           <div id="profileName" class="profileValue">—</div>
         </div>
         <div class="profileItem">
-          <div class="mini">RANK</div>
+          <div class="mini">Rang</div>
           <div id="profileRank" class="profileValue">BRONZE</div>
         </div>
-      </div>
-      <div class="profileItem" style="margin-top:10px;">
-        <div class="mini">KEYS</div>
-        <div id="profileKeys" class="profileKeys">—</div>
+        <div class="profileItem">
+          <div class="mini">Clés</div>
+          <div id="profileKeys" class="profileKeys">—</div>
+        </div>
+        <div class="profileItem">
+          <div class="mini">Progression</div>
+          <div id="hudXpText" class="profileValue">0/25 XP</div>
+        </div>
       </div>
       <div class="mini" style="margin-top:10px; opacity:.8;">
         Commandes : <b>/help</b> • <b>/keys</b> • <b>/use &lt;clé&gt;</b> • <b>/drop</b>
@@ -192,6 +244,7 @@
     </div>
   </div>
 
+  <!-- JS -->
   <script type="module" src="js/boot.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>

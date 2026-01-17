@@ -1,17 +1,17 @@
-
 /* ===============================
-   BASE – fondation du projet
+   BASE – fondation du projet (dark éducatif)
    =============================== */
 
 :root{
-  --bg: #000;
-  --panel: #020202;
-  --border: #0f0;
-  --text: #00ff88;
-  --muted: rgba(0,255,136,.55);
-  --danger: #ff003c;
-  --radius: 6px;
-  --font: "Share Tech Mono", monospace;
+  --bg: radial-gradient(circle at top, #020617 0%, #020617 40%, #000 100%);
+  --panel: #020617;
+  --border: rgba(30, 64, 175, 0.8);          /* bleu profond */
+  --text: #e5e7eb;
+  --muted: rgba(156, 163, 175, 0.9);
+  --danger: #f97373;
+  --radius: 14px;
+  --font: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+          "Segoe UI", sans-serif;
 }
 
 *{
@@ -29,8 +29,12 @@ html,body{
 }
 
 a{
-  color:var(--text);
+  color:#93c5fd;
   text-decoration:none;
+}
+
+a:hover{
+  text-decoration:underline;
 }
 
 .muted{
@@ -38,20 +42,22 @@ a{
 }
 
 h1,h2,h3{
-  font-weight:400;
-  letter-spacing:2px;
+  font-weight:600;
+  letter-spacing:0.06em;
 }
 
 ul{
   padding-left:20px;
 }
 
+/* Panels génériques */
 .panel{
-  background: var(--panel);
-  border:1px solid rgba(0,255,136,.25);
+  background: linear-gradient(to bottom right, #020617, #0b1120);
+  border:1px solid rgba(30, 64, 175, 0.75);
   border-radius: var(--radius);
   position:relative;
   overflow:hidden;
+  box-shadow: 0 22px 60px rgba(15,23,42,.95);
 }
 
 .panel-header{
@@ -60,62 +66,88 @@ ul{
   align-items:center;
   padding:8px 12px;
   font-size:12px;
-  letter-spacing:2px;
-  background: rgba(0,255,136,.05);
-  border-bottom:1px solid rgba(0,255,136,.25);
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  background: rgba(15,23,42,.95);
+  border-bottom:1px solid rgba(30, 64, 175, 0.7);
+  color:var(--muted);
 }
 
+/* Boutons */
 .btn{
-  background:transparent;
-  border:1px solid rgba(0,255,136,.5);
-  color:var(--text);
+  background:linear-gradient(to bottom, rgba(37,99,235,.95), rgba(37,99,235,.85));
+  border:1px solid rgba(37,99,235,.9);
+  color:#f9fafb;
   padding:10px 14px;
   cursor:pointer;
   font-family:var(--font);
-  letter-spacing:2px;
-  transition:.2s;
+  letter-spacing:0.08em;
+  font-size:13px;
+  border-radius:999px;
+  transition:transform .15s ease, filter .15s ease, box-shadow .15s ease;
 }
 
 .btn:hover{
-  background:var(--text);
-  color:#000;
+  filter:brightness(1.06);
+  box-shadow:0 12px 30px rgba(37,99,235,.45);
+}
+
+.btn:active{
+  transform:translateY(1px);
 }
 
 .btn.ghost{
-  border-color: rgba(0,255,136,.25);
+  background:transparent;
+  border-color:rgba(148,163,184,.6);
+  color:var(--muted);
 }
 
 .btn.danger{
+  background:transparent;
   border-color: var(--danger);
   color: var(--danger);
 }
 
+/* Champs de saisie */
 .field{
   width:100%;
-  background:#000;
-  border:1px solid rgba(0,255,136,.4);
+  background:#020617;
+  border:1px solid rgba(31,41,55,.9);
   color:var(--text);
   padding:10px;
   font-family:var(--font);
   outline:none;
+  border-radius:10px;
+  font-size:14px;
+}
+
+.field::placeholder{
+  color:rgba(148,163,184,.8);
 }
 
 .field:focus{
-  box-shadow:0 0 12px rgba(0,255,136,.4);
+  box-shadow:0 0 0 1px rgba(37,99,235,.8);
+  border-color:rgba(37,99,235,.9);
 }
 
+/* Listes & blocs */
 .list{
   padding:8px;
   font-size:13px;
+  color:var(--text);
 }
 
 .block{
   padding:10px;
 }
 
+/* Pills de statut */
 .status-pill{
-  color:#000;
-  background:var(--text);
-  padding:2px 6px;
+  color:#022c22;
+  background:#22c55e;
+  padding:2px 8px;
   font-size:10px;
+  border-radius:999px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
 }
