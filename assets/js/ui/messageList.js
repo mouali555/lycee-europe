@@ -135,7 +135,6 @@ export class MessageList {
 
     // Reactions chips
     const reactionChips = this._buildReactionChips(reactions, meUid, id);
-
     row.innerHTML = `
       ${avatarHTML}
       <div class="bubble">
@@ -252,7 +251,6 @@ export class MessageList {
     this.nodes.delete(id);
     this.rendered.delete(id);
   }
-
   upsertMessage(payload, newIndex = null) {
     if (!this.root) return;
 

@@ -280,7 +280,6 @@ async function consumeKey(codeRaw) {
   await refreshProfile();
   msgList.addSystem(`[KEYMASTER] Clé utilisée : ${code} ✅`);
 }
-
 // ===== Messages listener =====
 function startListener() {
   if (unsub) {
@@ -302,6 +301,7 @@ function startListener() {
         return;
       }
 
+      // Payload normalisé pour l'UI
       const payload = {
         id: ev.id,
         uid: ev.uid,
@@ -313,6 +313,7 @@ function startListener() {
         meUid: currentUser?.uid || null,
       };
 
+      // Fix ordering : Firestore peut réordonner un doc quand serverTimestamp se résout.
       const newIndex =
         typeof ev?.newIndex === "number" ? ev.newIndex : null;
 
@@ -320,9 +321,19 @@ function startListener() {
         ev?.uid === "AI_BOT" ||
         String(ev?.displayName || "").toUpperCase() === "IA";
 
+      // Hide typing when the AI response lands
       if (isAI) msgList.hideTyping();
 
-      // Utiliser l'autoscroll intelligent interne
+      const shouldStick = msgList.isNearBottom();
+
+      // Modified : update + reposition only (no SFX)
+      if (type === "modified") {
+        msgList.upsertMessage(payload, newIndex);
+        if (shouldStick) msgList.scrollToBottom();
+        return;
+      }
+
+      // Added : insert + SFX (receive only)
       msgList.upsertMessage(payload, newIndex);
 
       // SFX: receive message (not mine)
@@ -333,6 +344,10 @@ function startListener() {
         ev.uid !== currentUser.uid
       ) {
         playTone(isAI ? 680 : 560, 0.045);
+      }
+
+      if (shouldStick) {
+        msgList.scrollToBottom();
       }
     }
   );
@@ -382,6 +397,7 @@ async function sendMessage() {
 
   const lower = raw.toLowerCase();
 
+  // Slash commands
   if (lower === "/help") {
     msgInput.value = "";
     updateCharCount();
@@ -488,7 +504,6 @@ async function sendMessage() {
     );
   }
 }
-
 // ===== Init UI =====
 if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
 if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
@@ -642,6 +657,7 @@ watchAuth(async (user) => {
     msgList.addSystem("AUTH_OK: " + currentUser.name);
     msgList.addSystem("CHECKING_ACCESS...");
 
+    // Init profile
     try {
       await ensureUserDoc(currentUser);
       await refreshProfile();
