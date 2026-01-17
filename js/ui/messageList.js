@@ -8,11 +8,13 @@ export class MessageList {
     this.newMsgBtn = newMsgBtn || null;
     this.rendered = new Set();
     this.avatarCache = new Map();
+    this.firstRender = true;
   }
 
   clear() {
     this.root.innerHTML = "";
     this.rendered.clear();
+    this.firstRender = true;
   }
 
   isNearBottom() {
@@ -61,11 +63,10 @@ export class MessageList {
       (isKey ? " keyRow" : "");
 
     // Avatar : IA utilise toujours photoia.png
-let finalPhoto = photoURL || null;
-if (isAI) {
-  finalPhoto = "https://lycee-europe.com/photoia.png";
-}
-
+    let finalPhoto = photoURL || null;
+    if (isAI) {
+      finalPhoto = "https://lycee-europe.com/photoia.png";
+    }
 
     const avatarHTML = finalPhoto
       ? `<img class="avatar" src="${finalPhoto}" referrerpolicy="no-referrer">`
@@ -91,6 +92,13 @@ if (isAI) {
     `;
 
     this.root.appendChild(row);
+
+    // Au tout premier chargement, on se place toujours en bas
+    if (this.firstRender) {
+      this.firstRender = false;
+      this.scrollToBottom();
+      return;
+    }
 
     if (wasAtBottom) this.scrollToBottom();
     else this.showNewMsgBtn();
