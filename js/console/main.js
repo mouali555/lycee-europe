@@ -298,7 +298,7 @@ async function sendMessage() {
     return;
   }
 
-  // Message normal
+    // Message normal
   if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
 
   try {
@@ -318,6 +318,7 @@ async function sendMessage() {
     msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
   }
 }
+
 // ===== Init UI =====
 
 if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
@@ -468,3 +469,35 @@ watchAuth(async (user) => {
     setTerminal("offline");
   }
 });
+
+// ===== Messages listener (version avec scroll forcé) =====
+
+function startListener() {
+  if (unsub) {
+    unsub();
+    unsub = null;
+  }
+
+  msgList.clear();
+  msgList.addSystem("CONNECTED");
+
+  unsub = subscribeRoomMessages(
+    CONFIG.SPACE_ID,
+    CONFIG.ROOM_ID,
+    (m) => {
+      msgList.appendMessage({
+        id: m.id,
+        uid: m.uid,
+        displayName: m.displayName || "USER",
+        text: m.text || "",
+        photoURL: m.photoURL || null,
+        meUid: currentUser?.uid,
+      });
+    }
+  );
+
+  // Quand on démarre l’écoute (après refresh / login), on force le bas
+  setTimeout(() => {
+    msgList.scrollToBottom();
+  }, 50);
+}
