@@ -1,25 +1,28 @@
 // js/services/authService.js
 
 import { auth, db } from "./firebase.js";
+
 import {
   GoogleAuthProvider,
   signInWithPopup,
   signOut,
   onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 
 import {
   doc,
   setDoc,
   serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
 const provider = new GoogleAuthProvider();
 
+/**
+ * Login Google + création / mise à jour du profil minimal en base.
+ */
 export async function loginGoogle() {
   const res = await signInWithPopup(auth, provider);
 
-  // Profil minimal
   await setDoc(
     doc(db, "users", res.user.uid),
     {
@@ -38,10 +41,16 @@ export function logout() {
   return signOut(auth);
 }
 
+/**
+ * Abonnement aux changements d'auth (utilisé par main.js).
+ */
 export function watchAuth(cb) {
   return onAuthStateChanged(auth, cb);
 }
 
+/**
+ * Récupération du token ID ou null si non connecté / erreur.
+ */
 export async function getIdTokenSafe() {
   try {
     const u = auth.currentUser;

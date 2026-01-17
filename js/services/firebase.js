@@ -1,11 +1,11 @@
 // js/services/firebase.js
-// Init Firebase (App, Auth, Firestore)
+// Initialisation Firebase (App, Auth, Firestore)
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-// 🔥 Config projet
+// Config projet Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
   authDomain: "lycee-europe-private.firebaseapp.com",

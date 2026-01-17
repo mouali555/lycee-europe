@@ -2,6 +2,7 @@
 // Firestore: membership, invites, messages (subscribe + send)
 
 import { db } from "./firebase.js";
+
 import {
   doc,
   getDoc,
@@ -10,18 +11,23 @@ import {
   collection,
   query,
   orderBy,
-  limit,
   limitToLast,
   onSnapshot,
   addDoc,
-} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
+/**
+ * Vérifie si l'utilisateur est membre d'un espace.
+ */
 export async function checkMembership(spaceId, uid) {
   const memRef = doc(db, "spaces", spaceId, "members", uid);
   const snap = await getDoc(memRef);
   return snap.exists();
 }
 
+/**
+ * Rejoint un espace avec un code d'invitation.
+ */
 export async function joinWithInvite(spaceIdFallback, code, user) {
   const inviteCode = String(code || "").trim().toUpperCase();
   if (!inviteCode) throw new Error("INVITE_CODE_REQUIRED");
@@ -30,9 +36,10 @@ export async function joinWithInvite(spaceIdFallback, code, user) {
   const invRef = doc(db, "invites", inviteCode);
   const invSnap = await getDoc(invRef);
   if (!invSnap.exists()) throw new Error("INVITE_INVALID");
-  const inv = invSnap.data();
 
+  const inv = invSnap.data();
   if (inv.enabled !== true) throw new Error("INVITE_DISABLED");
+
   const spaceId = String(inv.spaceId || spaceIdFallback || "").trim();
   if (!spaceId) throw new Error("INVITE_BROKEN");
 
@@ -49,15 +56,19 @@ export async function joinWithInvite(spaceIdFallback, code, user) {
   return { ok: true, spaceId, already: false };
 }
 
+/**
+ * Abonnement aux messages d'une room.
+ * onChange est appelé pour chaque nouveau message.
+ */
 export function subscribeRoomMessages(spaceId, roomId, onChange) {
   const msgRef = collection(db, "spaces", spaceId, "rooms", roomId, "messages");
-  // ✅ On garde les messages dans l'ordre chronologique, MAIS on ne charge que les plus récents.
+
+  // Messages en ordre chrono, mais on ne garde que les 120 derniers.
   const q = query(msgRef, orderBy("createdAt", "asc"), limitToLast(120));
 
   return onSnapshot(
     q,
     (snap) => {
-      // Incremental: on utilise docChanges (au lieu de rerender toute la liste)
       const changes = snap.docChanges();
       for (const ch of changes) {
         if (ch.type === "added") {
@@ -67,12 +78,17 @@ export function subscribeRoomMessages(spaceId, roomId, onChange) {
     },
     (err) => {
       console.error(err);
-      throw err;
     }
   );
 }
 
+/**
+ * Envoie un message texte / image dans une room.
+ */
 export async function sendRoomMessage(spaceId, roomId, msg) {
   const msgRef = collection(db, "spaces", spaceId, "rooms", roomId, "messages");
-  await addDoc(msgRef, { ...msg, createdAt: serverTimestamp() });
+  await addDoc(msgRef, {
+    ...msg,
+    createdAt: serverTimestamp(),
+  });
 }
