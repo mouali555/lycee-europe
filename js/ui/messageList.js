@@ -96,7 +96,8 @@ export class MessageList {
     // Avatar (IA utilise une image fixe)
     let finalPhoto = photoURL || null;
     if (isAI) {
-      finalPhoto = "https://lycee-europe.com/photoia.png";
+      // Local-first (fonctionne en dev local et en prod)
+      finalPhoto = "./photoia.png";
     }
 
     const avatarHTML = finalPhoto
