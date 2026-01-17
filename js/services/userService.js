@@ -9,7 +9,12 @@ import {
   serverTimestamp,
   arrayUnion,
   arrayRemove,
-} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+// IMPORTANT:
+// Le reste du projet utilise Firebase v10.13.1 (voir firebase.js).
+// Mélanger les versions (10.7.0 ici) peut provoquer des erreurs silencieuses
+// et bloquer le flow d'auth (ex: stuck sur "CHECKING_ACCESS...").
 
 export async function ensureUserDoc(user) {
   if (!user?.uid) return;

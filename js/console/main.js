@@ -425,8 +425,17 @@ watchAuth(async (user) => {
     msgList.addSystem("AUTH_OK: " + currentUser.name);
     msgList.addSystem("CHECKING_ACCESS...");
 
-    await ensureUserDoc(currentUser);
-    await refreshProfile();
+    // Si Firestore rencontre un souci (permissions / offline / mismatch libs),
+    // on évite de bloquer toute la console sur "CHECKING_ACCESS...".
+    try {
+      await ensureUserDoc(currentUser);
+      await refreshProfile();
+    } catch (e) {
+      console.error("Profile init failed:", e);
+      msgList.addSystem(
+        `PROFILE_INIT_FAILED: ${e?.message || "unknown"} (tu peux quand même tenter l'invite)`
+      );
+    }
 
     hud.dailyCheckin();
     hud.render();
