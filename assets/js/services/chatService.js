@@ -60,7 +60,7 @@ export async function joinWithInvite(spaceIdFallback, code, user) {
  * Abonnement aux messages d'une room.
  * onChange est appelé pour chaque nouveau message.
  */
-export function subscribeRoomMessages(spaceId, roomId, onChange) {
+export function subscribeRoomMessages(spaceId, roomId, onChange, onError) {
   const msgRef = collection(db, "spaces", spaceId, "rooms", roomId, "messages");
 
   // Messages en ordre chrono, mais on ne garde que les 120 derniers.
@@ -68,6 +68,7 @@ export function subscribeRoomMessages(spaceId, roomId, onChange) {
 
   return onSnapshot(
     q,
+    { includeMetadataChanges: true },
     (snap) => {
       const changes = snap.docChanges();
       for (const ch of changes) {
@@ -77,6 +78,7 @@ export function subscribeRoomMessages(spaceId, roomId, onChange) {
     },
     (err) => {
       console.error(err);
+      if (typeof onError === "function") onError(err);
     }
   );
 }

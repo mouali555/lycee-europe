@@ -84,8 +84,10 @@ function setTerminal(text) {
 
 function updateConnectivityUI() {
   const online = navigator.onLine !== false;
-  if (offlineBanner)
+  if (offlineBanner) {
     offlineBanner.setAttribute("aria-hidden", online ? "true" : "false");
+    offlineBanner.style.display = online ? "none" : "block";
+  }
   hud.setOnlineState(online);
 }
 
@@ -186,9 +188,19 @@ function setPref(key, val) {
 
 function applyTheme(theme) {
   const t = theme === "light" ? "light" : "dark";
+
+  // 1) Token theme (affecte tout le site via tokens.css)
+  try {
+    document.documentElement.setAttribute("data-theme", t);
+  } catch {}
+
+  // 2) Utility classes (console.css)
   document.body.classList.toggle("theme-light", t === "light");
   document.body.classList.toggle("theme-dark", t !== "light");
+
+  // Icon shows the *next* theme
   if (themeToggle) themeToggle.textContent = t === "light" ? "🌙" : "☀️";
+
   setPref(PREF_THEME, t);
 }
 
@@ -219,7 +231,14 @@ function playTone(freq = 520, dur = 0.06) {
 }
 
 // Init preferences
-applyTheme(getPref(PREF_THEME, "dark"));
+const systemTheme = (() => {
+  try {
+    return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch {
+    return "dark";
+  }
+})();
+applyTheme(getPref(PREF_THEME, systemTheme));
 applySoundUI();
 
 themeToggle?.addEventListener("click", () => {
@@ -274,53 +293,89 @@ async function consumeKey(codeRaw) {
 // ===== Messages listener =====
 function startListener() {
   if (unsub) {
-    unsub();
+    try {
+      unsub();
+    } catch {}
     unsub = null;
   }
+
   msgList.clear();
   msgList.addSystem("CONNECTED");
 
-  unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (ev) => {
-    const type = ev?.type || "added";
-    if (type === "removed") {
-      msgList.removeMessage(ev.id);
-      return;
+  // We are attempting to listen again -> hide banner (will re-appear on errors)
+  try {
+    if (offlineBanner) {
+      offlineBanner.setAttribute("aria-hidden", "true");
+      offlineBanner.style.display = "none";
     }
-    if (type === "modified") {
-      msgList.updateMessage(ev.id, {
+  } catch {}
+
+  unsub = subscribeRoomMessages(
+    CONFIG.SPACE_ID,
+    CONFIG.ROOM_ID,
+    (ev) => {
+      const type = ev?.type || "added";
+
+      if (type === "removed") {
+        msgList.removeMessage(ev.id);
+        return;
+      }
+
+      if (type === "modified") {
+        msgList.updateMessage(ev.id, {
+          text: ev.text || "",
+          reactions: ev.reactions || {},
+          meUid: currentUser?.uid || null,
+        });
+        return;
+      }
+
+      // Hide typing when the AI response lands
+      const isAI =
+        ev?.uid === "AI_BOT" ||
+        String(ev?.displayName || "").toUpperCase() === "IA";
+      if (isAI) msgList.hideTyping();
+
+      // UI sounds (receive)
+      if (
+        type === "added" &&
+        currentUser?.uid &&
+        ev?.uid &&
+        ev.uid !== currentUser.uid
+      ) {
+        playTone(isAI ? 680 : 560, 0.05);
+      }
+
+      msgList.appendMessage({
+        id: ev.id,
+        uid: ev.uid,
+        displayName: ev.displayName || "USER",
         text: ev.text || "",
+        photoURL: ev.photoURL || null,
+        imageURL: ev.imageURL || null,
         reactions: ev.reactions || {},
-        meUid: currentUser?.uid || null,
+        meUid: currentUser?.uid,
       });
-      return;
+
+      // SFX: receive message (not mine)
+      if (ev?.uid && currentUser?.uid && ev.uid !== currentUser.uid) {
+        playTone(isAI ? 680 : 520, 0.045);
+      }
+    },
+    (err) => {
+      console.error("Room listener error:", err);
+      try {
+        if (offlineBanner) {
+          offlineBanner.setAttribute("aria-hidden", "false");
+          offlineBanner.style.display = "block";
+        }
+      } catch {}
+      setTerminal("reconnexion…");
+      msgList.addSystem(
+        `CONNECTION_ERROR: ${err?.code || err?.message || "unknown"}`
+      );
     }
-
-    // Hide typing when the AI response lands
-    const isAI =
-      ev?.uid === "AI_BOT" || String(ev?.displayName || "").toUpperCase() === "IA";
-    if (isAI) msgList.hideTyping();
-
-    // UI sounds (receive)
-    if (type === "added" && currentUser?.uid && ev?.uid && ev.uid !== currentUser.uid) {
-      playTone(isAI ? 680 : 560, 0.05);
-    }
-
-    msgList.appendMessage({
-      id: ev.id,
-      uid: ev.uid,
-      displayName: ev.displayName || "USER",
-      text: ev.text || "",
-      photoURL: ev.photoURL || null,
-      imageURL: ev.imageURL || null,
-      reactions: ev.reactions || {},
-      meUid: currentUser?.uid,
-    });
-
-    // SFX: receive message (not mine)
-    if (ev?.uid && currentUser?.uid && ev.uid !== currentUser.uid) {
-      playTone(isAI ? 680 : 520, 0.045);
-    }
-  });
+  );
 
   setTimeout(() => {
     msgList.scrollToBottom();

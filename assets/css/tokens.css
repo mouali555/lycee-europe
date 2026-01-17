@@ -67,6 +67,7 @@
 
 /* Light theme (optional) */
 :root[data-theme="light"]{
+  color-scheme: light;
   --bg: #f7f7fb;
   --bg-2: #ffffff;
   --surface: rgba(20, 24, 35, 0.06);

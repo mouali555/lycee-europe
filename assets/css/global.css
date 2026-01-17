@@ -1,6 +1,7 @@
 /* Global styles — typography, backgrounds, helpers */
 
 :root{ color-scheme: dark; }
+:root[data-theme="light"]{ color-scheme: light; }
 
 html{ scroll-behavior:smooth; }
 
@@ -114,4 +115,9 @@ code{
 
 @media (max-width: 600px){
   .container{ width: calc(100% - 2*var(--space-5)); }
+}
+
+
+:root[data-theme="light"] code{
+  background: rgba(20, 24, 35, 0.06);
 }
