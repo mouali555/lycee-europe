@@ -14,6 +14,7 @@ import {
   limitToLast,
   onSnapshot,
   addDoc,
+  Timestamp,
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
 /**
@@ -71,8 +72,15 @@ export function subscribeRoomMessages(spaceId, roomId, onChange) {
     (snap) => {
       const changes = snap.docChanges();
       for (const ch of changes) {
-        // On forward aussi "removed" pour permettre la suppression côté UI
-        onChange({ type: ch.type, id: ch.doc.id, ...ch.doc.data() });
+        // Firestore peut changer l'index d'un document (ex: serverTimestamp résolu).
+        // On forward oldIndex/newIndex pour que l'UI puisse re-placer le message correctement.
+        onChange({
+          type: ch.type,
+          id: ch.doc.id,
+          oldIndex: ch.oldIndex,
+          newIndex: ch.newIndex,
+          ...ch.doc.data(),
+        });
       }
     },
     (err) => {
@@ -88,6 +96,9 @@ export async function sendRoomMessage(spaceId, roomId, msg) {
   const msgRef = collection(db, "spaces", spaceId, "rooms", roomId, "messages");
   await addDoc(msgRef, {
     ...msg,
-    createdAt: serverTimestamp(),
+    // Timestamp client immédiat => pas de message "collé" en haut (null)
+    // serverTimestamp est conservé pour debug / analytics
+    createdAt: Timestamp.now(),
+    createdAtServer: serverTimestamp(),
   });
 }

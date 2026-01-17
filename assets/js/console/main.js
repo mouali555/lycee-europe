@@ -286,26 +286,8 @@ function startListener() {
       msgList.removeMessage(ev.id);
       return;
     }
-    if (type === "modified") {
-      msgList.updateMessage(ev.id, {
-        text: ev.text || "",
-        reactions: ev.reactions || {},
-        meUid: currentUser?.uid || null,
-      });
-      return;
-    }
-
-    // Hide typing when the AI response lands
-    const isAI =
-      ev?.uid === "AI_BOT" || String(ev?.displayName || "").toUpperCase() === "IA";
-    if (isAI) msgList.hideTyping();
-
-    // UI sounds (receive)
-    if (type === "added" && currentUser?.uid && ev?.uid && ev.uid !== currentUser.uid) {
-      playTone(isAI ? 680 : 560, 0.05);
-    }
-
-    msgList.appendMessage({
+    // Payload normalisé pour l'UI
+    const payload = {
       id: ev.id,
       uid: ev.uid,
       displayName: ev.displayName || "USER",
@@ -313,12 +295,31 @@ function startListener() {
       photoURL: ev.photoURL || null,
       imageURL: ev.imageURL || null,
       reactions: ev.reactions || {},
-      meUid: currentUser?.uid,
-    });
+      meUid: currentUser?.uid || null,
+    };
+
+    // Fix ordering : Firestore peut réordonner un doc quand serverTimestamp se résout.
+    // on utilise newIndex (si fourni) pour insérer / déplacer au bon endroit.
+    const newIndex = typeof ev?.newIndex === "number" ? ev.newIndex : null;
+
+    const isAI =
+      ev?.uid === "AI_BOT" || String(ev?.displayName || "").toUpperCase() === "IA";
+
+    // Hide typing when the AI response lands
+    if (isAI) msgList.hideTyping();
+
+    // Modified : update + reposition only (no SFX)
+    if (type === "modified") {
+      msgList.upsertMessage(payload, newIndex);
+      return;
+    }
+
+    // Added : insert + SFX (receive only)
+    msgList.upsertMessage(payload, newIndex);
 
     // SFX: receive message (not mine)
-    if (ev?.uid && currentUser?.uid && ev.uid !== currentUser.uid) {
-      playTone(isAI ? 680 : 520, 0.045);
+    if (type === "added" && ev?.uid && currentUser?.uid && ev.uid !== currentUser.uid) {
+      playTone(isAI ? 680 : 560, 0.045);
     }
   });
 

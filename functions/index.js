@@ -166,7 +166,9 @@ exports.aiReply = onRequest(
           role: "assistant",
           model: "gpt-4o-mini",
           text: String(answer).slice(0, 800),
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          // Timestamp immédiat (tri chat) + serverTimestamp (référence)
+          createdAt: admin.firestore.Timestamp.now(),
+          createdAtServer: admin.firestore.FieldValue.serverTimestamp(),
         });
 
       return res.status(200).json({ ok: true });
