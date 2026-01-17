@@ -1,104 +1,130 @@
 // js/services/chatService.js
-// Firestore: membership, invites, messages (subscribe + send)
-
-import { db } from "./firebase.js";
-
+import { db } from "../core/firebase.js";
 import {
+  collection,
+  addDoc,
   doc,
   getDoc,
   setDoc,
-  serverTimestamp,
-  collection,
   query,
   orderBy,
-  limitToLast,
+  where,
+  limit,
   onSnapshot,
-  addDoc,
+  serverTimestamp,
   Timestamp,
-} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+} from "firebase/firestore";
 
 /**
- * Vérifie si l'utilisateur est membre d'un espace.
+ * ===============================
+ *  MEMBERSHIP / INVITE
+ * ===============================
  */
+
+// Vérifie si l'utilisateur est membre de l'espace
 export async function checkMembership(spaceId, uid) {
-  const memRef = doc(db, "spaces", spaceId, "members", uid);
-  const snap = await getDoc(memRef);
+  if (!spaceId || !uid) return false;
+  const ref = doc(db, "spaces", spaceId, "members", uid);
+  const snap = await getDoc(ref);
   return snap.exists();
 }
 
-/**
- * Rejoint un espace avec un code d'invitation.
- */
-export async function joinWithInvite(spaceIdFallback, code, user) {
-  const inviteCode = String(code || "").trim().toUpperCase();
-  if (!inviteCode) throw new Error("INVITE_CODE_REQUIRED");
-  if (!user?.uid) throw new Error("AUTH_REQUIRED");
+// Rejoindre un espace avec un code d'invite
+export async function joinWithInvite(spaceId, code, user) {
+  if (!spaceId || !code || !user) {
+    throw new Error("INVALID_INVITE");
+  }
 
-  const invRef = doc(db, "invites", inviteCode);
-  const invSnap = await getDoc(invRef);
-  if (!invSnap.exists()) throw new Error("INVITE_INVALID");
+  const inviteRef = doc(db, "spaces", spaceId, "invites", code);
+  const inviteSnap = await getDoc(inviteRef);
 
-  const inv = invSnap.data();
-  if (inv.enabled !== true) throw new Error("INVITE_DISABLED");
+  if (!inviteSnap.exists()) {
+    throw new Error("INVITE_NOT_FOUND");
+  }
 
-  const spaceId = String(inv.spaceId || spaceIdFallback || "").trim();
-  if (!spaceId) throw new Error("INVITE_BROKEN");
+  const memberRef = doc(db, "spaces", spaceId, "members", user.uid);
+  const memberSnap = await getDoc(memberRef);
 
-  const memRef = doc(db, "spaces", spaceId, "members", user.uid);
-  const memSnap = await getDoc(memRef);
-  if (memSnap.exists()) return { ok: true, spaceId, already: true };
+  if (memberSnap.exists()) {
+    return { already: true };
+  }
 
-  await setDoc(memRef, {
-    role: inv.role || "member",
+  await setDoc(memberRef, {
+    uid: user.uid,
+    displayName: user.name || "USER",
     joinedAt: serverTimestamp(),
-    displayName: user.name,
   });
 
-  return { ok: true, spaceId, already: false };
+  return { already: false };
 }
 
 /**
- * Abonnement aux messages d'une room.
- * onChange est appelé pour chaque nouveau message.
+ * ===============================
+ *  MESSAGES
+ * ===============================
  */
-export function subscribeRoomMessages(spaceId, roomId, onChange) {
-  const msgRef = collection(db, "spaces", spaceId, "rooms", roomId, "messages");
 
-  // Messages en ordre chrono, mais on ne garde que les 120 derniers.
-  const q = query(msgRef, orderBy("createdAt", "asc"), limitToLast(120));
+// 🔥 ENVOI D'UN MESSAGE
+// FIX MAJEUR : createdAt = Timestamp.now() (jamais NULL)
+// => Firestore trie correctement dès l’ajout
+export async function sendRoomMessage(spaceId, roomId, payload) {
+  if (!spaceId || !roomId) {
+    throw new Error("INVALID_ROOM");
+  }
 
-  return onSnapshot(
-    q,
-    (snap) => {
-      const changes = snap.docChanges();
-      for (const ch of changes) {
-        // Firestore peut changer l'index d'un document (ex: serverTimestamp résolu).
-        // On forward oldIndex/newIndex pour que l'UI puisse re-placer le message correctement.
-        onChange({
-          type: ch.type,
-          id: ch.doc.id,
-          oldIndex: ch.oldIndex,
-          newIndex: ch.newIndex,
-          ...ch.doc.data(),
-        });
-      }
-    },
-    (err) => {
-      console.error(err);
-    }
+  const colRef = collection(
+    db,
+    "spaces",
+    spaceId,
+    "rooms",
+    roomId,
+    "messages"
   );
+
+  return addDoc(colRef, {
+    ...payload,
+
+    // ✅ timestamp immédiat → ordre OK instantanément
+    createdAt: Timestamp.now(),
+
+    // ✅ timestamp serveur (optionnel, analytics / audit)
+    createdAtServer: serverTimestamp(),
+  });
 }
 
-/**
- * Envoie un message texte / image dans une room.
- */
-export async function sendRoomMessage(spaceId, roomId, msg) {
-  const msgRef = collection(db, "spaces", spaceId, "rooms", roomId, "messages");
-  await addDoc(msgRef, {
-    ...msg,
-    // Timestamp client immédiat => pas de message "collé" en haut (null)
-    // serverTimestamp est conservé pour debug / analytics
-    createdAt: Timestamp.now(),
-    createdAtServer: serverTimestamp(),
+// 🔥 ABONNEMENT AUX MESSAGES
+// FIX MAJEUR :
+// - orderBy(createdAt, "asc")
+// - support des docChanges (added / modified / removed)
+// - newIndex / oldIndex transmis à l'UI
+export function subscribeRoomMessages(spaceId, roomId, onEvent) {
+  if (!spaceId || !roomId || typeof onEvent !== "function") {
+    throw new Error("INVALID_SUBSCRIBE");
+  }
+
+  const colRef = collection(
+    db,
+    "spaces",
+    spaceId,
+    "rooms",
+    roomId,
+    "messages"
+  );
+
+  // ✅ TRI DÉFINITIF (plus de messages en haut)
+  const q = query(colRef, orderBy("createdAt", "asc"));
+
+  return onSnapshot(q, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      const data = change.doc.data() || {};
+
+      onEvent({
+        type: change.type, // "added" | "modified" | "removed"
+        id: change.doc.id,
+        ...data,
+        newIndex: change.newIndex,
+        oldIndex: change.oldIndex,
+      });
+    });
   });
 }
