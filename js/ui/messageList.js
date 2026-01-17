@@ -2,17 +2,17 @@
 import { esc } from "../core/utils.js";
 
 export class MessageList {
-  constructor({ root, newMsgBtn, onDelete }) {
+  constructor({ root, newMsgBtn, onDelete, onReact }) {
     this.root = root;
     this.newMsgBtn = newMsgBtn || null;
     this.onDelete = typeof onDelete === "function" ? onDelete : null;
+    this.onReact = typeof onReact === "function" ? onReact : null;
     this.rendered = new Set();
     this.nodes = new Map();
     this.firstRender = true;
 
-    // UI-only state
+    // UI state
     this.typingNode = null;
-    this.reactions = new Map(); // id -> Set(emoji)
   }
 
   clear() {
@@ -37,6 +37,52 @@ export class MessageList {
     if (!n) return;
     const textEl = n.querySelector(".text");
     if (textEl && typeof patch.text === "string") textEl.textContent = patch.text;
+
+    // Live reactions update (Firestore)
+    if (patch.reactions) {
+      this._renderReactions(n, patch.reactions, patch.meUid);
+    }
+  }
+
+  _renderReactions(rowNode, reactions = {}, meUid = null) {
+    const chips = rowNode?.querySelector(".reactionChips");
+    if (!chips) return;
+
+    // reactions: { like: [uid], love:[uid], laugh:[uid] }
+    const map = {
+      like: "👍",
+      love: "❤️",
+      laugh: "😂",
+    };
+
+    const items = [];
+    for (const [key, emoji] of Object.entries(map)) {
+      const arr = Array.isArray(reactions?.[key]) ? reactions[key] : [];
+      if (arr.length) items.push({ key, emoji, count: arr.length, mine: !!(meUid && arr.includes(meUid)) });
+    }
+
+    chips.innerHTML = "";
+    if (!items.length) {
+      chips.style.display = "none";
+      return;
+    }
+    chips.style.display = "flex";
+
+    for (const it of items) {
+      const el = document.createElement("span");
+      el.className = "chip" + (it.mine ? " mine" : "");
+      el.textContent = `${it.emoji} ${it.count}`;
+      chips.appendChild(el);
+    }
+
+    // Highlight active buttons
+    rowNode.querySelectorAll(".reactBtn").forEach((b) => {
+      const em = b.getAttribute("data-react");
+      const key = em === "👍" ? "like" : em === "❤️" ? "love" : em === "😂" ? "laugh" : null;
+      if (!key) return;
+      const arr = Array.isArray(reactions?.[key]) ? reactions[key] : [];
+      b.classList.toggle("active", !!(meUid && arr.includes(meUid)));
+    });
   }
 
   isNearBottom() {
@@ -108,6 +154,7 @@ export class MessageList {
     text,
     photoURL,
     imageURL,
+    reactions,
     meUid,
   }) {
     if (!id) return;
@@ -162,7 +209,7 @@ export class MessageList {
         `
         : "";
 
-    // Lightweight UI reactions (client-side only)
+    // Reactions (synced)
     const reactionBar = `
       <div class="reactionBar" aria-hidden="true">
         <button class="reactBtn" data-react="👍" title="Réagir : 👍">👍</button>
@@ -202,40 +249,19 @@ export class MessageList {
       });
     }
 
-    // Reactions
-    const chips = row.querySelector(".reactionChips");
-    const updateChips = () => {
-      if (!chips) return;
-      const set = this.reactions.get(id) || new Set();
-      chips.innerHTML = "";
-      if (!set.size) {
-        chips.style.display = "none";
-        return;
-      }
-      chips.style.display = "flex";
-      for (const em of set) {
-        const el = document.createElement("span");
-        el.className = "chip";
-        el.textContent = em;
-        chips.appendChild(el);
-      }
-    };
-
+    // Reaction handlers -> Firestore
     row.querySelectorAll(".reactBtn").forEach((b) => {
       b.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
         const em = b.getAttribute("data-react");
         if (!em) return;
-        const set = new Set(this.reactions.get(id) || []);
-        if (set.has(em)) set.delete(em);
-        else set.add(em);
-        this.reactions.set(id, set);
-        updateChips();
+        if (this.onReact) this.onReact({ id, emoji: em });
       });
     });
 
-    updateChips();
+    // First render reactions from Firestore state
+    this._renderReactions(row, reactions || {}, meUid);
 
     this.root.appendChild(row);
     this.nodes.set(id, row);

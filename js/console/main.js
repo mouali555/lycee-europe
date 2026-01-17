@@ -18,6 +18,7 @@ import {
 import { callAI } from "../services/aiService.js";
 import { uploadChatImage } from "../services/uploadService.js";
 import { deleteRoomMessage } from "../services/deleteService.js";
+import { toggleRoomMessageReaction } from "../services/reactionService.js";
 import { MessageList } from "../ui/messageList.js";
 import { HUD } from "../ui/hud.js";
 
@@ -125,6 +126,24 @@ window.addEventListener("keydown", (e) => {
 const msgList = new MessageList({
   root: messagesEl,
   newMsgBtn,
+  onReact: async ({ id, emoji }) => {
+    if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
+    if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
+    if (!id || !emoji) return;
+    try {
+      await toggleRoomMessageReaction({
+        spaceId: CONFIG.SPACE_ID,
+        roomId: CONFIG.ROOM_ID,
+        messageId: id,
+        uid: currentUser.uid,
+        emoji,
+      });
+      playTone(660, 0.04);
+    } catch (e) {
+      console.error(e);
+      msgList.addSystem(`REACTION_FAILED: ${e?.code || e?.message || "unknown"}`);
+    }
+  },
   onDelete: async ({ id }) => {
     if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
     if (!id) return;
@@ -268,7 +287,11 @@ function startListener() {
       return;
     }
     if (type === "modified") {
-      msgList.updateMessage(ev.id, { text: ev.text || "" });
+      msgList.updateMessage(ev.id, {
+        text: ev.text || "",
+        reactions: ev.reactions || {},
+        meUid: currentUser?.uid || null,
+      });
       return;
     }
 
@@ -289,6 +312,7 @@ function startListener() {
       text: ev.text || "",
       photoURL: ev.photoURL || null,
       imageURL: ev.imageURL || null,
+      reactions: ev.reactions || {},
       meUid: currentUser?.uid,
     });
 

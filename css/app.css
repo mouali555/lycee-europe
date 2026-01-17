@@ -308,6 +308,18 @@ body {
   transform: translateY(0);
 }
 
+/* Mobile / tactile : pas de "hover" -> on rend l'action visible */
+@media (hover: none) {
+  .msgActions {
+    opacity: 1;
+    transform: none;
+  }
+  .reactionBar {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .iconBtn {
   width: 26px;
   height: 26px;

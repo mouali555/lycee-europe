@@ -378,6 +378,15 @@ body.theme-light{
   pointer-events: auto;
 }
 
+/* Tactile : pas de hover -> la barre reste utilisable */
+@media (hover: none) {
+  .reactionBar{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
 .reactBtn{
   width: 28px;
   height: 28px;
@@ -391,6 +400,11 @@ body.theme-light{
 }
 
 .reactBtn:hover{ border-color: rgba(34,211,238,.55); }
+
+.reactBtn.active{
+  border-color: rgba(34,211,238,.75);
+  box-shadow: 0 10px 26px rgba(34,211,238,.18);
+}
 
 .reactionChips{
   display:none;
@@ -406,6 +420,16 @@ body.theme-light{
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(255,255,255,.055);
   box-shadow: 0 10px 26px rgba(0,0,0,.18);
+}
+
+.reactionChips .chip.mine{
+  border-color: rgba(34,211,238,.55);
+  box-shadow: 0 10px 26px rgba(34,211,238,.16);
+}
+
+.reactionChips .chip.mine{
+  border-color: rgba(34,211,238,.55);
+  background: rgba(34,211,238,.10);
 }
 
 .reactionPills{
