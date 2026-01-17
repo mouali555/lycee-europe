@@ -60,11 +60,12 @@ export class MessageList {
       (isAI ? " iaRow" : "") +
       (isKey ? " keyRow" : "");
 
-    // Avatar : IA utilise toujours photoia.jpg si aucune photo n’est fournie
-    let finalPhoto = photoURL || null;
-    if (isAI && !finalPhoto) {
-      finalPhoto = "photoia.png"; // à la racine du site (même niveau que console.html)
-    }
+    // Avatar : IA utilise toujours photoia.png
+let finalPhoto = photoURL || null;
+if (isAI) {
+  finalPhoto = "https://lycee-europe.com/photoia.png";
+}
+
 
     const avatarHTML = finalPhoto
       ? `<img class="avatar" src="${finalPhoto}" referrerpolicy="no-referrer">`
