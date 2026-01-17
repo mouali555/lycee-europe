@@ -1,5 +1,4 @@
 // functions/index.js (Node 20 / Functions v2 / Secret Manager)
-// v2: Auth Firebase + check membership serveur + OpenAI Responses API
 
 const admin = require("firebase-admin");
 admin.initializeApp();
@@ -9,7 +8,7 @@ const { defineSecret } = require("firebase-functions/params");
 
 const OPENAI_API_KEY = defineSecret("OPENAI_API_KEY");
 
-// Simple rate limit (par instance)
+// Simple rate limit (en mémoire, par instance)
 const RL = new Map();
 function rateLimit(uid, max = 12, windowMs = 60_000) {
   const now = Date.now();
@@ -28,9 +27,9 @@ function extractBearerToken(req) {
 
 function extractResponseText(data) {
   if (!data) return "…";
-  if (typeof data.output_text === "string" && data.output_text.trim()) return data.output_text.trim();
-
-  // Raw Responses API shape: output -> items -> message -> content[]
+  if (typeof data.output_text === "string" && data.output_text.trim()) {
+    return data.output_text.trim();
+  }
   try {
     const out = Array.isArray(data.output) ? data.output : [];
     const texts = [];
@@ -44,9 +43,14 @@ function extractResponseText(data) {
     }
     const joined = texts.join("\n").trim();
     return joined || "…";
-  } catch {
+  } catch (e) {
+    console.error("extractResponseText_error", e);
     return "…";
   }
+}
+
+function sendError(res, status, code, message) {
+  return res.status(status).json({ ok: false, code, message });
 }
 
 exports.aiReply = onRequest(
@@ -57,68 +61,95 @@ exports.aiReply = onRequest(
   },
   async (req, res) => {
     try {
-      if (req.method !== "POST") return res.status(405).send("Method not allowed");
+      if (req.method !== "POST") {
+        return sendError(res, 405, "METHOD_NOT_ALLOWED", "Only POST is allowed");
+      }
 
       const key = OPENAI_API_KEY.value();
-      if (!key) return res.status(500).send("Missing OPENAI_API_KEY secret");
+      if (!key) {
+        return sendError(res, 500, "MISSING_SECRET", "Missing OPENAI_API_KEY secret");
+      }
 
-      // ✅ Auth Firebase obligatoire (token envoyé par le client)
       const token = extractBearerToken(req);
-      if (!token) return res.status(401).send("Missing Authorization Bearer token");
+      if (!token) {
+        return sendError(res, 401, "AUTH_MISSING", "Missing Authorization Bearer token");
+      }
 
       let decoded;
       try {
         decoded = await admin.auth().verifyIdToken(token);
-      } catch {
-        return res.status(401).send("Invalid token");
+      } catch (e) {
+        console.warn("verifyIdToken_failed", e);
+        return sendError(res, 401, "AUTH_INVALID", "Invalid Firebase ID token");
       }
 
       const uid = decoded.uid;
-      if (!rateLimit(uid)) return res.status(429).send("Rate limit");
+      if (!rateLimit(uid)) {
+        return sendError(res, 429, "RATE_LIMIT", "Too many AI calls, please slow down");
+      }
 
       const body = req.body || {};
       const prompt = String(body.prompt || "").trim();
       const spaceId = String(body.spaceId || "").trim();
       const roomId = String(body.roomId || "").trim();
 
-      if (!prompt || !spaceId || !roomId) return res.status(400).send("Bad request");
-
-      // ✅ Check membership côté serveur (pas juste côté client)
-      const memRef = admin.firestore().collection("spaces").doc(spaceId).collection("members").doc(uid);
-      const memSnap = await memRef.get();
-      if (!memSnap.exists) return res.status(403).send("Access denied");
-
-      // ✅ OpenAI Responses API (remplace chat/completions)
-      const r = await fetch("https://api.openai.com/v1/responses", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${key}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          // Messages style (compatible)
-          input: [
-            {
-              role: "system",
-              content:
-                "Tu es @ia dans un chat privé. Réponds court, clair, utile. Pas de doxx, pas de contenu illégal/dangereux.",
-            },
-            { role: "user", content: prompt },
-          ],
-          temperature: 0.7,
-          max_output_tokens: 220,
-          store: false,
-          // safety_identifier: uid (optionnel, si tu veux)
-        }),
-      });
-
-      if (!r.ok) {
-        const t = await r.text().catch(() => "");
-        return res.status(500).send("OpenAI error: " + t);
+      if (!prompt || !spaceId || !roomId) {
+        return sendError(res, 400, "BAD_REQUEST", "prompt, spaceId and roomId are required");
       }
 
-      const data = await r.json();
+      // Check membership
+      const memRef = admin
+        .firestore()
+        .collection("spaces")
+        .doc(spaceId)
+        .collection("members")
+        .doc(uid);
+      const memSnap = await memRef.get();
+      if (!memSnap.exists) {
+        return sendError(res, 403, "ACCESS_DENIED", "User is not a member of this space");
+      }
+
+      // Call OpenAI Responses API
+      let openaiRes;
+      try {
+        openaiRes = await fetch("https://api.openai.com/v1/responses", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${key}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            input: [
+              {
+                role: "system",
+                content:
+                  "Tu es @ia dans un chat privé. Réponds court, clair, utile. Pas de doxx, pas de contenu illégal ou dangereux.",
+              },
+              { role: "user", content: prompt },
+            ],
+            temperature: 0.7,
+            max_output_tokens: 220,
+            store: false,
+          }),
+        });
+      } catch (e) {
+        console.error("openai_fetch_failed", e);
+        return sendError(res, 502, "OPENAI_NETWORK", "Unable to reach OpenAI");
+      }
+
+      if (!openaiRes.ok) {
+        const t = await openaiRes.text().catch(() => "");
+        console.error("openai_error", openaiRes.status, t);
+        return sendError(
+          res,
+          502,
+          "OPENAI_ERROR",
+          `OpenAI error (${openaiRes.status})`
+        );
+      }
+
+      const data = await openaiRes.json().catch(() => ({}));
       const answer = extractResponseText(data);
 
       await admin
@@ -132,14 +163,16 @@ exports.aiReply = onRequest(
           uid: "AI_BOT",
           displayName: "IA",
           photoURL: null,
+          role: "assistant",
+          model: "gpt-4o-mini",
           text: String(answer).slice(0, 800),
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
 
       return res.status(200).json({ ok: true });
     } catch (e) {
-      console.error(e);
-      return res.status(500).send("Server error");
+      console.error("aiReply_unhandled", e);
+      return sendError(res, 500, "SERVER_ERROR", "Unexpected server error");
     }
   }
 );

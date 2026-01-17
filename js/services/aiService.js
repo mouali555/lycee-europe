@@ -5,6 +5,7 @@ import { getIdTokenSafe } from "./authService.js";
 
 export async function callAI({ spaceId, roomId, user, prompt }) {
   if (!CONFIG.AI_ENDPOINT) throw new Error("AI_DISABLED");
+
   const token = await getIdTokenSafe();
   if (!token) throw new Error("AUTH_REQUIRED");
 
@@ -29,11 +30,30 @@ export async function callAI({ spaceId, roomId, user, prompt }) {
       }),
     });
 
-    if (!res.ok) {
-      const t = await res.text().catch(() => "");
-      throw new Error(`HTTP_${res.status} ${t}`.slice(0, 240));
+    const text = await res.text().catch(() => "");
+    let json;
+    try {
+      json = text ? JSON.parse(text) : {};
+    } catch {
+      json = {};
     }
-    return await res.json().catch(() => ({ ok: true }));
+
+    if (!res.ok || json?.ok === false) {
+      const code = json?.code || `HTTP_${res.status}`;
+      const msg = json?.message || text || "AI call failed";
+      const err = new Error(msg.slice(0, 240));
+      err.code = code;
+      throw err;
+    }
+
+    return json || { ok: true };
+  } catch (e) {
+    if (e.name === "AbortError") {
+      const err = new Error("AI_TIMEOUT");
+      err.code = "AI_TIMEOUT";
+      throw err;
+    }
+    throw e;
   } finally {
     clearTimeout(timeout);
   }

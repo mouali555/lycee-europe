@@ -3,30 +3,36 @@
 import { CONFIG } from "../core/config.js";
 import { nowStamp } from "../core/utils.js";
 import { loginGoogle, logout, watchAuth } from "../services/authService.js";
-import { ensureUserDoc, getProfile, grantKey, removeKey } from "../services/userService.js";
-import { checkMembership, joinWithInvite, subscribeRoomMessages, sendRoomMessage } from "../services/chatService.js";
+import {
+  ensureUserDoc,
+  getProfile,
+  grantKey,
+  removeKey,
+} from "../services/userService.js";
+import {
+  checkMembership,
+  joinWithInvite,
+  subscribeRoomMessages,
+  sendRoomMessage,
+} from "../services/chatService.js";
 import { callAI } from "../services/aiService.js";
 import { MessageList } from "../ui/messageList.js";
 import { HUD } from "../ui/hud.js";
 
 // ===== DOM =====
+
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
-
 const btnLogin = document.getElementById("btn-login");
 const btnLogout = document.getElementById("btn-logout");
 const userTag = document.getElementById("userTag");
-
 const inviteCode = document.getElementById("inviteCode");
 const joinBtn = document.getElementById("joinBtn");
-
 const spaceName = document.getElementById("spaceName");
 const roomName = document.getElementById("roomName");
-
 const messagesEl = document.getElementById("messages");
 const newMsgBtn = document.getElementById("newMsgBtn");
 const offlineBanner = document.getElementById("offlineBanner");
-
 const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send");
 const iaBtn = document.getElementById("iaBtn");
@@ -53,13 +59,15 @@ const hud = new HUD({
 });
 
 // ===== UI helpers =====
+
 function setTerminal(text) {
   if (terminalStatus) terminalStatus.textContent = text;
 }
 
 function updateConnectivityUI() {
   const online = navigator.onLine !== false;
-  if (offlineBanner) offlineBanner.setAttribute("aria-hidden", online ? "true" : "false");
+  if (offlineBanner)
+    offlineBanner.setAttribute("aria-hidden", online ? "true" : "false");
   hud.setOnlineState(online);
 }
 
@@ -80,6 +88,7 @@ function closeProfileModal() {
 }
 
 // ===== State =====
+
 const msgList = new MessageList({ root: messagesEl, newMsgBtn });
 
 let currentUser = null;
@@ -87,17 +96,22 @@ let isMember = false;
 let unsub = null;
 let userKeys = [];
 let userRank = "BRONZE";
-
 let lastSentAt = 0;
+
+// ===== Profile / Keys =====
 
 async function refreshProfile() {
   if (!currentUser) return;
   const p = await getProfile(currentUser.uid);
   userKeys = p.keys || [];
   userRank = p.rank || "BRONZE";
+
   if (profileName) profileName.textContent = currentUser.name;
   if (profileRank) profileRank.textContent = userRank;
-  if (profileKeys) profileKeys.textContent = userKeys.length ? userKeys.join(" • ") : "Aucune clé";
+  if (profileKeys)
+    profileKeys.textContent = userKeys.length
+      ? userKeys.join(" • ")
+      : "Aucune clé";
 }
 
 async function grantKeyToMe(tier = "BRONZE") {
@@ -108,32 +122,42 @@ async function grantKeyToMe(tier = "BRONZE") {
 
 async function consumeKey(codeRaw) {
   const code = String(codeRaw || "").trim().toUpperCase();
-  if (!code) return msgList.addSystem("USAGE: /use <clé>");
-  if (!userKeys.includes(code)) return msgList.addSystem("[KEYMASTER] Clé introuvable.");
+  if (!code) return msgList.addSystem("USAGE: /use <CODE>");
+  if (!userKeys.includes(code))
+    return msgList.addSystem("[KEYMASTER] Clé introuvable.");
   await removeKey(currentUser.uid, code);
   await refreshProfile();
   msgList.addSystem(`[KEYMASTER] Clé utilisée : ${code} ✅`);
 }
+
+// ===== Messages listener =====
 
 function startListener() {
   if (unsub) {
     unsub();
     unsub = null;
   }
+
   msgList.clear();
   msgList.addSystem("CONNECTED");
 
-  unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (m) => {
-    msgList.appendMessage({
-      id: m.id,
-      uid: m.uid,
-      displayName: m.displayName || "USER",
-      text: m.text || "",
-      photoURL: m.photoURL || null,
-      meUid: currentUser?.uid,
-    });
-  });
+  unsub = subscribeRoomMessages(
+    CONFIG.SPACE_ID,
+    CONFIG.ROOM_ID,
+    (m) => {
+      msgList.appendMessage({
+        id: m.id,
+        uid: m.uid,
+        displayName: m.displayName || "USER",
+        text: m.text || "",
+        photoURL: m.photoURL || null,
+        meUid: currentUser?.uid,
+      });
+    }
+  );
 }
+
+// ===== Join with invite =====
 
 async function joinFlow() {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
@@ -142,18 +166,39 @@ async function joinFlow() {
     const r = await joinWithInvite(CONFIG.SPACE_ID, code, currentUser);
     isMember = true;
     msgList.addSystem(r.already ? "ALREADY_MEMBER" : "INVITE_OK");
+
     // Starter key si nouveau
     if (!r.already) {
       try {
         await grantKeyToMe("BRONZE");
-      } catch {}
+      } catch (e) {
+        console.error(e);
+        msgList.addSystem("KEY_DROP_FAILED");
+      }
     }
+
     setTerminal("authenticated");
     startListener();
   } catch (e) {
-    msgList.addSystem(`INVITE_FAILED: ${e?.message || "unknown"}`);
+    console.error(e);
+    const codeMsg = e?.message || "";
+    if (codeMsg === "INVITE_CODE_REQUIRED") {
+      msgList.addSystem("INVITE_ERR: entre un code d’invitation.");
+    } else if (codeMsg === "INVITE_INVALID") {
+      msgList.addSystem("INVITE_ERR: ce code n’existe pas.");
+    } else if (codeMsg === "INVITE_DISABLED") {
+      msgList.addSystem("INVITE_ERR: ce code est désactivé.");
+    } else if (codeMsg === "INVITE_BROKEN") {
+      msgList.addSystem("INVITE_ERR: ce code est mal configuré.");
+    } else if (codeMsg === "AUTH_REQUIRED") {
+      msgList.addSystem("INVITE_ERR: connecte-toi d’abord.");
+    } else {
+      msgList.addSystem(`INVITE_FAILED: ${codeMsg || "unknown"}`);
+    }
   }
 }
+
+// ===== Send message / commands =====
 
 async function sendMessage() {
   const raw = (msgInput?.value || "").trim();
@@ -161,7 +206,8 @@ async function sendMessage() {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
 
   const now = Date.now();
-  if (now - lastSentAt < CONFIG.SEND_COOLDOWN_MS) return msgList.addSystem("SLOWMODE 2.5s");
+  if (now - lastSentAt < CONFIG.SEND_COOLDOWN_MS)
+    return msgList.addSystem("SLOWMODE 2.5s");
   lastSentAt = now;
 
   const lower = raw.toLowerCase();
@@ -170,9 +216,7 @@ async function sendMessage() {
   if (lower === "/help") {
     msgInput.value = "";
     updateCharCount();
-    msgList.addSystem(
-      "COMMANDS: /help • /keys • /use <key> • /drop • /claim <key> • @ia <prompt>"
-    );
+    msgList.addSystem("COMMANDS: /help • /keys • /use <CODE> • /drop • /claim • @ia ");
     return;
   }
 
@@ -180,7 +224,11 @@ async function sendMessage() {
     msgInput.value = "";
     updateCharCount();
     await refreshProfile();
-    msgList.addSystem(`[KEYMASTER] Inventaire: ${userKeys.length ? userKeys.join(", ") : "vide"}`);
+    msgList.addSystem(
+      `[KEYMASTER] Inventaire: ${
+        userKeys.length ? userKeys.join(", ") : "vide"
+      }`
+    );
     return;
   }
 
@@ -208,7 +256,9 @@ async function sendMessage() {
       hud.onSentMessage();
     } catch (e) {
       console.error(e);
-      msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
+      msgList.addSystem(
+        `SEND_FAILED: ${e?.code || e?.message || "unknown"}`
+      );
       return;
     }
 
@@ -227,11 +277,28 @@ async function sendMessage() {
       msgList.addSystem("AI_OK");
     } catch (e) {
       console.error(e);
-      msgList.addSystem(`AI_FAILED: ${e?.message || "unknown"}`);
+      const code = e?.code || "";
+      if (code === "RATE_LIMIT") {
+        msgList.addSystem(
+          "AI_LIMIT: Trop de requêtes, attends quelques secondes."
+        );
+      } else if (code === "AI_TIMEOUT") {
+        msgList.addSystem("AI_TIMEOUT: @ia a mis trop de temps à répondre.");
+      } else if (code === "ACCESS_DENIED") {
+        msgList.addSystem(
+          "AI_FORBIDDEN: tu n’as plus accès à @ia dans ce space."
+        );
+      } else if (code === "AUTH_REQUIRED") {
+        msgList.addSystem("AI_AUTH: reconnecte-toi pour utiliser @ia.");
+      } else {
+        msgList.addSystem(`AI_FAILED: ${e?.message || "unknown"}`);
+      }
     }
+
     return;
   }
 
+  // Message normal
   if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
 
   try {
@@ -251,8 +318,8 @@ async function sendMessage() {
     msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
   }
 }
-
 // ===== Init UI =====
+
 if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
 if (roomName) roomName.textContent = "# " + CONFIG.ROOM_LABEL;
 
@@ -268,27 +335,36 @@ window.addEventListener("online", updateConnectivityUI);
 window.addEventListener("offline", updateConnectivityUI);
 
 // Buttons
+
 btnLogin?.addEventListener("click", async () => {
   try {
     await loginGoogle();
   } catch (e) {
     console.error(e);
-    msgList.addSystem("AUTH_FAILED: " + (e?.code || e?.message || "unknown"));
+    msgList.addSystem(
+      "AUTH_FAILED: " + (e?.code || e?.message || "unknown")
+    );
   }
 });
 
 btnLogout?.addEventListener("click", async () => {
   try {
     await logout();
-  } catch {
+  } catch (e) {
+    console.error(e);
     msgList.addSystem("LOGOUT_FAILED");
   }
 });
 
 sendBtn?.addEventListener("click", sendMessage);
+
 msgInput?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") sendMessage();
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
 });
+
 msgInput?.addEventListener("input", updateCharCount);
 
 iaBtn?.addEventListener("click", () => {
@@ -305,6 +381,7 @@ newMsgBtn?.addEventListener("click", () => msgList.scrollToBottom());
 joinBtn?.addEventListener("click", joinFlow);
 
 // Profile modal
+
 userTag?.addEventListener("click", async () => {
   if (!currentUser) return;
   await refreshProfile();
@@ -312,20 +389,25 @@ userTag?.addEventListener("click", async () => {
 });
 
 closeProfile?.addEventListener("click", closeProfileModal);
+
 profileModal?.addEventListener("click", (e) => {
   if (e.target === profileModal) closeProfileModal();
 });
 
 // HUD claim
-document.getElementById("hudMissionClaim")?.addEventListener("click", () => {
-  if (hud.claimMission()) msgList.addSystem("MISSION_OK: +XP ✅");
-  else msgList.addSystem("MISSION_LOCKED");
-});
+
+document
+  .getElementById("hudMissionClaim")
+  ?.addEventListener("click", () => {
+    if (hud.claimMission()) msgList.addSystem("MISSION_OK: +XP ✅");
+    else msgList.addSystem("MISSION_LOCKED");
+  });
 
 // ===== Auth watcher =====
+
 setTerminal("type: login");
 msgList.addSystem("BOOT_OK");
-msgList.addSystem("TIP: @ia <message> • /help");
+msgList.addSystem("TIP: @ia • /help");
 
 watchAuth(async (user) => {
   if (user) {
@@ -335,16 +417,15 @@ watchAuth(async (user) => {
       photoURL: user.photoURL || null,
     };
 
-    userTag.textContent = currentUser.name;
-    btnLogin.style.display = "none";
-    btnLogout.style.display = "inline-block";
+    if (userTag) userTag.textContent = currentUser.name;
+    if (btnLogin) btnLogin.style.display = "none";
+    if (btnLogout) btnLogout.style.display = "inline-block";
 
     msgList.addSystem("AUTH_OK: " + currentUser.name);
     msgList.addSystem("CHECKING_ACCESS...");
 
     await ensureUserDoc(currentUser);
     await refreshProfile();
-
     hud.dailyCheckin();
     hud.render();
 
@@ -373,9 +454,10 @@ watchAuth(async (user) => {
     userKeys = [];
     userRank = "BRONZE";
 
-    userTag.textContent = "OFFLINE";
-    btnLogin.style.display = "inline-block";
-    btnLogout.style.display = "none";
+    if (userTag) userTag.textContent = "OFFLINE";
+    if (btnLogin) btnLogin.style.display = "inline-block";
+    if (btnLogout) btnLogout.style.display = "none";
+
     if (unsub) {
       unsub();
       unsub = null;
