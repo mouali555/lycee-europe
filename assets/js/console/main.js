@@ -18,7 +18,7 @@ import { callAI } from "../services/aiService.js";
 import { uploadChatImage } from "../services/uploadService.js";
 import { deleteRoomMessage } from "../services/deleteService.js";
 import { toggleRoomMessageReaction } from "../services/reactionService.js";
-import { MessageList } from "../ui/messageList.js";
+import MessageList  from "../ui/messageList.js";
 import { HUD } from "../ui/hud.js";
 
 // ===== DOM =====
