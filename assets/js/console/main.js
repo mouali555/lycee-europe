@@ -1,6 +1,6 @@
 // js/console/main.js — console XPCHAT + upload image
 import { CONFIG } from "../core/config.js";
-import { nowStamp, systemTheme } from "../core/utils.js";
+import { nowStamp } from "../core/utils.js";
 import { loginGoogle, logout, watchAuth } from "../services/authService.js";
 import {
   ensureUserDoc,
@@ -226,7 +226,7 @@ function playTone(freq = 520, dur = 0.06) {
 applyTheme(
   getPref(
     PREF_THEME,
-    document.documentElement.dataset.theme || systemTheme()
+    document.documentElement.dataset.theme || "dark"
   )
 );
 applySoundUI();
@@ -313,7 +313,6 @@ function startListener() {
         meUid: currentUser?.uid || null,
       };
 
-      // Fix ordering : Firestore peut réordonner un doc quand serverTimestamp se résout.
       const newIndex =
         typeof ev?.newIndex === "number" ? ev.newIndex : null;
 
@@ -321,7 +320,6 @@ function startListener() {
         ev?.uid === "AI_BOT" ||
         String(ev?.displayName || "").toUpperCase() === "IA";
 
-      // Hide typing when the AI response lands
       if (isAI) msgList.hideTyping();
 
       const shouldStick = msgList.isNearBottom();
@@ -657,7 +655,6 @@ watchAuth(async (user) => {
     msgList.addSystem("AUTH_OK: " + currentUser.name);
     msgList.addSystem("CHECKING_ACCESS...");
 
-    // Init profile
     try {
       await ensureUserDoc(currentUser);
       await refreshProfile();
