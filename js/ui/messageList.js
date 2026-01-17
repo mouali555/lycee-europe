@@ -19,12 +19,16 @@ export class MessageList {
 
   isNearBottom() {
     const el = this.root;
+    if (!el) return true;
+    // Si le contenu tient sans scroll, on considère qu’on est en bas
+    if (el.scrollHeight <= el.clientHeight + 4) return true;
     const dist = el.scrollHeight - el.scrollTop - el.clientHeight;
     return dist < 80;
   }
 
   scrollToBottom() {
-    this.root.scrollTop = this.root.scrollHeight;
+    const el = this.root;
+    el.scrollTop = el.scrollHeight;
     if (this.newMsgBtn) this.newMsgBtn.style.display = "none";
   }
 
@@ -62,7 +66,7 @@ export class MessageList {
       (isAI ? " iaRow" : "") +
       (isKey ? " keyRow" : "");
 
-    // Avatar : IA utilise toujours photoia.png
+    // Avatar : IA utilise toujours photoia.png (URL absolue)
     let finalPhoto = photoURL || null;
     if (isAI) {
       finalPhoto = "https://lycee-europe.com/photoia.png";
@@ -93,14 +97,17 @@ export class MessageList {
 
     this.root.appendChild(row);
 
-    // Au tout premier chargement, on se place toujours en bas
+    // Premier rendu après chargement : toujours tout en bas
     if (this.firstRender) {
       this.firstRender = false;
       this.scrollToBottom();
       return;
     }
 
-    if (wasAtBottom) this.scrollToBottom();
-    else this.showNewMsgBtn();
+    if (wasAtBottom) {
+      this.scrollToBottom();
+    } else {
+      this.showNewMsgBtn();
+    }
   }
 }
