@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Console IA — Lycée Europe</title>
 
-  <!-- Base + thème console -->
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/app.css" />
   <link rel="stylesheet" href="css/theme-console-dark.css" />
+  <link rel="stylesheet" href="css/header.css" />
   <link rel="stylesheet" href="css/xp-app.css" />
 </head>
 
@@ -31,19 +31,27 @@
     </div>
   </div>
 
-  <!-- Barre du haut -->
-  <header class="topbar">
-    <div class="left">
-      <span class="dot" aria-hidden="true"></span>
-      <span class="brand">CONSOLE IA</span>
-      <span id="clock" class="clock">—</span>
+  <!-- Header global -->
+  <header class="appHeader">
+    <div class="appHeader-left">
+      <div class="appLogoDot" aria-hidden="true"></div>
+      <div class="appBrand">CONSOLE IA</div>
+      <div class="clock mini" id="clock">—</div>
     </div>
 
-    <div class="right">
-      <span id="terminalStatus" class="mini">type: login</span>
-      <button id="btn-login" class="btn" type="button">Connexion</button>
-      <button id="btn-logout" class="btn ghost" type="button" style="display:none;">Déconnexion</button>
-      <span id="userTag" class="userTag">OFFLINE</span>
+    <div class="appHeader-center">
+      <nav class="appNav" aria-label="Navigation principale">
+        <a href="./index.html" class="appNav-link"><span>Accueil</span></a>
+        <a href="./console.html" class="appNav-link active"><span>Console IA</span></a>
+        <a href="./hub.html" class="appNav-link"><span>Projets</span></a>
+      </nav>
+    </div>
+
+    <div class="appHeader-right">
+      <div class="appStatusDot" id="appStatusDot" aria-hidden="true"></div>
+      <div id="userTag" class="appUserTag">OFFLINE</div>
+      <button id="btn-login" class="appHeader-btn" type="button">Connexion</button>
+      <button id="btn-logout" class="appHeader-btn" type="button" style="display:none;">Déconnexion</button>
     </div>
   </header>
 
@@ -51,62 +59,56 @@
   <main class="layout xpLayout">
     <!-- Sidebar gauche -->
     <aside class="sidebar">
-      <!-- Invitation / spaces -->
-      <div class="panel">
-        <div class="panelTitle">INVITATION</div>
+      <!-- JOIN / INVITE -->
+      <section class="panel">
+        <div class="panelTitle row">
+          <span>ACCESS</span>
+          <span class="mini" id="chatStatus">offline</span>
+          <button class="btn ghost" id="inviteFab" type="button" style="display:none">CODE</button>
+        </div>
 
         <div class="joinBox">
+          <div class="hint">
+            Si tu n’as pas accès, demande un <b>code d’invitation</b> puis clique Rejoindre.
+          </div>
+
           <input
-            id="inviteCode"
             class="input"
-            placeholder="Code d’invitation (ex : ADMINCIEL)"
+            id="inviteCode"
+            placeholder="Code d’invitation"
             autocomplete="off"
           />
-          <button id="joinBtn" class="btn" type="button">Rejoindre</button>
-          <div class="hint">
-            Connecte-toi puis colle un code d’invitation.
-          </div>
+          <button class="btn" id="joinBtn" type="button">Rejoindre</button>
         </div>
+      </section>
 
-        <!-- Optionnel : liste de spaces si tu l’utilises plus tard -->
-        <div id="spacesList" class="list"></div>
-      </div>
+      <!-- SPACES (optionnel pour plus tard) -->
+      <section class="panel">
+        <div class="panelTitle">SPACES</div>
+        <div class="list" id="spacesList"></div>
+      </section>
 
-      <!-- Missions / keys quick panel -->
-      <div class="panel">
+      <!-- ROOMS -->
+      <section class="panel">
         <div class="panelTitle row">
-          <span>MISSIONS</span>
-          <span class="mini">+XP</span>
-        </div>
-        <div class="joinBox">
-          <div class="hint">
-            Mission rapide : aide 2 personnes aujourd’hui.<br />
-            Récompense : <b>XP + clé</b> (démo).
-          </div>
-          <button id="missionBtn" class="btn" type="button">Valider la mission</button>
-        </div>
-      </div>
-
-      <!-- Rooms (si tu veux en afficher plusieurs plus tard) -->
-      <div class="panel">
-        <div class="panelTitle row">
-          <span>SALLES</span>
+          <span>ROOMS</span>
           <span class="mini" id="spaceName">—</span>
         </div>
-        <div id="roomsList" class="list"></div>
-      </div>
+        <div class="list" id="roomsList"></div>
+      </section>
     </aside>
 
-    <!-- Chat -->
+    <!-- CHAT -->
     <section class="chat xpChat">
       <div class="chatHeader">
         <div class="roomTag">
           <span class="mini">#</span>
           <span id="roomName">—</span>
         </div>
+
         <div class="statusLine">
-          <span class="mini">Statut&nbsp;:</span>
-          <span id="terminalStatus">offline</span>
+          <span class="mini">Status:</span>
+          <span class="mini" id="terminalStatus">offline</span>
         </div>
       </div>
 
@@ -118,8 +120,10 @@
         Connexion instable. Tes messages seront envoyés au retour du réseau.
       </div>
 
-      <div id="messages" class="messages"></div>
+      <!-- messages -->
+      <div class="messages" id="messages"></div>
 
+      <!-- bouton nouveaux messages -->
       <button
         id="newMsgBtn"
         class="newMsgBtn"
@@ -129,6 +133,7 @@
         ⬇️ Nouveaux messages
       </button>
 
+      <!-- composer -->
       <div class="composer xpComposer">
         <button
           id="iaBtn"
@@ -139,29 +144,29 @@
           IA
         </button>
         <input
-          id="msg"
           class="input msgInput"
-          placeholder="Écris ton message ou tape @ia…"
+          id="msg"
+          placeholder="Écris un message… (@ia pour parler à l’IA)"
           autocomplete="off"
           maxlength="800"
         />
-        <button id="send" class="btn" type="button">Envoyer</button>
+        <button class="btn" id="send" type="button">Envoyer</button>
       </div>
       <div class="composerMeta">
         <span id="charCount" class="mini">0/800</span>
       </div>
     </section>
 
-    <!-- HUD / progression -->
+    <!-- HUD -->
     <aside class="hud" aria-label="Progression">
       <div class="panel">
         <div class="panelTitle row">
-          <span>PROFIL</span>
+          <span>PLAYER</span>
           <span class="mini" id="hudStatus">—</span>
         </div>
         <div class="hudRow">
           <div class="hudCol">
-            <div class="mini">NIVEAU</div>
+            <div class="mini">LEVEL</div>
             <div class="hudValue" id="hudLevel">1</div>
           </div>
           <div class="hudCol">
@@ -176,21 +181,15 @@
       </div>
 
       <div class="panel">
-        <div class="panelTitle row">
-          <span>MISSION DU JOUR</span>
-        </div>
-        <div class="block mini">
-          <div id="hudMissionText">—</div>
-          <button id="hudMissionClaim" class="btn" type="button" style="margin-top:10px;">
-            Récupérer la récompense
-          </button>
-          <div
-            class="mini"
-            id="hudMissionMeta"
-            style="opacity:.8; margin-top:6px;"
-          >
-            Récompense : +10 XP
-          </div>
+        <div class="panelTitle">MISSION DU JOUR</div>
+        <div class="hint" id="hudMissionText">—</div>
+        <button id="hudMissionClaim" class="btn" type="button">Récupérer</button>
+        <div
+          class="mini"
+          id="hudMissionMeta"
+          style="opacity:.8; margin-top:6px;"
+        >
+          Récompense : +10 XP
         </div>
       </div>
 
@@ -199,21 +198,15 @@
           <span>VAULT</span>
           <span class="mini">LVL 3</span>
         </div>
-        <div class="block mini">
-          <div>Débloque le Vault au niveau 3.</div>
-          <div
-            class="mini"
-            id="hudVaultState"
-            style="margin-top:6px;"
-          >
-            État : verrouillé
-          </div>
+        <div class="hint">Débloque le Vault au niveau 3.</div>
+        <div class="mini" id="hudVaultState" style="margin-top:6px;">
+          État : verrouillé
         </div>
       </div>
     </aside>
   </main>
 
-  <!-- Modal profil -->
+  <!-- Profile modal -->
   <div class="modal" id="profileModal" aria-hidden="true">
     <div class="modalCard" role="dialog" aria-modal="true">
       <div class="modalTop">
@@ -244,7 +237,6 @@
     </div>
   </div>
 
-  <!-- JS -->
   <script type="module" src="js/boot.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>

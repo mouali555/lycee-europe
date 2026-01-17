@@ -1,0 +1,145 @@
+/* css/header.css — header global app */
+
+.appHeader{
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:10px 16px;
+  background: rgba(15,23,42,.98);
+  border-bottom:1px solid rgba(30,64,175,.7);
+  box-shadow: 0 16px 40px rgba(15,23,42,.95);
+  backdrop-filter: blur(14px);
+}
+
+.appHeader-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+.appLogoDot{
+  width:12px;
+  height:12px;
+  border-radius:999px;
+  background:#22c55e;
+  box-shadow:0 0 14px rgba(34,197,94,.9);
+}
+
+.appBrand{
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#e5e7eb;
+  white-space:nowrap;
+}
+
+.appHeader-center{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:1;
+  justify-content:center;
+}
+
+.appNav{
+  display:flex;
+  gap:6px;
+  padding:4px;
+  border-radius:999px;
+  background:rgba(15,23,42,1);
+  border:1px solid rgba(30,64,175,.7);
+}
+
+.appNav-link{
+  position:relative;
+  border:none;
+  background:transparent;
+  color:rgba(156,163,175,.9);
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+
+.appNav-link span{
+  font-size:13px;
+}
+
+.appNav-link:hover{
+  color:#e5e7eb;
+}
+
+.appNav-link.active{
+  background:rgba(37,99,235,.95);
+  color:#f9fafb;
+  box-shadow:0 10px 26px rgba(37,99,235,.55);
+}
+
+.appHeader-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.appUserTag{
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.7);
+  background:rgba(15,23,42,1);
+  color:#e5e7eb;
+  max-width:28vw;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  font-size:13px;
+}
+
+.appStatusDot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:#ef4444;
+  box-shadow:0 0 10px rgba(248,113,113,.85);
+}
+
+.appStatusDot.online{
+  background:#22c55e;
+  box-shadow:0 0 10px rgba(34,197,94,.9);
+}
+
+.appHeader-btn{
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.7);
+  background:transparent;
+  color:#e5e7eb;
+  padding:6px 10px;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+
+.appHeader-btn:hover{
+  border-color:rgba(37,99,235,.9);
+}
+
+/* Responsive */
+@media (max-width: 720px){
+  .appHeader-center{
+    display:none;
+  }
+  .appUserTag{
+    display:none;
+  }
+}

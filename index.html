@@ -5,30 +5,34 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>LYCÉE EUROPE — Accès privé</title>
 
-  <!-- Base + thème dark éducatif -->
   <link rel="stylesheet" href="./css/base.css" />
   <link rel="stylesheet" href="./css/app.css" />
   <link rel="stylesheet" href="./css/landing.css" />
   <link rel="stylesheet" href="./css/theme-console-dark.css" />
+  <link rel="stylesheet" href="./css/header.css" />
   <link rel="stylesheet" href="./css/xp-landing.css" />
 </head>
 
 <body>
-  <header class="lpTop">
-    <div class="lpLeft">
-      <span class="dot" aria-hidden="true"></span>
-      <span class="lpBrand">LYCÉE EUROPE</span>
-      <span class="lpPill">ACCÈS PRIVÉ</span>
+  <!-- Header global -->
+  <header class="appHeader">
+    <div class="appHeader-left">
+      <div class="appLogoDot" aria-hidden="true"></div>
+      <div class="appBrand">LYCÉE EUROPE • IA</div>
     </div>
-    <nav class="lpNav">
-      <a href="#concept" class="lpLink">Concept</a>
-      <a href="#cles" class="lpLink">Clés</a>
-      <a href="#ia" class="lpLink">@ia</a>
-      <a href="#missions" class="lpLink">Missions</a>
-    </nav>
-    <div class="lpRight">
-      <a class="lpBtn ghost" href="./console.html">Entrer</a>
-      <button class="lpBtn" id="requestKeyBtn" type="button">Demander une clé</button>
+
+    <div class="appHeader-center">
+      <nav class="appNav" aria-label="Navigation principale">
+        <a href="./index.html" class="appNav-link active"><span>Accueil</span></a>
+        <a href="./console.html" class="appNav-link"><span>Console IA</span></a>
+        <a href="./hub.html" class="appNav-link"><span>Projets</span></a>
+      </nav>
+    </div>
+
+    <div class="appHeader-right">
+      <div class="appStatusDot online" aria-hidden="true"></div>
+      <div class="appUserTag">Accès privé</div>
+      <a href="./console.html" class="appHeader-btn">Ouvrir la console</a>
     </div>
   </header>
 
