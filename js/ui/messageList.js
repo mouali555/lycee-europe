@@ -1,5 +1,3 @@
-// js/ui/messageList.js
-
 import { esc } from "../core/utils.js";
 
 export class MessageList {
@@ -20,7 +18,6 @@ export class MessageList {
   isNearBottom() {
     const el = this.root;
     if (!el) return true;
-    // Si le contenu tient sans scroll, on considère qu’on est en bas
     if (el.scrollHeight <= el.clientHeight + 4) return true;
     const dist = el.scrollHeight - el.scrollTop - el.clientHeight;
     return dist < 80;
@@ -45,7 +42,7 @@ export class MessageList {
     this.scrollToBottom();
   }
 
-  async appendMessage({ id, uid, displayName, text, photoURL, meUid }) {
+  async appendMessage({ id, uid, displayName, text, photoURL, imageURL, meUid }) {
     if (!id) return;
     if (this.rendered.has(id)) return;
     this.rendered.add(id);
@@ -78,6 +75,13 @@ export class MessageList {
           (displayName?.[0] || "?").toUpperCase()
         )}</div>`;
 
+    const hasText = (text || "").trim().length > 0;
+    const imgHtml = imageURL
+      ? `<div class="media"><img class="msgImage" src="${esc(
+          imageURL
+        )}" loading="lazy"></div>`
+      : "";
+
     row.innerHTML = `
       ${avatarHTML}
       <div class="bubble">
@@ -91,7 +95,8 @@ export class MessageList {
               : ""
           }
         </div>
-        <div class="text">${esc(text || "")}</div>
+        ${hasText ? `<div class="text">${esc(text || "")}</div>` : ""}
+        ${imgHtml}
       </div>
     `;
 
