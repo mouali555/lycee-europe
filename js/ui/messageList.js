@@ -63,7 +63,7 @@ export class MessageList {
     // Avatar : IA utilise toujours photoia.jpg si aucune photo n’est fournie
     let finalPhoto = photoURL || null;
     if (isAI && !finalPhoto) {
-      finalPhoto = "photoia.jpg"; // à la racine du site (même niveau que console.html)
+      finalPhoto = "photoia.png"; // à la racine du site (même niveau que console.html)
     }
 
     const avatarHTML = finalPhoto
