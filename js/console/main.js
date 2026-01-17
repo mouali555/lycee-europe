@@ -386,3 +386,27 @@ watchAuth(async (user) => {
     setTerminal("offline");
   }
 });
+function startListener() {
+  if (unsub) {
+    unsub();
+    unsub = null;
+  }
+  msgList.clear();
+  msgList.addSystem("CONNECTED");
+
+  unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (m) => {
+    msgList.appendMessage({
+      id: m.id,
+      uid: m.uid,
+      displayName: m.displayName || "USER",
+      text: m.text || "",
+      photoURL: m.photoURL || null,
+      meUid: currentUser?.uid,
+    });
+  });
+
+  // Scroll en bas après chargement initial
+  setTimeout(() => {
+    msgList.scrollToBottom();
+  }, 300);
+}
