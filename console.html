@@ -100,7 +100,7 @@
         </section>
       </aside>
 
-      <section class="chatPane">
+           <section class="chatPane">
         <div id="offlineBanner" class="offline" aria-hidden="true">
           Hors ligne – tentative de reconnexion…
         </div>
@@ -113,6 +113,56 @@
             </p>
           </div>
         </header>
+
+        <!-- zone messages -->
+        <div id="messages" class="messages"></div>
+        <button
+          id="newMsgBtn"
+          class="btn small newMsgBtn"
+          style="display:none"
+        >
+          Nouveau message
+        </button>
+
+        <!-- composer -->
+        <div class="composer xpComposer">
+          <button
+            id="iaBtn"
+            class="btn ghost"
+            type="button"
+            title="Préfixer ton message avec @ia"
+          >
+            IA
+          </button>
+
+          <button
+            id="imgBtn"
+            class="btn ghost"
+            type="button"
+            title="Envoyer une image"
+          >
+            📷
+          </button>
+          <input
+            type="file"
+            id="imgInput"
+            accept="image/*"
+            style="display:none"
+          />
+
+          <input
+            class="input msgInput"
+            id="msg"
+            placeholder="Écris un message… (@ia pour parler à l’IA)"
+            autocomplete="off"
+            maxlength="800"
+          />
+          <button class="btn" id="send" type="button">Envoyer</button>
+        </div>
+        <div class="composerMeta">
+          <span id="charCount" class="mini">0/800</span>
+        </div>
+      </section>
 
         <div id="messages" class="messages"></div>
         <button id="newMsgBtn" class="btn small newMsgBtn" style="display:none">
