@@ -7,8 +7,8 @@
   z-index: 50;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  background: linear-gradient(180deg, rgba(7,10,18,0.80) 0%, rgba(7,10,18,0.55) 100%);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 84%, transparent) 0%, color-mix(in srgb, var(--bg) 60%, transparent) 100%);
+  border-bottom: 1px solid var(--border);
 }
 
 .headerRow{
@@ -40,7 +40,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.82rem;
-  color: var(--text);
+  color: var(--muted);
 }
 
 .nav{
@@ -51,13 +51,9 @@
   border:1px solid var(--border);
   background: var(--surface);
   border-radius: 999px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
 .nav a{
-  white-space: nowrap;
   position:relative;
   padding: 10px 14px;
   border-radius: 999px;
@@ -70,7 +66,7 @@
 .nav a[aria-current="page"]{
   background: linear-gradient(135deg, rgba(100,210,255,0.16), rgba(167,139,250,0.12));
   color: var(--text);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.08) inset;
+  box-shadow: 0 0 0 1px var(--border) inset;
 }
 
 .headerActions{
@@ -84,8 +80,8 @@
 /* Mobile menu */
 .menuBtn{
   display:none;
-  border:1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  background: var(--surface);
   padding: 10px 12px;
   border-radius: 14px;
 }
@@ -140,21 +136,21 @@
   gap: 8px;
   padding: 7px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.04);
-  color: rgba(245,247,255,0.82);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
   font-size: 0.88rem;
 }
 
 .card{
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  background: var(--surface);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-sm);
 }
 
 .card--glass{
-  background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
   box-shadow: var(--shadow-glow);
 }
 
@@ -180,9 +176,9 @@
 
 /* Footer */
 .siteFooter{
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid var(--border);
   padding: var(--space-7) 0;
-  background: rgba(0,0,0,0.18);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
 }
 .footerGrid{
   display:flex;
@@ -197,11 +193,11 @@
   flex-wrap:wrap;
 }
 .footerLinks a{
-  color: rgba(245,247,255,0.72);
+  color: var(--muted);
   padding: 8px 10px;
   border-radius: 12px;
 }
-.footerLinks a:hover{ background: rgba(255,255,255,0.05); color: rgba(245,247,255,0.9); }
+.footerLinks a:hover{ background: var(--surface-2); color: var(--text); }
 
 /* Modal */
 .modal{
@@ -220,8 +216,8 @@
 
 .modalCard{
   width: min(640px, 100%);
-  border:1px solid rgba(255,255,255,0.12);
-  background: rgba(10,14,26,0.78);
+  border:1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-2) 78%, transparent);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: 22px;
@@ -238,8 +234,8 @@
 .modalTop b{ font-size: 1.05rem; }
 
 .iconBtn{
-  border:1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  background: var(--surface);
   border-radius: 14px;
   padding: 8px 10px;
 }
@@ -252,9 +248,9 @@
   resize:none;
   padding: 14px 14px;
   border-radius: 16px;
-  border:1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.03);
-  color: rgba(245,247,255,0.92);
+  border:1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
 }
 
 .modalActions{
@@ -283,16 +279,10 @@
   .grid3, .grid4{ grid-template-columns: 1fr; }
 }
 
+/* Icon buttons */
+.iconBtn{ cursor:pointer; color: var(--text); }
+.iconBtn:hover{ background: var(--surface-2); }
 
-.nav::-webkit-scrollbar{ display:none; }
-
-
-/* Light theme adjustments */
-:root[data-theme="light"] .siteHeader{
-  background: linear-gradient(180deg, rgba(255,255,255,0.86) 0%, rgba(255,255,255,0.65) 100%);
-  border-bottom: 1px solid var(--border);
-}
-
-@media (max-width: 860px){
-  .nav a{ padding: 9px 12px; font-size: 0.95rem; }
-}
+/* Theme helpers */
+:root[data-theme="light"] .siteHeader{ backdrop-filter: blur(14px); }
+:root[data-theme="light"] .modal{ background: rgba(10,12,18,0.45); }

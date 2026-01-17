@@ -3,6 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover" />
+<script>
+    (() => {
+      const KEY = "le_theme";
+      const root = document.documentElement;
+      try {
+        const stored = localStorage.getItem(KEY);
+        const system = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        root.dataset.theme = stored || system;
+      } catch {
+        root.dataset.theme = "dark";
+      }
+    })();
+  </script>
 
   <title>Console IA — Lycée Europe</title>
   <meta name="description" content="Console privée : chat, missions, clés et copilote @ia." />
@@ -29,7 +42,7 @@
   <link rel="stylesheet" href="./assets/css/console.css" />
 </head>
 
-<body class="consoleBody theme-dark">
+<body class="consoleBody">
   <a class="skipLink" href="#chat">Aller au chat</a>
 
   <header class="siteHeader">
@@ -50,7 +63,7 @@
           <span id="clock" class="clock" aria-label="Heure">--:--:--</span>
           <span id="terminalStatus" class="terminalStatus" aria-label="Statut">booting…</span>
 
-          <button id="themeToggle" class="btn btn--small" type="button" title="Basculer thème (clair/sombre)">🌙</button>
+          <button id="themeToggle" data-theme-toggle class="btn btn--small" type="button" title="Basculer thème (clair/sombre)">🌙</button>
           <button id="soundToggle" class="btn btn--small" type="button" title="Activer/Désactiver les sons">🔊</button>
 
           <span class="badge" style="gap:10px">

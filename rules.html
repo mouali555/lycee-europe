@@ -3,6 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<script>
+    (() => {
+      const KEY = "le_theme";
+      const root = document.documentElement;
+      try {
+        const stored = localStorage.getItem(KEY);
+        const system = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        root.dataset.theme = stored || system;
+      } catch {
+        root.dataset.theme = "dark";
+      }
+    })();
+  </script>
 
   <title>Règles — Lycée Europe • IA</title>
   <meta name="description" content="Règles de l’espace privé : respect, sécurité et qualité." />
@@ -48,6 +61,7 @@
 
         <div class="headerActions">
           <button class="menuBtn" type="button" data-menu-btn aria-expanded="false" aria-controls="mobileNav">☰</button>
+          <button class="btn btn--small" type="button" data-theme-toggle aria-label="Basculer le thème">☀️</button>
           <a class="btn btn--small btn--primary" href="./console.html">Ouvrir la console</a>
         </div>
       </div>

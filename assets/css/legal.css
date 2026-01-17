@@ -13,11 +13,11 @@
 .legalCard h2{
   font-size: 1.2rem;
   margin-top: 18px;
-  color: rgba(245,247,255,0.9);
+  color: var(--text);
 }
 
 .legalCard p{ margin-top: 10px; }
 
-.legalCard ul{ margin: 10px 0 0 18px; color: rgba(245,247,255,0.72); }
+.legalCard ul{ margin: 10px 0 0 18px; color: var(--muted); }
 
 .legalCard li{ margin: 6px 0; }
