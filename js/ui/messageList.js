@@ -48,22 +48,42 @@ export class MessageList {
 
     const row = document.createElement("div");
     const me = uid && meUid && uid === meUid;
-    const isAI = uid === "AI_BOT" || String(displayName || "").toUpperCase() === "IA";
-    const isKey = uid === "KEYMASTER" || String(displayName || "").toUpperCase() === "KEYMASTER";
-    row.className =
-      "msgRow" + (me ? " meRow" : "") + (isAI ? " iaRow" : "") + (isKey ? " keyRow" : "");
+    const isAI =
+      uid === "AI_BOT" || String(displayName || "").toUpperCase() === "IA";
+    const isKey =
+      uid === "KEYMASTER" ||
+      String(displayName || "").toUpperCase() === "KEYMASTER";
 
-    const finalPhoto = photoURL || null;
+    row.className =
+      "msgRow" +
+      (me ? " meRow" : "") +
+      (isAI ? " iaRow" : "") +
+      (isKey ? " keyRow" : "");
+
+    // Avatar : IA utilise toujours photoia.jpg si aucune photo n’est fournie
+    let finalPhoto = photoURL || null;
+    if (isAI && !finalPhoto) {
+      finalPhoto = "photoia.jpg"; // à la racine du site (même niveau que console.html)
+    }
+
     const avatarHTML = finalPhoto
       ? `<img class="avatar" src="${finalPhoto}" referrerpolicy="no-referrer">`
-      : `<div class="avatar fallback">${esc((displayName?.[0] || "?").toUpperCase())}</div>`;
+      : `<div class="avatar fallback">${esc(
+          (displayName?.[0] || "?").toUpperCase()
+        )}</div>`;
 
     row.innerHTML = `
       ${avatarHTML}
       <div class="bubble">
         <div class="meta">
           <span class="name">${esc(displayName || "USER")}</span>
-          ${isAI ? `<span class="badge">🤖 IA</span>` : isKey ? `<span class="badge">🔑 KEY</span>` : ""}
+          ${
+            isAI
+              ? `<span class="badge">🤖 IA</span>`
+              : isKey
+              ? `<span class="badge">🔑 KEY</span>`
+              : ""
+          }
         </div>
         <div class="text">${esc(text || "")}</div>
       </div>
