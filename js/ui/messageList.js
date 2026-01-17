@@ -1,3 +1,4 @@
+// js/ui/messageList.js
 import { esc } from "../core/utils.js";
 
 export class MessageList {
@@ -5,7 +6,6 @@ export class MessageList {
     this.root = root;
     this.newMsgBtn = newMsgBtn || null;
     this.rendered = new Set();
-    this.avatarCache = new Map();
     this.firstRender = true;
   }
 
@@ -42,7 +42,15 @@ export class MessageList {
     this.scrollToBottom();
   }
 
-  async appendMessage({ id, uid, displayName, text, photoURL, imageURL, meUid }) {
+  async appendMessage({
+    id,
+    uid,
+    displayName,
+    text,
+    photoURL,
+    imageURL,
+    meUid,
+  }) {
     if (!id) return;
     if (this.rendered.has(id)) return;
     this.rendered.add(id);
@@ -63,7 +71,7 @@ export class MessageList {
       (isAI ? " iaRow" : "") +
       (isKey ? " keyRow" : "");
 
-    // Avatar : IA utilise toujours photoia.png (URL absolue)
+    // Avatar (IA utilise une image fixe)
     let finalPhoto = photoURL || null;
     if (isAI) {
       finalPhoto = "https://lycee-europe.com/photoia.png";
@@ -102,7 +110,7 @@ export class MessageList {
 
     this.root.appendChild(row);
 
-    // Premier rendu après chargement : toujours tout en bas
+    // Premier rendu : on descend tout en bas
     if (this.firstRender) {
       this.firstRender = false;
       this.scrollToBottom();

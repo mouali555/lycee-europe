@@ -1,10 +1,20 @@
-// js/console/main.js — v2 + upload image
+// js/console/main.js — console XPCHAT + upload image
 
 import { CONFIG } from "../core/config.js";
 import { nowStamp } from "../core/utils.js";
 import { loginGoogle, logout, watchAuth } from "../services/authService.js";
-import { ensureUserDoc, getProfile, grantKey, removeKey } from "../services/userService.js";
-import { checkMembership, joinWithInvite, subscribeRoomMessages, sendRoomMessage } from "../services/chatService.js";
+import {
+  ensureUserDoc,
+  getProfile,
+  grantKey,
+  removeKey,
+} from "../services/userService.js";
+import {
+  checkMembership,
+  joinWithInvite,
+  subscribeRoomMessages,
+  sendRoomMessage,
+} from "../services/chatService.js";
 import { callAI } from "../services/aiService.js";
 import { uploadChatImage } from "../services/uploadService.js";
 import { MessageList } from "../ui/messageList.js";
@@ -64,7 +74,8 @@ function setTerminal(text) {
 
 function updateConnectivityUI() {
   const online = navigator.onLine !== false;
-  if (offlineBanner) offlineBanner.setAttribute("aria-hidden", online ? "true" : "false");
+  if (offlineBanner)
+    offlineBanner.setAttribute("aria-hidden", online ? "true" : "false");
   hud.setOnlineState(online);
 }
 
@@ -95,6 +106,7 @@ let userRank = "BRONZE";
 
 let lastSentAt = 0;
 
+// ===== Profile / Keys =====
 async function refreshProfile() {
   if (!currentUser) return;
   const p = await getProfile(currentUser.uid);
@@ -102,7 +114,10 @@ async function refreshProfile() {
   userRank = p.rank || "BRONZE";
   if (profileName) profileName.textContent = currentUser.name;
   if (profileRank) profileRank.textContent = userRank;
-  if (profileKeys) profileKeys.textContent = userKeys.length ? userKeys.join(" • ") : "Aucune clé";
+  if (profileKeys)
+    profileKeys.textContent = userKeys.length
+      ? userKeys.join(" • ")
+      : "Aucune clé";
 }
 
 async function grantKeyToMe(tier = "BRONZE") {
@@ -120,6 +135,7 @@ async function consumeKey(codeRaw) {
   msgList.addSystem(`[KEYMASTER] Clé utilisée : ${code} ✅`);
 }
 
+// ===== Messages listener =====
 function startListener() {
   if (unsub) {
     unsub();
@@ -145,6 +161,7 @@ function startListener() {
   }, 300);
 }
 
+// ===== Join via invite =====
 async function joinFlow() {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
   const code = inviteCode?.value || "";
@@ -164,6 +181,7 @@ async function joinFlow() {
   }
 }
 
+// ===== Send text / commands / IA =====
 async function sendMessage() {
   const raw = (msgInput?.value || "").trim();
   if (!raw) return;
@@ -181,7 +199,7 @@ async function sendMessage() {
     msgInput.value = "";
     updateCharCount();
     msgList.addSystem(
-      "COMMANDS: /help • /keys • /use <key> • /drop • /claim <key> • @ia <prompt>"
+      "COMMANDS: /help • /keys • /use <key> • @ia <prompt>"
     );
     return;
   }
@@ -191,7 +209,9 @@ async function sendMessage() {
     updateCharCount();
     await refreshProfile();
     msgList.addSystem(
-      `[KEYMASTER] Inventaire: ${userKeys.length ? userKeys.join(", ") : "vide"}`
+      `[KEYMASTER] Inventaire: ${
+        userKeys.length ? userKeys.join(", ") : "vide"
+      }`
     );
     return;
   }
@@ -264,7 +284,7 @@ async function sendMessage() {
 
 // ===== Init UI =====
 if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
-if (roomName) roomName.textContent = "# " + CONFIG.ROOM_LABEL;
+if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
 
 setInterval(() => {
   if (clockEl) clockEl.textContent = nowStamp();
@@ -277,7 +297,7 @@ updateCharCount();
 window.addEventListener("online", updateConnectivityUI);
 window.addEventListener("offline", updateConnectivityUI);
 
-// Buttons
+// Auth buttons
 btnLogin?.addEventListener("click", async () => {
   try {
     await loginGoogle();
@@ -295,12 +315,14 @@ btnLogout?.addEventListener("click", async () => {
   }
 });
 
+// Send text
 sendBtn?.addEventListener("click", sendMessage);
 msgInput?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 msgInput?.addEventListener("input", updateCharCount);
 
+// IA helper
 iaBtn?.addEventListener("click", () => {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
   const t = msgInput.value || "";
@@ -311,7 +333,7 @@ iaBtn?.addEventListener("click", () => {
   msgInput.focus();
 });
 
-// bouton image
+// ===== Upload image =====
 imgBtn?.addEventListener("click", () => {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
   imgInput?.click();
@@ -353,12 +375,15 @@ imgInput?.addEventListener("change", async (e) => {
     msgList.addSystem("IMAGE_OK");
   } catch (err) {
     console.error(err);
-    msgList.addSystem(`IMAGE_FAILED: ${err?.code || err?.message || "unknown"}`);
+    msgList.addSystem(
+      `IMAGE_FAILED: ${err?.code || err?.message || "unknown"}`
+    );
   } finally {
     imgInput.value = "";
   }
 });
 
+// Misc
 newMsgBtn?.addEventListener("click", () => msgList.scrollToBottom());
 joinBtn?.addEventListener("click", joinFlow);
 

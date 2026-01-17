@@ -2,8 +2,16 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <title>Console - XP Chat</title>
+    <title>XPCHAT Console</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Police + styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
     <link rel="stylesheet" href="./css/reset.css" />
     <link rel="stylesheet" href="./css/app.css" />
@@ -24,6 +32,7 @@
     </header>
 
     <main class="layout">
+      <!-- Sidebar gauche -->
       <aside class="sidebar">
         <h1 class="logo">XP<span>CHAT</span></h1>
 
@@ -100,7 +109,8 @@
         </section>
       </aside>
 
-           <section class="chatPane">
+      <!-- Zone chat droite -->
+      <section class="chatPane">
         <div id="offlineBanner" class="offline" aria-hidden="true">
           Hors ligne – tentative de reconnexion…
         </div>
@@ -109,12 +119,13 @@
           <div>
             <h2 id="roomNameHeader">Console</h2>
             <p class="subtitle">
-              Utilise @ia pour parler à l’IA. /help pour la liste des commandes.
+              Utilise @ia pour parler à l’IA. /help pour la liste des
+              commandes.
             </p>
           </div>
         </header>
 
-        <!-- zone messages -->
+        <!-- Messages -->
         <div id="messages" class="messages"></div>
         <button
           id="newMsgBtn"
@@ -124,52 +135,7 @@
           Nouveau message
         </button>
 
-        <!-- composer -->
-        <div class="composer xpComposer">
-          <button
-            id="iaBtn"
-            class="btn ghost"
-            type="button"
-            title="Préfixer ton message avec @ia"
-          >
-            IA
-          </button>
-
-          <button
-            id="imgBtn"
-            class="btn ghost"
-            type="button"
-            title="Envoyer une image"
-          >
-            📷
-          </button>
-          <input
-            type="file"
-            id="imgInput"
-            accept="image/*"
-            style="display:none"
-          />
-
-          <input
-            class="input msgInput"
-            id="msg"
-            placeholder="Écris un message… (@ia pour parler à l’IA)"
-            autocomplete="off"
-            maxlength="800"
-          />
-          <button class="btn" id="send" type="button">Envoyer</button>
-        </div>
-        <div class="composerMeta">
-          <span id="charCount" class="mini">0/800</span>
-        </div>
-      </section>
-
-        <div id="messages" class="messages"></div>
-        <button id="newMsgBtn" class="btn small newMsgBtn" style="display:none">
-          Nouveau message
-        </button>
-
-        <!-- composer -->
+        <!-- Composer -->
         <div class="composer xpComposer">
           <button
             id="iaBtn"
@@ -210,7 +176,7 @@
       </section>
     </main>
 
-    <!-- Profile modal -->
+    <!-- Modal profil -->
     <div id="profileModal" class="modal" aria-hidden="true">
       <div class="modal-dialog">
         <button id="closeProfile" class="modal-close">×</button>
