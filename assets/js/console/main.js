@@ -1,5 +1,4 @@
 // js/console/main.js — console XPCHAT + upload image
-
 import { CONFIG } from "../core/config.js";
 import { nowStamp } from "../core/utils.js";
 import { loginGoogle, logout, watchAuth } from "../services/authService.js";
@@ -123,6 +122,14 @@ window.addEventListener("keydown", (e) => {
 });
 
 // ===== State =====
+let currentUser = null;
+let isMember = false;
+let unsub = null;
+let userKeys = [];
+let userRank = "BRONZE";
+let lastSentAt = 0;
+
+// ===== Message list UI =====
 const msgList = new MessageList({
   root: messagesEl,
   newMsgBtn,
@@ -141,29 +148,83 @@ const msgList = new MessageList({
       playTone(660, 0.04);
     } catch (e) {
       console.error(e);
-      msgList.addSystem(`REACTION_FAILED: ${e?.code || e?.message || "unknown"}`);
+      msgList.addSystem(
+        `REACTION_FAILED: ${e?.code || e?.message || "unknown"}`
+      );
     }
   },
   onDelete: async ({ id }) => {
     if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
     if (!id) return;
-
     const ok = confirm("Supprimer ce message ? (irréversible)");
     if (!ok) return;
-
     try {
       await deleteRoomMessage({
         spaceId: CONFIG.SPACE_ID,
         roomId: CONFIG.ROOM_ID,
         messageId: id,
       });
-      // Firestore enverra un event "removed" et l'UI va s'actualiser.
     } catch (e) {
       console.error(e);
-      msgList.addSystem(`DELETE_FAILED: ${e?.code || e?.message || "unknown"}`);
+      msgList.addSystem(
+        `DELETE_FAILED: ${e?.code || e?.message || "unknown"}`
+      );
     }
   },
 });
+
+// ===================================================================
+// ✅ FIX SCROLL GLOBAL : arriver en bas + rester en bas (même mobile)
+// ===================================================================
+
+let userScrolledUp = false;
+let bootStickUntil = 0;
+
+function getScroller() {
+  // Si la liste est scrollable => elle
+  if (messagesEl && messagesEl.scrollHeight > messagesEl.clientHeight + 8) {
+    return messagesEl;
+  }
+  // Sinon => scroll page (cas où le body scroll)
+  return document.scrollingElement || document.documentElement;
+}
+
+function isNearBottomPx(px = 160) {
+  const s = getScroller();
+  const dist = s.scrollHeight - (s.scrollTop + s.clientHeight);
+  return dist < px;
+}
+
+function forceStick(ms = 1400) {
+  bootStickUntil = Date.now() + ms;
+  userScrolledUp = false;
+}
+
+function shouldStickNow() {
+  if (Date.now() < bootStickUntil) return true; // boot window Firestore
+  return !userScrolledUp; // tant que l'user n'a pas scroll up
+}
+
+function scrollToBottomNow() {
+  const s = getScroller();
+  s.scrollTop = s.scrollHeight;
+}
+
+function scrollBottomNextFrame() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      scrollToBottomNow();
+    });
+  });
+}
+
+function handleAnyScroll() {
+  // si l'user est loin du bas => il "a scroll up"
+  userScrolledUp = !isNearBottomPx(180);
+}
+
+messagesEl?.addEventListener("scroll", handleAnyScroll, { passive: true });
+window.addEventListener("scroll", handleAnyScroll, { passive: true });
 
 // ===== Preferences (theme / sound) =====
 const PREF_THEME = "le_theme";
@@ -202,7 +263,8 @@ function applySoundUI() {
 function playTone(freq = 520, dur = 0.06) {
   if (!soundEnabled) return;
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
     const o = ctx.createOscillator();
     const g = ctx.createGain();
     o.type = "sine";
@@ -219,7 +281,7 @@ function playTone(freq = 520, dur = 0.06) {
 }
 
 // Init preferences
-applyTheme(getPref(PREF_THEME, document.documentElement.dataset.theme || systemTheme()));
+applyTheme(getPref(PREF_THEME, document.documentElement.dataset.theme || "dark"));
 applySoundUI();
 
 themeToggle?.addEventListener("click", () => {
@@ -234,64 +296,13 @@ soundToggle?.addEventListener("click", () => {
   if (soundEnabled) playTone(720, 0.05);
 });
 
-let currentUser = null;
-let isMember = false;
-let unsub = null;
-let userKeys = [];
-let userRank = "BRONZE";
-
-let lastSentAt = 0;
-
-// ===== Scroll behavior =====
-// Objectif UX: on arrive toujours en bas du chat, et on reste en bas tant que
-// l'utilisateur n'a pas volontairement scrollé vers le haut.
-//
-// Problèmes résolus :
-// - Batch initial Firestore (beaucoup de "added") => sans stick forcé, on reste en haut.
-// - Envoi d'un message => on veut revenir en bas immédiatement.
-
-let userScrolledUp = false;
-let stickToBottomUntil = 0;
-
-function stickToBottom(ms = 0) {
-  userScrolledUp = false;
-  if (ms > 0) stickToBottomUntil = Date.now() + ms;
-}
-
-function shouldStickNow() {
-  if (Date.now() < stickToBottomUntil) return true;
-  return !userScrolledUp;
-}
-
-function scrollBottomNextFrame() {
-  // Double RAF = fiable même quand Firestore injecte 100 nodes d'un coup.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      msgList.scrollToBottom();
-    });
-  });
-}
-
-// L'utilisateur scroll ? on désactive le stick si il remonte.
-messagesEl?.addEventListener(
-  "scroll",
-  () => {
-    const near = msgList.isNearBottom();
-    userScrolledUp = !near;
-    if (near) {
-      // cache le bouton "nouveau message"
-      msgList.scrollToBottom();
-    }
-  },
-  { passive: true }
-);
-
 // ===== Profile / Keys =====
 async function refreshProfile() {
   if (!currentUser) return;
   const p = await getProfile(currentUser.uid);
   userKeys = p.keys || [];
   userRank = p.rank || "BRONZE";
+
   if (profileName) profileName.textContent = currentUser.name;
   if (profileRank) profileRank.textContent = userRank;
   if (profileKeys)
@@ -308,33 +319,36 @@ async function grantKeyToMe(tier = "BRONZE") {
 
 async function consumeKey(codeRaw) {
   const code = String(codeRaw || "").trim().toUpperCase();
-  if (!code) return msgList.addSystem("USAGE: /use <clé>");
+  if (!code) return msgList.addSystem("USAGE: /use ");
   if (!userKeys.includes(code)) return msgList.addSystem("[KEYMASTER] Clé introuvable.");
   await removeKey(currentUser.uid, code);
   await refreshProfile();
   msgList.addSystem(`[KEYMASTER] Clé utilisée : ${code} ✅`);
 }
 
-// ===== Messages listener =====
+// ===================================================================
+// ✅ LISTENER MESSAGES (FIX : auto-scroll + pas bloqué en haut)
+// ===================================================================
 function startListener() {
   if (unsub) {
     unsub();
     unsub = null;
   }
+
   msgList.clear();
   msgList.addSystem("CONNECTED");
 
-  // Pendant le chargement initial Firestore, on force le stick-to-bottom (sinon
-  // tu restes bloqué en haut et tu dois redescendre à la main).
-  stickToBottom(1600);
+  // 🔥 pendant le batch initial Firestore, on force l'auto-scroll
+  forceStick(2200);
 
   unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (ev) => {
     const type = ev?.type || "added";
+
     if (type === "removed") {
       msgList.removeMessage(ev.id);
       return;
     }
-    // Payload normalisé pour l'UI
+
     const payload = {
       id: ev.id,
       uid: ev.uid,
@@ -346,46 +360,44 @@ function startListener() {
       meUid: currentUser?.uid || null,
     };
 
-    // Fix ordering : Firestore peut réordonner un doc quand serverTimestamp se résout.
-    // on utilise newIndex (si fourni) pour insérer / déplacer au bon endroit.
     const newIndex = typeof ev?.newIndex === "number" ? ev.newIndex : null;
 
     const isAI =
-      ev?.uid === "AI_BOT" || String(ev?.displayName || "").toUpperCase() === "IA";
+      ev?.uid === "AI_BOT" ||
+      String(ev?.displayName || "").toUpperCase() === "IA";
 
-    // Hide typing when the AI response lands
     if (isAI) msgList.hideTyping();
 
-    // Auto-stick: si l'utilisateur est en bas (ou pendant le boot), on reste en bas.
-    const stick = shouldStickNow() || msgList.isNearBottom();
+    // ✅ Stick si boot window OU si l'utilisateur n'a pas scroll up
+    const stick = shouldStickNow();
 
-    // Modified : update + reposition only (no SFX)
     if (type === "modified") {
       msgList.upsertMessage(payload, newIndex);
       if (stick) scrollBottomNextFrame();
-      else msgList.showNewMsgBtn?.();
       return;
     }
 
-    // Added : insert + SFX (receive only)
     msgList.upsertMessage(payload, newIndex);
 
-    // Si c'est ton message, on force le stick (évite le "jump" quand Firestore
-    // applique l'event après le clic).
-    if (type === "added" && ev?.uid && currentUser?.uid && ev.uid === currentUser.uid) {
-      stickToBottom(900);
+    // ✅ Si c’est ton message → on force le stick + scroll bas (sinon tu restes en haut)
+    if (type === "added" && currentUser?.uid && ev?.uid === currentUser.uid) {
+      forceStick(1200);
     }
 
     // SFX: receive message (not mine)
-    if (type === "added" && ev?.uid && currentUser?.uid && ev.uid !== currentUser.uid) {
+    if (
+      type === "added" &&
+      ev?.uid &&
+      currentUser?.uid &&
+      ev.uid !== currentUser.uid
+    ) {
       playTone(isAI ? 680 : 560, 0.045);
     }
 
     if (stick) scrollBottomNextFrame();
-    else msgList.showNewMsgBtn?.();
   });
 
-  // Safety: même si le réseau est lent, on descend en bas après montage.
+  // sécurité : tout de suite en bas
   scrollBottomNextFrame();
 }
 
@@ -426,9 +438,7 @@ async function sendMessage() {
   if (lower === "/help") {
     msgInput.value = "";
     updateCharCount();
-    msgList.addSystem(
-      "COMMANDS: /help • /keys • /use <key> • @ia <prompt>"
-    );
+    msgList.addSystem("COMMANDS: /help • /keys • /use • @ia ");
     return;
   }
 
@@ -465,8 +475,8 @@ async function sendMessage() {
         text: `@IA: ${prompt}`.slice(0, CONFIG.MAX_MESSAGE_LEN),
       });
 
-      // UX: après envoi, on revient en bas immédiatement.
-      stickToBottom(900);
+      // ✅ FIX : on force le chat à rester en bas après envoi
+      forceStick(1400);
       scrollBottomNextFrame();
 
       hud.onSentMessage();
@@ -496,9 +506,11 @@ async function sendMessage() {
       msgList.hideTyping();
       msgList.addSystem(`AI_FAILED: ${e?.message || "unknown"}`);
     }
+
     return;
   }
 
+  // Message normal
   if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
 
   try {
@@ -509,8 +521,8 @@ async function sendMessage() {
       text: raw.slice(0, CONFIG.MAX_MESSAGE_LEN),
     });
 
-    // UX: après envoi, on reste en bas.
-    stickToBottom(900);
+    // ✅ FIX : on force le chat à rester en bas après envoi
+    forceStick(1400);
     scrollBottomNextFrame();
 
     msgInput.value = "";
@@ -584,11 +596,13 @@ imgBtn?.addEventListener("click", () => {
 imgInput?.addEventListener("change", async (e) => {
   const file = e.target.files?.[0];
   if (!file) return;
+
   if (!currentUser) {
     msgList.addSystem("AUTH_REQUIRED.");
     imgInput.value = "";
     return;
   }
+
   if (!isMember) {
     msgList.addSystem("ACCESS_DENIED: invite required");
     imgInput.value = "";
@@ -596,6 +610,7 @@ imgInput?.addEventListener("change", async (e) => {
   }
 
   msgList.addSystem("UPLOAD_IMAGE...");
+
   try {
     const url = await uploadChatImage({
       spaceId: CONFIG.SPACE_ID,
@@ -612,8 +627,8 @@ imgInput?.addEventListener("change", async (e) => {
       imageURL: url,
     });
 
-    // UX: image envoyée => on revient en bas
-    stickToBottom(900);
+    // ✅ FIX : on force le chat à rester en bas après envoi image
+    forceStick(1600);
     scrollBottomNextFrame();
 
     hud.onSentMessage();
@@ -622,9 +637,7 @@ imgInput?.addEventListener("change", async (e) => {
     msgList.addSystem("IMAGE_OK");
   } catch (err) {
     console.error(err);
-    msgList.addSystem(
-      `IMAGE_FAILED: ${err?.code || err?.message || "unknown"}`
-    );
+    msgList.addSystem(`IMAGE_FAILED: ${err?.code || err?.message || "unknown"}`);
   } finally {
     imgInput.value = "";
   }
@@ -632,9 +645,10 @@ imgInput?.addEventListener("change", async (e) => {
 
 // Misc
 newMsgBtn?.addEventListener("click", () => {
-  stickToBottom(800);
+  forceStick(1400);
   scrollBottomNextFrame();
 });
+
 joinBtn?.addEventListener("click", joinFlow);
 
 // Profile modal
@@ -658,7 +672,7 @@ document.getElementById("hudMissionClaim")?.addEventListener("click", () => {
 // ===== Auth watcher =====
 setTerminal("type: login");
 msgList.addSystem("BOOT_OK");
-msgList.addSystem("TIP: @ia <message> • /help");
+msgList.addSystem("TIP: @ia • /help");
 
 watchAuth(async (user) => {
   if (user) {
@@ -675,8 +689,6 @@ watchAuth(async (user) => {
     msgList.addSystem("AUTH_OK: " + currentUser.name);
     msgList.addSystem("CHECKING_ACCESS...");
 
-    // Si Firestore rencontre un souci (permissions / offline / mismatch libs),
-    // on évite de bloquer toute la console sur "CHECKING_ACCESS...".
     try {
       await ensureUserDoc(currentUser);
       await refreshProfile();
@@ -718,6 +730,7 @@ watchAuth(async (user) => {
     userTag.textContent = "OFFLINE";
     btnLogin.style.display = "inline-block";
     btnLogout.style.display = "none";
+
     if (unsub) {
       unsub();
       unsub = null;
