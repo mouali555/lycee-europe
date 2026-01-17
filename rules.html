@@ -2,29 +2,136 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SECURE CONSOLE // RULES</title>
-  <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/theme-terminal.css">
-  <link rel="stylesheet" href="./css/revamp.css" />
-</head>
-<body>
-  <div id="crt-screen"></div><div id="scanlines"></div><div id="vignette"></div><div id="noise"></div>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 
-  <main class="legal">
-    <section class="panel legal-card">
-      <div class="panel-header"><span>RÈGLES</span><span class="muted">COMMUNITY</span></div>
-      <div class="legal-body">
-        <h1>Règles de base</h1>
-        <ul>
-          <li>Respect obligatoire (harcèlement = ban).</li>
-          <li>Pas de doxxing, pas d’infos perso.</li>
-          <li>Pas de spam / flood.</li>
-          <li>Contenu illégal interdit.</li>
-        </ul>
-        <a class="btn" href="./console.html">RETOUR CONSOLE</a>
+  <title>Règles — Lycée Europe • IA</title>
+  <meta name="description" content="Règles de l’espace privé : respect, sécurité et qualité." />
+  <meta name="robots" content="index,follow" />
+
+  <meta property="og:title" content="Règles — Lycée Europe • IA" />
+  <meta property="og:description" content="Règles de la communauté." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./assets/img/favicon.svg" />
+
+  <link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./assets/css/tokens.css" />
+  <link rel="stylesheet" href="./assets/css/reset.css" />
+  <link rel="stylesheet" href="./assets/css/global.css" />
+  <link rel="stylesheet" href="./assets/css/components.css" />
+  <link rel="stylesheet" href="./assets/css/legal.css" />
+
+  <script type="module" src="./assets/js/main.js"></script>
+</head>
+
+<body>
+  <a class="skipLink" href="#content">Aller au contenu</a>
+
+  <header class="siteHeader">
+    <div class="container">
+      <div class="headerRow">
+        <a class="brand" href="./index.html" aria-label="Retour accueil">
+          <span class="brandMark" aria-hidden="true"></span>
+          <span class="brandName">Lycée Europe • IA</span>
+        </a>
+
+        <nav class="nav" aria-label="Navigation principale">
+          <a href="./index.html">Accueil</a>
+          <a href="./console.html">Console IA</a>
+          <a href="./hub.html">Projets</a>
+          <a href="./about.html">À propos</a>
+        </nav>
+
+        <div class="headerActions">
+          <button class="menuBtn" type="button" data-menu-btn aria-expanded="false" aria-controls="mobileNav">☰</button>
+          <a class="btn btn--small btn--primary" href="./console.html">Ouvrir la console</a>
+        </div>
       </div>
-    </section>
+
+      <div id="mobileNav" class="mobileNav" data-mobile-nav data-open="false" style="display:none">
+        <nav class="nav" aria-label="Navigation mobile">
+          <a href="./index.html">Accueil</a>
+          <a href="./console.html">Console IA</a>
+          <a href="./hub.html">Projets</a>
+          <a href="./about.html">À propos</a>
+          <a href="./contact.html">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="content" class="legalWrap">
+    <div class="container">
+      <article class="card legalCard" data-reveal>
+        <h1>Règles de l’espace</h1>
+        <p style="margin-top:10px">
+          L’objectif est de maintenir un espace <b>propre</b>, <b>utile</b> et <b>safe</b>. Ces règles protègent l’attention et la qualité.
+        </p>
+
+        <h2>1) Respect & comportement</h2>
+        <ul>
+          <li>Respect total : pas d’insultes, pas de harcèlement, pas de contenu discriminatoire.</li>
+          <li>On critique les idées, jamais les personnes.</li>
+          <li>Pas de doxx / infos personnelles.</li>
+        </ul>
+
+        <h2>2) Qualité des messages</h2>
+        <ul>
+          <li>Chaque message doit avoir une intention : question, aide, avancée, ressource.</li>
+          <li>Évite le bruit : flood, spam, hors-sujet prolongé.</li>
+          <li>Quand tu demandes de l’aide : contexte + objectif + contraintes.</li>
+        </ul>
+
+        <h2>3) IA (@ia)</h2>
+        <ul>
+          <li>@ia est un outil d’accélération : utilise-le pour clarifier, structurer, améliorer.</li>
+          <li>Pas de demandes illégales, dangereuses, ou visant à nuire.</li>
+          <li>Tu restes responsable de ce que tu publies.</li>
+        </ul>
+
+        <h2>4) Accès & clés</h2>
+        <ul>
+          <li>L’accès est filtré. Les invites sont un privilège.</li>
+          <li>Si tu abuses : l’accès peut être retiré (sans débat public).</li>
+        </ul>
+
+        <div class="ctaRow" style="margin-top:18px">
+          <a class="btn btn--primary" href="./console.html">Retour console</a>
+          <a class="btn" href="./privacy.html">Confidentialité</a>
+        </div>
+      </article>
+    </div>
   </main>
+
+  <footer class="siteFooter">
+    <div class="container">
+      <div class="footerGrid">
+        <div>
+          <div class="brand" style="min-width:unset">
+            <span class="brandMark" aria-hidden="true"></span>
+            <span class="brandName">Lycée Europe • IA</span>
+          </div>
+          <p style="margin-top:10px" class="muted">Règles • Qualité • Sécurité</p>
+        </div>
+
+        <div>
+          <div class="footerLinks">
+            <a href="./rules.html" aria-current="page">Règles</a>
+            <a href="./privacy.html">Confidentialité</a>
+            <a href="./contact.html">Contact</a>
+          </div>
+          <p style="margin-top:10px" class="muted">© <span id="year">2026</span> Lycée Europe</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = String(new Date().getFullYear());
+  </script>
 </body>
 </html>

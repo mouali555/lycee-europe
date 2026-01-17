@@ -4,12 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 
-  <title>Projets — Lycée Europe • IA</title>
-  <meta name="description" content="Hub de projets, challenges et ressources pour la communauté." />
+  <title>Contact — Lycée Europe • IA</title>
+  <meta name="description" content="Contacter l’administration ou demander une clé d’accès." />
   <meta name="robots" content="index,follow" />
 
-  <meta property="og:title" content="Projets — Lycée Europe • IA" />
-  <meta property="og:description" content="Hub de projets, challenges et ressources." />
+  <meta property="og:title" content="Contact — Lycée Europe • IA" />
+  <meta property="og:description" content="Demander une clé ou signaler un problème." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="./assets/img/favicon.svg" />
 
@@ -43,7 +43,7 @@
         <nav class="nav" aria-label="Navigation principale">
           <a href="./index.html">Accueil</a>
           <a href="./console.html">Console IA</a>
-          <a href="./hub.html" aria-current="page">Projets</a>
+          <a href="./hub.html">Projets</a>
           <a href="./about.html">À propos</a>
         </nav>
 
@@ -57,9 +57,9 @@
         <nav class="nav" aria-label="Navigation mobile">
           <a href="./index.html">Accueil</a>
           <a href="./console.html">Console IA</a>
-          <a href="./hub.html" aria-current="page">Projets</a>
+          <a href="./hub.html">Projets</a>
           <a href="./about.html">À propos</a>
-          <a href="./contact.html">Contact</a>
+          <a href="./contact.html" aria-current="page">Contact</a>
         </nav>
       </div>
     </div>
@@ -69,40 +69,46 @@
     <div class="container">
       <div class="sectionTitle" data-reveal>
         <div>
-          <h1 style="font-size:var(--step-3)">Projets & ressources</h1>
-          <p>Un hub clair pour retrouver ce qui compte : projets actifs, défis, liens utiles et prochains lancements.</p>
+          <h1 style="font-size:var(--step-3)">Contact</h1>
+          <p>Besoin d’une clé, d’un code d’invite, ou un problème technique ?</p>
         </div>
-        <span class="badge">Bêta</span>
       </div>
 
-      <div class="grid grid3">
-        <article class="card card--glass cardPad" data-reveal>
-          <h3 style="margin-bottom:10px">📌 Liens</h3>
-          <p>Raccourcis vers outils, docs et ressources. Un seul endroit, zéro friction.</p>
+      <div class="grid grid2">
+        <article class="card cardPad" data-reveal>
+          <h2 style="font-size:var(--step-2); margin-bottom:10px">Demander une clé</h2>
+          <p>
+            Le plus simple : passe par une personne déjà membre (admin, référent, ou invitation).
+            L’accès est volontairement filtré.
+          </p>
+          <div class="ctaRow" style="margin-top:14px">
+            <a class="btn btn--primary" href="./index.html#cles">Comprendre les clés</a>
+            <a class="btn" href="./console.html">J’ai déjà un code</a>
+          </div>
         </article>
 
         <article class="card card--glass cardPad" data-reveal>
-          <h3 style="margin-bottom:10px">🧩 Challenges</h3>
-          <p>Missions, objectifs et progression par niveau. Construit ton rythme.</p>
-        </article>
-
-        <article class="card card--glass cardPad" data-reveal>
-          <h3 style="margin-bottom:10px">🚀 Lancements</h3>
-          <p>Démo, versions, annonces. Tout ce qui est “officiel” arrive ici.</p>
+          <h2 style="font-size:var(--step-2); margin-bottom:10px">Support rapide</h2>
+          <p>
+            Si quelque chose ne marche pas :
+          </p>
+          <ul style="margin:10px 0 0 18px; color: rgba(245,247,255,0.72)">
+            <li>Vérifie que tu es connecté (bouton Login).</li>
+            <li>Essaie un autre navigateur ou un onglet privé.</li>
+            <li>Si tu es hors ligne : attends le retour du réseau.</li>
+          </ul>
+          <p style="margin-top:10px" class="muted">
+            Pour signaler un bug, envoie un message à l’admin avec : page + action + capture d’écran.
+          </p>
         </article>
       </div>
 
       <div class="card cardPad" style="margin-top:18px" data-reveal>
-        <h3 style="margin-bottom:10px">Prochaines étapes</h3>
-        <ul style="margin:0; padding-left:18px; color: rgba(245,247,255,0.72)">
-          <li>Ajout d’un tableau de projets (tags, statut, owners).</li>
-          <li>Section “ressources rapides” par thème.</li>
-          <li>Templates de missions + récompenses clés.</li>
-        </ul>
-        <div class="ctaRow" style="margin-top:14px">
-          <a class="btn btn--primary" href="./console.html">Aller dans la console</a>
-          <a class="btn" href="./index.html">Retour accueil</a>
-        </div>
+        <h2 style="font-size:var(--step-2); margin-bottom:10px">Remarque</h2>
+        <p>
+          Cette page est volontairement minimaliste (site privé). Si tu veux un formulaire d’assistance complet,
+          je peux l’ajouter avec un backend (Firebase/Email) en version suivante.
+        </p>
       </div>
     </div>
   </main>
@@ -115,14 +121,14 @@
             <span class="brandMark" aria-hidden="true"></span>
             <span class="brandName">Lycée Europe • IA</span>
           </div>
-          <p style="margin-top:10px" class="muted">Hub projets • Console IA • Progression</p>
+          <p style="margin-top:10px" class="muted">Contact • Support • Accès</p>
         </div>
 
         <div>
           <div class="footerLinks">
             <a href="./rules.html">Règles</a>
             <a href="./privacy.html">Confidentialité</a>
-            <a href="./contact.html">Contact</a>
+            <a href="./contact.html" aria-current="page">Contact</a>
           </div>
           <p style="margin-top:10px" class="muted">© <span id="year">2026</span> Lycée Europe</p>
         </div>

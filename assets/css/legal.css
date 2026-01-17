@@ -1,0 +1,23 @@
+/* Legal pages */
+
+.legalWrap{
+  padding: 36px 0 80px;
+}
+
+.legalCard{
+  padding: clamp(18px, 2.5vw, 28px);
+}
+
+.legalCard h1{ font-size: var(--step-3); }
+
+.legalCard h2{
+  font-size: 1.2rem;
+  margin-top: 18px;
+  color: rgba(245,247,255,0.9);
+}
+
+.legalCard p{ margin-top: 10px; }
+
+.legalCard ul{ margin: 10px 0 0 18px; color: rgba(245,247,255,0.72); }
+
+.legalCard li{ margin: 6px 0; }

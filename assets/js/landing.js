@@ -1,4 +1,4 @@
-// js/landing.js — small interactions for landing
+/* Landing page interactions */
 
 function qs(sel){ return document.querySelector(sel); }
 
@@ -8,6 +8,8 @@ const keyTemplate = qs('#keyTemplate');
 function openModal(){
   if (!keyModal) return;
   keyModal.setAttribute('aria-hidden', 'false');
+  // Basic focus management
+  qs('#copyTemplate')?.focus();
 }
 
 function closeModal(){
@@ -21,8 +23,8 @@ function buildTemplate(){
   return [
     'Salut,',
     '',
-    "Je veux rejoindre LYCÉE EUROPE.",
-    "Tu peux me donner une clé / un code d'invitation ?",
+    "Je veux rejoindre l'espace privé Lycée Europe • IA.",
+    "Tu peux me donner une clé ou un code d'invitation ?",
     '',
     `Date: ${stamp}`,
     'Pseudo: (ton pseudo)',
@@ -50,6 +52,10 @@ keyModal?.addEventListener('click', (e) => {
   if (e.target === keyModal) closeModal();
 });
 
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
 qs('#copyTemplate')?.addEventListener('click', async () => {
   try{
     await navigator.clipboard.writeText(keyTemplate?.value || '');
@@ -60,14 +66,14 @@ qs('#copyTemplate')?.addEventListener('click', async () => {
   }
 });
 
-// Smooth scroll (safe)
-document.querySelectorAll('a.lpLink[href^="#"]').forEach(a => {
+// Smooth scroll for in-page anchors
+document.querySelectorAll('a[href^="#"]').forEach((a) => {
+  const href = a.getAttribute('href') || '';
+  if (href.length < 2) return;
   a.addEventListener('click', (e) => {
-    const id = a.getAttribute('href');
-    if (!id || id.length < 2) return;
-    const target = document.querySelector(id);
-    if (!target) return;
+    const t = document.querySelector(href);
+    if (!t) return;
     e.preventDefault();
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    t.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });

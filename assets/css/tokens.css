@@ -1,0 +1,78 @@
+/*
+  Lycée Europe • IA — Design System 2026
+  Tokens only (colors / spacing / radii / shadows / typography)
+*/
+
+:root{
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Base scale */
+  --step--1: clamp(0.86rem, 0.82rem + 0.12vw, 0.94rem);
+  --step-0: clamp(1rem, 0.92rem + 0.28vw, 1.1rem);
+  --step-1: clamp(1.15rem, 1.02rem + 0.55vw, 1.35rem);
+  --step-2: clamp(1.38rem, 1.18rem + 0.92vw, 1.85rem);
+  --step-3: clamp(1.7rem, 1.36rem + 1.55vw, 2.5rem);
+  --step-4: clamp(2.1rem, 1.55rem + 2.5vw, 3.25rem);
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 2rem;
+  --space-8: 2.5rem;
+  --space-9: 3rem;
+  --space-10: 4rem;
+
+  /* Radii */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+
+  /* Shadows */
+  --shadow-sm: 0 8px 24px rgba(0,0,0,0.25);
+  --shadow-md: 0 18px 50px rgba(0,0,0,0.42);
+  --shadow-glow: 0 0 0 1px rgba(255,255,255,0.06), 0 22px 70px rgba(0,0,0,0.55);
+
+  /* Colors (Dark premium) */
+  --bg: #070A12;
+  --bg-2: #0B1020;
+  --surface: rgba(255,255,255,0.06);
+  --surface-2: rgba(255,255,255,0.085);
+  --border: rgba(255,255,255,0.12);
+  --text: rgba(245,247,255,0.94);
+  --muted: rgba(245,247,255,0.70);
+  --muted-2: rgba(245,247,255,0.55);
+
+  --accent: #64D2FF;
+  --accent-2: #A78BFA;
+  --danger: #FF6B6B;
+  --success: #2EE59D;
+
+  /* Layout */
+  --container: 1120px;
+  --header-h: 74px;
+
+  /* Motion */
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --dur-1: 160ms;
+  --dur-2: 260ms;
+  --dur-3: 420ms;
+}
+
+/* Light theme (optional) */
+:root[data-theme="light"]{
+  --bg: #f7f7fb;
+  --bg-2: #ffffff;
+  --surface: rgba(20, 24, 35, 0.06);
+  --surface-2: rgba(20, 24, 35, 0.08);
+  --border: rgba(20, 24, 35, 0.12);
+  --text: rgba(10, 12, 18, 0.92);
+  --muted: rgba(10, 12, 18, 0.68);
+  --muted-2: rgba(10, 12, 18, 0.52);
+}

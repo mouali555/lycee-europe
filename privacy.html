@@ -2,29 +2,135 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SECURE CONSOLE // PRIVACY</title>
-  <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/theme-terminal.css">
-  <link rel="stylesheet" href="./css/revamp.css" />
-</head>
-<body>
-  <div id="crt-screen"></div><div id="scanlines"></div><div id="vignette"></div><div id="noise"></div>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 
-  <main class="legal">
-    <section class="panel legal-card">
-      <div class="panel-header"><span>CONFIDENTIALITÉ</span><span class="muted">MINIMAL</span></div>
-      <div class="legal-body">
-        <h1>Données</h1>
-        <p>But : fonctionnement du service (auth + messages).</p>
-        <ul>
-          <li>Aucune géolocalisation.</li>
-          <li>Aucune caméra automatique.</li>
-          <li>Pas de tracking publicitaire.</li>
-        </ul>
-        <a class="btn" href="./console.html">RETOUR CONSOLE</a>
+  <title>Confidentialité — Lycée Europe • IA</title>
+  <meta name="description" content="Informations sur les données, l’authentification et l’usage de l’IA." />
+  <meta name="robots" content="index,follow" />
+
+  <meta property="og:title" content="Confidentialité — Lycée Europe • IA" />
+  <meta property="og:description" content="Transparence sur les données." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./assets/img/favicon.svg" />
+
+  <link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./assets/css/tokens.css" />
+  <link rel="stylesheet" href="./assets/css/reset.css" />
+  <link rel="stylesheet" href="./assets/css/global.css" />
+  <link rel="stylesheet" href="./assets/css/components.css" />
+  <link rel="stylesheet" href="./assets/css/legal.css" />
+
+  <script type="module" src="./assets/js/main.js"></script>
+</head>
+
+<body>
+  <a class="skipLink" href="#content">Aller au contenu</a>
+
+  <header class="siteHeader">
+    <div class="container">
+      <div class="headerRow">
+        <a class="brand" href="./index.html" aria-label="Retour accueil">
+          <span class="brandMark" aria-hidden="true"></span>
+          <span class="brandName">Lycée Europe • IA</span>
+        </a>
+
+        <nav class="nav" aria-label="Navigation principale">
+          <a href="./index.html">Accueil</a>
+          <a href="./console.html">Console IA</a>
+          <a href="./hub.html">Projets</a>
+          <a href="./about.html">À propos</a>
+        </nav>
+
+        <div class="headerActions">
+          <button class="menuBtn" type="button" data-menu-btn aria-expanded="false" aria-controls="mobileNav">☰</button>
+          <a class="btn btn--small btn--primary" href="./console.html">Ouvrir la console</a>
+        </div>
       </div>
-    </section>
+
+      <div id="mobileNav" class="mobileNav" data-mobile-nav data-open="false" style="display:none">
+        <nav class="nav" aria-label="Navigation mobile">
+          <a href="./index.html">Accueil</a>
+          <a href="./console.html">Console IA</a>
+          <a href="./hub.html">Projets</a>
+          <a href="./about.html">À propos</a>
+          <a href="./contact.html">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="content" class="legalWrap">
+    <div class="container">
+      <article class="card legalCard" data-reveal>
+        <h1>Confidentialité</h1>
+        <p style="margin-top:10px">
+          Cette page décrit le fonctionnement général des données. Pour une conformité complète (RGPD), il faut adapter selon votre organisation.
+        </p>
+
+        <h2>Données collectées</h2>
+        <ul>
+          <li>Authentification : compte Google (UID, nom, photo).</li>
+          <li>Messages : texte, images envoyées (si tu utilises l’upload).</li>
+          <li>Préférences locales : thème/sons (stockées dans ton navigateur).</li>
+        </ul>
+
+        <h2>Utilisation de l’IA</h2>
+        <ul>
+          <li>@ia est déclenché uniquement lorsque tu l’appelles.</li>
+          <li>Le prompt est transmis à un service IA pour générer une réponse.</li>
+          <li>La réponse est publiée dans la room comme un message “IA”.</li>
+        </ul>
+
+        <h2>Suppression</h2>
+        <ul>
+          <li>Tu peux supprimer tes messages (icône poubelle sur tes bulles).</li>
+          <li>Les modérateurs peuvent supprimer en cas d’abus.</li>
+        </ul>
+
+        <h2>Sécurité</h2>
+        <ul>
+          <li>Accès filtré par invite et vérifié côté serveur.</li>
+          <li>Les endpoints sensibles utilisent un token Firebase (Bearer).</li>
+        </ul>
+
+        <div class="ctaRow" style="margin-top:18px">
+          <a class="btn btn--primary" href="./console.html">Retour console</a>
+          <a class="btn" href="./rules.html">Lire les règles</a>
+        </div>
+      </article>
+    </div>
   </main>
+
+  <footer class="siteFooter">
+    <div class="container">
+      <div class="footerGrid">
+        <div>
+          <div class="brand" style="min-width:unset">
+            <span class="brandMark" aria-hidden="true"></span>
+            <span class="brandName">Lycée Europe • IA</span>
+          </div>
+          <p style="margin-top:10px" class="muted">Confidentialité • Sécurité • Transparence</p>
+        </div>
+
+        <div>
+          <div class="footerLinks">
+            <a href="./rules.html">Règles</a>
+            <a href="./privacy.html" aria-current="page">Confidentialité</a>
+            <a href="./contact.html">Contact</a>
+          </div>
+          <p style="margin-top:10px" class="muted">© <span id="year">2026</span> Lycée Europe</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = String(new Date().getFullYear());
+  </script>
 </body>
 </html>

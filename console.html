@@ -1,221 +1,172 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <title>XPCHAT Console</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover" />
 
-    <!-- Police + styles -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+  <title>Console IA — Lycée Europe</title>
+  <meta name="description" content="Console privée : chat, missions, clés et copilote @ia." />
+  <meta name="robots" content="noindex,nofollow" />
 
-    <link rel="stylesheet" href="./css/reset.css" />
-    <link rel="stylesheet" href="./css/header.css" />
-    <link rel="stylesheet" href="./css/app.css" />
-    <link rel="stylesheet" href="./css/revamp.css" />
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Console IA — Lycée Europe" />
+  <meta property="og:description" content="Console privée : chat, missions, clés et copilote @ia." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./assets/img/favicon.svg" />
+
+  <link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="./assets/css/tokens.css" />
+  <link rel="stylesheet" href="./assets/css/reset.css" />
+  <link rel="stylesheet" href="./assets/css/global.css" />
+  <link rel="stylesheet" href="./assets/css/components.css" />
+  <link rel="stylesheet" href="./assets/css/console.css" />
 </head>
-  <body class="theme-dark">
-    <!-- Header global (même style que l'accueil) -->
-    <header class="appHeader">
-      <div class="appHeader-left">
-        <div class="appLogoDot" aria-hidden="true"></div>
-        <div class="appBrand">LYCÉE EUROPE • IA</div>
-      </div>
 
-      <div class="appHeader-center">
-        <nav class="appNav" aria-label="Navigation principale">
-          <a href="./index.html" class="appNav-link"><span>Accueil</span></a>
-          <a href="./console.html" class="appNav-link active"><span>Console IA</span></a>
-          <a href="./hub.html" class="appNav-link"><span>Projets</span></a>
+<body class="consoleBody theme-dark">
+  <a class="skipLink" href="#chat">Aller au chat</a>
+
+  <header class="siteHeader">
+    <div class="container">
+      <div class="headerRow">
+        <a class="brand" href="./index.html" aria-label="Retour accueil">
+          <span class="brandMark" aria-hidden="true"></span>
+          <span class="brandName">Lycée Europe • IA</span>
+        </a>
+
+        <nav class="nav" aria-label="Navigation principale">
+          <a href="./index.html">Accueil</a>
+          <a href="./console.html" aria-current="page">Console IA</a>
+          <a href="./hub.html">Projets</a>
         </nav>
-      </div>
 
-      <div class="appHeader-right">
-        <span id="clock" class="clock">--:--:--</span>
-        <span id="terminalStatus" class="terminal">booting…</span>
+        <div class="headerActions">
+          <span id="clock" class="clock" aria-label="Heure">--:--:--</span>
+          <span id="terminalStatus" class="terminalStatus" aria-label="Statut">booting…</span>
 
-        <!-- Toggles UI (préférences locales) -->
-        <button id="themeToggle" class="appHeader-btn" type="button" title="Basculer thème (clair/sombre)">🌙</button>
-        <button id="soundToggle" class="appHeader-btn" type="button" title="Activer/Désactiver les sons">🔊</button>
+          <button id="themeToggle" class="btn btn--small" type="button" title="Basculer thème (clair/sombre)">🌙</button>
+          <button id="soundToggle" class="btn btn--small" type="button" title="Activer/Désactiver les sons">🔊</button>
 
-        <div class="appStatusDot online" aria-hidden="true"></div>
-        <div id="userTag" class="appUserTag">OFFLINE</div>
+          <span class="badge" style="gap:10px">
+            <span class="brandMark" aria-hidden="true" style="width:8px;height:8px;box-shadow:none"></span>
+            <span id="userTag">OFFLINE</span>
+          </span>
 
-        <button id="btn-login" class="btn small">Login</button>
-        <button id="btn-logout" class="btn small ghost" style="display:none">Logout</button>
-      </div>
-    </header>
-
-    <main class="layout">
-      <!-- Sidebar gauche -->
-      <aside class="sidebar">
-        <h1 class="logo">XP<span>CHAT</span></h1>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Espace</h2>
-          </div>
-          <div class="panel-body">
-            <div class="label">Space</div>
-            <div id="spaceName" class="value">--</div>
-
-            <div class="label mt8">Room</div>
-            <div id="roomName" class="value">--</div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Invite</h2>
-          </div>
-          <div class="panel-body">
-            <input
-              id="inviteCode"
-              class="input"
-              placeholder="Code d’invite"
-              autocomplete="off"
-            />
-            <button id="joinBtn" class="btn full mt8">Rejoindre</button>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-header">
-            <h2>Profil</h2>
-          </div>
-          <div class="panel-body">
-            <div class="hud">
-              <div class="hud-row">
-                <span>STATUT</span>
-                <span id="hudStatus">IDLE</span>
-              </div>
-              <div class="hud-row">
-                <span>Niveau</span>
-                <span id="hudLevel">1</span>
-              </div>
-              <div class="hud-row">
-                <span>Série</span>
-                <span id="hudStreak">0</span>
-              </div>
-              <div class="hud-row">
-                <span>XP</span>
-                <span id="hudXpText">0 / 100</span>
-              </div>
-              <div class="hud-bar">
-                <div id="hudXpFill" class="hud-xp-fill"></div>
-              </div>
-
-              <div class="hud-mission">
-                <div id="hudMissionText" class="hud-mission-text">
-                  Mission du jour…
-                </div>
-                <div id="hudMissionMeta" class="hud-mission-meta">0/0</div>
-                <button id="hudMissionClaim" class="btn small full mt8">
-                  Récupérer la récompense
-                </button>
-              </div>
-
-              <div class="hud-row mt8">
-                <span>Coffre</span>
-                <span id="hudVaultState">LOCKED</span>
-              </div>
-            </div>
-          </div>
-        </section>
-      </aside>
-
-      <div id="sidebarOverlay" class="sidebarOverlay" aria-hidden="true"></div>
-
-
-      <!-- Zone chat droite -->
-      <section class="chatPane">
-        <div id="offlineBanner" class="offline" aria-hidden="true">
-          Hors ligne – tentative de reconnexion…
+          <button id="btn-login" class="btn btn--small btn--primary">Login</button>
+          <button id="btn-logout" class="btn btn--small" style="display:none">Logout</button>
         </div>
-
-        <header class="chatHeader">
-          <button id="sidebarToggle" class="iconBtn sidebarToggle" type="button" aria-label="Ouvrir le menu">☰</button>
-          <div>
-            <h2 id="roomNameHeader">Console</h2>
-            <p class="subtitle">
-              Utilise @ia pour parler à l’IA. /help pour la liste des
-              commandes.
-            </p>
-          </div>
-        </header>
-
-        <!-- Background decorative bubbles -->
-        <div class="chatBgBubbles" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
-
-        <!-- Messages -->
-        <div id="messages" class="messages"></div>
-        <button
-          id="newMsgBtn"
-          class="btn small newMsgBtn"
-          style="display:none"
-        >
-          Nouveau message
-        </button>
-
-        <!-- Composer -->
-        <div class="composer xpComposer">
-          <button
-            id="iaBtn"
-            class="btn ghost"
-            type="button"
-            title="Préfixer ton message avec @ia"
-          >
-            IA
-          </button>
-
-          <button
-            id="imgBtn"
-            class="btn ghost"
-            type="button"
-            title="Envoyer une image"
-          >
-            📷
-          </button>
-          <input
-            type="file"
-            id="imgInput"
-            accept="image/*"
-            style="display:none"
-          />
-
-          <input
-            class="input msgInput"
-            id="msg"
-            placeholder="Écris un message… (@ia pour parler à l’IA)"
-            autocomplete="off"
-            maxlength="800"
-          />
-          <button class="btn" id="send" type="button">Envoyer</button>
-        </div>
-        <div class="composerMeta">
-          <span id="charCount" class="mini">0/800</span>
-        </div>
-      </section>
-    </main>
-
-    <!-- Modal profil -->
-    <div id="profileModal" class="modal" aria-hidden="true">
-      <div class="modal-dialog">
-        <button id="closeProfile" class="modal-close">×</button>
-        <h2>Profil</h2>
-        <p><strong id="profileName">USER</strong></p>
-        <p>Rang : <span id="profileRank">BRONZE</span></p>
-        <p>Clés : <span id="profileKeys">Aucune clé</span></p>
       </div>
     </div>
+  </header>
 
-    <script type="module" src="./js/console/main.js"></script>
-  </body>
+  <main class="layout" id="chat">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Panneau latéral">
+      <h1 class="logo">XP<span>CHAT</span></h1>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Espace</h2>
+        </div>
+        <div class="panel-body">
+          <div class="label">Space</div>
+          <div id="spaceName" class="value">--</div>
+
+          <div class="label mt8">Room</div>
+          <div id="roomName" class="value">--</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Invite</h2>
+        </div>
+        <div class="panel-body">
+          <input id="inviteCode" class="input" placeholder="Code d’invite" autocomplete="off" />
+          <button id="joinBtn" class="btn btn--primary full mt8" type="button">Rejoindre</button>
+          <p class="muted" style="margin-top:10px">Astuce : si tu as déjà une clé, connecte-toi puis colle le code.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Profil</h2>
+        </div>
+        <div class="panel-body">
+          <div class="hud">
+            <div class="hud-row"><span>STATUT</span><span id="hudStatus">IDLE</span></div>
+            <div class="hud-row"><span>Niveau</span><span id="hudLevel">1</span></div>
+            <div class="hud-row"><span>Série</span><span id="hudStreak">0</span></div>
+            <div class="hud-row"><span>XP</span><span id="hudXpText">0 / 100</span></div>
+            <div class="hud-bar"><div id="hudXpFill" class="hud-xp-fill"></div></div>
+
+            <div class="hud-mission">
+              <div id="hudMissionText" class="hud-mission-text">Mission du jour…</div>
+              <div id="hudMissionMeta" class="hud-mission-meta">0/0</div>
+              <button id="hudMissionClaim" class="btn btn--small btn--primary full mt8" type="button">Récupérer la récompense</button>
+            </div>
+
+            <div class="hud-row mt8"><span>Coffre</span><span id="hudVaultState">LOCKED</span></div>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <div id="sidebarOverlay" class="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- Chat -->
+    <section class="chatPane" aria-label="Console IA">
+      <div id="offlineBanner" class="offline" aria-hidden="true">Hors ligne – tentative de reconnexion…</div>
+
+      <header class="chatHeader">
+        <button id="sidebarToggle" class="btn btn--small sidebarToggle" type="button" aria-label="Ouvrir le menu">☰</button>
+        <div>
+          <h2 id="roomNameHeader">Console</h2>
+          <p class="subtitle">@ia pour parler à l’IA. <code>/help</code> pour la liste des commandes.</p>
+        </div>
+      </header>
+
+      <div id="messages" class="messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+
+      <button id="newMsgBtn" class="btn btn--small newMsgBtn" type="button" style="display:none">Nouveau message</button>
+
+      <div class="composer">
+        <button id="iaBtn" class="btn btn--small" type="button" title="Préfixer ton message avec @ia">IA</button>
+
+        <button id="imgBtn" class="btn btn--small" type="button" title="Envoyer une image">📷</button>
+        <input type="file" id="imgInput" accept="image/*" style="display:none" />
+
+        <input class="input msgInput" id="msg" placeholder="Écris un message… (@ia pour parler à l’IA)" autocomplete="off" maxlength="800" />
+        <button class="btn btn--small btn--primary" id="send" type="button">Envoyer</button>
+      </div>
+
+      <div class="composerMeta">
+        <span id="charCount" class="mini">0/800</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal profil -->
+  <div id="profileModal" class="modal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-label="Profil">
+      <div class="modalTop">
+        <b>Profil</b>
+        <button id="closeProfile" class="iconBtn" type="button" aria-label="Fermer">✕</button>
+      </div>
+      <div class="modalBody">
+        <p><strong id="profileName">USER</strong></p>
+        <p class="muted" style="margin-top:6px">Rang : <span id="profileRank">BRONZE</span></p>
+        <p class="muted" style="margin-top:6px">Clés : <span id="profileKeys">Aucune clé</span></p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./assets/js/console/main.js"></script>
+</body>
 </html>

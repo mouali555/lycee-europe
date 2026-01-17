@@ -119,7 +119,8 @@ export class MessageList {
     const row = document.createElement("div");
     row.className = "msgRow iaRow typingRow popIn";
 
-    const avatarHTML = `<img class="avatar" src="./photoia.png" referrerpolicy="no-referrer">`;
+    // Keep avatar path relative to the HTML entry (static hosting friendly)
+    const avatarHTML = `<img class="avatar" src="./assets/img/photoia.png" referrerpolicy="no-referrer">`;
 
     row.innerHTML = `
       ${avatarHTML}
@@ -184,7 +185,7 @@ export class MessageList {
     // Avatar (IA utilise une image fixe)
     let finalPhoto = photoURL || null;
     if (isAI) {
-      finalPhoto = "./photoia.png";
+      finalPhoto = "./assets/img/photoia.png";
     }
 
     const avatarHTML = finalPhoto
