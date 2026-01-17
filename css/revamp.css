@@ -1,0 +1,281 @@
+/* =====================================================
+   REVAMP 2026 — Lycée Europe (NeoGlass)
+   Loaded LAST to override legacy styles.
+   ===================================================== */
+
+:root{
+  --v-bg0:#050713;
+  --v-bg1:#070A18;
+  --v-bg2:#0A1027;
+
+  --v-surface: rgba(255,255,255,.055);
+  --v-surface2: rgba(255,255,255,.075);
+  --v-surface3: rgba(255,255,255,.11);
+
+  --v-border: rgba(148,163,184,.18);
+  --v-border2: rgba(148,163,184,.28);
+
+  --v-text: rgba(245,247,255,.92);
+  --v-muted: rgba(213,221,255,.62);
+
+  --v-accent: #6d5efc;
+  --v-accent2: #8b5cf6;
+  --v-cyan: #22d3ee;
+  --v-ok: #22c55e;
+  --v-warn: #fbbf24;
+  --v-danger: #fb7185;
+
+  --v-radius: 18px;
+  --v-radius2: 22px;
+
+  --v-shadow: 0 24px 60px rgba(0,0,0,.58);
+  --v-shadow2: 0 10px 26px rgba(0,0,0,.38);
+}
+
+html,body{
+  height:100%;
+  background:
+    radial-gradient(800px 540px at 10% 0%, rgba(109,94,252,.28), transparent 58%),
+    radial-gradient(720px 540px at 88% 18%, rgba(34,211,238,.16), transparent 56%),
+    radial-gradient(920px 680px at 55% 110%, rgba(139,92,246,.18), transparent 62%),
+    linear-gradient(180deg, var(--v-bg0), var(--v-bg2));
+  color: var(--v-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Scrollbars */
+*{ scrollbar-width: thin; scrollbar-color: rgba(213,221,255,.28) transparent; }
+*::-webkit-scrollbar{ width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb{ background: rgba(213,221,255,.22); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+*::-webkit-scrollbar-thumb:hover{ background: rgba(213,221,255,.32); border: 2px solid transparent; background-clip: padding-box; }
+
+/* Header */
+.appHeader{
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(6,8,18,.72) !important;
+  box-shadow: 0 18px 60px rgba(0,0,0,.42);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.appLogoDot{
+  background: linear-gradient(180deg, var(--v-ok), #16a34a);
+  box-shadow: 0 0 18px rgba(34,197,94,.7);
+}
+
+.appNav{
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+}
+
+.appNav-link.active{
+  background: linear-gradient(135deg, rgba(109,94,252,.95), rgba(139,92,246,.88));
+  box-shadow: 0 10px 30px rgba(109,94,252,.38);
+}
+
+.appHeader-btn{
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.04);
+}
+
+.appHeader-btn:hover{
+  border-color: rgba(109,94,252,.7);
+  box-shadow: 0 12px 34px rgba(109,94,252,.22);
+}
+
+/* Landing polish */
+.lpWrap{ max-width: 1120px; }
+.heroCard,
+.tile,
+.keyCard,
+.modalCard{
+  border: 1px solid rgba(255,255,255,.10) !important;
+  background: rgba(255,255,255,.045) !important;
+  box-shadow: var(--v-shadow);
+  backdrop-filter: blur(16px) saturate(135%);
+}
+
+.hero h1 .accent,
+.terminalPreview .accent{ color: rgba(199,210,254,.95) !important; }
+
+.lpBtn.big{
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(135deg, rgba(109,94,252,.96), rgba(139,92,246,.9));
+  box-shadow: 0 16px 38px rgba(109,94,252,.28);
+}
+
+.lpBtn.big.ghost{
+  background: rgba(255,255,255,.04);
+}
+
+/* ===== Console layout ===== */
+.layout{ gap: 0; }
+.sidebar{
+  width: 320px !important;
+  padding: 18px !important;
+  background: rgba(255,255,255,.035) !important;
+  border-right: 1px solid rgba(255,255,255,.10) !important;
+  box-shadow: 18px 0 60px rgba(0,0,0,.26);
+}
+
+.panel{
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  border-radius: var(--v-radius);
+}
+
+.panel-header{
+  background: rgba(255,255,255,.035) !important;
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
+}
+
+.input{
+  border: 1px solid rgba(255,255,255,.12) !important;
+  background: rgba(0,0,0,.28) !important;
+}
+
+.btn{
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(135deg, rgba(109,94,252,.96), rgba(139,92,246,.88));
+  box-shadow: 0 12px 30px rgba(109,94,252,.22);
+}
+
+.btn.ghost{
+  background: rgba(255,255,255,.04) !important;
+}
+
+.chatPane{
+  background:
+    radial-gradient(900px 640px at 20% 0%, rgba(109,94,252,.18), transparent 58%),
+    radial-gradient(760px 640px at 80% 10%, rgba(34,211,238,.12), transparent 58%),
+    linear-gradient(180deg, rgba(6,8,18,.92), rgba(5,7,19,.92));
+}
+
+/* Decorative bubbles — richer */
+.chatBgBubbles span{
+  background: radial-gradient(circle at 30% 30%, rgba(199,210,254,.22), rgba(109,94,252,.10) 56%, transparent 72%) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+}
+
+.chatHeader{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  padding: 14px 16px !important;
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
+  background: rgba(0,0,0,.22);
+  backdrop-filter: blur(16px);
+}
+
+.sidebarToggle{
+  display:none;
+}
+
+.messages{
+  padding: 18px 18px 10px 18px !important;
+}
+
+.msgRow{
+  gap: 10px !important;
+  margin-bottom: 12px !important;
+}
+
+.meRow{
+  justify-content: flex-end;
+}
+
+.meRow .avatar{
+  display:none;
+}
+
+.meRow .bubble{
+  margin-left:auto;
+}
+
+.bubble{
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  background: rgba(0,0,0,.28) !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,.24);
+  padding: 10px 12px !important;
+}
+
+.meRow .bubble{
+  background: linear-gradient(135deg, rgba(109,94,252,.95), rgba(139,92,246,.72)) !important;
+  border-color: rgba(255,255,255,.14) !important;
+}
+
+.iaRow .bubble{
+  border-color: rgba(34,211,238,.55) !important;
+}
+
+.keyRow .bubble{
+  border-color: rgba(251,191,36,.55) !important;
+}
+
+.meta{
+  margin-bottom: 6px !important;
+  opacity: .95;
+}
+
+.badge{
+  border: 1px solid rgba(255,255,255,.18) !important;
+  background: rgba(255,255,255,.05);
+}
+
+.text{
+  font-size: 13px !important;
+  line-height: 1.45;
+}
+
+.msg.sys{
+  border-radius: 16px !important;
+  border: 1px dashed rgba(255,255,255,.18) !important;
+  background: rgba(255,255,255,.04) !important;
+}
+
+.xpComposer{
+  background: rgba(6,8,18,.72) !important;
+  border-top: 1px solid rgba(255,255,255,.08) !important;
+}
+
+.msgInput{
+  height: 42px;
+}
+
+/* Overlay for mobile sidebar */
+.sidebarOverlay{
+  display:none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(6px);
+  z-index: 79;
+}
+
+@media (max-width: 980px){
+  .sidebarToggle{ display:inline-flex; }
+  .sidebar{
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    max-width: 86vw;
+    transform: translateX(-120%);
+    transition: transform .22s ease;
+    z-index: 80;
+  }
+
+  body.sidebar-open .sidebar{ transform: translateX(0); }
+  body.sidebar-open .sidebarOverlay{ display:block; }
+}
+
+@media (max-width: 720px){
+  .messages{ padding: 14px 12px !important; }
+  .bubble{ max-width: calc(100vw - 56px) !important; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .chatBgBubbles span{ animation: none !important; }
+  .sidebar{ transition: none; }
+}

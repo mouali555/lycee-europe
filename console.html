@@ -16,7 +16,8 @@
     <link rel="stylesheet" href="./css/reset.css" />
     <link rel="stylesheet" href="./css/header.css" />
     <link rel="stylesheet" href="./css/app.css" />
-  </head>
+    <link rel="stylesheet" href="./css/revamp.css" />
+</head>
   <body class="theme-dark">
     <!-- Header global (même style que l'accueil) -->
     <header class="appHeader">
@@ -123,6 +124,9 @@
         </section>
       </aside>
 
+      <div id="sidebarOverlay" class="sidebarOverlay" aria-hidden="true"></div>
+
+
       <!-- Zone chat droite -->
       <section class="chatPane">
         <div id="offlineBanner" class="offline" aria-hidden="true">
@@ -130,6 +134,7 @@
         </div>
 
         <header class="chatHeader">
+          <button id="sidebarToggle" class="iconBtn sidebarToggle" type="button" aria-label="Ouvrir le menu">☰</button>
           <div>
             <h2 id="roomNameHeader">Console</h2>
             <p class="subtitle">

@@ -39,6 +39,10 @@ const messagesEl = document.getElementById("messages");
 const newMsgBtn = document.getElementById("newMsgBtn");
 const offlineBanner = document.getElementById("offlineBanner");
 
+// Sidebar mobile toggle
+const sidebarToggle = document.getElementById("sidebarToggle");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+
 const msgInput = document.getElementById("msg");
 const sendBtn = document.getElementById("send");
 const iaBtn = document.getElementById("iaBtn");
@@ -95,6 +99,23 @@ function closeProfileModal() {
   if (!profileModal) return;
   profileModal.setAttribute("aria-hidden", "true");
 }
+
+// ===== Sidebar (mobile) =====
+function setSidebarOpen(open) {
+  document.body.classList.toggle("sidebar-open", !!open);
+  if (sidebarOverlay)
+    sidebarOverlay.setAttribute("aria-hidden", open ? "false" : "true");
+}
+
+sidebarToggle?.addEventListener("click", () => {
+  setSidebarOpen(!document.body.classList.contains("sidebar-open"));
+});
+
+sidebarOverlay?.addEventListener("click", () => setSidebarOpen(false));
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") setSidebarOpen(false);
+});
 
 // ===== State =====
 const msgList = new MessageList({
