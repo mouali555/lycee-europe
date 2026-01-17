@@ -1,7 +1,6 @@
 // js/console/main.js — console XPCHAT + upload image
-
 import { CONFIG } from "../core/config.js";
-import { nowStamp } from "../core/utils.js";
+import { nowStamp, systemTheme } from "../core/utils.js";
 import { loginGoogle, logout, watchAuth } from "../services/authService.js";
 import {
   ensureUserDoc,
@@ -141,16 +140,16 @@ const msgList = new MessageList({
       playTone(660, 0.04);
     } catch (e) {
       console.error(e);
-      msgList.addSystem(`REACTION_FAILED: ${e?.code || e?.message || "unknown"}`);
+      msgList.addSystem(
+        `REACTION_FAILED: ${e?.code || e?.message || "unknown"}`
+      );
     }
   },
   onDelete: async ({ id }) => {
     if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
     if (!id) return;
-
     const ok = confirm("Supprimer ce message ? (irréversible)");
     if (!ok) return;
-
     try {
       await deleteRoomMessage({
         spaceId: CONFIG.SPACE_ID,
@@ -160,7 +159,9 @@ const msgList = new MessageList({
       // Firestore enverra un event "removed" et l'UI va s'actualiser.
     } catch (e) {
       console.error(e);
-      msgList.addSystem(`DELETE_FAILED: ${e?.code || e?.message || "unknown"}`);
+      msgList.addSystem(
+        `DELETE_FAILED: ${e?.code || e?.message || "unknown"}`
+      );
     }
   },
 });
@@ -188,21 +189,24 @@ function applyTheme(theme) {
   const t = theme === "light" ? "light" : "dark";
   document.documentElement.dataset.theme = t;
   const willGoTo = t === "light" ? "dark" : "light";
-  if (themeToggle) themeToggle.textContent = willGoTo === "light" ? "☀️" : "🌙";
+  if (themeToggle)
+    themeToggle.textContent = willGoTo === "light" ? "☀️" : "🌙";
   setPref(PREF_THEME, t);
 }
 
 let soundEnabled = getPref(PREF_SOUND, "1") === "1";
 
 function applySoundUI() {
-  if (soundToggle) soundToggle.textContent = soundEnabled ? "🔊" : "🔇";
+  if (soundToggle)
+    soundToggle.textContent = soundEnabled ? "🔊" : "🔇";
   setPref(PREF_SOUND, soundEnabled ? "1" : "0");
 }
 
 function playTone(freq = 520, dur = 0.06) {
   if (!soundEnabled) return;
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
     const o = ctx.createOscillator();
     const g = ctx.createGain();
     o.type = "sine";
@@ -219,7 +223,12 @@ function playTone(freq = 520, dur = 0.06) {
 }
 
 // Init preferences
-applyTheme(getPref(PREF_THEME, document.documentElement.dataset.theme || systemTheme()));
+applyTheme(
+  getPref(
+    PREF_THEME,
+    document.documentElement.dataset.theme || systemTheme()
+  )
+);
 applySoundUI();
 
 themeToggle?.addEventListener("click", () => {
@@ -239,7 +248,6 @@ let isMember = false;
 let unsub = null;
 let userKeys = [];
 let userRank = "BRONZE";
-
 let lastSentAt = 0;
 
 // ===== Profile / Keys =====
@@ -248,6 +256,7 @@ async function refreshProfile() {
   const p = await getProfile(currentUser.uid);
   userKeys = p.keys || [];
   userRank = p.rank || "BRONZE";
+
   if (profileName) profileName.textContent = currentUser.name;
   if (profileRank) profileRank.textContent = userRank;
   if (profileKeys)
@@ -264,8 +273,9 @@ async function grantKeyToMe(tier = "BRONZE") {
 
 async function consumeKey(codeRaw) {
   const code = String(codeRaw || "").trim().toUpperCase();
-  if (!code) return msgList.addSystem("USAGE: /use <clé>");
-  if (!userKeys.includes(code)) return msgList.addSystem("[KEYMASTER] Clé introuvable.");
+  if (!code) return msgList.addSystem("USAGE: /use ");
+  if (!userKeys.includes(code))
+    return msgList.addSystem("[KEYMASTER] Clé introuvable.");
   await removeKey(currentUser.uid, code);
   await refreshProfile();
   msgList.addSystem(`[KEYMASTER] Clé utilisée : ${code} ✅`);
@@ -277,52 +287,57 @@ function startListener() {
     unsub();
     unsub = null;
   }
+
   msgList.clear();
   msgList.addSystem("CONNECTED");
 
-  unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (ev) => {
-    const type = ev?.type || "added";
-    if (type === "removed") {
-      msgList.removeMessage(ev.id);
-      return;
-    }
-    // Payload normalisé pour l'UI
-    const payload = {
-      id: ev.id,
-      uid: ev.uid,
-      displayName: ev.displayName || "USER",
-      text: ev.text || "",
-      photoURL: ev.photoURL || null,
-      imageURL: ev.imageURL || null,
-      reactions: ev.reactions || {},
-      meUid: currentUser?.uid || null,
-    };
+  unsub = subscribeRoomMessages(
+    CONFIG.SPACE_ID,
+    CONFIG.ROOM_ID,
+    (ev) => {
+      const type = ev?.type || "added";
 
-    // Fix ordering : Firestore peut réordonner un doc quand serverTimestamp se résout.
-    // on utilise newIndex (si fourni) pour insérer / déplacer au bon endroit.
-    const newIndex = typeof ev?.newIndex === "number" ? ev.newIndex : null;
+      if (type === "removed") {
+        msgList.removeMessage(ev.id);
+        return;
+      }
 
-    const isAI =
-      ev?.uid === "AI_BOT" || String(ev?.displayName || "").toUpperCase() === "IA";
+      const payload = {
+        id: ev.id,
+        uid: ev.uid,
+        displayName: ev.displayName || "USER",
+        text: ev.text || "",
+        photoURL: ev.photoURL || null,
+        imageURL: ev.imageURL || null,
+        reactions: ev.reactions || {},
+        meUid: currentUser?.uid || null,
+      };
 
-    // Hide typing when the AI response lands
-    if (isAI) msgList.hideTyping();
+      const newIndex =
+        typeof ev?.newIndex === "number" ? ev.newIndex : null;
 
-    // Modified : update + reposition only (no SFX)
-    if (type === "modified") {
+      const isAI =
+        ev?.uid === "AI_BOT" ||
+        String(ev?.displayName || "").toUpperCase() === "IA";
+
+      if (isAI) msgList.hideTyping();
+
+      // Utiliser l'autoscroll intelligent interne
       msgList.upsertMessage(payload, newIndex);
-      return;
+
+      // SFX: receive message (not mine)
+      if (
+        type === "added" &&
+        ev?.uid &&
+        currentUser?.uid &&
+        ev.uid !== currentUser.uid
+      ) {
+        playTone(isAI ? 680 : 560, 0.045);
+      }
     }
+  );
 
-    // Added : insert + SFX (receive only)
-    msgList.upsertMessage(payload, newIndex);
-
-    // SFX: receive message (not mine)
-    if (type === "added" && ev?.uid && currentUser?.uid && ev.uid !== currentUser.uid) {
-      playTone(isAI ? 680 : 560, 0.045);
-    }
-  });
-
+  // Premier chargement : on force le bas après quelques ms
   setTimeout(() => {
     msgList.scrollToBottom();
   }, 300);
@@ -333,7 +348,11 @@ async function joinFlow() {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
   const code = inviteCode?.value || "";
   try {
-    const r = await joinWithInvite(CONFIG.SPACE_ID, code, currentUser);
+    const r = await joinWithInvite(
+      CONFIG.SPACE_ID,
+      code,
+      currentUser
+    );
     isMember = true;
     msgList.addSystem(r.already ? "ALREADY_MEMBER" : "INVITE_OK");
     if (!r.already) {
@@ -344,7 +363,9 @@ async function joinFlow() {
     setTerminal("authenticated");
     startListener();
   } catch (e) {
-    msgList.addSystem(`INVITE_FAILED: ${e?.message || "unknown"}`);
+    msgList.addSystem(
+      `INVITE_FAILED: ${e?.message || "unknown"}`
+    );
   }
 }
 
@@ -361,13 +382,10 @@ async function sendMessage() {
 
   const lower = raw.toLowerCase();
 
-  // Slash commands
   if (lower === "/help") {
     msgInput.value = "";
     updateCharCount();
-    msgList.addSystem(
-      "COMMANDS: /help • /keys • /use <key> • @ia <prompt>"
-    );
+    msgList.addSystem("COMMANDS: /help • /keys • /use • @ia ");
     return;
   }
 
@@ -392,22 +410,31 @@ async function sendMessage() {
 
   // IA
   if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
-    if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
+    if (!isMember)
+      return msgList.addSystem(
+        "ACCESS_DENIED: invite required"
+      );
     const prompt = raw.slice(4).trim();
-    if (!prompt) return msgList.addSystem("AI_USAGE: @ia ton message");
+    if (!prompt)
+      return msgList.addSystem("AI_USAGE: @ia ton message");
 
     try {
       await sendRoomMessage(CONFIG.SPACE_ID, CONFIG.ROOM_ID, {
         uid: currentUser.uid,
         displayName: currentUser.name,
         photoURL: currentUser.photoURL || null,
-        text: `@IA: ${prompt}`.slice(0, CONFIG.MAX_MESSAGE_LEN),
+        text: `@IA: ${prompt}`.slice(
+          0,
+          CONFIG.MAX_MESSAGE_LEN
+        ),
       });
       hud.onSentMessage();
       playTone(740, 0.05);
     } catch (e) {
       console.error(e);
-      msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
+      msgList.addSystem(
+        `SEND_FAILED: ${e?.code || e?.message || "unknown"}`
+      );
       return;
     }
 
@@ -428,12 +455,19 @@ async function sendMessage() {
     } catch (e) {
       console.error(e);
       msgList.hideTyping();
-      msgList.addSystem(`AI_FAILED: ${e?.message || "unknown"}`);
+      msgList.addSystem(
+        `AI_FAILED: ${e?.message || "unknown"}`
+      );
     }
+
     return;
   }
 
-  if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
+  // Message normal
+  if (!isMember)
+    return msgList.addSystem(
+      "ACCESS_DENIED: invite required"
+    );
 
   try {
     await sendRoomMessage(CONFIG.SPACE_ID, CONFIG.ROOM_ID, {
@@ -449,7 +483,9 @@ async function sendMessage() {
     playTone(740, 0.05);
   } catch (e) {
     console.error(e);
-    msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
+    msgList.addSystem(
+      `SEND_FAILED: ${e?.code || e?.message || "unknown"}`
+    );
   }
 }
 
@@ -474,7 +510,10 @@ btnLogin?.addEventListener("click", async () => {
     await loginGoogle();
   } catch (e) {
     console.error(e);
-    msgList.addSystem("AUTH_FAILED: " + (e?.code || e?.message || "unknown"));
+    msgList.addSystem(
+      "AUTH_FAILED: " +
+        (e?.code || e?.message || "unknown")
+    );
   }
 });
 
@@ -513,11 +552,13 @@ imgBtn?.addEventListener("click", () => {
 imgInput?.addEventListener("change", async (e) => {
   const file = e.target.files?.[0];
   if (!file) return;
+
   if (!currentUser) {
     msgList.addSystem("AUTH_REQUIRED.");
     imgInput.value = "";
     return;
   }
+
   if (!isMember) {
     msgList.addSystem("ACCESS_DENIED: invite required");
     imgInput.value = "";
@@ -525,6 +566,7 @@ imgInput?.addEventListener("change", async (e) => {
   }
 
   msgList.addSystem("UPLOAD_IMAGE...");
+
   try {
     const url = await uploadChatImage({
       spaceId: CONFIG.SPACE_ID,
@@ -572,15 +614,18 @@ profileModal?.addEventListener("click", (e) => {
 });
 
 // HUD claim
-document.getElementById("hudMissionClaim")?.addEventListener("click", () => {
-  if (hud.claimMission()) msgList.addSystem("MISSION_OK: +XP ✅");
-  else msgList.addSystem("MISSION_LOCKED");
-});
+document
+  .getElementById("hudMissionClaim")
+  ?.addEventListener("click", () => {
+    if (hud.claimMission())
+      msgList.addSystem("MISSION_OK: +XP ✅");
+    else msgList.addSystem("MISSION_LOCKED");
+  });
 
 // ===== Auth watcher =====
 setTerminal("type: login");
 msgList.addSystem("BOOT_OK");
-msgList.addSystem("TIP: @ia <message> • /help");
+msgList.addSystem("TIP: @ia • /help");
 
 watchAuth(async (user) => {
   if (user) {
@@ -597,15 +642,15 @@ watchAuth(async (user) => {
     msgList.addSystem("AUTH_OK: " + currentUser.name);
     msgList.addSystem("CHECKING_ACCESS...");
 
-    // Si Firestore rencontre un souci (permissions / offline / mismatch libs),
-    // on évite de bloquer toute la console sur "CHECKING_ACCESS...".
     try {
       await ensureUserDoc(currentUser);
       await refreshProfile();
     } catch (e) {
       console.error("Profile init failed:", e);
       msgList.addSystem(
-        `PROFILE_INIT_FAILED: ${e?.message || "unknown"} (tu peux quand même tenter l'invite)`
+        `PROFILE_INIT_FAILED: ${
+          e?.message || "unknown"
+        } (tu peux quand même tenter l'invite)`
       );
     }
 
@@ -613,7 +658,10 @@ watchAuth(async (user) => {
     hud.render();
 
     try {
-      isMember = await checkMembership(CONFIG.SPACE_ID, currentUser.uid);
+      isMember = await checkMembership(
+        CONFIG.SPACE_ID,
+        currentUser.uid
+      );
       if (!isMember) {
         msgList.clear();
         msgList.addSystem("ACCESS_DENIED: invite required");
@@ -640,6 +688,7 @@ watchAuth(async (user) => {
     userTag.textContent = "OFFLINE";
     btnLogin.style.display = "inline-block";
     btnLogout.style.display = "none";
+
     if (unsub) {
       unsub();
       unsub = null;
