@@ -1,5 +1,5 @@
 // js/services/chatService.js
-import { db } from "../core/firebase.js";
+import { db } from "./firebase.js";
 import {
   collection,
   addDoc,
@@ -8,20 +8,15 @@ import {
   setDoc,
   query,
   orderBy,
-  where,
-  limit,
   onSnapshot,
   serverTimestamp,
   Timestamp,
-} from "firebase/firestore";
+} from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-/**
- * ===============================
- *  MEMBERSHIP / INVITE
- * ===============================
- */
+/* ===============================
+   MEMBERSHIP
+================================ */
 
-// Vérifie si l'utilisateur est membre de l'espace
 export async function checkMembership(spaceId, uid) {
   if (!spaceId || !uid) return false;
   const ref = doc(db, "spaces", spaceId, "members", uid);
@@ -29,25 +24,16 @@ export async function checkMembership(spaceId, uid) {
   return snap.exists();
 }
 
-// Rejoindre un espace avec un code d'invite
 export async function joinWithInvite(spaceId, code, user) {
-  if (!spaceId || !code || !user) {
-    throw new Error("INVALID_INVITE");
-  }
+  if (!spaceId || !code || !user) throw new Error("INVALID_INVITE");
 
   const inviteRef = doc(db, "spaces", spaceId, "invites", code);
   const inviteSnap = await getDoc(inviteRef);
-
-  if (!inviteSnap.exists()) {
-    throw new Error("INVITE_NOT_FOUND");
-  }
+  if (!inviteSnap.exists()) throw new Error("INVITE_NOT_FOUND");
 
   const memberRef = doc(db, "spaces", spaceId, "members", user.uid);
   const memberSnap = await getDoc(memberRef);
-
-  if (memberSnap.exists()) {
-    return { already: true };
-  }
+  if (memberSnap.exists()) return { already: true };
 
   await setDoc(memberRef, {
     uid: user.uid,
@@ -58,20 +44,11 @@ export async function joinWithInvite(spaceId, code, user) {
   return { already: false };
 }
 
-/**
- * ===============================
- *  MESSAGES
- * ===============================
- */
+/* ===============================
+   MESSAGES
+================================ */
 
-// 🔥 ENVOI D'UN MESSAGE
-// FIX MAJEUR : createdAt = Timestamp.now() (jamais NULL)
-// => Firestore trie correctement dès l’ajout
 export async function sendRoomMessage(spaceId, roomId, payload) {
-  if (!spaceId || !roomId) {
-    throw new Error("INVALID_ROOM");
-  }
-
   const colRef = collection(
     db,
     "spaces",
@@ -84,24 +61,15 @@ export async function sendRoomMessage(spaceId, roomId, payload) {
   return addDoc(colRef, {
     ...payload,
 
-    // ✅ timestamp immédiat → ordre OK instantanément
+    // ✅ timestamp immédiat → pas NULL → ordre OK
     createdAt: Timestamp.now(),
 
-    // ✅ timestamp serveur (optionnel, analytics / audit)
+    // optionnel
     createdAtServer: serverTimestamp(),
   });
 }
 
-// 🔥 ABONNEMENT AUX MESSAGES
-// FIX MAJEUR :
-// - orderBy(createdAt, "asc")
-// - support des docChanges (added / modified / removed)
-// - newIndex / oldIndex transmis à l'UI
 export function subscribeRoomMessages(spaceId, roomId, onEvent) {
-  if (!spaceId || !roomId || typeof onEvent !== "function") {
-    throw new Error("INVALID_SUBSCRIBE");
-  }
-
   const colRef = collection(
     db,
     "spaces",
@@ -111,19 +79,16 @@ export function subscribeRoomMessages(spaceId, roomId, onEvent) {
     "messages"
   );
 
-  // ✅ TRI DÉFINITIF (plus de messages en haut)
   const q = query(colRef, orderBy("createdAt", "asc"));
 
-  return onSnapshot(q, (snapshot) => {
-    snapshot.docChanges().forEach((change) => {
-      const data = change.doc.data() || {};
-
+  return onSnapshot(q, (snap) => {
+    snap.docChanges().forEach((c) => {
       onEvent({
-        type: change.type, // "added" | "modified" | "removed"
-        id: change.doc.id,
-        ...data,
-        newIndex: change.newIndex,
-        oldIndex: change.oldIndex,
+        type: c.type,
+        id: c.doc.id,
+        ...c.doc.data(),
+        newIndex: c.newIndex,
+        oldIndex: c.oldIndex,
       });
     });
   });
