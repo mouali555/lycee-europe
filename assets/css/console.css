@@ -12,9 +12,20 @@ body.consoleBody{
 
 .layout{
   /* dvh = dynamique (mobile), svh fallback, puis vh */
+  /*
+    IMPORTANT:
+    On force une hauteur "viewport" pour éviter que la page entière scrolle.
+    Sinon, quand la liste des messages grandit, c'est le document qui défile
+    et la colonne de gauche peut "disparaître" (elle sort du viewport).
+    Avec une hauteur fixe, ce sont .sidebar et .messages qui scrollent.
+  */
+  height: calc(100vh - var(--header-h));
+  height: calc(100svh - var(--header-h));
+  height: calc(100dvh - var(--header-h));
   min-height: calc(100vh - var(--header-h));
   min-height: calc(100svh - var(--header-h));
   min-height: calc(100dvh - var(--header-h));
+  overflow: hidden;
   display:grid;
   grid-template-columns: 360px 1fr;
 }
