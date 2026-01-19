@@ -51,6 +51,10 @@
   border:1px solid var(--border);
   background: var(--surface);
   border-radius: 999px;
+  /* Prevent items from visually spilling out when the header gets tight */
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .nav a{
@@ -59,6 +63,28 @@
   border-radius: 999px;
   color: var(--muted);
   transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+  white-space: nowrap;
+}
+
+/* Responsive header: keep nav usable on smaller widths instead of overflowing */
+@media (max-width: 980px){
+  .headerRow{
+    height: auto;
+    flex-wrap: wrap;
+    padding: 10px 0;
+  }
+
+  .brand{ min-width: 0; }
+  .headerActions{ min-width: 0; flex-wrap: wrap; }
+
+  .nav{
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav::-webkit-scrollbar{ display:none; }
 }
 
 .nav a:hover{ background: var(--surface-2); color: var(--text); }

@@ -329,7 +329,8 @@ body.consoleBody{
 .bubble{
   position:relative;
   max-width: min(680px, 92%);
-  padding: 12px 14px 12px;
+  /* Reserve space for in-bubble controls (reactions/delete) so they don't cover text */
+  padding: 12px 14px 44px;
   border-radius: 18px;
   border:1px solid var(--border);
   background: var(--surface-2);
@@ -409,8 +410,12 @@ body.consoleBody{
   border:1px solid var(--border);
   background: var(--surface);
   border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 0.95rem;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  line-height: 1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .reactBtn.active{ border-color: rgba(100,210,255,0.35); }
