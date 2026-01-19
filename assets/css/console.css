@@ -115,6 +115,11 @@ body.consoleBody{
   display:flex;
   flex-direction:column;
   min-width:0;
+  /*
+    ✅ FIX mobile scroll (Safari/iOS) :
+    Sans min-height:0, un enfant flex avec overflow:auto peut refuser de défiler.
+  */
+  min-height:0;
 }
 
 .chatHeader{
@@ -142,10 +147,140 @@ body.consoleBody{
   z-index: 5;
 }
 
+/*
+  ✅ FIX: le bandeau "Hors ligne" doit être réellement caché.
+  Le JS toggle aria-hidden, mais sans CSS associée il restait visible.
+*/
+#offlineBanner[aria-hidden="true"]{ display:none; }
+#offlineBanner[aria-hidden="false"]{ display:block; }
+
+/* =========================================
+   DEBUG OVERLAY (only if enabled)
+========================================= */
+
+.debugOverlay{
+  position: fixed;
+  z-index: 99999;
+  right: 10px;
+  bottom: 10px;
+  width: min(520px, calc(100vw - 20px));
+  max-height: min(64vh, 520px);
+  background: rgba(10,10,14,.92);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  color: rgba(255,255,255,.92);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.debugOverlay--hidden{
+  height: 44px;
+  max-height: 44px;
+  overflow: hidden;
+}
+
+.dbgTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 8px;
+}
+
+.dbgTitle{
+  font-weight: 800;
+  letter-spacing: .06em;
+  font-size: 12px;
+  opacity: .95;
+}
+
+.dbgBtns{ display:flex; gap: 8px; }
+
+.dbgBtn{
+  appearance:none;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.92);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.dbgBtn:hover{ background: rgba(255,255,255,.10); }
+
+.dbgBtn--danger{
+  border-color: rgba(255,70,70,.35);
+  background: rgba(255,70,70,.12);
+}
+
+.dbgGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.dbgCard{
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.03);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.dbgCardTitle{
+  font-size: 12px;
+  font-weight: 800;
+  opacity: .9;
+  margin-bottom: 8px;
+}
+
+.dbgKVs{ display:flex; flex-direction:column; gap: 6px; }
+
+.dbgKV{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.dbgKV span{ opacity: .75; }
+.dbgKV b{ font-weight: 800; }
+
+.dbgActions{ display:flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+.dbgCard--logs{ flex: 1; }
+
+.dbgLogs{
+  max-height: 220px;
+  overflow:auto;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(0,0,0,.22);
+  border: 1px solid rgba(255,255,255,.08);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.dbgLine{ white-space: pre-wrap; word-break: break-word; margin-bottom: 6px; opacity: .96; }
+.dbgLine--info{ }
+.dbgLine--warn{ opacity: .98; }
+.dbgLine--error{ opacity: 1; }
+
+@media (max-width: 520px){
+  .dbgGrid{ grid-template-columns: 1fr; }
+  .debugOverlay{ right: 8px; left: 8px; width: auto; }
+}
+
 .messages{
   flex:1;
   padding: 16px 22px 8px;
   overflow:auto;
+  min-height:0;
+  touch-action: pan-y;
   /* smooth peut "jitter" sur mobile + clavier */
   scroll-behavior:auto;
   -webkit-overflow-scrolling: touch;

@@ -23,6 +23,12 @@ import { toggleRoomMessageReaction } from "../services/reactionService.js";
 import { MessageList } from "../ui/messageList.js";
 import { HUD } from "../ui/hud.js";
 
+// Debug overlay (enable with ?debug=1)
+import { initDebugOverlay } from "../debug/overlay.js";
+
+// init as early as possible
+initDebugOverlay();
+
 // ===== DOM =====
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
@@ -81,6 +87,18 @@ const hud = new HUD({
 // ===== UI helpers =====
 function setTerminal(text) {
   if (terminalStatus) terminalStatus.textContent = text;
+}
+
+function dbgInfo(msg, extra) {
+  try {
+    window.__XPDBG__?.log?.(msg, extra);
+  } catch {}
+}
+
+function dbgErr(err, ctx) {
+  try {
+    window.__XPDBG__?.err?.(err, ctx);
+  } catch {}
 }
 
 function updateConnectivityUI() {
@@ -150,6 +168,7 @@ const msgList = new MessageList({
       playTone(660, 0.04);
     } catch (e) {
       console.error(e);
+      dbgErr(e, "REACTION_FAILED");
       msgList.addSystem(
         `REACTION_FAILED: ${e?.code || e?.message || "unknown"}`
       );
@@ -168,6 +187,7 @@ const msgList = new MessageList({
       });
     } catch (e) {
       console.error(e);
+      dbgErr(e, "DELETE_FAILED");
       msgList.addSystem(
         `DELETE_FAILED: ${e?.code || e?.message || "unknown"}`
       );
@@ -419,6 +439,7 @@ async function joinFlow() {
     setTerminal("authenticated");
     startListener();
   } catch (e) {
+    dbgErr(e, "INVITE_FAILED");
     msgList.addSystem(`INVITE_FAILED: ${e?.message || "unknown"}`);
   }
 }
@@ -485,6 +506,7 @@ async function sendMessage() {
       playTone(740, 0.05);
     } catch (e) {
       console.error(e);
+      dbgErr(e, "SEND_AI_FAILED");
       msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
       return;
     }
@@ -505,6 +527,7 @@ async function sendMessage() {
       msgList.addSystem("AI_OK");
     } catch (e) {
       console.error(e);
+      dbgErr(e, "AI_CALL_FAILED");
       msgList.hideTyping();
       msgList.addSystem(`AI_FAILED: ${e?.message || "unknown"}`);
     }
@@ -534,6 +557,7 @@ async function sendMessage() {
     playTone(740, 0.05);
   } catch (e) {
     console.error(e);
+    dbgErr(e, "SEND_TEXT_FAILED");
     msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
   }
 }
@@ -559,6 +583,7 @@ btnLogin?.addEventListener("click", async () => {
     await loginGoogle();
   } catch (e) {
     console.error(e);
+    dbgErr(e, "AUTH_FAILED");
     msgList.addSystem("AUTH_FAILED: " + (e?.code || e?.message || "unknown"));
   }
 });
@@ -639,6 +664,7 @@ imgInput?.addEventListener("change", async (e) => {
     msgList.addSystem("IMAGE_OK");
   } catch (err) {
     console.error(err);
+    dbgErr(err, "UPLOAD_IMAGE_FAILED");
     msgList.addSystem(`IMAGE_FAILED: ${err?.code || err?.message || "unknown"}`);
   } finally {
     imgInput.value = "";
@@ -696,6 +722,7 @@ watchAuth(async (user) => {
       await refreshProfile();
     } catch (e) {
       console.error("Profile init failed:", e);
+      dbgErr(e, "PROFILE_INIT_FAILED");
       msgList.addSystem(
         `PROFILE_INIT_FAILED: ${e?.message || "unknown"} (tu peux quand même tenter l'invite)`
       );
@@ -718,6 +745,7 @@ watchAuth(async (user) => {
       startListener();
     } catch (e) {
       console.error(e);
+      dbgErr(e, "MEMBERSHIP_CHECK_FAILED");
       isMember = false;
       msgList.clear();
       msgList.addSystem("ACCESS_DENIED");

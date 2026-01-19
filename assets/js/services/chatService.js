@@ -81,7 +81,16 @@ export function subscribeRoomMessages(spaceId, roomId, onEvent) {
 
   const q = query(colRef, orderBy("createdAt", "asc"));
 
-  return onSnapshot(q, (snap) => {
+  // includeMetadataChanges -> utile pour debug (fromCache / pendingWrites)
+  return onSnapshot(
+    q,
+    { includeMetadataChanges: true },
+    (snap) => {
+      // Debug overlay: expose metadata réseau réel Firestore
+      try {
+        window.__XPDBG__?.setFirestoreMeta?.(snap.metadata);
+      } catch {}
+
     snap.docChanges().forEach((c) => {
       onEvent({
         type: c.type,
@@ -91,5 +100,14 @@ export function subscribeRoomMessages(spaceId, roomId, onEvent) {
         oldIndex: c.oldIndex,
       });
     });
-  });
+    },
+    (err) => {
+      try {
+        window.__XPDBG__?.err?.(err, "FIRESTORE_SNAPSHOT_ERROR");
+      } catch {}
+      // On garde l'app fonctionnelle même si l'overlay n'existe pas.
+      // Les erreurs de snapshot peuvent venir d'un offline réel.
+      console.error("onSnapshot error:", err);
+    }
+  );
 }
