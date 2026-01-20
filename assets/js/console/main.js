@@ -33,6 +33,10 @@ initDebugOverlay();
 const clockEl = document.getElementById("clock");
 const terminalStatus = document.getElementById("terminalStatus");
 
+// Header mobile menu (console page also uses the site header)
+const headerMenuBtn = document.querySelector("[data-menu-btn]");
+const headerMobileNav = document.querySelector("[data-mobile-nav]");
+
 // Preferences toggles
 const themeToggle = document.getElementById("themeToggle");
 const soundToggle = document.getElementById("soundToggle");
@@ -140,6 +144,15 @@ sidebarOverlay?.addEventListener("click", () => setSidebarOpen(false));
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") setSidebarOpen(false);
 });
+
+// ===== Header mobile menu (Contact/About links) =====
+if (headerMenuBtn && headerMobileNav) {
+  headerMenuBtn.addEventListener("click", () => {
+    const open = headerMobileNav.getAttribute("data-open") === "true";
+    headerMobileNav.setAttribute("data-open", open ? "false" : "true");
+    headerMenuBtn.setAttribute("aria-expanded", String(!open));
+  });
+}
 
 // ===== State =====
 let currentUser = null;

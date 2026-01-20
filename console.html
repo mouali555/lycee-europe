@@ -57,9 +57,12 @@
           <a href="./index.html">Accueil</a>
           <a href="./console.html" aria-current="page">Console IA</a>
           <a href="./hub.html">Projets</a>
+          <a href="./about.html">À propos</a>
+          <a href="./contact.html">Contact</a>
         </nav>
 
         <div class="headerActions">
+          <button class="menuBtn" type="button" data-menu-btn aria-expanded="false" aria-controls="mobileNav">☰</button>
           <span id="clock" class="clock" aria-label="Heure">--:--:--</span>
           <span id="terminalStatus" class="terminalStatus" aria-label="Statut">booting…</span>
 
@@ -74,6 +77,16 @@
           <button id="btn-login" class="btn btn--small btn--primary">Login</button>
           <button id="btn-logout" class="btn btn--small" style="display:none">Logout</button>
         </div>
+      </div>
+
+      <div id="mobileNav" class="mobileNav" data-mobile-nav data-open="false">
+        <nav class="nav" aria-label="Navigation mobile">
+          <a href="./index.html">Accueil</a>
+          <a href="./console.html" aria-current="page">Console IA</a>
+          <a href="./hub.html">Projets</a>
+          <a href="./about.html">À propos</a>
+          <a href="./contact.html">Contact</a>
+        </nav>
       </div>
     </div>
   </header>

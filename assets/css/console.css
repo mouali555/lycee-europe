@@ -303,7 +303,7 @@ body.consoleBody{
 .msgRow{
   display:flex;
   gap: 12px;
-  margin: 10px 0;
+  margin: 6px 0;
   align-items:flex-end;
 }
 
@@ -329,8 +329,8 @@ body.consoleBody{
 .bubble{
   position:relative;
   max-width: min(680px, 92%);
-  /* Reserve space for in-bubble controls (reactions/delete) so they don't cover text */
-  padding: 12px 14px 44px;
+  /* Compact like IG/DM: keep controls without a huge empty bottom area */
+  padding: 10px 12px 28px;
   border-radius: 18px;
   border:1px solid var(--border);
   background: var(--surface-2);
@@ -377,14 +377,24 @@ body.consoleBody{
 
 .msgActions{
   position:absolute;
-  top: 10px;
-  right: 10px;
+  top: 6px;
+  right: 6px;
   opacity:0;
   transform: translateY(-2px);
   transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
 }
 
 .bubble:hover .msgActions{ opacity:1; transform:none; }
+/* Mobile / clavier: afficher aussi quand focus dans la bulle */
+.bubble:focus-within .msgActions{ opacity:1; transform:none; }
+
+/* Smaller icon buttons inside chat bubbles */
+.bubble .iconBtn{
+  padding: 4px 6px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  line-height: 1;
+}
 
 .iconBtn.danger{ border-color: rgba(255, 107, 107, 0.25); }
 
@@ -392,8 +402,8 @@ body.consoleBody{
   display:flex;
   gap: 8px;
   position:absolute;
-  right: 10px;
-  bottom: 10px;
+  right: 8px;
+  bottom: 6px;
   opacity:0;
   transform: translateY(6px);
   pointer-events:none;
@@ -406,12 +416,18 @@ body.consoleBody{
   pointer-events:auto;
 }
 
+.bubble:focus-within .reactionBar{
+  opacity:1;
+  transform:none;
+  pointer-events:auto;
+}
+
 .reactBtn{
   border:1px solid var(--border);
   background: var(--surface);
   border-radius: 999px;
-  padding: 4px 8px;
-  font-size: 0.85rem;
+  padding: 3px 7px;
+  font-size: 0.82rem;
   line-height: 1;
   display:inline-flex;
   align-items:center;
@@ -420,17 +436,17 @@ body.consoleBody{
 
 .reactBtn.active{ border-color: rgba(100,210,255,0.35); }
 
-.reactionChips{ display:none; gap: 8px; margin-top: 10px; flex-wrap:wrap; }
+.reactionChips{ display:none; gap: 6px; margin-top: 6px; flex-wrap:wrap; }
 
 .chip{
   display:inline-flex;
   align-items:center;
   gap: 8px;
-  padding: 6px 10px;
+  padding: 4px 8px;
   border-radius: 999px;
   border:1px solid var(--border);
   background: var(--surface);
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 .chip.mine{ border-color: rgba(100,210,255,0.35); }
