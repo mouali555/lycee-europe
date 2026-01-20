@@ -561,3 +561,7 @@ body.sidebar-open{ overflow:hidden; }
   .consoleBody .headerActions{ gap: 8px; }
   .consoleBody .badge{ padding: 6px 8px; font-size: 0.82rem; }
 }
+/* Désactiver l'heure dans la console */
+#clock {
+  display: none !important;
+}
