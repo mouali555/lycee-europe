@@ -26,6 +26,7 @@
   gap: 12px;
   min-width: auto;
   flex-shrink: 0;
+  margin-right: auto;
 }
 
 .brandMark{
@@ -409,12 +410,3 @@
 :root[data-theme="light"] .modal{ 
   background: rgba(10,12,18,0.45); 
 }
-
-
-/* Icon buttons */
-.iconBtn{ cursor:pointer; color: var(--text); }
-.iconBtn:hover{ background: var(--surface-2); }
-
-/* Theme helpers */
-:root[data-theme="light"] .siteHeader{ backdrop-filter: blur(14px); }
-:root[data-theme="light"] .modal{ background: rgba(10,12,18,0.45); }
