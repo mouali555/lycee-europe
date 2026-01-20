@@ -560,7 +560,9 @@ body.sidebar-open{ overflow:hidden; }
   .composerMeta{ padding-inline: 14px; }
   .consoleBody .headerActions{ gap: 8px; }
   .consoleBody .badge{ padding: 6px 8px; font-size: 0.82rem; }
-/* =========================================================
+}
+
+  /* =========================================================
    FIX CONSOLE — SUPPRIMER L’HEURE (CLOCK)
    (override desktop + mobile, même avec !important)
    ========================================================= */
