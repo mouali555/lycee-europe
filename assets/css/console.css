@@ -466,11 +466,28 @@ body.sidebar-open{ overflow:hidden; }
 .clock{
   font-family: var(--font-mono);
   color: var(--muted);
+  min-width: 86px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .terminalStatus{
   font-family: var(--font-mono);
   color: var(--muted-2);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Prevent the header time/status from shrinking the nav too aggressively on desktop */
+.consoleBody .nav{ flex: 1 1 520px; }
+.consoleBody .headerActions{ flex: 0 0 auto; }
+
+@media (max-width: 1180px){
+  /* If space is tight, allow actions to wrap below instead of "eating" the nav */
+  .consoleBody .headerRow{ flex-wrap: wrap; height: auto; padding: 10px 0; }
+  .consoleBody .nav{ order: 3; width: 100%; justify-content: center; }
 }
 
 .popIn{ animation: pop 220ms var(--ease) both; }
