@@ -560,8 +560,32 @@ body.sidebar-open{ overflow:hidden; }
   .composerMeta{ padding-inline: 14px; }
   .consoleBody .headerActions{ gap: 8px; }
   .consoleBody .badge{ padding: 6px 8px; font-size: 0.82rem; }
-}
-/* Désactiver l'heure dans la console */
-#clock {
+/* =========================================================
+   FIX CONSOLE — SUPPRIMER L’HEURE (CLOCK)
+   (override desktop + mobile, même avec !important)
+   ========================================================= */
+
+/* Si l’horloge est en class */
+.consoleBody .clock{
   display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Si l’horloge est en id */
+.consoleBody #clock{
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Optionnel mais utile: évite que le header "réserve" de la place */
+.consoleBody .headerActions{
+  gap: 8px;
 }
