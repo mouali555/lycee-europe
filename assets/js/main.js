@@ -130,3 +130,26 @@ if (revealEls.length) {
     io.observe(el);
   }
 }
+
+// ================================
+// Resilience: Service Worker (offline shell)
+// ================================
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("./sw.js", { scope: "./" })
+      .catch(() => {
+        // Silent: SW is a progressive enhancement
+      });
+  });
+}
+
+// ================================
+// Resilience: safe external link behavior
+// ================================
+// Ensure target="_blank" links have rel="noopener noreferrer"
+for (const a of qsa('a[target="_blank"]')) {
+  const rel = (a.getAttribute("rel") || "").toLowerCase();
+  if (!rel.includes("noopener")) a.setAttribute("rel", (rel + " noopener").trim());
+  if (!rel.includes("noreferrer")) a.setAttribute("rel", (a.getAttribute("rel") + " noreferrer").trim());
+}
