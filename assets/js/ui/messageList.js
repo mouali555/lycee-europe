@@ -78,13 +78,14 @@ export class MessageList {
     let finalPhoto = photoURL || null;
     if (isAI) finalPhoto = './assets/img/photoia.png';
 
+    const avatarAlt = isAI ? 'Avatar IA' : 'Avatar';
     const avatarHTML = finalPhoto
-      ? `<img class="avatar" src="${finalPhoto}" referrerpolicy="no-referrer">`
+      ? `<img class="avatar" src="${finalPhoto}" alt="${avatarAlt}" referrerpolicy="no-referrer">`
       : `<div class="avatar fallback">${esc((displayName?.[0] || '?').toUpperCase())}</div>`;
 
     const hasText = (text || '').trim().length > 0;
     const imgHtml = imageURL
-      ? `<div class="media"><img class="msgImage" src="${esc(imageURL)}" loading="lazy"></div>`
+      ? `<div class="media"><img class="msgImage" src="${esc(imageURL)}" alt="Image envoyée" loading="lazy"></div>`
       : '';
 
     const actionsHtml =
@@ -308,7 +309,7 @@ export class MessageList {
     row.className = "msgRow iaRow typingRow popIn";
 
     // Keep avatar path relative to the HTML entry (static hosting friendly)
-    const avatarHTML = `<img class="avatar" src="./assets/img/photoia.png" referrerpolicy="no-referrer">`;
+    const avatarHTML = `<img class="avatar" src="./assets/img/photoia.png" alt="Avatar IA" referrerpolicy="no-referrer">`;
 
     row.innerHTML = `
       ${avatarHTML}

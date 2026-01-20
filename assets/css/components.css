@@ -293,9 +293,16 @@
 }
 
 @media (max-width: 760px){
-  .nav{ display:none; }
+  /* Hide ONLY the desktop nav in the header row (keep the nav inside the mobile panel visible) */
+  .headerRow > .nav{ display:none; }
   .menuBtn{ display:inline-flex; }
-  .mobileNav{ display:block; }
+  /* Mobile nav panel is controlled by [data-open] */
+  .mobileNav{ display:none; }
+  .mobileNav[data-open="true"]{ display:block; }
+  .mobileNav .nav{ display:flex; }
+  /* Header actions: keep it clean on mobile (hamburger + theme + 1 main CTA) */
+  .headerActions > :not(.menuBtn):not([data-theme-toggle]):not(.btn--primary){ display:none; }
+  #requestKeyBtn{ display:none; }
   .grid2{ grid-template-columns: 1fr; }
   .brand{ min-width: unset; }
   .headerActions{ min-width: unset; }

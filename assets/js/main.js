@@ -103,7 +103,6 @@ if (menuBtn && mobileNav) {
   menuBtn.addEventListener("click", () => {
     const open = mobileNav.getAttribute("data-open") === "true";
     mobileNav.setAttribute("data-open", open ? "false" : "true");
-    mobileNav.style.display = open ? "none" : "block";
     menuBtn.setAttribute("aria-expanded", String(!open));
   });
 }
