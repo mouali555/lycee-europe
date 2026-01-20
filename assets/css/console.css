@@ -11,14 +11,6 @@ body.consoleBody{
 .theme-light{ color-scheme: light; }
 
 .layout{
-  /* dvh = dynamique (mobile), svh fallback, puis vh */
-  /*
-    IMPORTANT:
-    On force une hauteur "viewport" pour éviter que la page entière scrolle.
-    Sinon, quand la liste des messages grandit, c'est le document qui défile
-    et la colonne de gauche peut "disparaître" (elle sort du viewport).
-    Avec une hauteur fixe, ce sont .sidebar et .messages qui scrollent.
-  */
   height: calc(100vh - var(--header-h));
   height: calc(100svh - var(--header-h));
   height: calc(100dvh - var(--header-h));
@@ -115,10 +107,6 @@ body.consoleBody{
   display:flex;
   flex-direction:column;
   min-width:0;
-  /*
-    ✅ FIX mobile scroll (Safari/iOS) :
-    Sans min-height:0, un enfant flex avec overflow:auto peut refuser de défiler.
-  */
   min-height:0;
 }
 
@@ -147,17 +135,10 @@ body.consoleBody{
   z-index: 5;
 }
 
-/*
-  ✅ FIX: le bandeau "Hors ligne" doit être réellement caché.
-  Le JS toggle aria-hidden, mais sans CSS associée il restait visible.
-*/
 #offlineBanner[aria-hidden="true"]{ display:none; }
 #offlineBanner[aria-hidden="false"]{ display:block; }
 
-/* =========================================
-   DEBUG OVERLAY (only if enabled)
-========================================= */
-
+/* DEBUG OVERLAY */
 .debugOverlay{
   position: fixed;
   z-index: 99999;
@@ -266,9 +247,6 @@ body.consoleBody{
 }
 
 .dbgLine{ white-space: pre-wrap; word-break: break-word; margin-bottom: 6px; opacity: .96; }
-.dbgLine--info{ }
-.dbgLine--warn{ opacity: .98; }
-.dbgLine--error{ opacity: 1; }
 
 @media (max-width: 520px){
   .dbgGrid{ grid-template-columns: 1fr; }
@@ -281,7 +259,6 @@ body.consoleBody{
   overflow:auto;
   min-height:0;
   touch-action: pan-y;
-  /* smooth peut "jitter" sur mobile + clavier */
   scroll-behavior:auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
@@ -329,7 +306,6 @@ body.consoleBody{
 .bubble{
   position:relative;
   max-width: min(680px, 92%);
-  /* Compact like IG/DM: keep controls without a huge empty bottom area */
   padding: 10px 12px 28px;
   border-radius: 18px;
   border:1px solid var(--border);
@@ -385,10 +361,8 @@ body.consoleBody{
 }
 
 .bubble:hover .msgActions{ opacity:1; transform:none; }
-/* Mobile / clavier: afficher aussi quand focus dans la bulle */
 .bubble:focus-within .msgActions{ opacity:1; transform:none; }
 
-/* Smaller icon buttons inside chat bubbles */
 .bubble .iconBtn{
   padding: 4px 6px;
   border-radius: 10px;
@@ -489,10 +463,23 @@ body.consoleBody{
 }
 
 body.sidebar-open .sidebarOverlay{ display:block; }
-
-/* Empêche le scroll de fond quand le menu mobile est ouvert */
 body.sidebar-open{ overflow:hidden; }
 
+/* Clock + terminal in header */
+.clock{
+  font-family: var(--font-mono);
+  color: var(--muted);
+}
+
+.terminalStatus{
+  font-family: var(--font-mono);
+  color: var(--muted-2);
+}
+
+.popIn{ animation: pop 220ms var(--ease) both; }
+@keyframes pop{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform:none; } }
+
+/* RESPONSIVE */
 @media (max-width: 980px){
   .layout{ grid-template-columns: 1fr; }
   .sidebar{
@@ -513,33 +500,50 @@ body.sidebar-open{ overflow:hidden; }
 }
 
 @media (max-width: 760px){
-  /* Console header : on épure pour éviter les débordements */
-  .consoleBody .clock,
-  .consoleBody .terminalStatus{ display:none; }
+  .headerActions{
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+  .clock,
+  .terminalStatus,
+  .badge,
+  #themeToggle,
+  #soundToggle,
+  #btn-login,
+  #btn-logout {
+    display: inline-flex !important;
+    font-size: 0.85rem;
+  }
+  
+  .clock,
+  .terminalStatus {
+    order: 10;
+    flex-basis: auto;
+  }
 }
 
 @media (max-width: 520px){
+  .headerActions{
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .clock{
+    font-size: 0.8rem;
+  }
+  
+  .terminalStatus{
+    font-size: 0.75rem;
+  }
+  
   .messages{ padding-inline: 14px; }
   .chatHeader{ padding-inline: 14px; }
   .composer{ padding-inline: 14px; }
   .composerMeta{ padding-inline: 14px; }
-}
-
-@media (max-width: 520px){
   .consoleBody .headerActions{ gap: 8px; }
   .consoleBody .badge{ padding: 6px 8px; font-size: 0.82rem; }
 }
-
-/* Clock + terminal in header */
-.clock{
-  font-family: var(--font-mono);
-  color: var(--muted);
-}
-
-.terminalStatus{
-  font-family: var(--font-mono);
-  color: var(--muted-2);
-}
-
-.popIn{ animation: pop 220ms var(--ease) both; }
-@keyframes pop{ from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform:none; } }
