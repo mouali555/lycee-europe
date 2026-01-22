@@ -3,148 +3,356 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Atelier 7g9k2p</title>
+  <title>Zone Secrète</title>
   <meta name="robots" content="noindex,nofollow" />
-  <meta name="description" content="Espace caché (easter egg)." />
-
+  <meta name="description" content="Easter egg - Zone privée" />
+  
   <link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml" />
-
   <link rel="stylesheet" href="./assets/css/tokens.css" />
   <link rel="stylesheet" href="./assets/css/reset.css" />
   <link rel="stylesheet" href="./assets/css/global.css" />
   <link rel="stylesheet" href="./assets/css/components.css" />
 
   <style>
-    /* Petit style local pour le côté "troll" */
-    .goofyCard { border: 1px dashed var(--border); border-radius: 18px; padding: 18px; background: rgba(255,255,255,0.02); }
-    .goofyLine { opacity: 0.92; }
-    .tiny { font-size: 12px; opacity: 0.7; }
+    /* Variables locales */
+    :root {
+      --egg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --egg-accent: #f093fb;
+      --egg-bg: rgba(102, 126, 234, 0.05);
+      --egg-border: rgba(102, 126, 234, 0.2);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    /* Layout principal */
+    .egg-container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: clamp(20px, 5vw, 48px) 20px;
+    }
+
+    /* Cartes améliorées */
+    .egg-card {
+      background: var(--egg-bg);
+      border: 1px solid var(--egg-border);
+      border-radius: 16px;
+      padding: clamp(16px, 3vw, 24px);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .egg-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* En-tête avec badge */
+    .egg-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .egg-title {
+      margin: 0;
+      background: var(--egg-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--egg-primary);
+      color: white;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Grille responsive */
+    .egg-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    /* Mini-cartes membres */
+    .member-card {
+      background: white;
+      border: 1px solid var(--egg-border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+    }
+
+    .member-card:hover {
+      transform: scale(1.03);
+      box-shadow: var(--shadow-md);
+    }
+
+    .member-card h3 {
+      margin: 0 0 10px;
+      color: #667eea;
+      font-size: 1.25rem;
+    }
+
+    .member-card p {
+      margin: 0;
+      line-height: 1.6;
+      opacity: 0.85;
+    }
+
+    /* Zone chat modernisée */
+    .chat-container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chat-messages {
+      background: var(--egg-bg);
+      border: 1px solid var(--egg-border);
+      border-radius: 12px;
+      padding: 16px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--egg-accent) transparent;
+    }
+
+    .chat-input-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chat-input-group input {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 16px;
+      border: 2px solid var(--egg-border);
+      border-radius: 8px;
+      transition: border 0.3s ease;
+    }
+
+    .chat-input-group input:focus {
+      border-color: #667eea;
+      outline: none;
+    }
+
+    /* Boutons améliorés */
+    .egg-btn {
+      padding: 10px 24px;
+      background: var(--egg-primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .egg-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .egg-btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    /* Statut utilisateur */
+    .user-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    /* Liste stylée */
+    .fun-list {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 0;
+    }
+
+    .fun-list li {
+      padding: 10px 0;
+      padding-left: 30px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .fun-list li::before {
+      content: "🎯";
+      position: absolute;
+      left: 0;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .egg-card, .member-card {
+      animation: fadeIn 0.5s ease;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .egg-header { flex-direction: column; align-items: flex-start; }
+      .chat-input-group { flex-direction: column; }
+      .chat-input-group input { width: 100%; }
+    }
   </style>
 
-  <!-- Le garde-fou est maintenant : login Google + appartenance à l'espace Firestore.
-       (Beaucoup plus solide que "une clé dans l'URL".) -->
   <script type="module" src="./assets/js/atelier.js"></script>
 </head>
 
 <body>
-  <main class="container" style="padding: 36px 0 64px; max-width: 920px;">
+  <main class="egg-container">
 
+    <!-- Écran 404 -->
     <section id="locked" hidden>
-      <div class="goofyCard">
-        <h1 style="margin: 0 0 8px;">404</h1>
-        <p class="goofyLine" style="margin: 0 0 14px;">Cette page n'existe probablement pas. Ou alors elle s'est transformée en croissant quantique.</p>
-        <a class="btn" href="./index.html">Retour à l'accueil</a>
+      <div class="egg-card">
+        <h1 class="egg-title">404</h1>
+        <p style="margin: 12px 0 20px; font-size: 1.1rem;">
+          Cette page n'existe probablement pas. Ou alors elle s'est transformée en croissant quantique. 🥐
+        </p>
+        <a class="egg-btn" href="./index.html">← Retour à l'accueil</a>
       </div>
     </section>
 
-    <!-- Écran d'accès (auth + invite) -->
+    <!-- Écran d'authentification -->
     <section id="gate" hidden>
-      <div class="goofyCard">
-        <div style="display:flex; gap:12px; align-items: baseline; flex-wrap: wrap;">
-          <h1 style="margin:0;">Accès requis</h1>
-          <span class="pill" aria-label="statut">🔒 privé</span>
+      <div class="egg-card">
+        <div class="egg-header">
+          <h1 class="egg-title">Accès Sécurisé</h1>
+          <span class="badge">🔒 Zone privée</span>
         </div>
 
-        <p class="goofyLine" style="margin: 10px 0 14px;">
-          Pour entrer : connecte-toi (Google) + être membre de l'espace.
+        <p style="margin-bottom: 20px; font-size: 1.05rem;">
+          Connecte-toi avec Google pour accéder à cet espace secret.
         </p>
 
-        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-          <button id="btn-login" class="btn btn--primary" type="button">Login Google</button>
-          <button id="btn-logout" class="btn" type="button" style="display:none;">Logout</button>
-          <span id="userTag" class="tiny" aria-label="Utilisateur">OFFLINE</span>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom: 24px;">
+          <button id="btn-login" class="egg-btn" type="button">🔑 Login Google</button>
+          <button id="btn-logout" class="egg-btn egg-btn-secondary" type="button" style="display:none;">Logout</button>
+          <span id="userTag" class="user-status">⚫ Offline</span>
         </div>
 
-        <div style="height: 10px;"></div>
-
-        <div class="card" style="padding:14px;">
-          <h2 style="margin:0 0 8px;">Tu as un code d'invite ?</h2>
-          <p class="tiny" style="margin:0 0 10px;">(Optionnel) Si tu n'es pas encore membre, colle un code d'invite ici.</p>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-            <input id="inviteCode" class="input" placeholder="Code d’invite" autocomplete="off" style="min-width: 220px;" />
-            <button id="joinBtn" class="btn btn--primary" type="button">Rejoindre</button>
+        <div class="chat-container">
+          <h3 style="margin: 0 0 12px; color: #667eea;">Code d'invite</h3>
+          <p style="margin: 0 0 16px; opacity: 0.8; font-size: 0.95rem;">
+            Pas encore membre ? Entre ton code d'invitation ci-dessous.
+          </p>
+          <div class="chat-input-group">
+            <input id="inviteCode" placeholder="Colle ton code ici..." autocomplete="off" />
+            <button id="joinBtn" class="egg-btn" type="button">Rejoindre</button>
           </div>
-          <p id="gateMsg" class="tiny" style="margin:10px 0 0; opacity:0.8;">—</p>
+          <p id="gateMsg" style="margin: 12px 0 0; font-size: 0.9rem; opacity: 0.7;">—</p>
         </div>
       </div>
     </section>
 
+    <!-- Zone déverrouillée -->
     <section id="unlocked" hidden>
-      <div class="goofyCard">
-        <div style="display:flex; gap:12px; align-items: baseline; flex-wrap: wrap;">
-          <h1 style="margin:0;">Le site caché (goofy troll)</h1>
-          <span class="pill" aria-label="statut">Accès: ✅ secret</span>
+      
+      <!-- En-tête principale -->
+      <div class="egg-card">
+        <div class="egg-header">
+          <h1 class="egg-title">Zone Secrète</h1>
+          <span class="badge">✅ Accès autorisé</span>
         </div>
-        <p class="goofyLine" style="margin: 10px 0 0;">
-          Bienvenue dans la salle des choses qui n'ont pas de sens.
-          Ici, les règles sont écrites avec une banane et signées par un pingouin.
+        <p style="margin: 0; font-size: 1.1rem; line-height: 1.6;">
+          Bienvenue dans la salle des choses qui n'ont pas de sens. 
+          Ici, les règles sont écrites avec une banane et signées par un pingouin. 🍌🐧
         </p>
       </div>
 
-      <div style="height: 14px;"></div>
-
-      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
-        <article class="card">
-          <h2 style="margin-top:0;">Joao</h2>
-          <p class="goofyLine">A perdu le mot de passe dans une soupe. Résultat : la soupe est maintenant admin.</p>
-        </article>
-        <article class="card">
-          <h2 style="margin-top:0;">Rémi</h2>
-          <p class="goofyLine">A négocié avec un nuage. Le nuage a répondu : "oui" puis est parti en zigzag.</p>
-        </article>
-        <article class="card">
-          <h2 style="margin-top:0;">Arthur</h2>
-          <p class="goofyLine">A installé un modem dans une baguette. Le Wi‑Fi s'appelle "painternet".</p>
-        </article>
-        <article class="card">
-          <h2 style="margin-top:0;">Johann</h2>
-          <p class="goofyLine">A cliqué sur "Annuler" dans la vraie vie. Depuis, mardi n'existe plus.</p>
-        </article>
-        <article class="card">
-          <h2 style="margin-top:0;">Dylan</h2>
-          <p class="goofyLine">A pris une capture d'écran d'un rêve. Le fichier pèse 3 licornes et demie.</p>
-        </article>
+      <!-- Grille des membres -->
+      <div class="egg-grid">
+        <div class="member-card">
+          <h3>Joao</h3>
+          <p>A perdu le mot de passe dans une soupe. Résultat : la soupe est maintenant admin.</p>
+        </div>
+        <div class="member-card">
+          <h3>Rémi</h3>
+          <p>A négocié avec un nuage. Le nuage a répondu : "oui" puis est parti en zigzag.</p>
+        </div>
+        <div class="member-card">
+          <h3>Arthur</h3>
+          <p>A installé un modem dans une baguette. Le Wi‑Fi s'appelle "painternet".</p>
+        </div>
+        <div class="member-card">
+          <h3>Johann</h3>
+          <p>A cliqué sur "Annuler" dans la vraie vie. Depuis, mardi n'existe plus.</p>
+        </div>
+        <div class="member-card">
+          <h3>Dylan</h3>
+          <p>A pris une capture d'écran d'un rêve. Le fichier pèse 3 licornes et demie.</p>
+        </div>
       </div>
 
-      <div style="height: 14px;"></div>
-
-      <section class="card">
-        <h2 style="margin-top:0;">Le tableau officiel des phrases absurdes</h2>
-        <ul style="margin: 0; padding-left: 18px;">
-          <li>Le triangle a demandé un autographe au cercle.</li>
-          <li>Le clavier a éternué, donc l'ordinateur a fait une sieste.</li>
-          <li>Si tu lis ça à voix haute, une chaussette devient philosophe.</li>
-          <li>Le code source est parti acheter du lait et n'est jamais revenu (classique).</li>
+      <!-- Phrases absurdes -->
+      <div class="egg-card">
+        <h2 style="margin: 0 0 16px; color: #667eea;">Le tableau officiel des phrases absurdes</h2>
+        <ul class="fun-list">
+          <li>Le triangle a demandé un autographe au cercle</li>
+          <li>Le clavier a éternué, donc l'ordinateur a fait une sieste</li>
+          <li>Si tu lis ça à voix haute, une chaussette devient philosophe</li>
+          <li>Le code source est parti acheter du lait et n'est jamais revenu</li>
           <li>Le hamster a validé la prod. C'est officiel : 🐹✅</li>
         </ul>
-        <p class="tiny" style="margin: 12px 0 0;">PS : si quelqu'un tombe ici par hasard, c'est que le hasard est très motivé.</p>
-      </section>
+        <p style="margin: 16px 0 0; font-size: 0.9rem; opacity: 0.7; font-style: italic;">
+          PS : si quelqu'un tombe ici par hasard, c'est que le hasard est très motivé.
+        </p>
+      </div>
 
-      <div style="height: 14px;"></div>
-
-      <!-- Communication "secrète" (privée) : mini-chat Firestore dans un salon dédié -->
-      <section class="card">
-        <div style="display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;">
-          <h2 style="margin:0;">Mini‑chat privé</h2>
-          <span class="pill">room: atelier</span>
+      <!-- Mini-chat privé -->
+      <div class="chat-container">
+        <div class="egg-header" style="margin-bottom: 12px;">
+          <h2 style="margin: 0; color: #667eea;">Mini‑chat privé</h2>
+          <span class="badge">💬 room: atelier</span>
         </div>
-        <p class="tiny" style="margin:8px 0 12px;">Visible uniquement pour les membres connectés.</p>
+        <p style="margin: 0 0 16px; opacity: 0.8; font-size: 0.95rem;">
+          Visible uniquement pour les membres connectés.
+        </p>
 
-        <div id="miniChat" style="display:grid; gap:10px;">
-          <div id="miniChatList" class="goofyCard" style="max-height: 260px; overflow:auto; padding:12px;">
-            <p class="tiny" style="margin:0; opacity:0.7;">Chargement…</p>
+        <div id="miniChat">
+          <div id="miniChatList" class="chat-messages">
+            <p style="margin: 0; opacity: 0.6; font-size: 0.9rem;">Chargement des messages…</p>
           </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-            <input id="miniChatInput" class="input" placeholder="Écrire un message…" autocomplete="off" style="flex:1; min-width:220px;" />
-            <button id="miniChatSend" class="btn btn--primary" type="button">Envoyer</button>
+          <div class="chat-input-group">
+            <input id="miniChatInput" placeholder="Écris quelque chose..." autocomplete="off" />
+            <button id="miniChatSend" class="egg-btn" type="button">📤 Envoyer</button>
           </div>
-          <p id="miniChatHint" class="tiny" style="margin:0; opacity:0.7;">Astuce : ouvre aussi <a href="./console.html">la Console IA</a> pour le grand chat.</p>
+          <p id="miniChatHint" style="margin: 12px 0 0; font-size: 0.85rem; opacity: 0.7;">
+            💡 Astuce : ouvre aussi <a href="./console.html" style="color: #667eea; font-weight: 600;">la Console IA</a> pour le grand chat.
+          </p>
         </div>
-      </section>
+      </div>
+
     </section>
 
   </main>
-
-  <!-- Le contrôle d'accès + le mini-chat sont gérés dans assets/js/atelier.js -->
 </body>
 </html>
