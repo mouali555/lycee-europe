@@ -587,7 +587,7 @@ body.sidebar-open{ overflow:hidden; }
   padding: 0 !important;
 }
 
-/* Optionnel mais utile: évite que le header "réserve" de la place */
+/* Optionnel mais uile: évite que le header "réserve" de la place */
 .consoleBody .headerActions{
   gap: 8px;
 }
