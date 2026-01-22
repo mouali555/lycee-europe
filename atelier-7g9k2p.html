@@ -1854,6 +1854,8 @@
       z-index: -3;
       opacity: 0.3;
       animation: gridMove 20s linear infinite;
+      /* Important: ne doit jamais bloquer les clics */
+      pointer-events: none;
     }
 
     @keyframes gridMove {
@@ -2438,10 +2440,10 @@
         <div class="glass-card mt-3">
           <div class="tabs-container">
             <div class="tabs-nav">
-              <button class="tab-button active" onclick="switchTab('overview')">Vue d'ensemble</button>
-              <button class="tab-button" onclick="switchTab('api')">API</button>
-              <button class="tab-button" onclick="switchTab('security')">Sécurité</button>
-              <button class="tab-button" onclick="switchTab('faq')">FAQ</button>
+              <button class="tab-button active" onclick="switchTab(event,'overview')">Vue d'ensemble</button>
+              <button class="tab-button" onclick="switchTab(event,'api')">API</button>
+              <button class="tab-button" onclick="switchTab(event,'security')">Sécurité</button>
+              <button class="tab-button" onclick="switchTab(event,'faq')">FAQ</button>
             </div>
 
             <div id="tab-overview" class="tab-content active">
@@ -3288,7 +3290,9 @@ Headers: { 'Authorization': 'Bearer YOUR_TOKEN' }
     // ============================================
     // TABS SYSTEM
     // ============================================
-    function switchTab(tabName) {
+    // NOTE: ne pas dépendre de la variable globale `event` (non standard).
+    // Les boutons appellent : switchTab(event, 'overview')
+    function switchTab(evt, tabName) {
       document.querySelectorAll('.tab-button').forEach(btn => {
         btn.classList.remove('active');
       });
@@ -3296,8 +3300,9 @@ Headers: { 'Authorization': 'Bearer YOUR_TOKEN' }
         content.classList.remove('active');
       });
       
-      event.target.classList.add('active');
-      document.getElementById(`tab-${tabName}`).classList.add('active');
+      const target = evt?.currentTarget || evt?.target;
+      target?.classList?.add('active');
+      document.getElementById(`tab-${tabName}`)?.classList.add('active');
     }
 
     // ============================================

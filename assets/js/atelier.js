@@ -17,21 +17,26 @@ const SPACE_ID = (CONFIG && CONFIG.SPACE_ID) ? CONFIG.SPACE_ID : "europe";
 const ROOM_ID = "atelier";
 
 // ===== DOM =====
-const locked = document.getElementById("locked");
-const gate = document.getElementById("gate");
-const unlocked = document.getElementById("unlocked");
+// IMPORTANT:
+// Cette page peut être chargée très tôt (script module dans <head>),
+// et certains navigateurs / modes peuvent exécuter avant que tout le DOM
+// soit disponible. Pour éviter "tout est null" => rien ne marche,
+// on référence le DOM uniquement au moment du boot.
+let locked = null;
+let gate = null;
+let unlocked = null;
 
-const btnLogin = document.getElementById("btn-login");
-const btnLogout = document.getElementById("btn-logout");
-const userTag = document.getElementById("userTag");
+let btnLogin = null;
+let btnLogout = null;
+let userTag = null;
 
-const inviteCode = document.getElementById("inviteCode");
-const joinBtn = document.getElementById("joinBtn");
-const gateMsg = document.getElementById("gateMsg");
+let inviteCode = null;
+let joinBtn = null;
+let gateMsg = null;
 
-const miniChatList = document.getElementById("miniChatList");
-const miniChatInput = document.getElementById("miniChatInput");
-const miniChatSend = document.getElementById("miniChatSend");
+let miniChatList = null;
+let miniChatInput = null;
+let miniChatSend = null;
 
 let currentUser = null;
 let isMember = false;
@@ -134,51 +139,53 @@ async function onAuthChanged(user) {
 }
 
 // ===== Gate actions =====
-btnLogin?.addEventListener("click", async () => {
-  try {
-    setText(gateMsg, "Connexion…");
-    await loginGoogle();
-  } catch (e) {
-    console.error(e);
-    setText(gateMsg, "Impossible de se connecter (popup bloquée ?). Réessaie.");
-  }
-});
-
-btnLogout?.addEventListener("click", async () => {
-  try {
-    await logout();
-  } catch {}
-});
-
-joinBtn?.addEventListener("click", async () => {
-  const code = String(inviteCode?.value || "").trim();
-  if (!currentUser) {
-    setText(gateMsg, "Connecte-toi d’abord.");
-    return;
-  }
-  if (!code) {
-    setText(gateMsg, "Colle un code d’invite.");
-    return;
-  }
-
-  try {
-    setText(gateMsg, "Vérification du code…");
-    await joinWithInvite(SPACE_ID, code, {
-      uid: currentUser.uid,
-      name: currentUser.displayName || "USER",
-    });
-    await refreshMembership();
-    if (isMember) {
-      setText(gateMsg, "✅ Accès accordé.");
-      renderAccess();
-    } else {
-      setText(gateMsg, "Code accepté, mais accès non activé. Recharge la page.");
+function bindGateActions() {
+  btnLogin?.addEventListener("click", async () => {
+    try {
+      setText(gateMsg, "Connexion…");
+      await loginGoogle();
+    } catch (e) {
+      console.error(e);
+      setText(gateMsg, "Impossible de se connecter (popup bloquée ?). Réessaie.");
     }
-  } catch (e) {
-    console.error(e);
-    setText(gateMsg, "Code invalide (ou expiré)." );
-  }
-});
+  });
+
+  btnLogout?.addEventListener("click", async () => {
+    try {
+      await logout();
+    } catch {}
+  });
+
+  joinBtn?.addEventListener("click", async () => {
+    const code = String(inviteCode?.value || "").trim();
+    if (!currentUser) {
+      setText(gateMsg, "Connecte-toi d’abord.");
+      return;
+    }
+    if (!code) {
+      setText(gateMsg, "Colle un code d’invite.");
+      return;
+    }
+
+    try {
+      setText(gateMsg, "Vérification du code…");
+      await joinWithInvite(SPACE_ID, code, {
+        uid: currentUser.uid,
+        name: currentUser.displayName || "USER",
+      });
+      await refreshMembership();
+      if (isMember) {
+        setText(gateMsg, "✅ Accès accordé.");
+        renderAccess();
+      } else {
+        setText(gateMsg, "Code accepté, mais accès non activé. Recharge la page.");
+      }
+    } catch (e) {
+      console.error(e);
+      setText(gateMsg, "Code invalide (ou expiré)." );
+    }
+  });
+}
 
 // ===== Mini chat =====
 const MAX_RENDERED = 120;
@@ -261,14 +268,44 @@ async function sendMiniMessage() {
   }
 }
 
-miniChatSend?.addEventListener("click", sendMiniMessage);
-miniChatInput?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") sendMiniMessage();
-});
+function bindMiniChatActions() {
+  miniChatSend?.addEventListener("click", sendMiniMessage);
+  miniChatInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendMiniMessage();
+  });
+}
 
-// Boot
-hide(locked);
-show(gate);
-hide(unlocked);
+function boot() {
+  // Query DOM (safe)
+  locked = document.getElementById("locked");
+  gate = document.getElementById("gate");
+  unlocked = document.getElementById("unlocked");
 
-watchAuth(onAuthChanged);
+  btnLogin = document.getElementById("btn-login");
+  btnLogout = document.getElementById("btn-logout");
+  userTag = document.getElementById("userTag");
+
+  inviteCode = document.getElementById("inviteCode");
+  joinBtn = document.getElementById("joinBtn");
+  gateMsg = document.getElementById("gateMsg");
+
+  miniChatList = document.getElementById("miniChatList");
+  miniChatInput = document.getElementById("miniChatInput");
+  miniChatSend = document.getElementById("miniChatSend");
+
+  bindGateActions();
+  bindMiniChatActions();
+
+  // Boot UI state
+  hide(locked);
+  show(gate);
+  hide(unlocked);
+
+  watchAuth(onAuthChanged);
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", boot, { once: true });
+} else {
+  boot();
+}
