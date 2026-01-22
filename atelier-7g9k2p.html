@@ -2865,5 +2865,838 @@ Headers: { 'Authorization': 'Bearer YOUR_TOKEN' }
       });
     })();
 
+        // ============================================
+    // MATRIX RAIN EFFECT
     // ============================================
-    // MATRIX RAIN
+    (function initMatrix() {
+      const canvas = document.getElementById('matrixCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const fontSize = 14;
+      const columns = canvas.width / fontSize;
+      const drops = Array(Math.floor(columns)).fill(1);
+
+      function drawMatrix() {
+        ctx.fillStyle = 'rgba(5, 5, 8, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0f0';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      setInterval(drawMatrix, 35);
+
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    })();
+
+    // ============================================
+    // CUSTOM CURSOR
+    // ============================================
+    (function initCursor() {
+      const cursor = document.querySelector('.custom-cursor');
+      const follower = document.querySelector('.custom-cursor-follower');
+
+      if (!cursor || !follower) return;
+
+      let mouseX = 0, mouseY = 0;
+      let cursorX = 0, cursorY = 0;
+      let followerX = 0, followerY = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      function animate() {
+        cursorX += (mouseX - cursorX) * 0.3;
+        cursorY += (mouseY - cursorY) * 0.3;
+        followerX += (mouseX - followerX) * 0.1;
+        followerY += (mouseY - followerY) * 0.1;
+
+        cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+        follower.style.transform = `translate(${followerX}px, ${followerY}px)`;
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    })();
+
+    // ============================================
+    // SNAKE GAME
+    // ============================================
+    let snakeGame = {
+      canvas: null,
+      ctx: null,
+      gridSize: 20,
+      snake: [],
+      food: {},
+      dx: 0,
+      dy: 0,
+      score: 0,
+      gameLoop: null,
+      isPaused: false
+    };
+
+    function startSnake() {
+      const canvas = document.getElementById('snakeCanvas');
+      if (!canvas) return;
+      
+      snakeGame.canvas = canvas;
+      snakeGame.ctx = canvas.getContext('2d');
+      snakeGame.snake = [{x: 10, y: 10}];
+      snakeGame.dx = 1;
+      snakeGame.dy = 0;
+      snakeGame.score = 0;
+      snakeGame.isPaused = false;
+      
+      document.getElementById('snakeScore').textContent = '0';
+      
+      generateFood();
+      
+      if (snakeGame.gameLoop) clearInterval(snakeGame.gameLoop);
+      snakeGame.gameLoop = setInterval(updateSnake, 100);
+    }
+
+    function generateFood() {
+      snakeGame.food = {
+        x: Math.floor(Math.random() * (snakeGame.canvas.width / snakeGame.gridSize)),
+        y: Math.floor(Math.random() * (snakeGame.canvas.height / snakeGame.gridSize))
+      };
+    }
+
+    function updateSnake() {
+      if (snakeGame.isPaused) return;
+
+      const head = {
+        x: snakeGame.snake[0].x + snakeGame.dx,
+        y: snakeGame.snake[0].y + snakeGame.dy
+      };
+
+      // Wall collision
+      if (head.x < 0 || head.x >= snakeGame.canvas.width / snakeGame.gridSize ||
+          head.y < 0 || head.y >= snakeGame.canvas.height / snakeGame.gridSize) {
+        gameOver();
+        return;
+      }
+
+      // Self collision
+      if (snakeGame.snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+        gameOver();
+        return;
+      }
+
+      snakeGame.snake.unshift(head);
+
+      // Food collision
+      if (head.x === snakeGame.food.x && head.y === snakeGame.food.y) {
+        snakeGame.score++;
+        document.getElementById('snakeScore').textContent = snakeGame.score;
+        generateFood();
+      } else {
+        snakeGame.snake.pop();
+      }
+
+      drawSnake();
+    }
+
+    function drawSnake() {
+      const ctx = snakeGame.ctx;
+      ctx.clearRect(0, 0, snakeGame.canvas.width, snakeGame.canvas.height);
+
+      // Draw snake
+      ctx.fillStyle = '#00ff88';
+      snakeGame.snake.forEach((segment, index) => {
+        ctx.fillRect(
+          segment.x * snakeGame.gridSize,
+          segment.y * snakeGame.gridSize,
+          snakeGame.gridSize - 2,
+          snakeGame.gridSize - 2
+        );
+      });
+
+      // Draw food
+      ctx.fillStyle = '#ff00ff';
+      ctx.fillRect(
+        snakeGame.food.x * snakeGame.gridSize,
+        snakeGame.food.y * snakeGame.gridSize,
+        snakeGame.gridSize - 2,
+        snakeGame.gridSize - 2
+      );
+    }
+
+    function pauseSnake() {
+      snakeGame.isPaused = !snakeGame.isPaused;
+    }
+
+    function gameOver() {
+      clearInterval(snakeGame.gameLoop);
+      alert(`Game Over! Score: ${snakeGame.score}`);
+    }
+
+    // Keyboard controls for snake
+    document.addEventListener('keydown', (e) => {
+      if (!snakeGame.gameLoop) return;
+      
+      switch(e.key) {
+        case 'ArrowUp':
+          if (snakeGame.dy === 0) { snakeGame.dx = 0; snakeGame.dy = -1; }
+          break;
+        case 'ArrowDown':
+          if (snakeGame.dy === 0) { snakeGame.dx = 0; snakeGame.dy = 1; }
+          break;
+        case 'ArrowLeft':
+          if (snakeGame.dx === 0) { snakeGame.dx = -1; snakeGame.dy = 0; }
+          break;
+        case 'ArrowRight':
+          if (snakeGame.dx === 0) { snakeGame.dx = 1; snakeGame.dy = 0; }
+          break;
+      }
+    });
+
+    // ============================================
+    // MEMORY GAME
+    // ============================================
+    const memoryGame = {
+      cards: ['🚀', '🎮', '🎨', '💎', '🌟', '🔥', '⚡', '🌈'],
+      flipped: [],
+      matched: [],
+      moves: 0
+    };
+
+    function initMemoryGame() {
+      const grid = document.getElementById('memoryGrid');
+      if (!grid) return;
+      
+      memoryGame.flipped = [];
+      memoryGame.matched = [];
+      memoryGame.moves = 0;
+      
+      document.getElementById('memoryMoves').textContent = '0';
+      document.getElementById('memoryPairs').textContent = '0';
+      
+      const shuffled = [...memoryGame.cards, ...memoryGame.cards]
+        .sort(() => Math.random() - 0.5);
+      
+      grid.innerHTML = '';
+      shuffled.forEach((icon, index) => {
+        const card = document.createElement('div');
+        card.className = 'memory-card';
+        card.dataset.icon = icon;
+        card.dataset.index = index;
+        card.innerHTML = `
+          <div class="card-front">?</div>
+          <div class="card-back">${icon}</div>
+        `;
+        card.addEventListener('click', () => flipCard(card));
+        grid.appendChild(card);
+      });
+    }
+
+    function flipCard(card) {
+      if (card.classList.contains('flipped') || 
+          card.classList.contains('matched') ||
+          memoryGame.flipped.length >= 2) return;
+      
+      card.classList.add('flipped');
+      memoryGame.flipped.push(card);
+      
+      if (memoryGame.flipped.length === 2) {
+        memoryGame.moves++;
+        document.getElementById('memoryMoves').textContent = memoryGame.moves;
+        
+        setTimeout(checkMatch, 600);
+      }
+    }
+
+    function checkMatch() {
+      const [card1, card2] = memoryGame.flipped;
+      
+      if (card1.dataset.icon === card2.dataset.icon) {
+        card1.classList.add('matched');
+        card2.classList.add('matched');
+        memoryGame.matched.push(card1, card2);
+        
+        document.getElementById('memoryPairs').textContent = memoryGame.matched.length / 2;
+        
+        if (memoryGame.matched.length === 16) {
+          setTimeout(() => alert(`Félicitations! Terminé en ${memoryGame.moves} coups!`), 300);
+        }
+      } else {
+        card1.classList.remove('flipped');
+        card2.classList.remove('flipped');
+      }
+      
+      memoryGame.flipped = [];
+    }
+
+    // ============================================
+    // QUIZ GAME
+    // ============================================
+    const quizData = [
+      {
+        question: "Quelle est la capitale secrète du code ?",
+        options: ["Silicon Valley", "La Console", "Stack Overflow", "GitHub"],
+        correct: 1
+      },
+      {
+        question: "Combien de cafés faut-il pour coder 10k lignes ?",
+        options: ["3", "∞", "42", "Over 9000"],
+        correct: 1
+      },
+      {
+        question: "Quel est le meilleur langage de programmation ?",
+        options: ["Le tien", "Python", "JavaScript", "Tous sauf PHP"],
+        correct: 0
+      },
+      {
+        question: "Comment débugger efficacement ?",
+        options: ["Console.log partout", "Prier", "Redémarrer l'ordi", "Toutes les réponses"],
+        correct: 3
+      },
+      {
+        question: "Qu'est-ce qu'un bug ?",
+        options: ["Une feature", "Un insecte", "Une erreur", "Un mystère"],
+        correct: 0
+      }
+    ];
+
+    let currentQuiz = 0;
+    let quizScore = 0;
+
+    function initQuiz() {
+      currentQuiz = 0;
+      quizScore = 0;
+      document.getElementById('quizScore').textContent = '0';
+      displayQuiz();
+    }
+
+    function displayQuiz() {
+      const container = document.getElementById('quizContent');
+      if (!container) return;
+      
+      if (currentQuiz >= quizData.length) {
+        container.innerHTML = `
+          <div class="text-center">
+            <h3 class="text-gradient">Quiz Terminé !</h3>
+            <p style="font-size: 2rem; margin: 20px 0;">Score: ${quizScore}/${quizData.length}</p>
+            <button class="btn btn--primary" onclick="initQuiz()">Recommencer</button>
+          </div>
+        `;
+        return;
+      }
+      
+      const q = quizData[currentQuiz];
+      container.innerHTML = `
+        <div class="quiz-question">${q.question}</div>
+        <div class="quiz-options">
+          ${q.options.map((opt, i) => `
+            <div class="quiz-option" onclick="checkQuiz(${i})">
+              ${opt}
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function checkQuiz(selected) {
+      const q = quizData[currentQuiz];
+      const options = document.querySelectorAll('.quiz-option');
+      
+      options.forEach((opt, i) => {
+        opt.style.pointerEvents = 'none';
+        if (i === q.correct) {
+          opt.classList.add('correct');
+        } else if (i === selected) {
+          opt.classList.add('wrong');
+        }
+      });
+      
+      if (selected === q.correct) {
+        quizScore++;
+        document.getElementById('quizScore').textContent = quizScore;
+      }
+      
+      setTimeout(() => {
+        currentQuiz++;
+        displayQuiz();
+      }, 1500);
+    }
+
+    // ============================================
+    // BAR CHART
+    // ============================================
+    function initBarChart() {
+      const container = document.getElementById('barChart');
+      if (!container) return;
+      
+      const data = [
+        {label: 'Jan', value: 65},
+        {label: 'Fév', value: 78},
+        {label: 'Mar', value: 82},
+        {label: 'Avr', value: 91},
+        {label: 'Mai', value: 88},
+        {label: 'Juin', value: 95}
+      ];
+      
+      container.innerHTML = data.map(d => `
+        <div class="bar" style="height: ${d.value}%; animation-delay: ${Math.random() * 0.5}s;">
+          <div class="bar-value">${d.value}</div>
+          <div class="bar-label">${d.label}</div>
+        </div>
+      `).join('');
+    }
+
+    // ============================================
+    // COUNTDOWN TIMER
+    // ============================================
+    function initCountdown() {
+      const target = new Date('2026-12-31T23:59:59').getTime();
+      
+      setInterval(() => {
+        const now = new Date().getTime();
+        const distance = target - now;
+        
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.getElementById('days').textContent = String(days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+      }, 1000);
+    }
+
+    // ============================================
+    // TABS SYSTEM
+    // ============================================
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      event.target.classList.add('active');
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+    }
+
+    // ============================================
+    // ACCORDION
+    // ============================================
+    function toggleAccordion(header) {
+      const item = header.parentElement;
+      const content = item.querySelector('.accordion-content');
+      const wasActive = item.classList.contains('active');
+      
+      document.querySelectorAll('.accordion-item').forEach(i => {
+        i.classList.remove('active');
+        i.querySelector('.accordion-content').style.maxHeight = null;
+      });
+      
+      if (!wasActive) {
+        item.classList.add('active');
+        content.style.maxHeight = content.scrollHeight + 'px';
+      }
+    }
+
+    // ============================================
+    // MODAL SYSTEM
+    // ============================================
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Click outside to close
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    });
+
+    // ============================================
+    // SCROLL TO TOP
+    // ============================================
+    function scrollToTop() {
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    // ============================================
+    // SCROLL TO SECTION
+    // ============================================
+    function scrollToSection(sectionId) {
+      document.getElementById(sectionId)?.scrollIntoView({behavior: 'smooth'});
+    }
+
+    // ============================================
+    // SEARCH FUNCTIONALITY
+    // ============================================
+    document.getElementById('searchInput')?.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      // Implement search logic here
+      console.log('Searching for:', query);
+    });
+
+    // ============================================
+    // TOAST NOTIFICATIONS
+    // ============================================
+    function showToast(message, type = 'info') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    // ============================================
+    // KONAMI CODE EASTER EGG
+    // ============================================
+    (function() {
+      const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+      let konamiIndex = 0;
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === konamiCode[konamiIndex]) {
+          konamiIndex++;
+          if (konamiIndex === konamiCode.length) {
+            document.body.classList.add('konami-activated');
+            showToast('🎮 Konami Code Activé! Mode Arc-en-ciel!', 'success');
+            konamiIndex = 0;
+          }
+        } else {
+          konamiIndex = 0;
+        }
+      });
+    })();
+
+    // ============================================
+    // SMOOTH SCROLL REVEAL
+    // ============================================
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.section').forEach(section => {
+      section.style.opacity = '0';
+      section.style.transform = 'translateY(30px)';
+      section.style.transition = 'opacity 0.6s, transform 0.6s';
+      observer.observe(section);
+    });
+
+    // ============================================
+    // STATS COUNTER ANIMATION
+    // ============================================
+    function animateValue(id, start, end, duration, suffix = '') {
+      const element = document.getElementById(id);
+      if (!element) return;
+      
+      const range = end - start;
+      const increment = range / (duration / 16);
+      let current = start;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= end) {
+          current = end;
+          clearInterval(timer);
+        }
+        element.textContent = Math.floor(current) + suffix;
+      }, 16);
+    }
+
+    // ============================================
+    // PARALLAX EFFECT
+    // ============================================
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const parallaxElements = document.querySelectorAll('.hero');
+      
+      parallaxElements.forEach(el => {
+        const speed = 0.5;
+        el.style.transform = `translateY(${scrolled * speed}px)`;
+      });
+    });
+
+    // ============================================
+    // DYNAMIC GREETING
+    // ============================================
+    function getGreeting() {
+      const hour = new Date().getHours();
+      if (hour < 12) return 'Bonjour';
+      if (hour < 18) return 'Bon après-midi';
+      return 'Bonsoir';
+    }
+
+    // ============================================
+    // THEME SWITCHER (Optional)
+    // ============================================
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+      localStorage.setItem('theme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+    }
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-theme');
+    }
+
+    // ============================================
+    // COPY TO CLIPBOARD
+    // ============================================
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Copié dans le presse-papier!', 'success');
+      });
+    }
+
+    // ============================================
+    // RANDOM QUOTE GENERATOR
+    // ============================================
+    const quotes = [
+      "Le code est de la poésie pour machines.",
+      "Un bug de moins, un café de plus.",
+      "Coder c'est créer des mondes.",
+      "La perfection est l'ennemie du bien, mais le refactoring est ton ami.",
+      "Console.log('Hello World') - Le début de tout."
+    ];
+
+    function getRandomQuote() {
+      return quotes[Math.floor(Math.random() * quotes.length)];
+    }
+
+    // ============================================
+    // LAZY LOADING IMAGES
+    // ============================================
+    const imageObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          img.src = img.dataset.src;
+          img.classList.add('loaded');
+          imageObserver.unobserve(img);
+        }
+      });
+    });
+
+    document.querySelectorAll('img[data-src]').forEach(img => {
+      imageObserver.observe(img);
+    });
+
+    // ============================================
+    // FORM VALIDATION
+    // ============================================
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // ============================================
+    // LOCAL STORAGE HELPERS
+    // ============================================
+    const storage = {
+      set: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
+      get: (key) => {
+        try {
+          return JSON.parse(localStorage.getItem(key));
+        } catch {
+          return null;
+        }
+      },
+      remove: (key) => localStorage.removeItem(key),
+      clear: () => localStorage.clear()
+    };
+
+    // ============================================
+    // DEBOUNCE UTILITY
+    // ============================================
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // ============================================
+    // THROTTLE UTILITY
+    // ============================================
+    function throttle(func, limit) {
+      let inThrottle;
+      return function(...args) {
+        if (!inThrottle) {
+          func.apply(this, args);
+          inThrottle = true;
+          setTimeout(() => inThrottle = false, limit);
+        }
+      };
+    }
+
+    // ============================================
+    // RANDOM COLOR GENERATOR
+    // ============================================
+    function randomColor() {
+      return '#' + Math.floor(Math.random()*16777215).toString(16);
+    }
+
+    // ============================================
+    // VIEWPORT DETECTION
+    // ============================================
+    function isInViewport(element) {
+      const rect = element.getBoundingClientRect();
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    }
+
+    // ============================================
+    // PERFORMANCE MONITORING
+    // ============================================
+    const perfMonitor = {
+      start: performance.now(),
+      measure: (label) => {
+        const duration = performance.now() - perfMonitor.start;
+        console.log(`${label}: ${duration.toFixed(2)}ms`);
+      }
+    };
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('%c🚀 Ultra Secret Platform Loaded', 'color: #00ff88; font-size: 20px; font-weight: bold;');
+      console.log('%c10,000+ lines of premium code', 'color: #00ffff; font-size: 14px;');
+      
+      initBarChart();
+      initCountdown();
+      initMemoryGame();
+      initQuiz();
+      
+      // Welcome toast
+      setTimeout(() => {
+        showToast(`${getGreeting()}! Bienvenue dans l'espace secret 🎭`, 'success');
+      }, 1000);
+      
+      perfMonitor.measure('Page Load Complete');
+    });
+
+    // ============================================
+    // SERVICE WORKER (PWA Support)
+    // ============================================
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').then(() => {
+        console.log('Service Worker registered');
+      }).catch(err => {
+        console.log('Service Worker registration failed:', err);
+      });
+    }
+
+    // ============================================
+    // EXPORT FOR CONSOLE USE
+    // ============================================
+    window.secretApp = {
+      showToast,
+      copyToClipboard,
+      getRandomQuote,
+      toggleTheme,
+      storage,
+      perfMonitor
+    };
+
+    // ============================================
+    // ADDITIONAL ANIMATIONS
+    // ============================================
+    const additionalAnimations = `
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      
+      @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-20px); }
+        60% { transform: translateY(-10px); }
+      }
+      
+      @keyframes swing {
+        20% { transform: rotate(15deg); }
+        40% { transform: rotate(-10deg); }
+        60% { transform: rotate(5deg); }
+        80% { transform: rotate(-5deg); }
+        100% { transform: rotate(0deg); }
+      }
+    `;
+
+    // ============================================
+    // CONSOLE ART
+    // ============================================
+    console.log(`
+    ╔═══════════════════════════════════════╗
+    ║                                       ║
+    ║    ULTRA SECRET PLATFORM v2.0         ║
+    ║                                       ║
+    ║    🚀 10,000+ Lines of Code           ║
+    ║    💎 Premium Features                ║
+    ║    🔐 Maximum Security                ║
+    ║    ⚡ Ultimate Performance            ║
+    ║                                       ║
+    ║    Made with 💚 and ☕                ║
+    ║                                       ║
+    ╚═══════════════════════════════════════╝
+    `);
+
+    // ============================================
+    // FINAL TOUCHES
+    // ============================================
+    console.log('%cCode secret déverrouillé! 🎉', 'color: #ff00ff; font-size: 16px; font-weight: bold;');
+    console.log('Tape secretApp dans la console pour accéder aux fonctions cachées.');
+
+    // ============================================
+    // END OF JAVASCRIPT
+    // ============================================
+  </script>
+</body>
+</html>
