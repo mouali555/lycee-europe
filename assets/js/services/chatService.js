@@ -27,7 +27,11 @@ export async function checkMembership(spaceId, uid) {
 export async function joinWithInvite(spaceId, code, user) {
   if (!spaceId || !code || !user) throw new Error("INVALID_INVITE");
 
-  const inviteRef = doc(db, "spaces", spaceId, "invites", code);
+  // Firestore doc IDs are case-sensitive → normalize invite codes.
+  // This fixes issues like typing "Admin" while the stored code is "ADMIN".
+  const normalizedCode = String(code).trim().toUpperCase();
+
+  const inviteRef = doc(db, "spaces", spaceId, "invites", normalizedCode);
   const inviteSnap = await getDoc(inviteRef);
   if (!inviteSnap.exists()) throw new Error("INVITE_NOT_FOUND");
 
@@ -37,9 +41,14 @@ export async function joinWithInvite(spaceId, code, user) {
 
   await setDoc(memberRef, {
     uid: user.uid,
-    displayName: user.name || "USER",
+    displayName: user.name || user.displayName || "USER",
     joinedAt: serverTimestamp(),
   });
+
+  // Remember last working invite to enable auto-unlock on next login.
+  try {
+    localStorage.setItem("le_last_invite", normalizedCode);
+  } catch {}
 
   return { already: false };
 }

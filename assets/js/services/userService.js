@@ -19,12 +19,14 @@ import {
 export async function ensureUserDoc(user) {
   if (!user?.uid) return;
 
+  const displayName = user.name || user.displayName || "USER";
+
   const uref = doc(db, "users", user.uid);
   const snap = await getDoc(uref);
 
   if (!snap.exists()) {
     await setDoc(uref, {
-      displayName: user.name,
+      displayName,
       photoURL: user.photoURL || null,
       rank: "BRONZE",
       keys: [],
@@ -34,7 +36,7 @@ export async function ensureUserDoc(user) {
     await setDoc(
       uref,
       {
-        displayName: user.name,
+        displayName,
         photoURL: user.photoURL || null,
         updatedAt: serverTimestamp(),
       },

@@ -135,6 +135,29 @@ async function refreshMembership() {
 async function onAuthChanged(user) {
   currentUser = user || null;
   await refreshMembership();
+
+  // Auto-unlock if this device already used a valid invite.
+  if (currentUser && !isMember) {
+    const lastInvite = (() => {
+      try {
+        return localStorage.getItem("le_last_invite");
+      } catch {
+        return null;
+      }
+    })();
+
+    if (lastInvite) {
+      try {
+        await joinWithInvite(SPACE_ID, lastInvite, {
+          uid: currentUser.uid,
+          name: currentUser.displayName || "USER",
+        });
+        await refreshMembership();
+      } catch {
+        // Ignore: user can still enter an invite manually.
+      }
+    }
+  }
   renderAccess();
 }
 

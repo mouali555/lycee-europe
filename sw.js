@@ -8,7 +8,7 @@
   - Offline fallback page if navigation fails
 */
 
-const VERSION = "le-sw-v1";
+const VERSION = "le-sw-v2";
 const OFFLINE_URL = "./offline.html";
 
 // Keep the list short: it should be the minimum shell required to render something.

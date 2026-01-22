@@ -747,6 +747,33 @@ watchAuth(async (user) => {
     try {
       isMember = await checkMembership(CONFIG.SPACE_ID, currentUser.uid);
       if (!isMember) {
+        // Auto-unlock if a valid invite was used previously on this device.
+        const lastInvite = (() => {
+          try {
+            return localStorage.getItem("le_last_invite");
+          } catch {
+            return null;
+          }
+        })();
+
+        if (lastInvite) {
+          try {
+            msgList.addSystem("AUTO_INVITE: trying saved code...");
+            await joinWithInvite(CONFIG.SPACE_ID, lastInvite, currentUser);
+            isMember = await checkMembership(CONFIG.SPACE_ID, currentUser.uid);
+          } catch (e) {
+            // Ignore: user can still enter an invite manually.
+            dbgErr(e, "AUTO_INVITE_FAILED");
+          }
+        }
+
+        if (isMember) {
+          msgList.addSystem("ACCESS_OK");
+          setTerminal("authenticated");
+          startListener();
+          return;
+        }
+
         msgList.clear();
         msgList.addSystem("ACCESS_DENIED: invite required");
         setTerminal("join required");
