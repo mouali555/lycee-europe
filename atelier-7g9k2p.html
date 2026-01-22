@@ -3,14 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>///ENCRYPTED_ZONE_7g9k2p</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>///ENCRYPTED_ZONE_7g9k2p///LEVEL_5_CLEARANCE///</title>
   <meta name="robots" content="noindex,nofollow" />
-  <meta name="description" content="Accès restreint - Niveau 5" />
+  <meta name="description" content="Niveau 5 - Accès restreint aux membres autorisés uniquement" />
+  <meta name="theme-color" content="#00ff41" />
 
   <link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="./assets/css/tokens.css" />
   <link rel="stylesheet" href="./assets/css/reset.css" />
@@ -19,42 +21,154 @@
 
   <style>
     /* ========================================
-       VARIABLES & BASE STYLES
+       🎯 CSS CUSTOM PROPERTIES (VARIABLES)
        ======================================== */
     :root {
+      /* Primary Colors */
       --hacker-green: #00ff41;
       --hacker-green-bright: #39ff14;
       --hacker-green-dark: #008f11;
+      --hacker-green-darker: #004d09;
+      --hacker-green-neon: #00ff00;
+      
+      /* Secondary Colors */
       --hacker-cyan: #00ffff;
+      --hacker-cyan-bright: #00ffea;
+      --hacker-cyan-dark: #00a7a7;
+      
+      /* Accent Colors */
       --hacker-red: #ff0048;
+      --hacker-red-bright: #ff3366;
+      --hacker-red-dark: #cc0000;
+      
       --hacker-yellow: #ffee00;
+      --hacker-yellow-bright: #ffff00;
+      --hacker-yellow-dark: #ccbb00;
+      
+      --hacker-purple: #9d00ff;
+      --hacker-purple-bright: #bf00ff;
+      --hacker-purple-dark: #6600cc;
+      
+      --hacker-orange: #ff6600;
+      --hacker-orange-bright: #ff8800;
+      
+      /* Background Colors */
       --hacker-bg: #000000;
       --hacker-bg-dark: #0a0e0a;
+      --hacker-bg-darker: #050705;
+      --hacker-bg-panel: rgba(10, 14, 10, 0.95);
+      --hacker-bg-card: rgba(0, 20, 0, 0.7);
+      --hacker-bg-input: rgba(0, 20, 0, 0.8);
+      
+      /* Border Colors */
       --hacker-border: #1a4d1a;
       --hacker-border-bright: #00ff41;
+      --hacker-border-dark: #0d260d;
+      
+      /* Shadow Effects */
       --shadow-glow: 0 0 10px rgba(0, 255, 65, 0.5);
       --shadow-glow-strong: 0 0 20px rgba(0, 255, 65, 0.8), 0 0 40px rgba(0, 255, 65, 0.4);
+      --shadow-glow-intense: 0 0 30px rgba(0, 255, 65, 1), 0 0 60px rgba(0, 255, 65, 0.6), 0 0 90px rgba(0, 255, 65, 0.3);
       --shadow-red: 0 0 10px rgba(255, 0, 72, 0.8);
+      --shadow-red-strong: 0 0 20px rgba(255, 0, 72, 1), 0 0 40px rgba(255, 0, 72, 0.6);
       --shadow-cyan: 0 0 10px rgba(0, 255, 255, 0.6);
+      --shadow-cyan-strong: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.4);
+      --shadow-yellow: 0 0 10px rgba(255, 238, 0, 0.8);
+      --shadow-purple: 0 0 10px rgba(157, 0, 255, 0.8);
+      
+      /* Text Shadows */
+      --text-glow: 0 0 10px var(--hacker-green), 0 0 20px var(--hacker-green);
+      --text-glow-strong: 0 0 15px var(--hacker-green), 0 0 30px var(--hacker-green), 0 0 45px var(--hacker-green);
+      --text-glow-red: 0 0 15px var(--hacker-red), 0 0 30px var(--hacker-red);
+      --text-glow-cyan: 0 0 10px var(--hacker-cyan), 0 0 20px var(--hacker-cyan);
+      
+      /* Timing Functions */
+      --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+      --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+      --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-2xl: 48px;
+      --spacing-3xl: 64px;
+      
+      /* Border Radius */
+      --radius-sm: 2px;
+      --radius-md: 4px;
+      --radius-lg: 8px;
+      
+      /* Font Sizes */
+      --font-xs: 10px;
+      --font-sm: 12px;
+      --font-md: 14px;
+      --font-lg: 16px;
+      --font-xl: 20px;
+      --font-2xl: 24px;
+      --font-3xl: 32px;
+      --font-4xl: 42px;
+      --font-5xl: 56px;
+      
+      /* Z-Index Layers */
+      --z-canvas: 0;
+      --z-scanlines: 1;
+      --z-flicker: 2;
+      --z-vignette: 3;
+      --z-hex-grid: 4;
+      --z-particles: 5;
+      --z-content: 10;
+      --z-modal: 100;
+      --z-tooltip: 200;
     }
 
+    /* ========================================
+       🎨 GLOBAL RESET & BASE STYLES
+       ======================================== */
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
     }
 
     body {
       margin: 0;
       padding: 0;
       background: var(--hacker-bg);
-      font-family: 'Share Tech Mono', 'Courier New', monospace;
+      font-family: 'Share Tech Mono', 'Courier New', 'Consolas', monospace;
       color: var(--hacker-green);
       overflow-x: hidden;
       position: relative;
       min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    ::selection {
+      background: rgba(0, 255, 65, 0.3);
+      color: var(--hacker-green-bright);
+    }
+
+    ::-moz-selection {
+      background: rgba(0, 255, 65, 0.3);
+      color: var(--hacker-green-bright);
     }
 
     /* ========================================
-       MATRIX RAIN BACKGROUND CANVAS
+       🌊 MATRIX RAIN BACKGROUND CANVAS
        ======================================== */
     #matrixCanvas {
       position: fixed;
@@ -62,13 +176,14 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
+      z-index: var(--z-canvas);
       opacity: 0.25;
       pointer-events: none;
+      image-rendering: pixelated;
     }
 
     /* ========================================
-       SCANLINES OVERLAY
+       📺 SCANLINES OVERLAY EFFECT
        ======================================== */
     .scanlines {
       position: fixed;
@@ -76,7 +191,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 1;
+      z-index: var(--z-scanlines);
       pointer-events: none;
       background: repeating-linear-gradient(
         0deg,
@@ -93,8 +208,29 @@
       100% { transform: translateY(10px); }
     }
 
+    .scanlines::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 255, 65, 0.02) 50%,
+        transparent 100%
+      );
+      animation: scanline-beam 4s ease-in-out infinite;
+    }
+
+    @keyframes scanline-beam {
+      0%, 100% { transform: translateY(-100%); }
+      50% { transform: translateY(100%); }
+    }
+
     /* ========================================
-       FLICKER OVERLAY
+       ⚡ SCREEN FLICKER EFFECT
        ======================================== */
     .screen-flicker {
       position: fixed;
@@ -102,7 +238,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 2;
+      z-index: var(--z-flicker);
       pointer-events: none;
       background: rgba(0, 255, 65, 0.02);
       animation: flicker 0.15s infinite;
@@ -110,11 +246,19 @@
 
     @keyframes flicker {
       0%, 100% { opacity: 0.05; }
+      10% { opacity: 0.1; }
+      20% { opacity: 0.05; }
+      30% { opacity: 0.12; }
+      40% { opacity: 0.08; }
       50% { opacity: 0.1; }
+      60% { opacity: 0.05; }
+      70% { opacity: 0.15; }
+      80% { opacity: 0.05; }
+      90% { opacity: 0.08; }
     }
 
     /* ========================================
-       VIGNETTE EFFECT
+       🎭 VIGNETTE EFFECT
        ======================================== */
     .vignette {
       position: fixed;
@@ -122,28 +266,56 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 3;
+      z-index: var(--z-vignette);
       pointer-events: none;
-      box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.9);
+      box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.9),
+                  inset 0 0 400px rgba(0, 0, 0, 0.6);
     }
 
     /* ========================================
-       GLITCH ANIMATIONS
+       🔷 HEXAGONAL GRID BACKGROUND
+       ======================================== */
+    .hex-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: var(--z-hex-grid);
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: 
+        linear-gradient(30deg, transparent 45%, var(--hacker-green) 45%, var(--hacker-green) 55%, transparent 55%),
+        linear-gradient(-30deg, transparent 45%, var(--hacker-green) 45%, var(--hacker-green) 55%, transparent 55%);
+      background-size: 40px 70px;
+    }
+
+    /* ========================================
+       ✨ GLITCH ANIMATIONS SUITE
        ======================================== */
     @keyframes glitch-1 {
       0%, 100% {
-        text-shadow: 0 0 5px var(--hacker-green);
+        text-shadow: var(--text-glow);
+        transform: translate(0, 0);
+      }
+      5% {
+        text-shadow: -2px 0 5px var(--hacker-red), 2px 0 5px var(--hacker-cyan);
+        transform: translate(-2px, 1px);
       }
       10% {
-        text-shadow: -2px 0 5px var(--hacker-red), 2px 0 5px var(--hacker-cyan);
-        transform: translate(-2px, 0);
+        text-shadow: 2px 0 5px var(--hacker-red), -2px 0 5px var(--hacker-cyan);
+        transform: translate(2px, -1px);
+      }
+      15% {
+        text-shadow: -3px 0 7px var(--hacker-purple), 3px 0 7px var(--hacker-yellow);
+        transform: translate(-1px, 2px);
       }
       20% {
-        text-shadow: 2px 0 5px var(--hacker-red), -2px 0 5px var(--hacker-cyan);
-        transform: translate(2px, 0);
+        text-shadow: var(--text-glow-strong);
+        transform: translate(1px, -2px);
       }
-      30% {
-        text-shadow: 0 0 10px var(--hacker-green);
+      25% {
+        text-shadow: var(--text-glow);
         transform: translate(0, 0);
       }
     }
@@ -152,32 +324,73 @@
       0%, 100% {
         clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
       }
+      5% {
+        clip-path: polygon(0 10%, 100% 10%, 100% 11%, 0 11%);
+      }
       10% {
-        clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%);
+        clip-path: polygon(0 25%, 100% 25%, 100% 26%, 0 26%);
+      }
+      15% {
+        clip-path: polygon(0 40%, 100% 40%, 100% 45%, 0 45%);
       }
       20% {
         clip-path: polygon(0 60%, 100% 60%, 100% 61%, 0 61%);
       }
+      25% {
+        clip-path: polygon(0 75%, 100% 75%, 100% 76%, 0 76%);
+      }
       30% {
-        clip-path: polygon(0 80%, 100% 80%, 100% 81%, 0 81%);
+        clip-path: polygon(0 85%, 100% 85%, 100% 90%, 0 90%);
+      }
+    }
+
+    @keyframes glitch-3 {
+      0%, 100% {
+        transform: skew(0deg);
+      }
+      10% {
+        transform: skew(-2deg) translateX(-2px);
+      }
+      20% {
+        transform: skew(2deg) translateX(2px);
+      }
+      30% {
+        transform: skew(-1deg) translateX(-1px);
+      }
+      40% {
+        transform: skew(1deg) translateX(1px);
+      }
+      50% {
+        transform: skew(0deg);
       }
     }
 
     @keyframes glitch-skew {
-      0% { transform: skew(0deg); }
+      0%, 100% { transform: skew(0deg); }
       10% { transform: skew(-2deg); }
       20% { transform: skew(2deg); }
-      30% { transform: skew(0deg); }
+      30% { transform: skew(-1deg); }
+      40% { transform: skew(1deg); }
+      50% { transform: skew(0deg); }
     }
 
     @keyframes text-flicker {
       0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
         opacity: 1;
-        text-shadow: 0 0 10px var(--hacker-green), 0 0 20px var(--hacker-green);
+        text-shadow: var(--text-glow-strong);
       }
       20%, 24%, 55% {
         opacity: 0.4;
         text-shadow: none;
+      }
+    }
+
+    @keyframes text-flicker-fast {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        opacity: 1;
+      }
+      20%, 24%, 55% {
+        opacity: 0.3;
       }
     }
 
@@ -186,6 +399,14 @@
       50%, 100% { opacity: 0; }
     }
 
+    @keyframes blink-slow {
+      0%, 60% { opacity: 1; }
+      61%, 100% { opacity: 0; }
+    }
+
+    /* ========================================
+       💫 PULSE & GLOW ANIMATIONS
+       ======================================== */
     @keyframes pulse-glow {
       0%, 100% {
         box-shadow: 0 0 5px var(--hacker-green),
@@ -199,12 +420,50 @@
       }
     }
 
+    @keyframes pulse-glow-strong {
+      0%, 100% {
+        box-shadow: var(--shadow-glow);
+      }
+      50% {
+        box-shadow: var(--shadow-glow-intense);
+      }
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.3);
+        opacity: 0.7;
+      }
+    }
+
+    @keyframes pulse-scale {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    /* ========================================
+       🌀 BORDER & FLOW ANIMATIONS
+       ======================================== */
     @keyframes border-flow {
       0% {
         border-image-source: linear-gradient(90deg, var(--hacker-green) 0%, transparent 50%, var(--hacker-green) 100%);
       }
+      25% {
+        border-image-source: linear-gradient(180deg, var(--hacker-green) 0%, transparent 50%, var(--hacker-green) 100%);
+      }
       50% {
-        border-image-source: linear-gradient(90deg, transparent 0%, var(--hacker-green) 50%, transparent 100%);
+        border-image-source: linear-gradient(270deg, var(--hacker-green) 0%, transparent 50%, var(--hacker-green) 100%);
+      }
+      75% {
+        border-image-source: linear-gradient(360deg, var(--hacker-green) 0%, transparent 50%, var(--hacker-green) 100%);
       }
       100% {
         border-image-source: linear-gradient(90deg, var(--hacker-green) 0%, transparent 50%, var(--hacker-green) 100%);
@@ -216,39 +475,297 @@
       100% { transform: rotate(360deg); }
     }
 
-    @keyframes data-stream {
-      0% { transform: translateY(-100%); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(100vh); opacity: 0; }
+    @keyframes scan-line {
+      0%, 100% { 
+        opacity: 0; 
+        transform: translateX(-100%); 
+      }
+      50% { 
+        opacity: 1; 
+        transform: translateX(100%); 
+      }
+    }
+
+    @keyframes scan-line-vertical {
+      0%, 100% { 
+        opacity: 0; 
+        transform: translateY(-100%); 
+      }
+      50% { 
+        opacity: 1; 
+        transform: translateY(100%); 
+      }
     }
 
     /* ========================================
-       MAIN CONTAINER
+       💨 PARTICLES & DATA STREAM
+       ======================================== */
+    @keyframes data-stream {
+      0% { 
+        transform: translateY(-100%); 
+        opacity: 0; 
+      }
+      10% { 
+        opacity: 1; 
+      }
+      90% { 
+        opacity: 1; 
+      }
+      100% { 
+        transform: translateY(100vh); 
+        opacity: 0; 
+      }
+    }
+
+    @keyframes particle-float {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate(100px, -100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes particle-drift {
+      0% {
+        transform: translate(0, 0);
+        opacity: 0.3;
+      }
+      50% {
+        transform: translate(50px, -50px);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(0, -100px);
+        opacity: 0;
+      }
+    }
+
+    /* ========================================
+       📊 LOADING & PROGRESS ANIMATIONS
+       ======================================== */
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(350%); }
+    }
+
+    @keyframes loading-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes progress-indeterminate {
+      0% {
+        left: -35%;
+        right: 100%;
+      }
+      60% {
+        left: 100%;
+        right: -90%;
+      }
+      100% {
+        left: 100%;
+        right: -90%;
+      }
+    }
+
+    /* ========================================
+       ⌨️ TYPEWRITER ANIMATION
+       ======================================== */
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: var(--hacker-green); }
+    }
+
+    /* ========================================
+       🎪 SLIDE & FADE ANIMATIONS
+       ======================================== */
+    @keyframes slideInFromLeft {
+      0% {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInFromRight {
+      0% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInFromTop {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideInFromBottom {
+      0% {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ========================================
+       🎯 ZOOM & SCALE ANIMATIONS
+       ======================================== */
+    @keyframes zoomIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes zoomOut {
+      0% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+    }
+
+    /* ========================================
+       🌊 WAVE & RIPPLE ANIMATIONS
+       ======================================== */
+    @keyframes wave {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+
+    /* ========================================
+       🔄 ROTATION ANIMATIONS
+       ======================================== */
+    @keyframes rotate-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes rotate-reverse {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    /* ========================================
+       🎨 MAIN CONTAINER
        ======================================== */
     main.container {
       position: relative;
-      z-index: 10;
-      padding: 60px 20px 100px;
-      max-width: 1200px;
+      z-index: var(--z-content);
+      padding: var(--spacing-3xl) var(--spacing-lg) 100px;
+      max-width: 1400px;
       margin: 0 auto;
+      animation: fadeIn 0.5s ease-out;
     }
 
     /* ========================================
-       SECURE PANELS
+       🛡️ SECURE PANELS
        ======================================== */
     .secure-panel {
       position: relative;
       border: 2px solid var(--hacker-border);
-      padding: 30px;
-      background: rgba(10, 14, 10, 0.95);
-      box-shadow: var(--shadow-glow-strong), inset 0 0 40px rgba(0, 255, 65, 0.05);
-      margin-bottom: 30px;
+      padding: var(--spacing-xl);
+      background: var(--hacker-bg-panel);
+      box-shadow: var(--shadow-glow-strong), 
+                  inset 0 0 40px rgba(0, 255, 65, 0.05);
+      margin-bottom: var(--spacing-xl);
       clip-path: polygon(
         0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px,
         100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px)
       );
-      animation: pulse-glow 4s ease-in-out infinite;
+      animation: pulse-glow 4s ease-in-out infinite, fadeInUp 0.6s ease-out;
+      transition: all 0.3s var(--ease-out-expo);
+    }
+
+    .secure-panel:hover {
+      border-color: var(--hacker-border-bright);
+      box-shadow: var(--shadow-glow-intense), 
+                  inset 0 0 60px rgba(0, 255, 65, 0.08);
+      transform: translateY(-2px);
     }
 
     .secure-panel::before {
@@ -273,20 +790,18 @@
       opacity: 0.5;
     }
 
-    @keyframes scan-line {
-      0%, 100% { opacity: 0; transform: translateX(-100%); }
-      50% { opacity: 1; transform: translateX(100%); }
-    }
-
-    /* Corner decorations */
-    .secure-panel .corner {
+    /* ========================================
+       📐 CORNER DECORATIONS
+       ======================================== */
+    .corner {
       position: absolute;
       width: 20px;
       height: 20px;
       border: 2px solid var(--hacker-green-bright);
+      z-index: 10;
     }
 
-    .secure-panel .corner.tl {
+    .corner.tl {
       top: -2px;
       left: -2px;
       border-right: none;
@@ -294,7 +809,7 @@
       box-shadow: -2px -2px 10px var(--hacker-green);
     }
 
-    .secure-panel .corner.tr {
+    .corner.tr {
       top: -2px;
       right: -2px;
       border-left: none;
@@ -302,7 +817,7 @@
       box-shadow: 2px -2px 10px var(--hacker-green);
     }
 
-    .secure-panel .corner.bl {
+    .corner.bl {
       bottom: -2px;
       left: -2px;
       border-right: none;
@@ -310,7 +825,7 @@
       box-shadow: -2px 2px 10px var(--hacker-green);
     }
 
-    .secure-panel .corner.br {
+    .corner.br {
       bottom: -2px;
       right: -2px;
       border-left: none;
@@ -318,24 +833,54 @@
       box-shadow: 2px 2px 10px var(--hacker-green);
     }
 
+    .corner::before {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--hacker-green-bright);
+      box-shadow: 0 0 6px var(--hacker-green-bright);
+    }
+
+    .corner.tl::before {
+      top: -2px;
+      left: -2px;
+    }
+
+    .corner.tr::before {
+      top: -2px;
+      right: -2px;
+    }
+
+    .corner.bl::before {
+      bottom: -2px;
+      left: -2px;
+    }
+
+    .corner.br::before {
+      bottom: -2px;
+      right: -2px;
+    }
+
     /* ========================================
-       TYPOGRAPHY
+       📝 TYPOGRAPHY SYSTEM
        ======================================== */
-    h1, h2, h3 {
+    h1, h2, h3, h4, h5, h6 {
       font-family: 'Orbitron', 'Share Tech Mono', monospace;
       color: var(--hacker-green-bright);
       text-transform: uppercase;
-      letter-spacing: 4px;
       font-weight: 900;
       margin: 0;
-      text-shadow: 0 0 10px var(--hacker-green), 0 0 20px var(--hacker-green);
+      text-shadow: var(--text-glow);
+      letter-spacing: 0.2em;
     }
 
     h1 {
-      font-size: clamp(24px, 5vw, 42px);
+      font-size: clamp(24px, 5vw, 48px);
       animation: glitch-1 5s infinite, text-flicker 3s infinite;
       position: relative;
       display: inline-block;
+      margin-bottom: var(--spacing-md);
     }
 
     h1::before,
@@ -346,41 +891,67 @@
       left: 0;
       width: 100%;
       height: 100%;
+      background: transparent;
     }
 
     h1::before {
       animation: glitch-2 2s infinite;
       color: var(--hacker-cyan);
       z-index: -1;
+      opacity: 0.8;
     }
 
     h1::after {
       animation: glitch-2 3s infinite reverse;
       color: var(--hacker-red);
       z-index: -2;
+      opacity: 0.7;
     }
 
     h2 {
-      font-size: clamp(18px, 3vw, 28px);
-      margin-bottom: 16px;
-      letter-spacing: 3px;
+      font-size: clamp(18px, 3.5vw, 32px);
+      margin-bottom: var(--spacing-md);
+      letter-spacing: 0.15em;
     }
 
     h3 {
+      font-size: clamp(16px, 2.5vw, 24px);
+      letter-spacing: 0.12em;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    h4 {
       font-size: clamp(14px, 2vw, 20px);
-      letter-spacing: 2px;
-      margin-bottom: 12px;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    h5 {
+      font-size: clamp(12px, 1.5vw, 16px);
+      letter-spacing: 0.08em;
+    }
+
+    h6 {
+      font-size: clamp(11px, 1.2vw, 14px);
+      letter-spacing: 0.06em;
+    }
+
+    p {
+      margin: 0 0 var(--spacing-md) 0;
+      line-height: 1.8;
     }
 
     /* ========================================
-       TEXT EFFECTS
+       💬 TERMINAL TEXT STYLES
        ======================================== */
     .terminal-text {
-      font-size: 15px;
+      font-size: var(--font-md);
       line-height: 1.8;
       opacity: 0.95;
       position: relative;
-      padding-left: 20px;
+      padding-left: 24px;
+      margin: var(--spacing-sm) 0;
+      font-family: 'Share Tech Mono', monospace;
     }
 
     .terminal-text::before {
@@ -392,10 +963,39 @@
       animation: blink 1.5s step-start infinite;
     }
 
+    .terminal-text-static::before {
+      animation: none;
+    }
+
+    .terminal-text-alt::before {
+      content: '$';
+      color: var(--hacker-cyan);
+    }
+
+    .terminal-text-root::before {
+      content: '#';
+      color: var(--hacker-red);
+    }
+
+    /* ========================================
+       ⌨️ CURSOR & TYPEWRITER EFFECTS
+       ======================================== */
     .cursor::after {
       content: '█';
       animation: blink 1s step-start infinite;
       margin-left: 4px;
+    }
+
+    .cursor-line::after {
+      content: '|';
+      animation: blink 0.8s step-start infinite;
+      margin-left: 2px;
+    }
+
+    .cursor-underscore::after {
+      content: '_';
+      animation: blink 1.2s step-start infinite;
+      margin-left: 2px;
     }
 
     .typewriter {
@@ -406,31 +1006,29 @@
       display: inline-block;
     }
 
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-
-    @keyframes blink-caret {
-      from, to { border-color: transparent; }
-      50% { border-color: var(--hacker-green); }
-    }
-
     /* ========================================
-       STATUS PILLS & BADGES
+       🏷️ STATUS PILLS & BADGES
        ======================================== */
     .status-pill {
       display: inline-block;
       padding: 6px 16px;
       background: rgba(0, 255, 65, 0.1);
       border: 1px solid var(--hacker-green);
-      font-size: 11px;
+      font-size: var(--font-xs);
       letter-spacing: 2px;
       text-transform: uppercase;
       box-shadow: var(--shadow-glow);
       animation: pulse-glow 3s ease-in-out infinite;
       font-family: 'Orbitron', monospace;
       font-weight: 700;
+      transition: all 0.3s var(--ease-out-expo);
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+    }
+
+    .status-pill:hover {
+      background: rgba(0, 255, 65, 0.2);
+      box-shadow: var(--shadow-glow-strong);
+      transform: translateY(-2px);
     }
 
     .status-pill.active {
@@ -443,7 +1041,7 @@
       background: rgba(255, 238, 0, 0.1);
       border-color: var(--hacker-yellow);
       color: var(--hacker-yellow);
-      box-shadow: 0 0 10px var(--hacker-yellow);
+      box-shadow: var(--shadow-yellow);
     }
 
     .status-pill.danger {
@@ -453,8 +1051,22 @@
       box-shadow: var(--shadow-red);
     }
 
+    .status-pill.info {
+      background: rgba(0, 255, 255, 0.1);
+      border-color: var(--hacker-cyan);
+      color: var(--hacker-cyan);
+      box-shadow: var(--shadow-cyan);
+    }
+
+    .status-pill.premium {
+      background: rgba(157, 0, 255, 0.1);
+      border-color: var(--hacker-purple);
+      color: var(--hacker-purple);
+      box-shadow: var(--shadow-purple);
+    }
+
     /* ========================================
-       BUTTONS
+       🔘 BUTTON SYSTEM
        ======================================== */
     .btn {
       background: transparent;
@@ -465,12 +1077,13 @@
       font-family: 'Orbitron', 'Share Tech Mono', monospace;
       cursor: pointer;
       letter-spacing: 3px;
-      font-size: 13px;
+      font-size: var(--font-sm);
       font-weight: 700;
-      transition: all 0.3s;
+      transition: all 0.3s var(--ease-out-expo);
       position: relative;
       overflow: hidden;
       clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+      user-select: none;
     }
 
     .btn::before {
@@ -481,7 +1094,7 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.3), transparent);
-      transition: left 0.5s;
+      transition: left 0.5s var(--ease-out-expo);
     }
 
     .btn:hover::before {
@@ -497,6 +1110,7 @@
 
     .btn:active {
       transform: translateY(-1px);
+      box-shadow: var(--shadow-glow);
     }
 
     .btn--primary {
@@ -507,21 +1121,63 @@
 
     .btn--primary:hover {
       background: rgba(0, 255, 65, 0.3);
+      box-shadow: var(--shadow-glow-intense);
+    }
+
+    .btn--secondary {
+      border-color: var(--hacker-cyan);
+      color: var(--hacker-cyan);
+    }
+
+    .btn--secondary:hover {
+      background: rgba(0, 255, 255, 0.2);
+      box-shadow: var(--shadow-cyan-strong);
+      border-color: var(--hacker-cyan-bright);
+    }
+
+    .btn--danger {
+      border-color: var(--hacker-red);
+      color: var(--hacker-red);
+    }
+
+    .btn--danger:hover {
+      background: rgba(255, 0, 72, 0.2);
+      box-shadow: var(--shadow-red-strong);
+      border-color: var(--hacker-red-bright);
+    }
+
+    .btn--small {
+      padding: 8px 18px;
+      font-size: var(--font-xs);
+      letter-spacing: 2px;
+    }
+
+    .btn--large {
+      padding: 16px 38px;
+      font-size: var(--font-lg);
+      letter-spacing: 4px;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
     }
 
     /* ========================================
-       INPUTS
+       📥 INPUT FIELDS
        ======================================== */
     .input {
-      background: rgba(0, 20, 0, 0.8);
+      background: var(--hacker-bg-input);
       border: 2px solid var(--hacker-border);
       color: var(--hacker-green);
       padding: 12px 16px;
       font-family: 'Share Tech Mono', monospace;
-      font-size: 14px;
+      font-size: var(--font-md);
       box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
-      transition: all 0.3s;
+      transition: all 0.3s var(--ease-out-expo);
       clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+      width: 100%;
     }
 
     .input:focus {
@@ -536,28 +1192,54 @@
       letter-spacing: 2px;
     }
 
+    .input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     /* ========================================
-       GRID LAYOUT
+       📊 GRID LAYOUTS
        ======================================== */
     .grid-secure {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin: 30px 0;
+      gap: var(--spacing-lg);
+      margin: var(--spacing-xl) 0;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 
     /* ========================================
-       DATA CARDS
+       🃏 DATA CARDS
        ======================================== */
     .data-card {
       border: 2px solid var(--hacker-border);
-      padding: 24px;
-      background: rgba(0, 20, 0, 0.7);
-      transition: all 0.4s;
+      padding: var(--spacing-lg);
+      background: var(--hacker-bg-card);
+      transition: all 0.4s var(--ease-out-expo);
       position: relative;
       overflow: hidden;
       clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+      animation: fadeInUp 0.6s ease-out;
+      animation-fill-mode: both;
     }
+
+    .data-card:nth-child(1) { animation-delay: 0.1s; }
+    .data-card:nth-child(2) { animation-delay: 0.2s; }
+    .data-card:nth-child(3) { animation-delay: 0.3s; }
+    .data-card:nth-child(4) { animation-delay: 0.4s; }
+    .data-card:nth-child(5) { animation-delay: 0.5s; }
+    .data-card:nth-child(6) { animation-delay: 0.6s; }
 
     .data-card::before {
       content: '';
@@ -567,7 +1249,7 @@
       width: 100%;
       height: 100%;
       background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.1), transparent);
-      transition: left 0.8s;
+      transition: left 0.8s var(--ease-out-expo);
     }
 
     .data-card:hover::before {
@@ -581,22 +1263,24 @@
       background: rgba(0, 30, 0, 0.8);
     }
 
-    .data-card h2 {
+    .data-card h2,
+    .data-card h3 {
       position: relative;
       z-index: 1;
     }
 
     /* ========================================
-       CHAT CONTAINER
+       💬 CHAT CONTAINER
        ======================================== */
     .chat-container {
       border: 2px solid var(--hacker-border);
       background: rgba(0, 10, 0, 0.95);
-      padding: 20px;
-      max-height: 400px;
+      padding: var(--spacing-lg);
+      max-height: 450px;
       overflow-y: auto;
       box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.9), var(--shadow-glow);
       position: relative;
+      animation: fadeInUp 0.6s ease-out;
     }
 
     .chat-container::before {
@@ -606,9 +1290,11 @@
       left: 20px;
       background: var(--hacker-bg);
       padding: 0 10px;
-      font-size: 10px;
+      font-size: var(--font-xs);
       color: var(--hacker-green-bright);
       letter-spacing: 2px;
+      font-family: 'Orbitron', monospace;
+      font-weight: 700;
     }
 
     .chat-container::-webkit-scrollbar {
@@ -623,6 +1309,7 @@
     .chat-container::-webkit-scrollbar-thumb {
       background: var(--hacker-green);
       box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+      border-radius: 2px;
     }
 
     .chat-container::-webkit-scrollbar-thumb:hover {
@@ -631,23 +1318,44 @@
     }
 
     /* ========================================
-       WARNING & INFO TEXT
+       📝 WARNING & INFO TEXT
        ======================================== */
     .warning-text {
-      font-size: 12px;
+      font-size: var(--font-sm);
       opacity: 0.7;
       letter-spacing: 1px;
       font-family: 'Share Tech Mono', monospace;
     }
 
+    .info-text {
+      font-size: var(--font-sm);
+      opacity: 0.8;
+      color: var(--hacker-cyan);
+      letter-spacing: 1px;
+    }
+
+    .success-text {
+      font-size: var(--font-sm);
+      color: var(--hacker-green-bright);
+      opacity: 0.9;
+      letter-spacing: 1px;
+    }
+
+    .error-text {
+      font-size: var(--font-sm);
+      color: var(--hacker-red);
+      opacity: 0.9;
+      letter-spacing: 1px;
+    }
+
     .access-denied {
       color: var(--hacker-red);
-      text-shadow: 0 0 15px var(--hacker-red), 0 0 30px var(--hacker-red);
+      text-shadow: var(--text-glow-red);
       animation: text-flicker 2s infinite;
     }
 
     /* ========================================
-       CODE BLOCKS
+       💻 CODE BLOCKS
        ======================================== */
     code {
       color: var(--hacker-cyan);
@@ -655,18 +1363,35 @@
       padding: 3px 8px;
       border: 1px solid var(--hacker-border);
       font-family: 'Share Tech Mono', monospace;
-      font-size: 13px;
+      font-size: var(--font-sm);
       box-shadow: inset 0 0 5px rgba(0, 255, 255, 0.2);
+      border-radius: var(--radius-sm);
+    }
+
+    pre {
+      background: rgba(0, 10, 0, 0.8);
+      border: 2px solid var(--hacker-border);
+      padding: var(--spacing-md);
+      overflow-x: auto;
+      border-radius: var(--radius-sm);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    }
+
+    pre code {
+      background: transparent;
+      border: none;
+      padding: 0;
+      box-shadow: none;
     }
 
     /* ========================================
-       LINKS
+       🔗 LINKS
        ======================================== */
     a {
       color: var(--hacker-green-bright);
       text-decoration: none;
       border-bottom: 1px dotted var(--hacker-green);
-      transition: all 0.3s;
+      transition: all 0.3s var(--ease-out-expo);
       position: relative;
     }
 
@@ -674,42 +1399,39 @@
       text-shadow: 0 0 8px var(--hacker-green);
       border-bottom-style: solid;
       color: var(--hacker-cyan);
+      border-color: var(--hacker-cyan);
+    }
+
+    a:active {
+      color: var(--hacker-green-neon);
     }
 
     /* ========================================
-       DATA STREAM PARTICLES
+       💥 DATA PARTICLES
        ======================================== */
     .data-particle {
       position: fixed;
       color: var(--hacker-green);
-      font-size: 12px;
+      font-size: var(--font-sm);
       font-family: 'Share Tech Mono', monospace;
       opacity: 0.6;
       pointer-events: none;
-      z-index: 5;
+      z-index: var(--z-particles);
       animation: data-stream 8s linear infinite;
+      text-shadow: 0 0 5px var(--hacker-green);
+    }
+
+    .data-particle.binary {
+      font-size: var(--font-xs);
+    }
+
+    .data-particle.hex {
+      color: var(--hacker-cyan);
+      text-shadow: 0 0 5px var(--hacker-cyan);
     }
 
     /* ========================================
-       HEXAGON GRID BACKGROUND
-       ======================================== */
-    .hex-grid {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 4;
-      pointer-events: none;
-      opacity: 0.03;
-      background-image: 
-        linear-gradient(30deg, transparent 45%, var(--hacker-green) 45%, var(--hacker-green) 55%, transparent 55%),
-        linear-gradient(-30deg, transparent 45%, var(--hacker-green) 45%, var(--hacker-green) 55%, transparent 55%);
-      background-size: 40px 70px;
-    }
-
-    /* ========================================
-       LOADING ANIMATION
+       📊 LOADING BAR
        ======================================== */
     .loading-bar {
       width: 100%;
@@ -718,7 +1440,8 @@
       border: 1px solid var(--hacker-border);
       position: relative;
       overflow: hidden;
-      margin: 16px 0;
+      margin: var(--spacing-md) 0;
+      border-radius: var(--radius-sm);
     }
 
     .loading-bar::before {
@@ -730,29 +1453,34 @@
       width: 40%;
       background: linear-gradient(90deg, transparent, var(--hacker-green), var(--hacker-green-bright), var(--hacker-green), transparent);
       animation: loading 2s linear infinite;
+      box-shadow: 0 0 10px var(--hacker-green);
     }
 
-    @keyframes loading {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(350%); }
+    .loading-bar-thick {
+      height: 8px;
+    }
+
+    .loading-bar-thick::before {
+      box-shadow: 0 0 15px var(--hacker-green);
     }
 
     /* ========================================
-       SYSTEM STATUS INDICATORS
+       🎯 SYSTEM STATUS INDICATORS
        ======================================== */
     .system-status {
       display: flex;
-      gap: 24px;
+      gap: var(--spacing-lg);
       flex-wrap: wrap;
-      margin: 20px 0;
+      margin: var(--spacing-lg) 0;
     }
 
     .status-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 12px;
+      font-size: var(--font-sm);
       letter-spacing: 1px;
+      font-family: 'Share Tech Mono', monospace;
     }
 
     .status-dot {
@@ -762,17 +1490,20 @@
       background: var(--hacker-green);
       box-shadow: 0 0 10px var(--hacker-green);
       animation: pulse-dot 2s ease-in-out infinite;
+      position: relative;
     }
 
-    @keyframes pulse-dot {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.3);
-        opacity: 0.7;
-      }
+    .status-dot::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: inherit;
+      animation: ripple 2s ease-out infinite;
     }
 
     .status-dot.warning {
@@ -785,33 +1516,13 @@
       box-shadow: 0 0 10px var(--hacker-red);
     }
 
-    /* ========================================
-       RESPONSIVE
-       ======================================== */
-    @media (max-width: 768px) {
-      main.container {
-        padding: 40px 16px 80px;
-      }
-
-      .secure-panel {
-        padding: 20px;
-      }
-
-      h1 {
-        font-size: 24px;
-      }
-
-      .grid-secure {
-        grid-template-columns: 1fr;
-      }
-
-      .btn {
-        width: 100%;
-      }
+    .status-dot.info {
+      background: var(--hacker-cyan);
+      box-shadow: 0 0 10px var(--hacker-cyan);
     }
 
     /* ========================================
-       CUSTOM ANIMATIONS FOR SPECIFIC ELEMENTS
+       🎨 ROTATING BORDER BOX
        ======================================== */
     .rotate-border-box {
       position: relative;
@@ -828,13 +1539,21 @@
         from 0deg,
         transparent,
         var(--hacker-green),
-        transparent 30%
+        transparent 30%,
+        var(--hacker-cyan),
+        transparent 60%,
+        var(--hacker-green),
+        transparent
       );
-      border-radius: 2px;
+      border-radius: var(--radius-sm);
       animation: rotate-border 4s linear infinite;
       z-index: -1;
+      opacity: 0.7;
     }
 
+    /* ========================================
+       🎭 ASCII ART
+       ======================================== */
     .ascii-art {
       font-family: monospace;
       font-size: 10px;
@@ -843,7 +1562,548 @@
       opacity: 0.3;
       white-space: pre;
       text-align: center;
-      margin: 20px 0;
+      margin: var(--spacing-lg) 0;
+      overflow-x: auto;
+    }
+
+    .ascii-art:hover {
+      opacity: 0.5;
+      transition: opacity 0.3s;
+    }
+
+    /* ========================================
+       📱 RESPONSIVE DESIGN
+       ======================================== */
+    @media (max-width: 1200px) {
+      main.container {
+        padding: var(--spacing-2xl) var(--spacing-md) 80px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      main.container {
+        padding: var(--spacing-xl) var(--spacing-md) 60px;
+      }
+
+      .secure-panel {
+        padding: var(--spacing-lg);
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      .grid-secure,
+      .grid-2,
+      .grid-3,
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .system-status {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+      }
+
+      .chat-container {
+        max-height: 300px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      main.container {
+        padding: var(--spacing-lg) var(--spacing-sm) 50px;
+      }
+
+      .secure-panel {
+        padding: var(--spacing-md);
+      }
+
+      .corner {
+        width: 15px;
+        height: 15px;
+      }
+
+      h1 {
+        font-size: 20px;
+        letter-spacing: 0.1em;
+      }
+
+      .terminal-text {
+        font-size: var(--font-sm);
+      }
+
+      .data-card {
+        padding: var(--spacing-md);
+      }
+    }
+
+    /* ========================================
+       🎪 UTILITY CLASSES
+       ======================================== */
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+
+    .flex { display: flex; }
+    .flex-center { display: flex; justify-content: center; align-items: center; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .flex-column { flex-direction: column; }
+    .flex-wrap { flex-wrap: wrap; }
+
+    .gap-xs { gap: var(--spacing-xs); }
+    .gap-sm { gap: var(--spacing-sm); }
+    .gap-md { gap: var(--spacing-md); }
+    .gap-lg { gap: var(--spacing-lg); }
+    .gap-xl { gap: var(--spacing-xl); }
+
+    .mt-xs { margin-top: var(--spacing-xs); }
+    .mt-sm { margin-top: var(--spacing-sm); }
+    .mt-md { margin-top: var(--spacing-md); }
+    .mt-lg { margin-top: var(--spacing-lg); }
+    .mt-xl { margin-top: var(--spacing-xl); }
+    .mt-2xl { margin-top: var(--spacing-2xl); }
+
+    .mb-xs { margin-bottom: var(--spacing-xs); }
+    .mb-sm { margin-bottom: var(--spacing-sm); }
+    .mb-md { margin-bottom: var(--spacing-md); }
+    .mb-lg { margin-bottom: var(--spacing-lg); }
+    .mb-xl { margin-bottom: var(--spacing-xl); }
+    .mb-2xl { margin-bottom: var(--spacing-2xl); }
+
+    .p-xs { padding: var(--spacing-xs); }
+    .p-sm { padding: var(--spacing-sm); }
+    .p-md { padding: var(--spacing-md); }
+    .p-lg { padding: var(--spacing-lg); }
+    .p-xl { padding: var(--spacing-xl); }
+
+    .opacity-0 { opacity: 0; }
+    .opacity-25 { opacity: 0.25; }
+    .opacity-50 { opacity: 0.5; }
+    .opacity-75 { opacity: 0.75; }
+    .opacity-100 { opacity: 1; }
+
+    .hidden { display: none !important; }
+    .visible { display: block; }
+
+    .uppercase { text-transform: uppercase; }
+    .lowercase { text-transform: lowercase; }
+    .capitalize { text-transform: capitalize; }
+
+    .bold { font-weight: 700; }
+    .semibold { font-weight: 600; }
+    .normal { font-weight: 400; }
+    .light { font-weight: 300; }
+
+    .cursor-pointer { cursor: pointer; }
+    .cursor-not-allowed { cursor: not-allowed; }
+
+    .user-select-none { user-select: none; }
+
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+
+    .relative { position: relative; }
+    .absolute { position: absolute; }
+    .fixed { position: fixed; }
+
+    /* ========================================
+       🎬 ANIMATION UTILITY CLASSES
+       ======================================== */
+    .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+    .animate-fade-in-up { animation: fadeInUp 0.6s ease-out; }
+    .animate-fade-in-down { animation: fadeInDown 0.6s ease-out; }
+    .animate-slide-in-left { animation: slideInFromLeft 0.6s ease-out; }
+    .animate-slide-in-right { animation: slideInFromRight 0.6s ease-out; }
+    .animate-zoom-in { animation: zoomIn 0.5s ease-out; }
+    .animate-pulse { animation: pulse-scale 2s ease-in-out infinite; }
+    .animate-glow { animation: pulse-glow 3s ease-in-out infinite; }
+    .animate-glitch { animation: glitch-1 5s infinite; }
+
+    /* ========================================
+       🌈 COLOR UTILITY CLASSES
+       ======================================== */
+    .color-green { color: var(--hacker-green); }
+    .color-green-bright { color: var(--hacker-green-bright); }
+    .color-cyan { color: var(--hacker-cyan); }
+    .color-red { color: var(--hacker-red); }
+    .color-yellow { color: var(--hacker-yellow); }
+    .color-purple { color: var(--hacker-purple); }
+
+    .bg-green { background: var(--hacker-green); color: var(--hacker-bg); }
+    .bg-cyan { background: var(--hacker-cyan); color: var(--hacker-bg); }
+    .bg-red { background: var(--hacker-red); color: var(--hacker-bg); }
+
+    /* ========================================
+       📊 PROGRESS BAR ADVANCED
+       ======================================== */
+    .progress-container {
+      width: 100%;
+      height: 24px;
+      background: rgba(0, 20, 0, 0.8);
+      border: 2px solid var(--hacker-border);
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--hacker-green-dark), var(--hacker-green), var(--hacker-green-bright));
+      box-shadow: 0 0 20px var(--hacker-green);
+      transition: width 0.5s var(--ease-out-expo);
+      position: relative;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: loading 1.5s linear infinite;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Orbitron', monospace;
+      font-size: var(--font-sm);
+      font-weight: 700;
+      text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+      z-index: 1;
+    }
+
+    /* ========================================
+       🎯 TOOLTIP SYSTEM
+       ======================================== */
+    .tooltip {
+      position: relative;
+      cursor: help;
+    }
+
+    .tooltip::before {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      padding: 8px 12px;
+      background: var(--hacker-bg-panel);
+      border: 1px solid var(--hacker-green);
+      color: var(--hacker-green);
+      font-size: var(--font-xs);
+      white-space: nowrap;
+      opacity: 0;
+      transition: all 0.3s var(--ease-out-expo);
+      pointer-events: none;
+      z-index: var(--z-tooltip);
+      box-shadow: var(--shadow-glow);
+      clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+    }
+
+    .tooltip::after {
+      content: '';
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid var(--hacker-green);
+      opacity: 0;
+      transition: all 0.3s var(--ease-out-expo);
+      pointer-events: none;
+      z-index: var(--z-tooltip);
+    }
+
+    .tooltip:hover::before,
+    .tooltip:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    /* ========================================
+       🎪 MODAL/OVERLAY SYSTEM
+       ======================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      z-index: var(--z-modal);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s var(--ease-out-expo);
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--hacker-bg-panel);
+      border: 2px solid var(--hacker-green);
+      padding: var(--spacing-xl);
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-glow-intense);
+      clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+      transform: scale(0.8);
+      opacity: 0;
+      transition: all 0.3s var(--ease-out-expo);
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    /* ========================================
+       🎨 TABLE STYLES
+       ======================================== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: var(--spacing-lg) 0;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    th, td {
+      padding: var(--spacing-md);
+      text-align: left;
+      border: 1px solid var(--hacker-border);
+    }
+
+    th {
+      background: rgba(0, 255, 65, 0.1);
+      color: var(--hacker-green-bright);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: var(--font-sm);
+    }
+
+    tr:hover {
+      background: rgba(0, 255, 65, 0.05);
+    }
+
+    /* ========================================
+       🎯 DIVIDER
+       ======================================== */
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--hacker-green), transparent);
+      margin: var(--spacing-xl) 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      background: var(--hacker-green);
+      border-radius: 50%;
+      box-shadow: 0 0 15px var(--hacker-green);
+    }
+
+    /* ========================================
+       🎪 ALERT BOXES
+       ======================================== */
+    .alert {
+      padding: var(--spacing-md);
+      border: 2px solid var(--hacker-border);
+      margin: var(--spacing-md) 0;
+      position: relative;
+      clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    }
+
+    .alert-info {
+      background: rgba(0, 255, 255, 0.05);
+      border-color: var(--hacker-cyan);
+      color: var(--hacker-cyan);
+    }
+
+    .alert-success {
+      background: rgba(0, 255, 65, 0.05);
+      border-color: var(--hacker-green);
+      color: var(--hacker-green);
+    }
+
+    .alert-warning {
+      background: rgba(255, 238, 0, 0.05);
+      border-color: var(--hacker-yellow);
+      color: var(--hacker-yellow);
+    }
+
+    .alert-danger {
+      background: rgba(255, 0, 72, 0.05);
+      border-color: var(--hacker-red);
+      color: var(--hacker-red);
+    }
+
+    /* ========================================
+       🎨 CUSTOM SCROLLBAR FOR MAIN CONTENT
+       ======================================== */
+    body::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    body::-webkit-scrollbar-track {
+      background: var(--hacker-bg-dark);
+      border-left: 1px solid var(--hacker-border);
+    }
+
+    body::-webkit-scrollbar-thumb {
+      background: var(--hacker-green-dark);
+      border-radius: 6px;
+      border: 2px solid var(--hacker-bg-dark);
+    }
+
+    body::-webkit-scrollbar-thumb:hover {
+      background: var(--hacker-green);
+      box-shadow: 0 0 10px var(--hacker-green);
+    }
+
+    /* ========================================
+       🎪 SPECIAL EFFECTS & DECORATIONS
+       ======================================== */
+    .glow-text {
+      text-shadow: var(--text-glow-strong);
+      animation: text-flicker 3s infinite;
+    }
+
+    .neon-box {
+      box-shadow: var(--shadow-glow-intense);
+      border: 2px solid var(--hacker-green-bright);
+    }
+
+    .cyber-frame {
+      position: relative;
+      padding: var(--spacing-lg);
+      border: 2px solid var(--hacker-green);
+      clip-path: polygon(
+        0 0, calc(100% - 20px) 0, 100% 20px,
+        100% 100%, 20px 100%, 0 calc(100% - 20px)
+      );
+    }
+
+    .cyber-frame::before,
+    .cyber-frame::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--hacker-green-bright);
+    }
+
+    .cyber-frame::before {
+      top: -2px;
+      right: -2px;
+      border-left: none;
+      border-bottom: none;
+    }
+
+    .cyber-frame::after {
+      bottom: -2px;
+      left: -2px;
+      border-right: none;
+      border-top: none;
+    }
+
+    /* ========================================
+       🎯 STATS COUNTER
+       ======================================== */
+    .stat-box {
+      text-align: center;
+      padding: var(--spacing-lg);
+      border: 2px solid var(--hacker-border);
+      background: rgba(0, 20, 0, 0.5);
+      transition: all 0.3s var(--ease-out-expo);
+      clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    }
+
+    .stat-box:hover {
+      border-color: var(--hacker-green-bright);
+      box-shadow: var(--shadow-glow-strong);
+      transform: translateY(-5px);
+    }
+
+    .stat-number {
+      font-size: var(--font-4xl);
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      color: var(--hacker-green-bright);
+      text-shadow: var(--text-glow-strong);
+      display: block;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .stat-label {
+      font-size: var(--font-sm);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0.8;
+    }
+
+    /* ========================================
+       🎨 GLITCH TEXT EFFECT
+       ======================================== */
+    .glitch-text {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch-text::before,
+    .glitch-text::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch-text::before {
+      left: 2px;
+      text-shadow: -2px 0 var(--hacker-red);
+      clip: rect(24px, 550px, 90px, 0);
+      animation: glitch-2 3s infinite linear alternate-reverse;
+    }
+
+    .glitch-text::after {
+      left: -2px;
+      text-shadow: -2px 0 var(--hacker-cyan);
+      clip: rect(85px, 550px, 140px, 0);
+      animation: glitch-2 2s infinite linear alternate-reverse;
     }
   </style>
 
@@ -851,10 +2111,10 @@
 </head>
 
 <body>
-  <!-- Matrix Rain Canvas -->
+  <!-- ==========================================
+       VISUAL EFFECTS LAYERS
+       ========================================== -->
   <canvas id="matrixCanvas"></canvas>
-  
-  <!-- Visual Effects Layers -->
   <div class="scanlines"></div>
   <div class="screen-flicker"></div>
   <div class="vignette"></div>
@@ -863,7 +2123,7 @@
   <main class="container">
 
     <!-- ==========================================
-         SECTION: LOCKED (404)
+         SECTION: LOCKED (404 ERROR)
          ========================================== -->
     <section id="locked" hidden>
       <div class="secure-panel">
@@ -872,16 +2132,21 @@
         <div class="corner bl"></div>
         <div class="corner br"></div>
         
-        <h1 class="access-denied" data-text="ERROR 404">ERROR 404</h1>
-        <div class="loading-bar"></div>
+        <div class="flex-between flex-wrap gap-md mb-lg">
+          <h1 class="access-denied" data-text="ERROR 404">ERROR 404</h1>
+          <span class="status-pill danger">ACCÈS REFUSÉ</span>
+        </div>
+
+        <div class="loading-bar mb-lg"></div>
         
-        <p class="terminal-text">RESSOURCE INTROUVABLE</p>
-        <p class="terminal-text">ACCÈS REFUSÉ - NIVEAU DE SÉCURITÉ INSUFFISANT</p>
-        <p class="terminal-text">TENTATIVE DE CONNEXION ENREGISTRÉE [LOG_ID: 7g9k2p-${Date.now()}]</p>
+        <div class="mb-lg">
+          <p class="terminal-text">RESSOURCE INTROUVABLE</p>
+          <p class="terminal-text">ACCÈS REFUSÉ - NIVEAU DE SÉCURITÉ INSUFFISANT</p>
+          <p class="terminal-text">TENTATIVE DE CONNEXION ENREGISTRÉE</p>
+          <p class="terminal-text-root">LOG_ID: <code>7g9k2p-${Date.now()}</code></p>
+        </div>
         
-        <div style="height: 24px;"></div>
-        
-        <div class="system-status">
+        <div class="system-status mb-xl">
           <div class="status-item">
             <span class="status-dot error"></span>
             <span>AUTHENTIFICATION: ÉCHOUÉE</span>
@@ -890,15 +2155,27 @@
             <span class="status-dot error"></span>
             <span>AUTORISATION: REFUSÉE</span>
           </div>
+          <div class="status-item">
+            <span class="status-dot error"></span>
+            <span>PROTOCOLE: VIOLATION</span>
+          </div>
         </div>
 
-        <div style="height: 24px;"></div>
-        <a class="btn" href="./index.html">← RETOUR AU PORTAIL</a>
+        <a class="btn btn--danger" href="./index.html">← RETOUR AU PORTAIL</a>
+      </div>
+
+      <div class="ascii-art">
+    ██████╗ ███████╗███╗   ██╗██╗███████╗██████╗ 
+    ██╔══██╗██╔════╝████╗  ██║██║██╔════╝██╔══██╗
+    ██║  ██║█████╗  ██╔██╗ ██║██║█████╗  ██║  ██║
+    ██║  ██║██╔══╝  ██║╚██╗██║██║██╔══╝  ██║  ██║
+    ██████╔╝███████╗██║ ╚████║██║███████╗██████╔╝
+    ╚═════╝ ╚══════╝╚═╝  ╚═══╝╚═╝╚══════╝╚═════╝ 
       </div>
     </section>
 
     <!-- ==========================================
-         SECTION: GATE (AUTH)
+         SECTION: GATE (AUTHENTICATION)
          ========================================== -->
     <section id="gate" hidden>
       <div class="secure-panel">
@@ -907,20 +2184,21 @@
         <div class="corner bl"></div>
         <div class="corner br"></div>
 
-        <div style="display:flex; gap:16px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+        <div class="flex-between flex-wrap gap-md mb-lg">
           <h1 data-text="AUTHENTIFICATION REQUISE" class="cursor">AUTHENTIFICATION REQUISE</h1>
           <span class="status-pill warning">🔒 NIVEAU 5</span>
         </div>
 
-        <div class="loading-bar"></div>
+        <div class="loading-bar mb-lg"></div>
 
-        <p class="terminal-text">PROTOCOLE DE SÉCURITÉ ACTIVÉ</p>
-        <p class="terminal-text">AUTHENTIFICATION GOOGLE + VÉRIFICATION D'APPARTENANCE REQUISE</p>
-        <p class="terminal-text">CHIFFREMENT END-TO-END: AES-256</p>
+        <div class="mb-lg">
+          <p class="terminal-text">PROTOCOLE DE SÉCURITÉ ACTIVÉ</p>
+          <p class="terminal-text">AUTHENTIFICATION GOOGLE + VÉRIFICATION D'APPARTENANCE REQUISE</p>
+          <p class="terminal-text-alt">CHIFFREMENT: AES-256-GCM</p>
+          <p class="terminal-text-alt">FIREWALL: ACTIF</p>
+        </div>
 
-        <div style="height: 24px;"></div>
-
-        <div class="system-status">
+        <div class="system-status mb-xl">
           <div class="status-item">
             <span class="status-dot warning"></span>
             <span>SYSTÈME: STANDBY</span>
@@ -933,58 +2211,95 @@
             <span class="status-dot"></span>
             <span>ENCRYPTION: ENABLED</span>
           </div>
+          <div class="status-item">
+            <span class="status-dot info"></span>
+            <span>LATENCE: <span id="gate-latency">8ms</span></span>
+          </div>
         </div>
 
-        <div style="height: 30px;"></div>
-
-        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom: 30px;">
+        <div class="flex gap-md flex-wrap mb-xl">
           <button id="btn-login" class="btn btn--primary" type="button">CONNEXION SÉCURISÉE</button>
           <button id="btn-logout" class="btn" type="button" style="display:none;">DÉCONNEXION</button>
-          <span id="userTag" class="warning-text" aria-label="Utilisateur">STATUS: <span style="color: var(--hacker-red);">OFFLINE</span></span>
+          <span id="userTag" class="warning-text" aria-label="Utilisateur">
+            STATUS: <span class="color-red">OFFLINE</span>
+          </span>
         </div>
 
-        <div class="secure-panel rotate-border-box" style="padding:24px; background: rgba(0, 10, 0, 0.6);">
-          <h2 style="margin:0 0 12px;">CLEF D'ACCÈS CRYPTOGRAPHIQUE</h2>
-          <p class="warning-text" style="margin:0 0 16px;">
-            Si vous possédez un code d'invitation valide, entrez-le dans le terminal ci-dessous.
-            Format attendu: HASH-SHA256
+        <div class="secure-panel rotate-border-box p-lg">
+          <h2 class="mb-md">CLEF D'ACCÈS CRYPTOGRAPHIQUE</h2>
+          
+          <div class="alert alert-info mb-md">
+            <strong>ℹ️ INFORMATION:</strong> Si vous possédez un code d'invitation valide, entrez-le dans le terminal ci-dessous.
+          </div>
+
+          <p class="warning-text mb-md">
+            Format attendu: <code>HASH-SHA256</code> | Longueur: <code>64 caractères</code>
           </p>
-          <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-            <input id="inviteCode" class="input" placeholder="CODE D'INVITATION" autocomplete="off" style="flex: 1; min-width: 240px;" />
+
+          <div class="flex gap-md flex-wrap mb-md">
+            <input 
+              id="inviteCode" 
+              class="input" 
+              placeholder="CODE D'INVITATION" 
+              autocomplete="off" 
+              style="flex: 1; min-width: 240px;" 
+            />
             <button id="joinBtn" class="btn btn--primary" type="button">VALIDER</button>
           </div>
-          <p id="gateMsg" class="warning-text" style="margin:16px 0 0;">
-            > En attente de saisie...
+
+          <p id="gateMsg" class="terminal-text-static">
+            En attente de saisie...
           </p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="grid-3">
+        <div class="stat-box">
+          <span class="stat-number">256</span>
+          <span class="stat-label">Bits Encryption</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">99.9%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">< 10ms</span>
+          <span class="stat-label">Latence</span>
         </div>
       </div>
 
       <div class="ascii-art">
-   _____ _____ _____ _   _ ____  _____ 
-  / ____|  ___|  __ \ | | |  _ \| ____|
- | (___ | |__ | |  \/| | | | |_) |  _|  
-  \___ \|  __|| | __ | | | |  _ <| |___ 
-  ____) | |___| |_\ \| |_| | |_) |_____|
- |_____/|______\____/ \___/|____/|_____|
+   ╔═══════════════════════════════════════╗
+   ║   ███████╗███████╗ ██████╗██╗   ██╗██████╗ ███████╗   ║
+   ║   ██╔════╝██╔════╝██╔════╝██║   ██║██╔══██╗██╔════╝   ║
+   ║   ███████╗█████╗  ██║     ██║   ██║██████╔╝█████╗     ║
+   ║   ╚════██║██╔══╝  ██║     ██║   ██║██╔══██╗██╔══╝     ║
+   ║   ███████║███████╗╚██████╗╚██████╔╝██║  ██║███████╗   ║
+   ║   ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝   ║
+   ╚═══════════════════════════════════════╝
       </div>
     </section>
 
     <!-- ==========================================
-         SECTION: UNLOCKED (MAIN CONTENT)
+         SECTION: UNLOCKED (MAIN SECURE AREA)
          ========================================== -->
     <section id="unlocked" hidden>
+      
+      <!-- WELCOME PANEL -->
       <div class="secure-panel">
         <div class="corner tl"></div>
         <div class="corner tr"></div>
         <div class="corner bl"></div>
         <div class="corner br"></div>
 
-        <div style="display:flex; gap:16px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;">
-          <h1 data-text="ZONE RESTREINTE" class="cursor">ZONE RESTREINTE</h1>
+        <div class="flex-between flex-wrap gap-md mb-lg">
+          <h1 data-text="ZONE RESTREINTE" class="cursor glitch-text">ZONE RESTREINTE</h1>
           <span class="status-pill active">✓ ACCÈS AUTORISÉ</span>
         </div>
 
-        <div class="system-status">
+        <div class="system-status mb-md">
           <div class="status-item">
             <span class="status-dot"></span>
             <span>SYSTÈME: OPÉRATIONNEL</span>
@@ -1001,111 +2316,156 @@
             <span class="status-dot"></span>
             <span>LATENCE: <span id="latency">< 10ms</span></span>
           </div>
+          <div class="status-item">
+            <span class="status-dot"></span>
+            <span>PROTOCOLE: HTTPS/3</span>
+          </div>
         </div>
 
-        <div class="loading-bar"></div>
+        <div class="loading-bar mb-lg"></div>
 
-        <p class="terminal-text">BIENVENUE DANS L'ESPACE CRYPTÉ</p>
-        <p class="terminal-text">TOUTES LES COMMUNICATIONS SONT CHIFFRÉES END-TO-END</p>
-        <p class="terminal-text">NIVEAU D'ACCÈS: ADMINISTRATEUR</p>
+        <div class="mb-md">
+          <p class="terminal-text">BIENVENUE DANS L'ESPACE CRYPTÉ</p>
+          <p class="terminal-text">TOUTES LES COMMUNICATIONS SONT CHIFFRÉES END-TO-END</p>
+          <p class="terminal-text">NIVEAU D'ACCÈS: ADMINISTRATEUR</p>
+          <p class="terminal-text-root">SESSION_ID: <code id="session-id">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</code></p>
+        </div>
+
+        <div class="alert alert-success">
+          <strong>✓ CONNEXION ÉTABLIE:</strong> Vous êtes maintenant connecté au réseau sécurisé. Toutes vos actions sont journalisées et surveillées.
+        </div>
       </div>
 
-      <div style="height: 30px;"></div>
+      <div class="divider"></div>
+
+      <!-- STATISTICS DASHBOARD -->
+      <div class="grid-4 mb-xl">
+        <div class="stat-box tooltip" data-tooltip="Nombre total de membres actifs">
+          <span class="stat-number" id="stat-members">5</span>
+          <span class="stat-label">Membres Actifs</span>
+        </div>
+        <div class="stat-box tooltip" data-tooltip="Messages échangés aujourd'hui">
+          <span class="stat-number" id="stat-messages">1.2K</span>
+          <span class="stat-label">Messages</span>
+        </div>
+        <div class="stat-box tooltip" data-tooltip="Temps de disponibilité du système">
+          <span class="stat-number">99.9%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="stat-box tooltip" data-tooltip="Niveau de sécurité actuel">
+          <span class="stat-number">LEVEL 5</span>
+          <span class="stat-label">Sécurité</span>
+        </div>
+      </div>
 
       <!-- NODE GRID -->
-      <div class="grid-secure">
+      <h2 class="mb-lg glow-text">RÉSEAU DE NŒUDS</h2>
+      
+      <div class="grid-secure mb-xl">
         <article class="data-card">
-          <h2>NODE_01 : JOAO</h2>
-          <div style="height: 8px;"></div>
-          <p class="terminal-text">ARCHITECTURE SYSTÈME</p>
-          <p class="terminal-text">SÉCURITÉ RÉSEAU</p>
-          <p class="terminal-text">PROTOCOLES AVANCÉS</p>
-          <div style="height: 12px;"></div>
-          <div class="system-status">
-            <div class="status-item">
-              <span class="status-dot"></span>
-              <span>ONLINE</span>
-            </div>
+          <div class="flex-between mb-md">
+            <h3>NODE_01</h3>
+            <span class="status-pill active">ONLINE</span>
+          </div>
+          <h4 class="color-cyan mb-sm">JOAO</h4>
+          <div class="mb-md">
+            <p class="terminal-text-static">ARCHITECTURE SYSTÈME</p>
+            <p class="terminal-text-static">SÉCURITÉ RÉSEAU</p>
+            <p class="terminal-text-static">PROTOCOLES AVANCÉS</p>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" style="width: 95%;"></div>
+            <span class="progress-text">95% ACTIVITÉ</span>
           </div>
         </article>
 
         <article class="data-card">
-          <h2>NODE_02 : RÉMI</h2>
-          <div style="height: 8px;"></div>
-          <p class="terminal-text">ANALYSE DE DONNÉES</p>
-          <p class="terminal-text">CRYPTOGRAPHIE</p>
-          <p class="terminal-text">INTELLIGENCE DISTRIBUÉE</p>
-          <div style="height: 12px;"></div>
-          <div class="system-status">
-            <div class="status-item">
-              <span class="status-dot"></span>
-              <span>ONLINE</span>
-            </div>
+          <div class="flex-between mb-md">
+            <h3>NODE_02</h3>
+            <span class="status-pill active">ONLINE</span>
+          </div>
+          <h4 class="color-cyan mb-sm">RÉMI</h4>
+          <div class="mb-md">
+            <p class="terminal-text-static">ANALYSE DE DONNÉES</p>
+            <p class="terminal-text-static">CRYPTOGRAPHIE</p>
+            <p class="terminal-text-static">INTELLIGENCE DISTRIBUÉE</p>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" style="width: 88%;"></div>
+            <span class="progress-text">88% ACTIVITÉ</span>
           </div>
         </article>
 
         <article class="data-card">
-          <h2>NODE_03 : ARTHUR</h2>
-          <div style="height: 8px;"></div>
-          <p class="terminal-text">DÉVELOPPEMENT BACKEND</p>
-          <p class="terminal-text">INFRASTRUCTURE CLOUD</p>
-          <p class="terminal-text">APIs SÉCURISÉES</p>
-          <div style="height: 12px;"></div>
-          <div class="system-status">
-            <div class="status-item">
-              <span class="status-dot"></span>
-              <span>ONLINE</span>
-            </div>
+          <div class="flex-between mb-md">
+            <h3>NODE_03</h3>
+            <span class="status-pill active">ONLINE</span>
+          </div>
+          <h4 class="color-cyan mb-sm">ARTHUR</h4>
+          <div class="mb-md">
+            <p class="terminal-text-static">DÉVELOPPEMENT BACKEND</p>
+            <p class="terminal-text-static">INFRASTRUCTURE CLOUD</p>
+            <p class="terminal-text-static">APIs SÉCURISÉES</p>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" style="width: 92%;"></div>
+            <span class="progress-text">92% ACTIVITÉ</span>
           </div>
         </article>
 
         <article class="data-card">
-          <h2>NODE_04 : JOHANN</h2>
-          <div style="height: 8px;"></div>
-          <p class="terminal-text">DEVOPS AUTOMATION</p>
-          <p class="terminal-text">CI/CD PIPELINES</p>
-          <p class="terminal-text">SURVEILLANCE SYSTÈME</p>
-          <div style="height: 12px;"></div>
-          <div class="system-status">
-            <div class="status-item">
-              <span class="status-dot"></span>
-              <span>ONLINE</span>
-            </div>
+          <div class="flex-between mb-md">
+            <h3>NODE_04</h3>
+            <span class="status-pill active">ONLINE</span>
+          </div>
+          <h4 class="color-cyan mb-sm">JOHANN</h4>
+          <div class="mb-md">
+            <p class="terminal-text-static">DEVOPS AUTOMATION</p>
+            <p class="terminal-text-static">CI/CD PIPELINES</p>
+            <p class="terminal-text-static">SURVEILLANCE SYSTÈME</p>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" style="width: 97%;"></div>
+            <span class="progress-text">97% ACTIVITÉ</span>
           </div>
         </article>
 
         <article class="data-card">
-          <h2>NODE_05 : DYLAN</h2>
-          <div style="height: 8px;"></div>
-          <p class="terminal-text">FRONTEND SÉCURISÉ</p>
-          <p class="terminal-text">INTERFACE UTILISATEUR</p>
-          <p class="terminal-text">EXPÉRIENCE CLIENT</p>
-          <div style="height: 12px;"></div>
-          <div class="system-status">
-            <div class="status-item">
-              <span class="status-dot"></span>
-              <span>ONLINE</span>
-            </div>
+          <div class="flex-between mb-md">
+            <h3>NODE_05</h3>
+            <span class="status-pill active">ONLINE</span>
+          </div>
+          <h4 class="color-cyan mb-sm">DYLAN</h4>
+          <div class="mb-md">
+            <p class="terminal-text-static">FRONTEND SÉCURISÉ</p>
+            <p class="terminal-text-static">INTERFACE UTILISATEUR</p>
+            <p class="terminal-text-static">EXPÉRIENCE CLIENT</p>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" style="width: 90%;"></div>
+            <span class="progress-text">90% ACTIVITÉ</span>
           </div>
         </article>
 
         <article class="data-card">
-          <h2>SYSTÈME_CENTRAL</h2>
-          <div style="height: 8px;"></div>
-          <p class="terminal-text">MONITORING GLOBAL</p>
-          <p class="terminal-text">LOGS TEMPS RÉEL</p>
-          <p class="terminal-text">ANALYTICS AVANCÉS</p>
-          <div style="height: 12px;"></div>
-          <div class="system-status">
-            <div class="status-item">
-              <span class="status-dot"></span>
-              <span>ACTIVE</span>
-            </div>
+          <div class="flex-between mb-md">
+            <h3>CENTRAL_CORE</h3>
+            <span class="status-pill premium">SYSTÈME</span>
+          </div>
+          <h4 class="color-purple mb-sm">HUB PRINCIPAL</h4>
+          <div class="mb-md">
+            <p class="terminal-text-static">MONITORING GLOBAL</p>
+            <p class="terminal-text-static">LOGS TEMPS RÉEL</p>
+            <p class="terminal-text-static">ANALYTICS AVANCÉS</p>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" style="width: 100%; background: linear-gradient(90deg, var(--hacker-purple-dark), var(--hacker-purple), var(--hacker-purple-bright));"></div>
+            <span class="progress-text">100% OPÉRATIONNEL</span>
           </div>
         </article>
       </div>
 
-      <div style="height: 30px;"></div>
+      <div class="divider"></div>
 
       <!-- ENCRYPTED CHAT SECTION -->
       <section class="secure-panel rotate-border-box">
@@ -1114,16 +2474,19 @@
         <div class="corner bl"></div>
         <div class="corner br"></div>
 
-        <h2>CANAL SÉCURISÉ - COMMUNICATION CHIFFRÉE</h2>
+        <div class="flex-between flex-wrap gap-md mb-md">
+          <h2>CANAL SÉCURISÉ</h2>
+          <span class="status-pill info">CHIFFRÉ</span>
+        </div>
         
-        <div class="system-status" style="margin: 16px 0;">
+        <div class="system-status mb-md">
           <div class="status-item">
             <span class="status-dot"></span>
             <span>ENCRYPTION: AES-256-GCM</span>
           </div>
           <div class="status-item">
             <span class="status-dot"></span>
-            <span>MEMBRES: AUTORISÉS UNIQUEMENT</span>
+            <span>MEMBRES: AUTORISÉS</span>
           </div>
           <div class="status-item">
             <span class="status-dot"></span>
@@ -1131,20 +2494,21 @@
           </div>
         </div>
 
-        <p class="warning-text" style="margin: 0 0 20px;">
-          Communication chiffrée end-to-end. Les messages sont stockés de manière sécurisée dans Firestore.
-        </p>
+        <div class="alert alert-info mb-lg">
+          <strong>🔒 SÉCURITÉ:</strong> Communication chiffrée end-to-end. Les messages sont stockés de manière sécurisée dans Firestore avec authentification multi-facteurs.
+        </div>
 
-        <div id="miniChat" style="display:grid; gap:16px;">
-          <div id="miniChatList" class="chat-container">
-            <p class="warning-text" style="margin:0; text-align: center;">
-              > Initialisation du canal sécurisé...<br/>
-              > Établissement de la connexion chiffrée...<br/>
-              > Synchronisation avec Firestore...
-            </p>
+        <div id="miniChat" class="mb-0">
+          <div id="miniChatList" class="chat-container mb-md">
+            <div class="text-center p-md">
+              <p class="terminal-text-static mb-sm">› Initialisation du canal sécurisé...</p>
+              <p class="terminal-text-static mb-sm">› Établissement de la connexion chiffrée...</p>
+              <p class="terminal-text-static mb-sm">› Synchronisation avec Firestore...</p>
+              <div class="loading-bar-thick mt-md"></div>
+            </div>
           </div>
           
-          <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+          <div class="flex gap-md flex-wrap mb-md">
             <input 
               id="miniChatInput" 
               class="input" 
@@ -1155,154 +2519,102 @@
             <button id="miniChatSend" class="btn btn--primary" type="button">TRANSMETTRE</button>
           </div>
           
-          <p id="miniChatHint" class="warning-text" style="margin:0;">
-            <span class="status-dot" style="display: inline-block; width: 8px; height: 8px; margin-right: 6px;"></span>
+          <p id="miniChatHint" class="warning-text flex gap-sm">
+            <span class="status-dot" style="width: 8px; height: 8px; margin-top: 6px;"></span>
             Console IA disponible : <a href="./console.html">ACCÉDER À LA CONSOLE →</a>
           </p>
         </div>
       </section>
 
-      <div style="height: 30px;"></div>
+      <div class="divider"></div>
 
-      <!-- SYSTEM LOGS -->
+      <!-- SYSTEM LOGS SECTION -->
       <section class="secure-panel">
-        <h2>LOGS SYSTÈME - TEMPS RÉEL</h2>
-        <div class="loading-bar"></div>
-        <div id="systemLogs" style="font-family: 'Share Tech Mono', monospace; font-size: 11px; opacity: 0.8;">
-          <p style="margin: 8px 0;">[<span id="log-time-1">00:00:00</span>] > Connexion établie depuis IP: <span style="color: var(--hacker-cyan);">MASKED</span></p>
-          <p style="margin: 8px 0;">[<span id="log-time-2">00:00:01</span>] > Authentification Google: <span style="color: var(--hacker-green);">SUCCESS</span></p>
-          <p style="margin: 8px 0;">[<span id="log-time-3">00:00:02</span>] > Vérification des permissions Firestore: <span style="color: var(--hacker-green);">GRANTED</span></p>
-          <p style="margin: 8px 0;">[<span id="log-time-4">00:00:03</span>] > Initialisation du canal chiffré: <span style="color: var(--hacker-green);">COMPLETE</span></p>
-          <p style="margin: 8px 0;">[<span id="log-time-5">00:00:04</span>] > Synchronisation des données: <span style="color: var(--hacker-green);">ACTIVE</span></p>
+        <div class="flex-between flex-wrap gap-md mb-md">
+          <h2>LOGS SYSTÈME - TEMPS RÉEL</h2>
+          <span class="status-pill active">LIVE</span>
+        </div>
+        
+        <div class="loading-bar mb-lg"></div>
+
+        <div id="systemLogs" class="mb-md" style="font-family: 'Share Tech Mono', monospace; font-size: 11px; opacity: 0.9; max-height: 300px; overflow-y: auto;">
+          <div class="cyber-frame p-md mb-sm" style="background: rgba(0, 10, 0, 0.5);">
+            <p class="mb-xs">[<span id="log-time-1" class="color-cyan">00:00:00</span>] <span class="color-green">INFO</span> › Connexion établie depuis IP: <code class="color-cyan">MASKED</code></p>
+            <p class="mb-xs">[<span id="log-time-2" class="color-cyan">00:00:01</span>] <span class="color-green">SUCCESS</span> › Authentification Google: <span class="color-green">VALIDÉE</span></p>
+            <p class="mb-xs">[<span id="log-time-3" class="color-cyan">00:00:02</span>] <span class="color-green">SUCCESS</span> › Permissions Firestore: <span class="color-green">ACCORDÉES</span></p>
+            <p class="mb-xs">[<span id="log-time-4" class="color-cyan">00:00:03</span>] <span class="color-green">INFO</span> › Canal chiffré: <span class="color-green">INITIALISÉ</span></p>
+            <p class="mb-xs">[<span id="log-time-5" class="color-cyan">00:00:04</span>] <span class="color-green">INFO</span> › Synchronisation: <span class="color-green">ACTIVE</span></p>
+            <p class="mb-xs">[<span id="log-time-6" class="color-cyan">00:00:05</span>] <span class="color-yellow">WARNING</span> › Tentative d'accès non autorisé détectée et bloquée</p>
+            <p class="mb-xs">[<span id="log-time-7" class="color-cyan">00:00:06</span>] <span class="color-green">INFO</span> › Firewall: <span class="color-green">ACTIF</span></p>
+            <p class="mb-xs">[<span id="log-time-8" class="color-cyan">00:00:07</span>] <span class="color-green">INFO</span> › Monitoring: <span class="color-green">OPÉRATIONNEL</span></p>
+          </div>
+        </div>
+
+        <div class="flex gap-md flex-wrap">
+          <button class="btn btn--small">EXPORTER LOGS</button>
+          <button class="btn btn--small btn--secondary">FILTRER</button>
+          <button class="btn btn--small">ACTUALISER</button>
         </div>
       </section>
 
-    </section>
+      <div class="divider"></div>
 
-  </main>
-
-  <!-- ==========================================
-       MATRIX RAIN EFFECT - JAVASCRIPT
-       ========================================== -->
-  <script>
-    // Matrix Rain Canvas Effect
-    (function() {
-      const canvas = document.getElementById('matrixCanvas');
-      if (!canvas) return;
-      
-      const ctx = canvas.getContext('2d');
-      
-      // Set canvas size
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      // Matrix characters
-      const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-      const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const nums = '0123456789';
-      const alphabet = katakana + latin + nums;
-
-      const fontSize = 16;
-      const columns = canvas.width / fontSize;
-
-      const rainDrops = [];
-
-      // Initialize rain drops
-      for (let x = 0; x < columns; x++) {
-        rainDrops[x] = Math.random() * canvas.height / fontSize;
-      }
-
-      // Draw function
-      const draw = () => {
-        // Semi-transparent black to create trail effect
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = '#00ff41';
-        ctx.font = fontSize + 'px monospace';
-
-        for (let i = 0; i < rainDrops.length; i++) {
-          const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-          ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-
-          // Reset drop to top randomly
-          if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            rainDrops[i] = 0;
-          }
-          rainDrops[i]++;
-        }
-      };
-
-      setInterval(draw, 30);
-
-      // Resize handler
-      window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      });
-    })();
-
-    // Data Stream Particles
-    (function() {
-      const createParticle = () => {
-        const particle = document.createElement('div');
-        particle.className = 'data-particle';
-        particle.textContent = Math.random() > 0.5 ? '1' : '0';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDuration = (5 + Math.random() * 5) + 's';
-        particle.style.animationDelay = Math.random() * 5 + 's';
-        document.body.appendChild(particle);
-
-        setTimeout(() => {
-          particle.remove();
-        }, 10000);
-      };
-
-      // Create particles periodically
-      setInterval(createParticle, 800);
-    })();
-
-    // Update system logs time
-    (function() {
-      const updateLogTimes = () => {
-        const now = new Date();
-        const timeStr = now.toTimeString().split(' ')[0];
+      <!-- NETWORK STATUS TABLE -->
+      <section class="secure-panel">
+        <h2 class="mb-lg">ÉTAT DU RÉSEAU</h2>
         
-        for (let i = 1; i <= 5; i++) {
-          const el = document.getElementById(`log-time-${i}`);
-          if (el) {
-            const offset = new Date(now.getTime() - (5-i) * 1000);
-            el.textContent = offset.toTimeString().split(' ')[0];
-          }
-        }
-      };
-
-      updateLogTimes();
-      setInterval(updateLogTimes, 1000);
-    })();
-
-    // Simulate latency
-    (function() {
-      const updateLatency = () => {
-        const latencyEl = document.getElementById('latency');
-        if (latencyEl) {
-          const latency = Math.floor(Math.random() * 15) + 5;
-          latencyEl.textContent = `${latency}ms`;
-        }
-      };
-
-      updateLatency();
-      setInterval(updateLatency, 2000);
-    })();
-
-    // Glitch effect on page load
-    (function() {
-      document.body.style.animation = 'glitch-skew 0.3s';
-      setTimeout(() => {
-        document.body.style.animation = '';
-      }, 300);
-    })();
-  </script>
-
-</body>
-</html>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>NODE</th>
+                <th>STATUS</th>
+                <th>LATENCE</th>
+                <th>CHARGE CPU</th>
+                <th>MÉMOIRE</th>
+                <th>DERNIÈRE MAJ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>NODE_01</code></td>
+                <td><span class="status-pill active" style="padding: 2px 8px; font-size: 9px;">ONLINE</span></td>
+                <td class="color-green">8ms</td>
+                <td>45%</td>
+                <td>2.1GB / 8GB</td>
+                <td id="table-time-1">00:00:00</td>
+              </tr>
+              <tr>
+                <td><code>NODE_02</code></td>
+                <td><span class="status-pill active" style="padding: 2px 8px; font-size: 9px;">ONLINE</span></td>
+                <td class="color-green">12ms</td>
+                <td>38%</td>
+                <td>1.8GB / 8GB</td>
+                <td id="table-time-2">00:00:01</td>
+              </tr>
+              <tr>
+                <td><code>NODE_03</code></td>
+                <td><span class="status-pill active" style="padding: 2px 8px; font-size: 9px;">ONLINE</span></td>
+                <td class="color-green">6ms</td>
+                <td>52%</td>
+                <td>3.4GB / 8GB</td>
+                <td id="table-time-3">00:00:02</td>
+              </tr>
+              <tr>
+                <td><code>NODE_04</code></td>
+                <td><span class="status-pill active" style="padding: 2px 8px; font-size: 9px;">ONLINE</span></td>
+                <td class="color-green">10ms</td>
+                <td>41%</td>
+                <td>2.7GB / 8GB</td>
+                <td id="table-time-4">00:00:03</td>
+              </tr>
+              <tr>
+                <td><code>NODE_05</code></td>
+                <td><span class="status-pill active" style="padding: 2px 8px; font-size: 9px;">ONLINE</span></td>
+                <td class="color-green">9ms</td>
+                <td>48%</td>
+                <td>2.3GB / 8GB</td>
+                <td id="table-time-5">00:00:04</td>
+              </tr>
+              <tr>
+                <td><code>CENTRAL_CORE</code></t
