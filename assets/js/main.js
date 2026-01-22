@@ -161,7 +161,6 @@ for (const a of qsa('a[target="_blank"]')) {
 // Note: this is *not* real security (client-side only).
 (() => {
   const SECRET_PATH = "./atelier-7g9k2p.html";
-  const SECRET_KEY = "joao-remi-arthur-johann-dylan";
   const CODE = "goofy"; // what you type to trigger the redirect
 
   // Don't hijack typing inside inputs/textareas/contenteditable.
@@ -186,8 +185,8 @@ for (const a of qsa('a[target="_blank"]')) {
 
       buffer = (buffer + k.toLowerCase()).slice(-maxLen);
       if (buffer.endsWith(CODE)) {
-        // Open the hidden page pre-filled with the key.
-        window.location.href = `${SECRET_PATH}?k=${encodeURIComponent(SECRET_KEY)}`;
+        // Open the hidden page. The page itself enforces access (login + membership).
+        window.location.href = SECRET_PATH;
       }
     },
     { passive: true }

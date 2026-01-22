@@ -21,16 +21,9 @@
     .tiny { font-size: 12px; opacity: 0.7; }
   </style>
 
-  <script>
-    // "Protection" basique côté client : si la clé est absente / fausse, on affiche une fausse 404.
-    // ⚠️ Ce n'est PAS une vraie sécurité (quelqu'un peut trouver la page si l'URL fuite).
-    const EXPECTED = "joao-remi-arthur-johann-dylan";
-    const params = new URLSearchParams(location.search);
-    const k = params.get("k") || "";
-    window.__ALLOW_GOOFY__ = (k === EXPECTED);
-  </script>
-
-  <script type="module" src="./assets/js/main.js"></script>
+  <!-- Le garde-fou est maintenant : login Google + appartenance à l'espace Firestore.
+       (Beaucoup plus solide que "une clé dans l'URL".) -->
+  <script type="module" src="./assets/js/atelier.js"></script>
 </head>
 
 <body>
@@ -41,7 +34,38 @@
         <h1 style="margin: 0 0 8px;">404</h1>
         <p class="goofyLine" style="margin: 0 0 14px;">Cette page n'existe probablement pas. Ou alors elle s'est transformée en croissant quantique.</p>
         <a class="btn" href="./index.html">Retour à l'accueil</a>
-        <p class="tiny" style="margin: 14px 0 0;">Indice : il faut une clé dans l'URL. (Mais chut.)</p>
+      </div>
+    </section>
+
+    <!-- Écran d'accès (auth + invite) -->
+    <section id="gate" hidden>
+      <div class="goofyCard">
+        <div style="display:flex; gap:12px; align-items: baseline; flex-wrap: wrap;">
+          <h1 style="margin:0;">Accès requis</h1>
+          <span class="pill" aria-label="statut">🔒 privé</span>
+        </div>
+
+        <p class="goofyLine" style="margin: 10px 0 14px;">
+          Pour entrer : connecte-toi (Google) + être membre de l'espace.
+        </p>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button id="btn-login" class="btn btn--primary" type="button">Login Google</button>
+          <button id="btn-logout" class="btn" type="button" style="display:none;">Logout</button>
+          <span id="userTag" class="tiny" aria-label="Utilisateur">OFFLINE</span>
+        </div>
+
+        <div style="height: 10px;"></div>
+
+        <div class="card" style="padding:14px;">
+          <h2 style="margin:0 0 8px;">Tu as un code d'invite ?</h2>
+          <p class="tiny" style="margin:0 0 10px;">(Optionnel) Si tu n'es pas encore membre, colle un code d'invite ici.</p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <input id="inviteCode" class="input" placeholder="Code d’invite" autocomplete="off" style="min-width: 220px;" />
+            <button id="joinBtn" class="btn btn--primary" type="button">Rejoindre</button>
+          </div>
+          <p id="gateMsg" class="tiny" style="margin:10px 0 0; opacity:0.8;">—</p>
+        </div>
       </div>
     </section>
 
@@ -95,20 +119,32 @@
         </ul>
         <p class="tiny" style="margin: 12px 0 0;">PS : si quelqu'un tombe ici par hasard, c'est que le hasard est très motivé.</p>
       </section>
+
+      <div style="height: 14px;"></div>
+
+      <!-- Communication "secrète" (privée) : mini-chat Firestore dans un salon dédié -->
+      <section class="card">
+        <div style="display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;">
+          <h2 style="margin:0;">Mini‑chat privé</h2>
+          <span class="pill">room: atelier</span>
+        </div>
+        <p class="tiny" style="margin:8px 0 12px;">Visible uniquement pour les membres connectés.</p>
+
+        <div id="miniChat" style="display:grid; gap:10px;">
+          <div id="miniChatList" class="goofyCard" style="max-height: 260px; overflow:auto; padding:12px;">
+            <p class="tiny" style="margin:0; opacity:0.7;">Chargement…</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+            <input id="miniChatInput" class="input" placeholder="Écrire un message…" autocomplete="off" style="flex:1; min-width:220px;" />
+            <button id="miniChatSend" class="btn btn--primary" type="button">Envoyer</button>
+          </div>
+          <p id="miniChatHint" class="tiny" style="margin:0; opacity:0.7;">Astuce : ouvre aussi <a href="./console.html">la Console IA</a> pour le grand chat.</p>
+        </div>
+      </section>
     </section>
 
   </main>
 
-  <script>
-    const locked = document.getElementById('locked');
-    const unlocked = document.getElementById('unlocked');
-    if (window.__ALLOW_GOOFY__) {
-      unlocked.hidden = false;
-      locked.hidden = true;
-    } else {
-      locked.hidden = false;
-      unlocked.hidden = true;
-    }
-  </script>
+  <!-- Le contrôle d'accès + le mini-chat sont gérés dans assets/js/atelier.js -->
 </body>
 </html>
