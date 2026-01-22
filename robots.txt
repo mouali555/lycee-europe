@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+# Easter egg / page cachée
+Disallow: /atelier-7g9k2p.html
+
 Sitemap: ./sitemap.xml

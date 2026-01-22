@@ -153,3 +153,43 @@ for (const a of qsa('a[target="_blank"]')) {
   if (!rel.includes("noopener")) a.setAttribute("rel", (rel + " noopener").trim());
   if (!rel.includes("noreferrer")) a.setAttribute("rel", (a.getAttribute("rel") + " noreferrer").trim());
 }
+
+// ================================
+// Easter egg (hidden page)
+// ================================
+// Type the secret code anywhere to open the hidden page.
+// Note: this is *not* real security (client-side only).
+(() => {
+  const SECRET_PATH = "./atelier-7g9k2p.html";
+  const SECRET_KEY = "joao-remi-arthur-johann-dylan";
+  const CODE = "goofy"; // what you type to trigger the redirect
+
+  // Don't hijack typing inside inputs/textareas/contenteditable.
+  const isTypingField = (el) => {
+    if (!el) return false;
+    const tag = (el.tagName || "").toLowerCase();
+    return tag === "input" || tag === "textarea" || el.isContentEditable;
+  };
+
+  let buffer = "";
+  const maxLen = Math.max(24, CODE.length + 6);
+
+  window.addEventListener(
+    "keydown",
+    (e) => {
+      if (e.defaultPrevented) return;
+      if (isTypingField(document.activeElement)) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      const k = e.key;
+      if (k.length !== 1) return; // ignore Shift, Enter, etc.
+
+      buffer = (buffer + k.toLowerCase()).slice(-maxLen);
+      if (buffer.endsWith(CODE)) {
+        // Open the hidden page pre-filled with the key.
+        window.location.href = `${SECRET_PATH}?k=${encodeURIComponent(SECRET_KEY)}`;
+      }
+    },
+    { passive: true }
+  );
+})();
