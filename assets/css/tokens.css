@@ -64,6 +64,12 @@
   --dur-1: 160ms;
   --dur-2: 260ms;
   --dur-3: 420ms;
+  /* Safe areas (iOS notch) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Header total height incl. safe-area */
+  --header-total-h: calc(var(--header-h) + var(--safe-top));
 }
 
 /* Light theme (optional) */

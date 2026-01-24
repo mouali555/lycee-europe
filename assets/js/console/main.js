@@ -1,5 +1,6 @@
 // js/console/main.js — console XPCHAT + upload image
 import { CONFIG } from "../core/config.js";
+import { initMobileMenu } from "../core/mobileMenu.js";
 import { nowStamp } from "../core/utils.js";
 import { loginGoogle, logout, watchAuth } from "../services/authService.js";
 import { unlockAccess } from "../services/accessService.js";
@@ -37,6 +38,9 @@ const terminalStatus = document.getElementById("terminalStatus");
 const headerMenuBtn = document.querySelector("[data-menu-btn]");
 const headerMobileNav = document.querySelector("[data-mobile-nav]");
 
+// Menu mobile global (header)
+initMobileMenu();
+
 // Preferences toggles
 const themeToggle = document.getElementById("themeToggle");
 const soundToggle = document.getElementById("soundToggle");
@@ -47,6 +51,7 @@ const userTag = document.getElementById("userTag");
 
 const inviteCode = document.getElementById("inviteCode");
 const joinBtn = document.getElementById("joinBtn");
+let joinInFlight = false;
 
 const spaceName = document.getElementById("spaceName");
 const roomName = document.getElementById("roomName");
@@ -54,7 +59,6 @@ const roomName = document.getElementById("roomName");
 const messagesEl = document.getElementById("messages");
 const newMsgBtn = document.getElementById("newMsgBtn");
 const offlineBanner = document.getElementById("offlineBanner");
-const offlineRetry = document.getElementById("offlineRetry");
 
 // Sidebar mobile toggle
 const sidebarToggle = document.getElementById("sidebarToggle");
@@ -75,8 +79,6 @@ const closeProfile = document.getElementById("closeProfile");
 const profileName = document.getElementById("profileName");
 const profileRank = document.getElementById("profileRank");
 const profileKeys = document.getElementById("profileKeys");
-
-let lastProfileFocus = null;
 
 // HUD
 const hud = new HUD({
@@ -102,6 +104,18 @@ function dbgInfo(msg, extra) {
   } catch {}
 }
 
+// ===== Viewport helper (iOS/Android keyboard) =====
+function updateAppVh() {
+  try {
+    const vv = window.visualViewport;
+    const h = vv ? vv.height : window.innerHeight;
+    document.documentElement.style.setProperty("--app-vh", h + "px");
+  } catch {}
+}
+updateAppVh();
+window.visualViewport?.addEventListener?.("resize", updateAppVh);
+window.addEventListener("resize", updateAppVh);
+
 function dbgErr(err, ctx) {
   try {
     window.__XPDBG__?.err?.(err, ctx);
@@ -113,86 +127,40 @@ function updateConnectivityUI() {
   if (offlineBanner)
     offlineBanner.setAttribute("aria-hidden", online ? "true" : "false");
   hud.setOnlineState(online);
+
+  // Retour online : relancer listener si besoin
+  if (online && currentUser && isMember && !unsub) {
+    try {
+      startListener();
+    } catch {}
+  }
 }
 
 function updateCharCount() {
-  if (!charCount) return;
-  if (!msgInput) return;
-
-  // ✅ S027: limiter proprement (coller 900+ chars, mobile...)
   const max = CONFIG.MAX_MESSAGE_LEN || 800;
-  let v = String(msgInput.value || "");
-  if (v.length > max) {
-    // garde le curseur au bon endroit si possible
-    const caret = msgInput.selectionStart;
+  const v = String(msgInput?.value || "");
+  if (v.length > max && msgInput) {
     msgInput.value = v.slice(0, max);
-    try {
-      const c = Math.min(caret ?? max, max);
-      msgInput.setSelectionRange(c, c);
-    } catch {}
-    v = msgInput.value;
   }
-  charCount.textContent = `${v.length}/${max}`;
+  const len = (msgInput?.value || "").length;
+  if (charCount) {
+    charCount.textContent = `${len}/${max}`;
+    charCount.setAttribute(
+      "aria-label",
+      `Compteur de caractères: ${len} sur ${max}`
+    );
+  }
 }
 
 function openProfile() {
   if (!profileModal) return;
-  lastProfileFocus = document.activeElement;
   profileModal.setAttribute("aria-hidden", "false");
-  // Focus the close button for accessibility
-  setTimeout(() => closeProfile?.focus?.(), 0);
 }
 
 function closeProfileModal() {
   if (!profileModal) return;
   profileModal.setAttribute("aria-hidden", "true");
-  // Restore focus
-  setTimeout(() => {
-    try {
-      lastProfileFocus?.focus?.();
-    } catch {}
-    lastProfileFocus = null;
-  }, 0);
 }
-
-function isProfileOpen() {
-  return profileModal && profileModal.getAttribute("aria-hidden") === "false";
-}
-
-// Basic focus trap for the modal (keeps tab navigation inside)
-profileModal?.addEventListener("keydown", (e) => {
-  if (!isProfileOpen()) return;
-  if (e.key === "Escape") {
-    e.preventDefault();
-    closeProfileModal();
-    return;
-  }
-  if (e.key !== "Tab") return;
-
-  const focusable = Array.from(
-    profileModal.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    )
-  ).filter((el) => !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true");
-
-  if (!focusable.length) return;
-
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  const active = document.activeElement;
-
-  if (e.shiftKey) {
-    if (active === first || !profileModal.contains(active)) {
-      e.preventDefault();
-      last.focus();
-    }
-  } else {
-    if (active === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  }
-});
 
 // ===== Sidebar (mobile) =====
 function setSidebarOpen(open) {
@@ -208,65 +176,42 @@ sidebarToggle?.addEventListener("click", () => {
 sidebarOverlay?.addEventListener("click", () => setSidebarOpen(false));
 
 window.addEventListener("keydown", (e) => {
-  if (e.key !== "Escape") return;
-  // Close anything open (sidebar/menu/modal)
-  setSidebarOpen(false);
-  if (isProfileOpen()) closeProfileModal();
-  try {
-    window.__LE_CLOSE_HEADER_MENU__?.();
-  } catch {}
+  if (e.key === "Escape") setSidebarOpen(false);
 });
 
-// ===== Header mobile menu (Contact/About links) =====
-if (headerMenuBtn && headerMobileNav) {
-  const links = Array.from(headerMobileNav.querySelectorAll("a"));
-
-  const setOpen = (open) => {
-    headerMobileNav.setAttribute("data-open", open ? "true" : "false");
-    headerMenuBtn.setAttribute("aria-expanded", String(!!open));
-    headerMobileNav.setAttribute("aria-hidden", open ? "false" : "true");
-    if (open) {
-      setTimeout(() => links?.[0]?.focus?.(), 0);
-    }
-  };
-
-  // Init state
-  setOpen(headerMobileNav.getAttribute("data-open") === "true");
-
-  headerMenuBtn.addEventListener("click", () => {
-    const open = headerMobileNav.getAttribute("data-open") === "true";
-    setOpen(!open);
-  });
-
-  // Close on link click
-  for (const a of links) a.addEventListener("click", () => setOpen(false));
-
-  // Close on outside click
-  document.addEventListener(
-    "click",
-    (e) => {
-      const open = headerMobileNav.getAttribute("data-open") === "true";
-      if (!open) return;
-      const t = e.target;
-      if (t === headerMenuBtn || headerMenuBtn.contains(t)) return;
-      if (t === headerMobileNav || headerMobileNav.contains(t)) return;
-      setOpen(false);
-    },
-    { passive: true }
-  );
-
-  // Expose for Escape handler
-  window.__LE_CLOSE_HEADER_MENU__ = () => setOpen(false);
-}
-
 // ===== State =====
+// Sync logout across tabs
+const __authBC =
+  "BroadcastChannel" in window ? new BroadcastChannel("le-auth") : null;
+function broadcastLogout() {
+  try {
+    __authBC?.postMessage({ type: "logout" });
+  } catch {}
+  try {
+    localStorage.setItem("le_logout_ts", String(Date.now()));
+  } catch {}
+}
+__authBC?.addEventListener?.("message", (ev) => {
+  if (ev?.data?.type === "logout") {
+    try {
+      logout();
+    } catch {}
+  }
+});
+window.addEventListener("storage", (e) => {
+  if (e.key === "le_logout_ts") {
+    try {
+      logout();
+    } catch {}
+  }
+});
+
 let currentUser = null;
 let isMember = false;
 let unsub = null;
 let userKeys = [];
 let userRank = "BRONZE";
 let lastSentAt = 0;
-let joinBusy = false;
 let sendInFlight = false;
 
 // ===== Message list UI =====
@@ -391,7 +336,8 @@ function applyTheme(theme) {
   const t = theme === "light" ? "light" : "dark";
   document.documentElement.dataset.theme = t;
   const willGoTo = t === "light" ? "dark" : "light";
-  if (themeToggle) themeToggle.textContent = willGoTo === "light" ? "☀️" : "🌙";
+  if (themeToggle)
+    themeToggle.textContent = willGoTo === "light" ? "☀️" : "🌙";
   setPref(PREF_THEME, t);
 }
 
@@ -448,9 +394,7 @@ async function refreshProfile() {
   if (profileName) profileName.textContent = currentUser.name;
   if (profileRank) profileRank.textContent = userRank;
   if (profileKeys)
-    profileKeys.textContent = userKeys.length
-      ? userKeys.join(" • ")
-      : "Aucune clé";
+    profileKeys.textContent = userKeys.length ? userKeys.join(" • ") : "Aucune clé";
 }
 
 async function grantKeyToMe(tier = "BRONZE") {
@@ -462,7 +406,8 @@ async function grantKeyToMe(tier = "BRONZE") {
 async function consumeKey(codeRaw) {
   const code = String(codeRaw || "").trim().toUpperCase();
   if (!code) return msgList.addSystem("USAGE: /use ");
-  if (!userKeys.includes(code)) return msgList.addSystem("[KEYMASTER] Clé introuvable.");
+  if (!userKeys.includes(code))
+    return msgList.addSystem("[KEYMASTER] Clé introuvable.");
   await removeKey(currentUser.uid, code);
   await refreshProfile();
   msgList.addSystem(`[KEYMASTER] Clé utilisée : ${code} ✅`);
@@ -485,25 +430,6 @@ function startListener() {
 
   unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (ev) => {
     const type = ev?.type || "added";
-
-    // ✅ S014: session expirée / permission denied / erreurs snapshot
-    if (type === "error") {
-      const err = ev?.error;
-      updateConnectivityUI();
-      const code = String(err?.code || err?.message || "");
-
-      if (/permission-denied|unauthenticated|401|403/i.test(code)) {
-        msgList.addSystem("SESSION_EXPIRED: reconnecte-toi");
-        setTerminal("session expired");
-        // reset state + logout proprement
-        try {
-          logout();
-        } catch {}
-      } else {
-        msgList.addSystem(`NETWORK_ERROR: ${code || "unknown"}`);
-      }
-      return;
-    }
 
     if (type === "removed") {
       msgList.removeMessage(ev.id);
@@ -540,7 +466,7 @@ function startListener() {
 
     msgList.upsertMessage(payload, newIndex);
 
-    // ✅ Si c’est ton message → on force le stick + scroll bas (sinon tu restes en haut)
+    // ✅ Si c’est ton message → on force le stick + scroll bas
     if (type === "added" && currentUser?.uid && ev?.uid === currentUser.uid) {
       forceStick(1200);
     }
@@ -564,187 +490,136 @@ function startListener() {
 
 // ===== Join via invite =====
 async function joinFlow() {
+  if (joinInFlight) return;
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
-  if (joinBusy) return;
+  const uidStart = currentUser.uid;
 
-  // ✅ S033: validation immédiate (pas de requête si vide)
   const code = String(inviteCode?.value || "").trim();
-  if (!code) {
-    msgList.addSystem("CODE_REQUIRED: entre ton code d'invite");
-    inviteCode?.focus?.();
-    return;
-  }
+  if (!code) return msgList.addSystem("CODE_REQUIRED");
 
-  joinBusy = true;
-  if (joinBtn) {
-    joinBtn.disabled = true;
-    joinBtn.setAttribute("aria-busy", "true");
-  }
+  joinInFlight = true;
+  joinBtn?.setAttribute("aria-busy", "true");
+  if (joinBtn) joinBtn.disabled = true;
+
   try {
     const r = await unlockAccess({ spaceId: CONFIG.SPACE_ID, code });
 
-    // ✅ S035: on confirme l'accès côté Firestore (source of truth)
-    isMember = await checkMembership(CONFIG.SPACE_ID, currentUser.uid);
-    if (!isMember) throw new Error("ACCESS_NOT_READY");
+    // race: user logout pendant la requête
+    if (!currentUser || currentUser.uid !== uidStart) return;
 
-    // Save last successful code (device-local) to reduce friction
+    isMember = true;
+
     try {
-      localStorage.setItem("le_last_code", String(code).trim().toUpperCase());
+      localStorage.setItem("le_last_code", String(code).toUpperCase());
     } catch {}
 
     msgList.addSystem(r?.already ? "ALREADY_UNLOCKED" : "UNLOCK_OK");
 
-    // Now that access is unlocked, reveal labels + start listener
     if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
     if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
 
     setTerminal("authenticated");
-
-    // Si l'utilisateur a logout pendant le join, on n'active rien
-    if (!currentUser) return;
     startListener();
   } catch (e) {
     dbgErr(e, "UNLOCK_FAILED");
-    const codeMsg = String(e?.message || "");
-    // ✅ S034: messages lisibles
-    if (codeMsg === "CODE_REQUIRED") {
-      msgList.addSystem("CODE_REQUIRED: entre ton code d'invite");
-      inviteCode?.focus?.();
-    } else if (codeMsg === "CODE_INVALID") {
-      msgList.addSystem("CODE_INVALID: code incorrect");
-      inviteCode?.select?.();
-    } else if (codeMsg === "ACCESS_NOT_READY") {
-      msgList.addSystem("UNLOCK_OK: réessaie dans 1 seconde");
-    } else {
-      msgList.addSystem(`ACCESS_DENIED: ${codeMsg || "unknown"}`);
+    const msg = e?.code || e?.message || "UNLOCK_FAILED";
+    msgList.addSystem(`ACCESS_DENIED: ${msg}`);
+
+    if (
+      String(msg).includes("AUTH_INVALID") ||
+      String(msg).includes("HTTP_401") ||
+      String(msg).includes("HTTP_403")
+    ) {
+      try {
+        await logout();
+      } catch {}
     }
   } finally {
-    joinBusy = false;
-    if (joinBtn) {
-      joinBtn.disabled = false;
-      joinBtn.removeAttribute("aria-busy");
-    }
+    joinInFlight = false;
+    joinBtn?.removeAttribute("aria-busy");
+    if (joinBtn) joinBtn.disabled = false;
   }
 }
 
-
 // ===== Send text / commands / IA =====
 async function sendMessage() {
+  if (sendInFlight) return;
   const raw = (msgInput?.value || "").trim();
   if (!raw) return;
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
-  if (navigator.onLine === false) {
-    updateConnectivityUI();
-    return msgList.addSystem("OFFLINE: impossible d'envoyer (pas de réseau)");
-  }
+
+  if (navigator.onLine === false)
+    return msgList.addSystem("OFFLINE: impossible d'envoyer");
 
   const now = Date.now();
   if (now - lastSentAt < CONFIG.SEND_COOLDOWN_MS)
     return msgList.addSystem("SLOWMODE 2.5s");
-  lastSentAt = now;
 
-  // ✅ S026 / S069: anti double-send
-  if (sendInFlight) return;
+  if (!isMember) return msgList.addSystem("ACCESS_DENIED: code required");
+
+  const uidStart = currentUser.uid;
+
   sendInFlight = true;
-  try {
-    sendBtn?.setAttribute("aria-busy", "true");
-    if (sendBtn) sendBtn.disabled = true;
-  } catch {}
-
-  const lower = raw.toLowerCase();
+  lastSentAt = now;
+  if (sendBtn) sendBtn.disabled = true;
+  sendBtn?.setAttribute("aria-busy", "true");
 
   try {
+    const lower = raw.toLowerCase();
 
-  // Slash commands
-  if (lower === "/help") {
-    msgInput.value = "";
-    updateCharCount();
-    msgList.addSystem("COMMANDS: /help • /keys • /use • @ia ");
-    return;
-  }
-
-  if (lower === "/keys") {
-    msgInput.value = "";
-    updateCharCount();
-    await refreshProfile();
-    msgList.addSystem(
-      `[KEYMASTER] Inventaire: ${
-        userKeys.length ? userKeys.join(", ") : "vide"
-      }`
-    );
-    return;
-  }
-
-  if (lower.startsWith("/use ")) {
-    msgInput.value = "";
-    updateCharCount();
-    await consumeKey(raw.slice(5));
-    return;
-  }
-
-  // IA
-  if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
-    if (!isMember) return msgList.addSystem("ACCESS_DENIED: code required");
-    const prompt = raw.slice(4).trim();
-    if (!prompt) return msgList.addSystem("AI_USAGE: @ia ton message");
-
-    try {
-      await sendRoomMessage(CONFIG.SPACE_ID, CONFIG.ROOM_ID, {
-        uid: currentUser.uid,
-        displayName: currentUser.name,
-        photoURL: currentUser.photoURL || null,
-        text: `@IA: ${prompt}`.slice(0, CONFIG.MAX_MESSAGE_LEN),
-      });
-
-      // ✅ FIX : on force le chat à rester en bas après envoi
-      forceStick(1400);
-      scrollBottomNextFrame();
-
-      hud.onSentMessage();
-      playTone(740, 0.05);
-    } catch (e) {
-      console.error(e);
-      dbgErr(e, "SEND_AI_FAILED");
-      msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
+    // Slash commands
+    if (lower === "/help") {
+      msgInput.value = "";
+      updateCharCount();
+      msgList.addSystem("HELP: @ia • /help • /clear");
+      return;
+    }
+    if (lower === "/clear") {
+      msgInput.value = "";
+      updateCharCount();
+      msgList.clear();
+      msgList.addSystem("CLEARED");
       return;
     }
 
-    msgInput.value = "";
-    updateCharCount();
-    hud.onUsedAI();
-    msgList.showTyping("IA");
+    // IA call
+    if (lower.startsWith("@ia")) {
+      const prompt = raw.replace(/^@ia\s*/i, "").trim();
+      if (!prompt) return msgList.addSystem("IA: prompt vide");
 
-    try {
-      await callAI({
-        spaceId: CONFIG.SPACE_ID,
-        roomId: CONFIG.ROOM_ID,
-        user: currentUser,
-        prompt,
-      });
-      msgList.hideTyping();
-      msgList.addSystem("AI_OK");
-    } catch (e) {
-      console.error(e);
-      dbgErr(e, "AI_CALL_FAILED");
-      msgList.hideTyping();
-      msgList.addSystem(`AI_FAILED: ${e?.message || "unknown"}`);
+      msgInput.value = "";
+      updateCharCount();
+      hud.onUsedAI();
+      msgList.showTyping("IA");
+
+      try {
+        await callAI({
+          spaceId: CONFIG.SPACE_ID,
+          roomId: CONFIG.ROOM_ID,
+          user: currentUser,
+          prompt,
+        });
+        msgList.hideTyping();
+        msgList.addSystem("AI_OK");
+      } catch (e) {
+        console.error(e);
+        dbgErr(e, "AI_CALL_FAILED");
+        msgList.hideTyping();
+        msgList.addSystem(`AI_FAILED: ${e?.message || "unknown"}`);
+      }
+      return;
     }
 
-    return;
-  }
-
-  // Message normal
-  if (!isMember) return msgList.addSystem("ACCESS_DENIED: code required");
-
-  try {
+    // Normal message
     await sendRoomMessage(CONFIG.SPACE_ID, CONFIG.ROOM_ID, {
       uid: currentUser.uid,
       displayName: currentUser.name,
-      photoURL: currentUser.photoURL || null,
-      text: raw.slice(0, CONFIG.MAX_MESSAGE_LEN),
+      photoURL: currentUser.photoURL,
+      text: raw.slice(0, CONFIG.MAX_MESSAGE_LEN || 800),
     });
 
-    // ✅ FIX : on force le chat à rester en bas après envoi
+    if (!currentUser || currentUser.uid !== uidStart) return;
+
     forceStick(1400);
     scrollBottomNextFrame();
 
@@ -753,18 +628,29 @@ async function sendMessage() {
     hud.onSentMessage();
     hud.addXP(1);
     playTone(740, 0.05);
+
+    try {
+      localStorage.removeItem("le_draft");
+    } catch {}
   } catch (e) {
     console.error(e);
     dbgErr(e, "SEND_TEXT_FAILED");
-    msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
-  }
+    const msg = e?.code || e?.message || "unknown";
+    msgList.addSystem(`SEND_FAILED: ${msg}`);
 
+    if (
+      String(msg).includes("permission") ||
+      String(msg).includes("401") ||
+      String(msg).includes("403")
+    ) {
+      try {
+        await logout();
+      } catch {}
+    }
   } finally {
     sendInFlight = false;
-    try {
-      sendBtn?.removeAttribute("aria-busy");
-      if (sendBtn) sendBtn.disabled = false;
-    } catch {}
+    sendBtn?.removeAttribute("aria-busy");
+    if (sendBtn) sendBtn.disabled = false;
   }
 }
 
@@ -783,13 +669,6 @@ updateCharCount();
 window.addEventListener("online", updateConnectivityUI);
 window.addEventListener("offline", updateConnectivityUI);
 
-offlineRetry?.addEventListener("click", () => {
-  // ✅ S017/S018: un retry simple et fiable
-  try {
-    location.reload();
-  } catch {}
-});
-
 // Auth buttons
 btnLogin?.addEventListener("click", async () => {
   try {
@@ -803,6 +682,7 @@ btnLogin?.addEventListener("click", async () => {
 
 btnLogout?.addEventListener("click", async () => {
   try {
+    broadcastLogout();
     await logout();
   } catch {
     msgList.addSystem("LOGOUT_FAILED");
@@ -810,15 +690,11 @@ btnLogout?.addEventListener("click", async () => {
 });
 
 // Send text
-sendBtn?.addEventListener("click", sendMessage);
+sendBtn?.addEventListener("click", () => sendMessage());
 msgInput?.addEventListener("keydown", (e) => {
-  // ✅ S028: IME composition stable
   if (e.key !== "Enter") return;
   if (e.isComposing) return;
-
-  // Shift+Enter = nouvelle ligne (si tu veux)
   if (e.shiftKey) return;
-
   e.preventDefault();
   sendMessage();
 });
@@ -826,13 +702,14 @@ msgInput?.addEventListener("input", updateCharCount);
 
 // IA helper
 iaBtn?.addEventListener("click", () => {
-  if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
-  const t = msgInput.value || "";
-  if (!t.toLowerCase().startsWith("@ia")) {
-    msgInput.value = "@ia " + t;
-    updateCharCount();
+  if (!msgInput) return;
+  const prefix = "@ia ";
+  const cur = String(msgInput.value || "");
+  if (!cur.toLowerCase().startsWith(prefix.trim())) {
+    msgInput.value = prefix + cur.replace(/^@ia\s+/i, "");
   }
   msgInput.focus();
+  updateCharCount();
 });
 
 // ===== Upload image =====
@@ -843,7 +720,8 @@ imgBtn?.addEventListener("click", () => {
 
 imgInput?.addEventListener("change", async (e) => {
   const file = e.target.files?.[0];
-  // ✅ S030: cancel = stable
+
+  // Cancel stable
   if (!file) return;
 
   if (!currentUser) {
@@ -858,9 +736,31 @@ imgInput?.addEventListener("change", async (e) => {
     return;
   }
 
-  msgList.addSystem("UPLOAD_IMAGE...");
+  if (navigator.onLine === false) {
+    msgList.addSystem("OFFLINE: upload impossible");
+    imgInput.value = "";
+    return;
+  }
+
+  if (!String(file.type || "").startsWith("image/")) {
+    msgList.addSystem("UPLOAD_REJECTED: non-image");
+    imgInput.value = "";
+    return;
+  }
+
+  const MAX = 8 * 1024 * 1024;
+  if (file.size > MAX) {
+    msgList.addSystem("UPLOAD_TOO_BIG (max 8MB)");
+    imgInput.value = "";
+    return;
+  }
+
+  const uidStart = currentUser.uid;
 
   try {
+    imgBtn && (imgBtn.disabled = true);
+    imgBtn?.setAttribute("aria-busy", "true");
+
     const url = await uploadChatImage({
       spaceId: CONFIG.SPACE_ID,
       roomId: CONFIG.ROOM_ID,
@@ -868,16 +768,17 @@ imgInput?.addEventListener("change", async (e) => {
       file,
     });
 
+    if (!currentUser || currentUser.uid !== uidStart) return;
+
     await sendRoomMessage(CONFIG.SPACE_ID, CONFIG.ROOM_ID, {
       uid: currentUser.uid,
       displayName: currentUser.name,
-      photoURL: currentUser.photoURL || null,
+      photoURL: currentUser.photoURL,
       text: "",
       imageURL: url,
     });
 
-    // ✅ FIX : on force le chat à rester en bas après envoi image
-    forceStick(1600);
+    forceStick(1400);
     scrollBottomNextFrame();
 
     hud.onSentMessage();
@@ -887,18 +788,11 @@ imgInput?.addEventListener("change", async (e) => {
   } catch (err) {
     console.error(err);
     dbgErr(err, "UPLOAD_IMAGE_FAILED");
-    const msg = String(err?.message || err?.code || "unknown");
-    if (msg === "OFFLINE") {
-      msgList.addSystem("OFFLINE: upload impossible sans réseau");
-      updateConnectivityUI();
-    } else if (msg === "NOT_IMAGE") {
-      msgList.addSystem("NOT_IMAGE: uniquement des images (jpg/png/webp)");
-    } else if (msg === "IMAGE_TOO_LARGE") {
-      msgList.addSystem("IMAGE_TOO_LARGE: max 8 Mo");
-    } else {
-      msgList.addSystem(`IMAGE_FAILED: ${msg}`);
-    }
+    const msg = err?.code || err?.message || "unknown";
+    msgList.addSystem(`IMAGE_FAILED: ${msg}`);
   } finally {
+    imgBtn?.removeAttribute("aria-busy");
+    if (imgBtn) imgBtn.disabled = false;
     imgInput.value = "";
   }
 });
@@ -956,7 +850,9 @@ watchAuth(async (user) => {
       console.error("Profile init failed:", e);
       dbgErr(e, "PROFILE_INIT_FAILED");
       msgList.addSystem(
-        `PROFILE_INIT_FAILED: ${e?.message || "unknown"} (tu peux quand même tenter l'invite)`
+        `PROFILE_INIT_FAILED: ${
+          e?.message || "unknown"
+        } (tu peux quand même tenter l'invite)`
       );
     }
 
@@ -1002,8 +898,6 @@ watchAuth(async (user) => {
       }
 
       msgList.addSystem("ACCESS_OK");
-      if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
-      if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
       setTerminal("authenticated");
       startListener();
     } catch (e) {

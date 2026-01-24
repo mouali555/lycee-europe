@@ -10,13 +10,9 @@ body.consoleBody{
 .theme-dark{ color-scheme: dark; }
 .theme-light{ color-scheme: light; }
 
-.layout{
-  height: calc(100vh - var(--header-h));
-  height: calc(100svh - var(--header-h));
-  height: calc(100dvh - var(--header-h));
-  min-height: calc(100vh - var(--header-h));
-  min-height: calc(100svh - var(--header-h));
-  min-height: calc(100dvh - var(--header-h));
+\.layout{
+  height: calc(var(--app-vh, 100dvh) - var(--header-total-h));
+  min-height: calc(var(--app-vh, 100dvh) - var(--header-total-h));
   overflow: hidden;
   display:grid;
   grid-template-columns: 360px 1fr;
@@ -130,9 +126,6 @@ body.consoleBody{
   border:1px solid rgba(255, 107, 107, 0.25);
   color: var(--text);
   z-index: 5;
-  display:flex;
-  align-items:center;
-  gap: 10px;
 }
 
 #offlineBanner[aria-hidden="true"]{ display:none; }

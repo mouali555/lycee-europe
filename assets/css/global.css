@@ -4,6 +4,9 @@
 html{ scroll-behavior:smooth; }
 
 body{
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
   font-family: var(--font-sans);
   font-size: var(--step-0);
   line-height: 1.45;
@@ -120,3 +123,55 @@ code{
 @media (max-width: 600px){
   .container{ width: calc(100% - 2*var(--space-5)); }
 }
+
+
+/* ================================
+   A11Y / UX helpers
+   ================================ */
+html.noScroll, body.noScroll{ overflow:hidden; }
+
+:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.skipLink{
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  z-index: 9999;
+  transform: translateY(-140%);
+  transition: transform var(--dur-2) var(--ease);
+}
+.skipLink:focus{ transform: translateY(0); }
+
+.swUpdateToast{
+  position: fixed;
+  left: 50%;
+  bottom: calc(14px + var(--safe-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  z-index: 9998;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Offset pour ancres sous header sticky */
+[id]{ scroll-margin-top: calc(var(--header-total-h) + 10px); }
+
+/* Anti scroll latéral fantôme + mots longs */
+body{ overflow-x: clip; }
+p, a, h1, h2, h3, h4, h5, h6{ overflow-wrap:anywhere; }
+img{ max-width:100%; height:auto; }

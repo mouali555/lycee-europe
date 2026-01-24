@@ -192,6 +192,7 @@ export class MessageList {
     this._insertAt(node, index);
     this.nodes.set(id, node);
     this.rendered.add(id);
+    this._pruneIfNeeded();
 
     // Premier rendu : on descend tout en bas
     if (this.firstRender) {
@@ -232,6 +233,24 @@ export class MessageList {
       this._renderReactions(n, patch.reactions, patch.meUid);
     }
   }
+
+  _pruneIfNeeded() {
+    // keep DOM light for 500+ messages
+    const MAX = 620;
+    if (this.nodes.size <= MAX) return;
+
+    const nodes = this._messageNodes();
+    const toRemove = nodes.length - MAX;
+    if (toRemove <= 0) return;
+
+    for (let i = 0; i < toRemove; i++) {
+      const n = nodes[i];
+      const id = n?.dataset?.msgId;
+      if (!id) continue;
+      this.removeMessage(id);
+    }
+  }
+
 
   _renderReactions(rowNode, reactions = {}, meUid = null) {
     const chips = rowNode?.querySelector(".reactionChips");
@@ -296,7 +315,7 @@ export class MessageList {
   addSystem(text) {
     const div = document.createElement("div");
     div.className = "msg sys";
-    div.innerHTML = `<span class="system">[SYSTÈME]</span> ${esc(text)}`;
+    div.innerHTML = `<span class="system">[SYSTEM]</span> ${esc(text)}`;
     this.root.appendChild(div);
     this.scrollToBottom();
   }

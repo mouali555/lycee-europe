@@ -12,6 +12,13 @@ const VERSION = "le-sw-v3";
 const OFFLINE_URL = "./offline.html";
 
 // Keep the list short: it should be the minimum shell required to render something.
+self.addEventListener("message", (event) => {
+  if (event?.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+
 const CORE_ASSETS = [
   "./index.html",
   "./console.html",
@@ -31,6 +38,9 @@ const CORE_ASSETS = [
   "./assets/js/main.js",
   "./assets/js/landing.js",
   "./assets/js/contact.js",
+  "./assets/js/core/mobileMenu.js",
+  "./assets/js/console/main.js",
+
   "./assets/img/favicon.svg",
   "./manifest.webmanifest",
   "./assets/icons/icon-192.png",

@@ -87,13 +87,6 @@ export function subscribeRoomMessages(spaceId, roomId, onEvent) {
       // On garde l'app fonctionnelle même si l'overlay n'existe pas.
       // Les erreurs de snapshot peuvent venir d'un offline réel.
       console.error("onSnapshot error:", err);
-
-      // Remonter l'erreur au UI (session expirée / permissions / offline)
-      try {
-        onEvent?.({ type: "error", error: err });
-      } catch {
-        // ignore
-      }
     }
   );
 }

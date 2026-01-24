@@ -27,7 +27,9 @@ export async function unlockAccess({ spaceId, code }) {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data?.code || "UNLOCK_FAILED");
+    const err = new Error(data?.code || `HTTP_${res.status}` || "UNLOCK_FAILED");
+    err.code = data?.code || `HTTP_${res.status}`;
+    throw err;
   }
   return data;
 }

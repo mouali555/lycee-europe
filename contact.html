@@ -43,7 +43,6 @@
   <link rel="stylesheet" href="./assets/css/components.css" />
 
   <script type="module" src="./assets/js/main.js"></script>
-  <script type="module" src="./assets/js/contact.js"></script>
 </head>
 
 <body>
@@ -122,45 +121,47 @@
         </article>
       </div>
 
-      <form id="contactForm" class="card cardPad" style="margin-top:18px" data-reveal novalidate>
-        <h2 style="font-size:var(--step-2); margin-bottom:10px">Envoyer un message</h2>
-        <p class="muted">Réponse rapide : donne le plus de détails possible (page, action, capture si besoin).</p>
+      
+      <article class="card cardPad" data-reveal style="margin-top:18px">
+        <h2 style="font-size:var(--step-2); margin-bottom:10px">Écrire un message</h2>
+        <p class="muted">Réponse sous 24–72h (jours ouvrés). Les champs sont obligatoires.</p>
 
-        <div class="grid grid2" style="margin-top:8px">
-          <div>
-            <label class="field" for="cName">
-              <span>Nom</span>
-              <input id="cName" name="name" class="input" type="text" autocomplete="name" required minlength="2" />
-              <span class="fieldError" id="errName" aria-live="polite"></span>
-            </label>
+        <form id="contactForm" class="form" novalidate style="margin-top:14px; display:grid; gap:12px; max-width:720px">
+          <div style="display:grid; gap:8px">
+            <label for="contactName">Nom</label>
+            <input id="contactName" name="name" type="text" autocomplete="name" required />
           </div>
-          <div>
-            <label class="field" for="cEmail">
-              <span>Email</span>
-              <input id="cEmail" name="email" class="input" type="email" autocomplete="email" required />
-              <span class="fieldError" id="errEmail" aria-live="polite"></span>
-            </label>
+
+          <div style="display:grid; gap:8px">
+            <label for="contactEmail">Email</label>
+            <input id="contactEmail" name="email" type="email" autocomplete="email" inputmode="email" required />
           </div>
-        </div>
 
-        <label class="field" for="cSubject">
-          <span>Sujet</span>
-          <input id="cSubject" name="subject" class="input" type="text" required minlength="3" />
-          <span class="fieldError" id="errSubject" aria-live="polite"></span>
-        </label>
+          <div style="display:grid; gap:8px">
+            <label for="contactSubject">Sujet</label>
+            <input id="contactSubject" name="subject" type="text" autocomplete="off" required />
+          </div>
 
-        <label class="field" for="cMessage">
-          <span>Message</span>
-          <textarea id="cMessage" name="message" class="input" rows="6" required minlength="10" placeholder="Décris ton besoin / bug…"></textarea>
-          <span class="fieldError" id="errMessage" aria-live="polite"></span>
-        </label>
+          <div style="display:grid; gap:8px">
+            <label for="contactMessage">Message</label>
+            <textarea id="contactMessage" name="message" rows="5" required></textarea>
+          </div>
 
-        <div class="modalActions" style="margin-top:10px">
-          <button id="contactSubmit" class="btn btn--primary" type="submit">Envoyer</button>
-          <button class="btn" type="reset">Effacer</button>
-          <span id="contactStatus" role="status" aria-live="polite" class="muted"></span>
-        </div>
-      </form>
+          <div id="formStatus" aria-live="polite" role="status" data-type="info" class="muted"></div>
+
+          <div class="ctaRow" style="margin-top:6px">
+            <button id="contactSubmit" class="btn btn--primary" type="submit">Envoyer</button>
+          </div>
+        </form>
+      </article>
+
+<div class="card cardPad" style="margin-top:18px" data-reveal>
+        <h2 style="font-size:var(--step-2); margin-bottom:10px">Remarque</h2>
+        <p>
+          Cette page est volontairement minimaliste (site privé). Si tu veux un formulaire d’assistance complet,
+          je peux l’ajouter avec un backend (Firebase/Email) en version suivante.
+        </p>
+      </div>
     </div>
   </main>
 
@@ -190,5 +191,6 @@
   <script>
     document.getElementById('year').textContent = String(new Date().getFullYear());
   </script>
+  <script type="module" src="./assets/js/contact.js"></script>
 </body>
 </html>

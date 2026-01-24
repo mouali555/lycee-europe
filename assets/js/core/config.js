@@ -16,9 +16,8 @@ export const CONFIG = {
   UNLOCK_ENDPOINT:
     "https://us-central1-lycee-europe-private.cloudfunctions.net/unlockAccess",
 
-  // Contact (support) — Cloud Function (HTTP)
   CONTACT_ENDPOINT:
-    "https://us-central1-lycee-europe-private.cloudfunctions.net/contactMessage",
+    "https://us-central1-lycee-europe-private.cloudfunctions.net/contactSubmit",
 
   // UX
   MAX_MESSAGE_LEN: 800,

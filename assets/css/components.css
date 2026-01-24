@@ -2,8 +2,8 @@
 
 /* Header */
 .siteHeader{
-  /* iOS safe-area (notch) */
-  padding-top: env(safe-area-inset-top);
+  padding-top: var(--safe-top);
+
   position: sticky;
   top: 0;
   z-index: 50;
@@ -108,8 +108,7 @@
 
 .mobileNav{
   display:none;
-  /* include bottom safe-area (home indicator) */
-  padding: var(--space-5) 0 calc(var(--space-6) + env(safe-area-inset-bottom));
+  padding: var(--space-5) 0 var(--space-6);
 }
 
 .mobileNav .nav{
@@ -293,20 +292,6 @@
   margin-top: 12px;
 }
 
-/* Form helpers */
-.field{
-  display:flex;
-  flex-direction:column;
-  gap: 6px;
-  margin-top: 12px;
-}
-
-.fieldError{
-  min-height: 1.2em;
-  color: rgba(255, 107, 107, 0.92);
-  font-size: 0.92em;
-}
-
 /* Input fields */
 .input{
   width: 100%;
@@ -325,15 +310,6 @@
 
 .input::placeholder{
   color: var(--muted-2);
-}
-
-/* ✅ S008: Autofill lisible (Chrome/Safari) */
-.input:-webkit-autofill,
-textarea.input:-webkit-autofill{
-  -webkit-text-fill-color: var(--text);
-  transition: background-color 9999s ease-out 0s;
-  box-shadow: 0 0 0px 1000px var(--surface) inset;
-  border-color: var(--border);
 }
 
 /* Responsive breakpoints */
@@ -433,10 +409,21 @@ textarea.input:-webkit-autofill{
 }
 
 /* Theme helpers */
-:root[data-theme="light"] .siteHeader{ 
+:root[data-theme="light"] .siteHeader{
+  padding-top: var(--safe-top);
+ 
   backdrop-filter: blur(14px); 
 }
 
 :root[data-theme="light"] .modal{ 
   background: rgba(10,12,18,0.45); 
+}
+
+
+/* Autofill Safari/Chrome lisible */
+input:-webkit-autofill,
+textarea:-webkit-autofill{
+  -webkit-text-fill-color: var(--text);
+  transition: background-color 9999s ease-in-out 0s;
+  box-shadow: 0 0 0 1000px color-mix(in srgb, var(--surface) 85%, transparent) inset;
 }
