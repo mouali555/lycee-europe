@@ -100,10 +100,51 @@ const menuBtn = qs("[data-menu-btn]");
 const mobileNav = qs("[data-mobile-nav]");
 
 if (menuBtn && mobileNav) {
+  const links = qsa("a", mobileNav);
+
+  const setOpen = (open) => {
+    mobileNav.setAttribute("data-open", open ? "true" : "false");
+    menuBtn.setAttribute("aria-expanded", String(!!open));
+    mobileNav.setAttribute("aria-hidden", open ? "false" : "true");
+
+    // Light focus management: when opened, focus first link.
+    if (open) {
+      setTimeout(() => {
+        links?.[0]?.focus?.();
+      }, 0);
+    }
+  };
+
+  // Init state
+  setOpen(mobileNav.getAttribute("data-open") === "true");
+
   menuBtn.addEventListener("click", () => {
     const open = mobileNav.getAttribute("data-open") === "true";
-    mobileNav.setAttribute("data-open", open ? "false" : "true");
-    menuBtn.setAttribute("aria-expanded", String(!open));
+    setOpen(!open);
+  });
+
+  // Close on nav click
+  for (const a of links) {
+    a.addEventListener("click", () => setOpen(false));
+  }
+
+  // Close on outside click
+  document.addEventListener(
+    "click",
+    (e) => {
+      const open = mobileNav.getAttribute("data-open") === "true";
+      if (!open) return;
+      const t = e.target;
+      if (t === menuBtn || menuBtn.contains(t)) return;
+      if (t === mobileNav || mobileNav.contains(t)) return;
+      setOpen(false);
+    },
+    { passive: true }
+  );
+
+  // Close on Escape
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setOpen(false);
   });
 }
 
@@ -113,21 +154,28 @@ if (menuBtn && mobileNav) {
 const revealEls = qsa("[data-reveal]");
 
 if (revealEls.length) {
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          e.target.classList.add("is-inview");
-          io.unobserve(e.target);
+  // Graceful fallback if IntersectionObserver is unavailable.
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-inview");
+            io.unobserve(e.target);
+          }
         }
-      }
-    },
-    { rootMargin: "0px 0px -10% 0px", threshold: 0.12 }
-  );
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.12 }
+    );
 
-  for (const el of revealEls) {
-    el.classList.add("reveal");
-    io.observe(el);
+    for (const el of revealEls) {
+      el.classList.add("reveal");
+      io.observe(el);
+    }
+  } else {
+    for (const el of revealEls) {
+      el.classList.add("reveal", "is-inview");
+    }
   }
 }
 
@@ -150,8 +198,17 @@ if ("serviceWorker" in navigator) {
 // Ensure target="_blank" links have rel="noopener noreferrer"
 for (const a of qsa('a[target="_blank"]')) {
   const rel = (a.getAttribute("rel") || "").toLowerCase();
-  if (!rel.includes("noopener")) a.setAttribute("rel", (rel + " noopener").trim());
-  if (!rel.includes("noreferrer")) a.setAttribute("rel", (a.getAttribute("rel") + " noreferrer").trim());
+  const hasNoopener = rel.includes("noopener");
+  const hasNoreferrer = rel.includes("noreferrer");
+  const next = [
+    rel,
+    hasNoopener ? "" : "noopener",
+    hasNoreferrer ? "" : "noreferrer",
+  ]
+    .join(" ")
+    .trim()
+    .replace(/\s+/g, " ");
+  if (next) a.setAttribute("rel", next);
 }
 
 // ================================

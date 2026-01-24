@@ -75,6 +75,8 @@ const profileName = document.getElementById("profileName");
 const profileRank = document.getElementById("profileRank");
 const profileKeys = document.getElementById("profileKeys");
 
+let lastProfileFocus = null;
+
 // HUD
 const hud = new HUD({
   status: document.getElementById("hudStatus"),
@@ -120,13 +122,62 @@ function updateCharCount() {
 
 function openProfile() {
   if (!profileModal) return;
+  lastProfileFocus = document.activeElement;
   profileModal.setAttribute("aria-hidden", "false");
+  // Focus the close button for accessibility
+  setTimeout(() => closeProfile?.focus?.(), 0);
 }
 
 function closeProfileModal() {
   if (!profileModal) return;
   profileModal.setAttribute("aria-hidden", "true");
+  // Restore focus
+  setTimeout(() => {
+    try {
+      lastProfileFocus?.focus?.();
+    } catch {}
+    lastProfileFocus = null;
+  }, 0);
 }
+
+function isProfileOpen() {
+  return profileModal && profileModal.getAttribute("aria-hidden") === "false";
+}
+
+// Basic focus trap for the modal (keeps tab navigation inside)
+profileModal?.addEventListener("keydown", (e) => {
+  if (!isProfileOpen()) return;
+  if (e.key === "Escape") {
+    e.preventDefault();
+    closeProfileModal();
+    return;
+  }
+  if (e.key !== "Tab") return;
+
+  const focusable = Array.from(
+    profileModal.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((el) => !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true");
+
+  if (!focusable.length) return;
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  const active = document.activeElement;
+
+  if (e.shiftKey) {
+    if (active === first || !profileModal.contains(active)) {
+      e.preventDefault();
+      last.focus();
+    }
+  } else {
+    if (active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+});
 
 // ===== Sidebar (mobile) =====
 function setSidebarOpen(open) {
@@ -142,16 +193,55 @@ sidebarToggle?.addEventListener("click", () => {
 sidebarOverlay?.addEventListener("click", () => setSidebarOpen(false));
 
 window.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") setSidebarOpen(false);
+  if (e.key !== "Escape") return;
+  // Close anything open (sidebar/menu/modal)
+  setSidebarOpen(false);
+  if (isProfileOpen()) closeProfileModal();
+  try {
+    window.__LE_CLOSE_HEADER_MENU__?.();
+  } catch {}
 });
 
 // ===== Header mobile menu (Contact/About links) =====
 if (headerMenuBtn && headerMobileNav) {
+  const links = Array.from(headerMobileNav.querySelectorAll("a"));
+
+  const setOpen = (open) => {
+    headerMobileNav.setAttribute("data-open", open ? "true" : "false");
+    headerMenuBtn.setAttribute("aria-expanded", String(!!open));
+    headerMobileNav.setAttribute("aria-hidden", open ? "false" : "true");
+    if (open) {
+      setTimeout(() => links?.[0]?.focus?.(), 0);
+    }
+  };
+
+  // Init state
+  setOpen(headerMobileNav.getAttribute("data-open") === "true");
+
   headerMenuBtn.addEventListener("click", () => {
     const open = headerMobileNav.getAttribute("data-open") === "true";
-    headerMobileNav.setAttribute("data-open", open ? "false" : "true");
-    headerMenuBtn.setAttribute("aria-expanded", String(!open));
+    setOpen(!open);
   });
+
+  // Close on link click
+  for (const a of links) a.addEventListener("click", () => setOpen(false));
+
+  // Close on outside click
+  document.addEventListener(
+    "click",
+    (e) => {
+      const open = headerMobileNav.getAttribute("data-open") === "true";
+      if (!open) return;
+      const t = e.target;
+      if (t === headerMenuBtn || headerMenuBtn.contains(t)) return;
+      if (t === headerMobileNav || headerMobileNav.contains(t)) return;
+      setOpen(false);
+    },
+    { passive: true }
+  );
+
+  // Expose for Escape handler
+  window.__LE_CLOSE_HEADER_MENU__ = () => setOpen(false);
 }
 
 // ===== State =====
@@ -161,6 +251,7 @@ let unsub = null;
 let userKeys = [];
 let userRank = "BRONZE";
 let lastSentAt = 0;
+let joinBusy = false;
 
 // ===== Message list UI =====
 const msgList = new MessageList({
@@ -439,6 +530,12 @@ function startListener() {
 // ===== Join via invite =====
 async function joinFlow() {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
+  if (joinBusy) return;
+  joinBusy = true;
+  if (joinBtn) {
+    joinBtn.disabled = true;
+    joinBtn.setAttribute("aria-busy", "true");
+  }
   const code = inviteCode?.value || "";
   try {
     const r = await unlockAccess({ spaceId: CONFIG.SPACE_ID, code });
@@ -458,6 +555,12 @@ async function joinFlow() {
   } catch (e) {
     dbgErr(e, "UNLOCK_FAILED");
     msgList.addSystem(`ACCESS_DENIED: ${e?.message || "unknown"}`);
+  } finally {
+    joinBusy = false;
+    if (joinBtn) {
+      joinBtn.disabled = false;
+      joinBtn.removeAttribute("aria-busy");
+    }
   }
 }
 

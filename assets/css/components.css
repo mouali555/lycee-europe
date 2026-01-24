@@ -2,6 +2,8 @@
 
 /* Header */
 .siteHeader{
+  /* iOS safe-area (notch) */
+  padding-top: env(safe-area-inset-top);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -106,7 +108,8 @@
 
 .mobileNav{
   display:none;
-  padding: var(--space-5) 0 var(--space-6);
+  /* include bottom safe-area (home indicator) */
+  padding: var(--space-5) 0 calc(var(--space-6) + env(safe-area-inset-bottom));
 }
 
 .mobileNav .nav{
