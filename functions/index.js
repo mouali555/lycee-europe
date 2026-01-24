@@ -89,8 +89,10 @@ exports.unlockAccess = onRequest(
       if (!code) return sendError(res, 400, "CODE_REQUIRED", "Missing code");
 
       // ✅ Code check (server-side)
+      // Keep response contract simple for the frontend:
+      // { ok:false, message:"CODE_INVALID" }
       if (code !== "ADMINCIEL") {
-        return sendError(res, 403, "ACCESS_DENIED", "Invalid code");
+        return res.status(403).json({ ok: false, message: "CODE_INVALID" });
       }
 
       const db = admin.firestore();
@@ -125,7 +127,7 @@ exports.unlockAccess = onRequest(
       return res.json({ ok: true, already: false });
     } catch (e) {
       console.error("unlockAccess_failed", e);
-      return sendError(res, 500, "SERVER_ERROR", "Unexpected error");
+      return res.status(500).json({ ok: false, message: "SERVER_ERROR" });
     }
   }
 );
