@@ -4,12 +4,8 @@
 
 import { CONFIG } from "./core/config.js";
 import { loginGoogle, logout, watchAuth } from "./services/authService.js";
-import {
-  checkMembership,
-  joinWithInvite,
-  subscribeRoomMessages,
-  sendRoomMessage,
-} from "./services/chatService.js";
+import { unlockAccess } from "./services/accessService.js";
+import { checkMembership, subscribeRoomMessages, sendRoomMessage } from "./services/chatService.js";
 
 // Même espace que la console.
 const SPACE_ID = (CONFIG && CONFIG.SPACE_ID) ? CONFIG.SPACE_ID : "europe";
@@ -148,7 +144,7 @@ async function onAuthChanged(user) {
 
     if (lastInvite) {
       try {
-        await joinWithInvite(SPACE_ID, lastInvite, {
+        await unlockAccess(SPACE_ID, lastInvite, {
           uid: currentUser.uid,
           name: currentUser.displayName || "USER",
         });
@@ -192,7 +188,7 @@ function bindGateActions() {
 
     try {
       setText(gateMsg, "Vérification du code…");
-      await joinWithInvite(SPACE_ID, code, {
+      await unlockAccess(SPACE_ID, code, {
         uid: currentUser.uid,
         name: currentUser.displayName || "USER",
       });

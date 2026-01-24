@@ -1,0 +1,101 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+
+    // Membership = source of truth for chat access
+    function isMember(spaceId) {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/spaces/$(spaceId)/members/$(uid()));
+    }
+
+    // USERS
+    // - read: signed-in only
+    // - write: only self, but cannot set server-managed flags
+    match /users/{userId} {
+      allow read: if signedIn();
+
+      allow create, update: if signedIn()
+        && userId == uid()
+        // prevent privilege escalation / server flags being set from client
+        && !('flags' in request.resource.data)
+        && !('unlockedAt' in request.resource.data);
+
+      allow delete: if false;
+    }
+
+    // SPACES
+    match /spaces/{spaceId} {
+      allow read: if isMember(spaceId);
+
+      // INVITES (legacy). Keep read-only if you still use it, but never rely on it for access.
+      match /invites/{code} {
+        allow read: if signedIn();
+        allow write: if false;
+      }
+
+      // MEMBERS
+      // 🔒 Membership docs must be created server-side (Cloud Functions with Admin SDK).
+      match /members/{memberId} {
+        allow get: if signedIn() && memberId == uid();
+        allow list: if false;
+
+        allow create, update, delete: if false;
+      }
+
+      // ROOMS
+      match /rooms/{roomId} {
+        allow read: if isMember(spaceId);
+
+        // MESSAGES
+        match /messages/{msgId} {
+          allow read: if isMember(spaceId);
+
+          allow create: if isMember(spaceId)
+            // Required
+            && request.resource.data.keys().hasAll(['uid','displayName','createdAt'])
+            // Small allowlist size
+            && request.resource.data.keys().size() <= 14
+            // You can only write as yourself
+            && request.resource.data.uid == uid()
+            && request.resource.data.displayName is string
+            // text optional
+            && (!('text' in request.resource.data) || (
+                  request.resource.data.text is string
+                  && request.resource.data.text.size() <= 800
+               ))
+            // createdAt can be serverTimestamp => null at write-time
+            && (request.resource.data.createdAt is timestamp
+                || request.resource.data.createdAt == null)
+            // optionals
+            && (!('photoURL' in request.resource.data)
+                || request.resource.data.photoURL is string)
+            && (!('type' in request.resource.data)
+                || request.resource.data.type is string)
+            && (!('imageURL' in request.resource.data)
+                || request.resource.data.imageURL is string);
+
+          // UPDATE: only reactions
+          allow update: if isMember(spaceId)
+            && request.resource.data.diff(resource.data).changedKeys().hasOnly(['reactions']);
+
+          // DELETE: keep disabled client-side (recommended). Use Cloud Function deleteMessage.
+          allow delete: if false;
+        }
+      }
+    }
+
+    // COOKIE
+    match /cookie_accept/{docId} {
+      allow read, write: if true;
+    }
+
+    // CONFIG
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

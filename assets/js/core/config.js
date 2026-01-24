@@ -13,6 +13,9 @@ export const CONFIG = {
   DELETE_ENDPOINT:
     "https://us-central1-lycee-europe-private.cloudfunctions.net/deleteMessage",
 
+  UNLOCK_ENDPOINT:
+    "https://us-central1-lycee-europe-private.cloudfunctions.net/unlockAccess",
+
   // UX
   MAX_MESSAGE_LEN: 800,
   SEND_COOLDOWN_MS: 2500,

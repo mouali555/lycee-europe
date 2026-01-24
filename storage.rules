@@ -1,0 +1,31 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+
+    function isMember(spaceId) {
+      return signedIn()
+        && exists(/databases/(default)/documents/spaces/$(spaceId)/members/$(uid()));
+    }
+
+    // Chat images are stored under:
+    // chat/{spaceId}/{roomId}/{uid}/{timestamp}.{ext}
+    match /chat/{spaceId}/{roomId}/{userId}/{fileName} {
+      allow read: if isMember(spaceId);
+
+      // Only the owner can upload to their folder.
+      // Restrict to images up to 2MB (matches client).
+      allow write: if signedIn()
+        && userId == uid()
+        && request.resource.size < 2 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Deny everything else by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

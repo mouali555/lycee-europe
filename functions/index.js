@@ -53,6 +53,83 @@ function sendError(res, status, code, message) {
   return res.status(status).json({ ok: false, code, message });
 }
 
+
+exports.unlockAccess = onRequest(
+  {
+    region: "us-central1",
+    cors: true,
+  },
+  async (req, res) => {
+    try {
+      if (req.method !== "POST") {
+        return sendError(res, 405, "METHOD_NOT_ALLOWED", "Use POST");
+      }
+
+      const token = extractBearerToken(req);
+      if (!token) return sendError(res, 401, "AUTH_REQUIRED", "Missing bearer token");
+
+      let decoded;
+      try {
+        decoded = await admin.auth().verifyIdToken(token);
+      } catch (e) {
+        console.warn("verifyIdToken_failed", e);
+        return sendError(res, 401, "AUTH_INVALID", "Invalid Firebase ID token");
+      }
+
+      const uid = decoded.uid;
+      if (!rateLimit(uid)) {
+        return sendError(res, 429, "RATE_LIMIT", "Too many requests, please slow down");
+      }
+
+      const body = req.body || {};
+      const spaceId = String(body.spaceId || "").trim();
+      const code = String(body.code || "").trim().toUpperCase();
+
+      if (!spaceId) return sendError(res, 400, "SPACE_REQUIRED", "Missing spaceId");
+      if (!code) return sendError(res, 400, "CODE_REQUIRED", "Missing code");
+
+      // ✅ Code check (server-side)
+      if (code !== "ADMINCIEL") {
+        return sendError(res, 403, "ACCESS_DENIED", "Invalid code");
+      }
+
+      const db = admin.firestore();
+      const memberRef = db.doc(`spaces/${spaceId}/members/${uid}`);
+      const memberSnap = await memberRef.get();
+      if (memberSnap.exists) {
+        return res.json({ ok: true, already: true });
+      }
+
+      // Create membership (server-side). Client cannot do this.
+      const displayName = decoded.name || decoded.email || "User";
+      const photoURL = decoded.picture || null;
+
+      await memberRef.set({
+        role: "member",
+        displayName,
+        photoURL,
+        joinedAt: admin.firestore.FieldValue.serverTimestamp(),
+        unlockedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      // Optional: store a server-managed flag for auditing (not used for auth)
+      const userRef = db.doc(`users/${uid}`);
+      await userRef.set(
+        {
+          flags: { adminciel: true },
+          unlockedAt: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      return res.json({ ok: true, already: false });
+    } catch (e) {
+      console.error("unlockAccess_failed", e);
+      return sendError(res, 500, "SERVER_ERROR", "Unexpected error");
+    }
+  }
+);
+
 exports.aiReply = onRequest(
   {
     region: "us-central1",

@@ -2,6 +2,7 @@
 import { CONFIG } from "../core/config.js";
 import { nowStamp } from "../core/utils.js";
 import { loginGoogle, logout, watchAuth } from "../services/authService.js";
+import { unlockAccess } from "../services/accessService.js";
 import {
   ensureUserDoc,
   getProfile,
@@ -10,7 +11,6 @@ import {
 } from "../services/userService.js";
 import {
   checkMembership,
-  joinWithInvite,
   subscribeRoomMessages,
   sendRoomMessage,
 } from "../services/chatService.js";
@@ -168,7 +168,7 @@ const msgList = new MessageList({
   newMsgBtn,
   onReact: async ({ id, emoji }) => {
     if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
-    if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
+    if (!isMember) return msgList.addSystem("ACCESS_DENIED: code required");
     if (!id || !emoji) return;
     try {
       await toggleRoomMessageReaction({
@@ -441,21 +441,26 @@ async function joinFlow() {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
   const code = inviteCode?.value || "";
   try {
-    const r = await joinWithInvite(CONFIG.SPACE_ID, code, currentUser);
+    const r = await unlockAccess({ spaceId: CONFIG.SPACE_ID, code });
     isMember = true;
-    msgList.addSystem(r.already ? "ALREADY_MEMBER" : "INVITE_OK");
-    if (!r.already) {
-      try {
-        await grantKeyToMe("BRONZE");
-      } catch {}
-    }
+
+    // Save last successful code (device-local) to reduce friction
+    try { localStorage.setItem("le_last_code", String(code).trim().toUpperCase()); } catch {}
+
+    msgList.addSystem(r?.already ? "ALREADY_UNLOCKED" : "UNLOCK_OK");
+
+    // Now that access is unlocked, reveal labels + start listener
+    if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
+    if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
+
     setTerminal("authenticated");
     startListener();
   } catch (e) {
-    dbgErr(e, "INVITE_FAILED");
-    msgList.addSystem(`INVITE_FAILED: ${e?.message || "unknown"}`);
+    dbgErr(e, "UNLOCK_FAILED");
+    msgList.addSystem(`ACCESS_DENIED: ${e?.message || "unknown"}`);
   }
 }
+
 
 // ===== Send text / commands / IA =====
 async function sendMessage() {
@@ -499,7 +504,7 @@ async function sendMessage() {
 
   // IA
   if (lower.startsWith("@ia ") || lower.startsWith("@ai ")) {
-    if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
+    if (!isMember) return msgList.addSystem("ACCESS_DENIED: code required");
     const prompt = raw.slice(4).trim();
     if (!prompt) return msgList.addSystem("AI_USAGE: @ia ton message");
 
@@ -549,7 +554,7 @@ async function sendMessage() {
   }
 
   // Message normal
-  if (!isMember) return msgList.addSystem("ACCESS_DENIED: invite required");
+  if (!isMember) return msgList.addSystem("ACCESS_DENIED: code required");
 
   try {
     await sendRoomMessage(CONFIG.SPACE_ID, CONFIG.ROOM_ID, {
@@ -576,8 +581,8 @@ async function sendMessage() {
 }
 
 // ===== Init UI =====
-if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
-if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
+if (spaceName) spaceName.textContent = "—";
+if (roomName) roomName.textContent = "—";
 
 setInterval(() => {
   if (clockEl) clockEl.textContent = nowStamp();
@@ -644,7 +649,7 @@ imgInput?.addEventListener("change", async (e) => {
   }
 
   if (!isMember) {
-    msgList.addSystem("ACCESS_DENIED: invite required");
+    msgList.addSystem("ACCESS_DENIED: code required");
     imgInput.value = "";
     return;
   }
@@ -748,18 +753,18 @@ watchAuth(async (user) => {
       isMember = await checkMembership(CONFIG.SPACE_ID, currentUser.uid);
       if (!isMember) {
         // Auto-unlock if a valid invite was used previously on this device.
-        const lastInvite = (() => {
+        const lastCode = (() => {
           try {
-            return localStorage.getItem("le_last_invite");
+            return localStorage.getItem("le_last_code");
           } catch {
             return null;
           }
         })();
 
-        if (lastInvite) {
+        if (lastCode) {
           try {
-            msgList.addSystem("AUTO_INVITE: trying saved code...");
-            await joinWithInvite(CONFIG.SPACE_ID, lastInvite, currentUser);
+            msgList.addSystem("AUTO_CODE: trying saved code...");
+            await unlockAccess({ spaceId: CONFIG.SPACE_ID, code: lastCode });
             isMember = await checkMembership(CONFIG.SPACE_ID, currentUser.uid);
           } catch (e) {
             // Ignore: user can still enter an invite manually.
@@ -769,13 +774,15 @@ watchAuth(async (user) => {
 
         if (isMember) {
           msgList.addSystem("ACCESS_OK");
+          if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
+          if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
           setTerminal("authenticated");
           startListener();
           return;
         }
 
         msgList.clear();
-        msgList.addSystem("ACCESS_DENIED: invite required");
+        msgList.addSystem("ACCESS_DENIED: code required");
         setTerminal("join required");
         return;
       }
