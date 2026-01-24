@@ -43,6 +43,7 @@
   <link rel="stylesheet" href="./assets/css/components.css" />
 
   <script type="module" src="./assets/js/main.js"></script>
+  <script type="module" src="./assets/js/contact.js"></script>
 </head>
 
 <body>
@@ -121,13 +122,45 @@
         </article>
       </div>
 
-      <div class="card cardPad" style="margin-top:18px" data-reveal>
-        <h2 style="font-size:var(--step-2); margin-bottom:10px">Remarque</h2>
-        <p>
-          Cette page est volontairement minimaliste (site privé). Si tu veux un formulaire d’assistance complet,
-          je peux l’ajouter avec un backend (Firebase/Email) en version suivante.
-        </p>
-      </div>
+      <form id="contactForm" class="card cardPad" style="margin-top:18px" data-reveal novalidate>
+        <h2 style="font-size:var(--step-2); margin-bottom:10px">Envoyer un message</h2>
+        <p class="muted">Réponse rapide : donne le plus de détails possible (page, action, capture si besoin).</p>
+
+        <div class="grid grid2" style="margin-top:8px">
+          <div>
+            <label class="field" for="cName">
+              <span>Nom</span>
+              <input id="cName" name="name" class="input" type="text" autocomplete="name" required minlength="2" />
+              <span class="fieldError" id="errName" aria-live="polite"></span>
+            </label>
+          </div>
+          <div>
+            <label class="field" for="cEmail">
+              <span>Email</span>
+              <input id="cEmail" name="email" class="input" type="email" autocomplete="email" required />
+              <span class="fieldError" id="errEmail" aria-live="polite"></span>
+            </label>
+          </div>
+        </div>
+
+        <label class="field" for="cSubject">
+          <span>Sujet</span>
+          <input id="cSubject" name="subject" class="input" type="text" required minlength="3" />
+          <span class="fieldError" id="errSubject" aria-live="polite"></span>
+        </label>
+
+        <label class="field" for="cMessage">
+          <span>Message</span>
+          <textarea id="cMessage" name="message" class="input" rows="6" required minlength="10" placeholder="Décris ton besoin / bug…"></textarea>
+          <span class="fieldError" id="errMessage" aria-live="polite"></span>
+        </label>
+
+        <div class="modalActions" style="margin-top:10px">
+          <button id="contactSubmit" class="btn btn--primary" type="submit">Envoyer</button>
+          <button class="btn" type="reset">Effacer</button>
+          <span id="contactStatus" role="status" aria-live="polite" class="muted"></span>
+        </div>
+      </form>
     </div>
   </main>
 

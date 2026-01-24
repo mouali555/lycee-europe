@@ -8,7 +8,7 @@
   - Offline fallback page if navigation fails
 */
 
-const VERSION = "le-sw-v2";
+const VERSION = "le-sw-v3";
 const OFFLINE_URL = "./offline.html";
 
 // Keep the list short: it should be the minimum shell required to render something.
@@ -30,6 +30,7 @@ const CORE_ASSETS = [
   "./assets/css/legal.css",
   "./assets/js/main.js",
   "./assets/js/landing.js",
+  "./assets/js/contact.js",
   "./assets/img/favicon.svg",
   "./manifest.webmanifest",
   "./assets/icons/icon-192.png",

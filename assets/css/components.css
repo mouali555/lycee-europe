@@ -293,6 +293,20 @@
   margin-top: 12px;
 }
 
+/* Form helpers */
+.field{
+  display:flex;
+  flex-direction:column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.fieldError{
+  min-height: 1.2em;
+  color: rgba(255, 107, 107, 0.92);
+  font-size: 0.92em;
+}
+
 /* Input fields */
 .input{
   width: 100%;
@@ -311,6 +325,15 @@
 
 .input::placeholder{
   color: var(--muted-2);
+}
+
+/* ✅ S008: Autofill lisible (Chrome/Safari) */
+.input:-webkit-autofill,
+textarea.input:-webkit-autofill{
+  -webkit-text-fill-color: var(--text);
+  transition: background-color 9999s ease-out 0s;
+  box-shadow: 0 0 0px 1000px var(--surface) inset;
+  border-color: var(--border);
 }
 
 /* Responsive breakpoints */

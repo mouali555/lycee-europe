@@ -17,8 +17,10 @@ const storage = getStorage(app);
  */
 export async function uploadChatImage({ spaceId, roomId, uid, file }) {
   if (!file) throw new Error("NO_FILE");
+  if (navigator.onLine === false) throw new Error("OFFLINE");
   if (!file.type.startsWith("image/")) throw new Error("NOT_IMAGE");
-  if (file.size > 2 * 1024 * 1024) throw new Error("IMAGE_TOO_LARGE"); // 2 Mo max
+  // Tolérance raisonnable pour mobile (évite les crashs + uploads interminables)
+  if (file.size > 8 * 1024 * 1024) throw new Error("IMAGE_TOO_LARGE"); // 8 Mo max
 
   const ts = Date.now();
   const ext = (file.name.split(".").pop() || "jpg").toLowerCase();

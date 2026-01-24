@@ -296,7 +296,7 @@ export class MessageList {
   addSystem(text) {
     const div = document.createElement("div");
     div.className = "msg sys";
-    div.innerHTML = `<span class="system">[SYSTEM]</span> ${esc(text)}`;
+    div.innerHTML = `<span class="system">[SYSTÈME]</span> ${esc(text)}`;
     this.root.appendChild(div);
     this.scrollToBottom();
   }

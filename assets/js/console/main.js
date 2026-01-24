@@ -54,6 +54,7 @@ const roomName = document.getElementById("roomName");
 const messagesEl = document.getElementById("messages");
 const newMsgBtn = document.getElementById("newMsgBtn");
 const offlineBanner = document.getElementById("offlineBanner");
+const offlineRetry = document.getElementById("offlineRetry");
 
 // Sidebar mobile toggle
 const sidebarToggle = document.getElementById("sidebarToggle");
@@ -116,8 +117,22 @@ function updateConnectivityUI() {
 
 function updateCharCount() {
   if (!charCount) return;
-  const n = (msgInput?.value || "").length;
-  charCount.textContent = `${n}/${CONFIG.MAX_MESSAGE_LEN}`;
+  if (!msgInput) return;
+
+  // ✅ S027: limiter proprement (coller 900+ chars, mobile...)
+  const max = CONFIG.MAX_MESSAGE_LEN || 800;
+  let v = String(msgInput.value || "");
+  if (v.length > max) {
+    // garde le curseur au bon endroit si possible
+    const caret = msgInput.selectionStart;
+    msgInput.value = v.slice(0, max);
+    try {
+      const c = Math.min(caret ?? max, max);
+      msgInput.setSelectionRange(c, c);
+    } catch {}
+    v = msgInput.value;
+  }
+  charCount.textContent = `${v.length}/${max}`;
 }
 
 function openProfile() {
@@ -252,6 +267,7 @@ let userKeys = [];
 let userRank = "BRONZE";
 let lastSentAt = 0;
 let joinBusy = false;
+let sendInFlight = false;
 
 // ===== Message list UI =====
 const msgList = new MessageList({
@@ -470,6 +486,25 @@ function startListener() {
   unsub = subscribeRoomMessages(CONFIG.SPACE_ID, CONFIG.ROOM_ID, (ev) => {
     const type = ev?.type || "added";
 
+    // ✅ S014: session expirée / permission denied / erreurs snapshot
+    if (type === "error") {
+      const err = ev?.error;
+      updateConnectivityUI();
+      const code = String(err?.code || err?.message || "");
+
+      if (/permission-denied|unauthenticated|401|403/i.test(code)) {
+        msgList.addSystem("SESSION_EXPIRED: reconnecte-toi");
+        setTerminal("session expired");
+        // reset state + logout proprement
+        try {
+          logout();
+        } catch {}
+      } else {
+        msgList.addSystem(`NETWORK_ERROR: ${code || "unknown"}`);
+      }
+      return;
+    }
+
     if (type === "removed") {
       msgList.removeMessage(ev.id);
       return;
@@ -531,18 +566,31 @@ function startListener() {
 async function joinFlow() {
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
   if (joinBusy) return;
+
+  // ✅ S033: validation immédiate (pas de requête si vide)
+  const code = String(inviteCode?.value || "").trim();
+  if (!code) {
+    msgList.addSystem("CODE_REQUIRED: entre ton code d'invite");
+    inviteCode?.focus?.();
+    return;
+  }
+
   joinBusy = true;
   if (joinBtn) {
     joinBtn.disabled = true;
     joinBtn.setAttribute("aria-busy", "true");
   }
-  const code = inviteCode?.value || "";
   try {
     const r = await unlockAccess({ spaceId: CONFIG.SPACE_ID, code });
-    isMember = true;
+
+    // ✅ S035: on confirme l'accès côté Firestore (source of truth)
+    isMember = await checkMembership(CONFIG.SPACE_ID, currentUser.uid);
+    if (!isMember) throw new Error("ACCESS_NOT_READY");
 
     // Save last successful code (device-local) to reduce friction
-    try { localStorage.setItem("le_last_code", String(code).trim().toUpperCase()); } catch {}
+    try {
+      localStorage.setItem("le_last_code", String(code).trim().toUpperCase());
+    } catch {}
 
     msgList.addSystem(r?.already ? "ALREADY_UNLOCKED" : "UNLOCK_OK");
 
@@ -551,10 +599,25 @@ async function joinFlow() {
     if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
 
     setTerminal("authenticated");
+
+    // Si l'utilisateur a logout pendant le join, on n'active rien
+    if (!currentUser) return;
     startListener();
   } catch (e) {
     dbgErr(e, "UNLOCK_FAILED");
-    msgList.addSystem(`ACCESS_DENIED: ${e?.message || "unknown"}`);
+    const codeMsg = String(e?.message || "");
+    // ✅ S034: messages lisibles
+    if (codeMsg === "CODE_REQUIRED") {
+      msgList.addSystem("CODE_REQUIRED: entre ton code d'invite");
+      inviteCode?.focus?.();
+    } else if (codeMsg === "CODE_INVALID") {
+      msgList.addSystem("CODE_INVALID: code incorrect");
+      inviteCode?.select?.();
+    } else if (codeMsg === "ACCESS_NOT_READY") {
+      msgList.addSystem("UNLOCK_OK: réessaie dans 1 seconde");
+    } else {
+      msgList.addSystem(`ACCESS_DENIED: ${codeMsg || "unknown"}`);
+    }
   } finally {
     joinBusy = false;
     if (joinBtn) {
@@ -570,13 +633,27 @@ async function sendMessage() {
   const raw = (msgInput?.value || "").trim();
   if (!raw) return;
   if (!currentUser) return msgList.addSystem("AUTH_REQUIRED.");
+  if (navigator.onLine === false) {
+    updateConnectivityUI();
+    return msgList.addSystem("OFFLINE: impossible d'envoyer (pas de réseau)");
+  }
 
   const now = Date.now();
   if (now - lastSentAt < CONFIG.SEND_COOLDOWN_MS)
     return msgList.addSystem("SLOWMODE 2.5s");
   lastSentAt = now;
 
+  // ✅ S026 / S069: anti double-send
+  if (sendInFlight) return;
+  sendInFlight = true;
+  try {
+    sendBtn?.setAttribute("aria-busy", "true");
+    if (sendBtn) sendBtn.disabled = true;
+  } catch {}
+
   const lower = raw.toLowerCase();
+
+  try {
 
   // Slash commands
   if (lower === "/help") {
@@ -681,6 +758,14 @@ async function sendMessage() {
     dbgErr(e, "SEND_TEXT_FAILED");
     msgList.addSystem(`SEND_FAILED: ${e?.code || e?.message || "unknown"}`);
   }
+
+  } finally {
+    sendInFlight = false;
+    try {
+      sendBtn?.removeAttribute("aria-busy");
+      if (sendBtn) sendBtn.disabled = false;
+    } catch {}
+  }
 }
 
 // ===== Init UI =====
@@ -697,6 +782,13 @@ updateCharCount();
 
 window.addEventListener("online", updateConnectivityUI);
 window.addEventListener("offline", updateConnectivityUI);
+
+offlineRetry?.addEventListener("click", () => {
+  // ✅ S017/S018: un retry simple et fiable
+  try {
+    location.reload();
+  } catch {}
+});
 
 // Auth buttons
 btnLogin?.addEventListener("click", async () => {
@@ -720,7 +812,15 @@ btnLogout?.addEventListener("click", async () => {
 // Send text
 sendBtn?.addEventListener("click", sendMessage);
 msgInput?.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") sendMessage();
+  // ✅ S028: IME composition stable
+  if (e.key !== "Enter") return;
+  if (e.isComposing) return;
+
+  // Shift+Enter = nouvelle ligne (si tu veux)
+  if (e.shiftKey) return;
+
+  e.preventDefault();
+  sendMessage();
 });
 msgInput?.addEventListener("input", updateCharCount);
 
@@ -743,6 +843,7 @@ imgBtn?.addEventListener("click", () => {
 
 imgInput?.addEventListener("change", async (e) => {
   const file = e.target.files?.[0];
+  // ✅ S030: cancel = stable
   if (!file) return;
 
   if (!currentUser) {
@@ -786,7 +887,17 @@ imgInput?.addEventListener("change", async (e) => {
   } catch (err) {
     console.error(err);
     dbgErr(err, "UPLOAD_IMAGE_FAILED");
-    msgList.addSystem(`IMAGE_FAILED: ${err?.code || err?.message || "unknown"}`);
+    const msg = String(err?.message || err?.code || "unknown");
+    if (msg === "OFFLINE") {
+      msgList.addSystem("OFFLINE: upload impossible sans réseau");
+      updateConnectivityUI();
+    } else if (msg === "NOT_IMAGE") {
+      msgList.addSystem("NOT_IMAGE: uniquement des images (jpg/png/webp)");
+    } else if (msg === "IMAGE_TOO_LARGE") {
+      msgList.addSystem("IMAGE_TOO_LARGE: max 8 Mo");
+    } else {
+      msgList.addSystem(`IMAGE_FAILED: ${msg}`);
+    }
   } finally {
     imgInput.value = "";
   }
@@ -891,6 +1002,8 @@ watchAuth(async (user) => {
       }
 
       msgList.addSystem("ACCESS_OK");
+      if (spaceName) spaceName.textContent = CONFIG.SPACE_LABEL;
+      if (roomName) roomName.textContent = CONFIG.ROOM_LABEL;
       setTerminal("authenticated");
       startListener();
     } catch (e) {

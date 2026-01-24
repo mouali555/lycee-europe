@@ -132,6 +132,81 @@ exports.unlockAccess = onRequest(
   }
 );
 
+// ------------------------------------------------------------
+// Contact (support) — simple endpoint HTTP
+// ------------------------------------------------------------
+// Stocke les messages dans Firestore (collection "contact_messages")
+// Pas besoin d'auth pour un support public minimal.
+
+const RL_CONTACT = new Map();
+function rateLimitContact(ip, max = 6, windowMs = 60_000) {
+  const now = Date.now();
+  const arr = RL_CONTACT.get(ip) || [];
+  const keep = arr.filter((t) => now - t < windowMs);
+  keep.push(now);
+  RL_CONTACT.set(ip, keep);
+  return keep.length <= max;
+}
+
+function getClientIp(req) {
+  const xf = String(req.headers["x-forwarded-for"] || "");
+  const first = xf.split(",")[0].trim();
+  return first || req.ip || "unknown";
+}
+
+exports.contactMessage = onRequest(
+  {
+    region: "us-central1",
+    cors: true,
+  },
+  async (req, res) => {
+    try {
+      if (req.method !== "POST") {
+        return sendError(res, 405, "METHOD_NOT_ALLOWED", "Use POST");
+      }
+
+      const ip = getClientIp(req);
+      if (!rateLimitContact(ip)) {
+        return sendError(res, 429, "RATE_LIMIT", "Too many messages");
+      }
+
+      const body = req.body || {};
+      const name = String(body.name || "").trim();
+      const email = String(body.email || "").trim();
+      const subject = String(body.subject || "").trim();
+      const message = String(body.message || "").trim();
+
+      if (!name || name.length < 2) {
+        return sendError(res, 400, "NAME_REQUIRED", "Name is required");
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(email)) {
+        return sendError(res, 400, "EMAIL_INVALID", "Invalid email");
+      }
+      if (!subject || subject.length < 3) {
+        return sendError(res, 400, "SUBJECT_REQUIRED", "Subject is required");
+      }
+      if (!message || message.length < 10) {
+        return sendError(res, 400, "MESSAGE_REQUIRED", "Message is required");
+      }
+
+      await admin.firestore().collection("contact_messages").add({
+        name,
+        email,
+        subject,
+        message,
+        meta: body.meta || null,
+        ip,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      return res.json({ ok: true });
+    } catch (e) {
+      console.error("contactMessage_failed", e);
+      return sendError(res, 500, "SERVER_ERROR", "Server error");
+    }
+  }
+);
+
 exports.aiReply = onRequest(
   {
     region: "us-central1",
