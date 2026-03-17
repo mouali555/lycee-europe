@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Étudiant - Lycée Europe</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Lycée Europe <span class="badge">BTS</span></div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Accueil</a>
+            <a href="chat.html">Tchat</a>
+            <button id="logoutBtn" class="btn btn-outline" style="display: none;">Se déconnecter</button>
+            <a href="login.html" id="loginLink" class="btn btn-primary">Connexion</a>
+        </div>
+    </nav>
+
+    <main class="container hero-section">
+        <div class="hero-content">
+            <h1>Bienvenue sur votre <span class="text-gradient">Espace Étudiant</span></h1>
+            <p>La plateforme dédiée aux élèves du BTS du Lycée Europe. Communiquez avec vos camarades, partagez vos ressources et bien plus.</p>
+            <div class="hero-actions">
+                <a href="chat.html" class="btn btn-primary btn-large">Rejoindre le Tchat</a>
+                <a href="#features" class="btn btn-outline btn-large">Découvrir les fonctionnalités</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="glass-card decorative-card">
+                <div class="mock-chat">
+                    <div class="mock-message received">Salut ! Quelqu'un a le cours de dev de ce matin ?</div>
+                    <div class="mock-message sent">Oui je te l'envoie tout de suite !</div>
+                    <div class="mock-message received">Super merci 🙏</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="scripts/app.js"></script>
+</body>
+</html>
