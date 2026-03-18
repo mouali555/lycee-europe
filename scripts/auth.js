@@ -102,3 +102,4 @@ onAuthStateChanged(auth, (user) => {
         if (loginLink) loginLink.style.display = 'inline-block';
         if (logoutBtn) logoutBtn.style.display = 'none';
     }
+});
