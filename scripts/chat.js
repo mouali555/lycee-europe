@@ -14,8 +14,8 @@ import {
 // Sécurisation de la page : Si pas connecté, redirection vers /login.html
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        console.log("Utilisateur non connecté, redirection vers login...");
-        window.location.assign("login.html");
+        console.log("Utilisateur non connecté, redirection vers l'accueil...");
+        window.location.assign("index.html");
     } else {
         // Affichage de l'email de l'utilisateur
         document.getElementById('userEmailDisplay').textContent = user.email;

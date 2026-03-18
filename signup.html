@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SITE CRÉÉ PAR LES BTS CIEL POUR LES BTS CIEL</title>
-    <!-- On charge uniquement le thème spatial pour cette page -->
+    <title>Créer un compte - Lycée Europe</title>
     <link rel="stylesheet" href="styles/space-theme.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="space-body">
-    <!-- Fond étoilé -->
     <div class="stars"></div>
     
     <div class="space-container">
-        <!-- Titre principal -->
-        <h1 class="space-title">SITE CRÉÉ PAR LES BTS CIEL POUR LES BTS CIEL</h1>
+        <h1 class="space-title">REJOINDRE LE RÉSEAU BTS CIEL</h1>
         
-        <!-- Carte Glassmorphism -->
         <div class="space-card">
-            
-            <!-- Formulaire de connexion -->
-            <form id="loginForm" class="space-form">
+            <form id="signupForm" class="space-form">
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.5;">
+                    Veuillez utiliser votre adresse e-mail fournie par le lycée.<br> Le mot de passe doit contenir <strong>au moins 6 caractères</strong>.
+                </p>
+
                 <div class="form-group">
                     <input type="email" id="email" required placeholder="MAIL" class="space-input">
                 </div>
@@ -31,15 +29,12 @@
                     <input type="password" id="password" required placeholder="MDP" class="space-input">
                 </div>
                 
-                <!-- Zone d'affichage des erreurs -->
-                <div id="authError" class="error-message"></div>
+                <div id="authError" class="error-message" style="min-height: 20px;"></div>
 
-                <!-- Bouton de soumission -->
-                <button type="submit" class="space-btn">CONNEXION</button>
+                <button type="submit" class="space-btn">S'INSCRIRE</button>
                 
-                <!-- Lien pour Créer un compte sur l'autre page -->
                 <div class="auth-switch">
-                    <p><a href="signup.html">Créer un compte</a></p>
+                    <p><a href="index.html">← Retour à la connexion</a></p>
                 </div>
             </form>
         </div>

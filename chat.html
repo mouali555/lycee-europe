@@ -4,50 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tchat BTS - Lycée Europe</title>
-    <link rel="stylesheet" href="styles/main.css">
+    <!-- On charge le thème spatial -->
+    <link rel="stylesheet" href="styles/space-theme.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="chat-body">
-    <nav class="navbar chat-navbar">
-        <div class="nav-brand">
-            <a href="index.html" style="color: inherit; text-decoration: none;">Lycée Europe</a> 
-            <span class="badge">Chat</span>
+<body class="space-body" style="justify-content: flex-start;">
+    <div class="stars"></div>
+    
+    <nav class="space-navbar">
+        <div style="font-weight: 600; font-size: 1.1rem; letter-spacing: 1px;">
+            <a href="hub.html" style="color: inherit; text-decoration: none;">LYCÉE EUROPE</a> <span style="color: #60a5fa; margin-left: 0.5rem; font-size: 0.8rem; border: 1px solid #60a5fa; padding: 2px 6px; border-radius: 12px;">BTS CIEL</span>
         </div>
-        <div class="nav-links">
-            <span id="userEmailDisplay" class="user-email">Non connecté</span>
-            <button id="logoutBtn" class="btn btn-outline btn-small">Déconnexion</button>
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <span id="userEmailDisplay" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Chargement...</span>
+            <button id="logoutBtn" class="space-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; margin: 0;">DÉCONNEXION</button>
         </div>
     </nav>
 
-    <div class="chat-container">
-        <!-- Sidebar: Liste des salons potentiels -->
-        <aside class="chat-sidebar glass-card">
-            <h3>Salons</h3>
-            <ul class="room-list">
-                <li class="active"># général</li>
-                <li># dev-web</li>
-                <li># réseau</li>
-                <li># entraide</li>
-            </ul>
-        </aside>
-
-        <!-- Main chat area -->
-        <main class="chat-main glass-card">
-            <div class="chat-header">
-                <h2># général</h2>
-                <p>Tchat ouvert pour tous les étudiants du BTS.</p>
+    <div class="space-chat-layout">
+        <!-- Main chat area (Single Room) -->
+        <main class="space-chat-card">
+            <div class="space-chat-header">
+                <h2># GÉNÉRAL</h2>
+                <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0;">Tchat principal de la promotion BTS CIEL</p>
             </div>
             
-            <div class="chat-messages" id="messagesList">
-                <!-- Les messages s'afficheront ici dynamiquement -->
-                <div class="message system">Chargement des messages...</div>
+            <div class="space-chat-messages" id="messagesList">
+                <div class="message system">Connexion au réseau encrypté...</div>
             </div>
 
-            <form id="messageForm" class="message-form">
-                <input type="text" id="messageInput" placeholder="Écrivez votre message..." required autocomplete="off">
-                <button type="submit" class="btn btn-primary" id="sendBtn">Envoyer</button>
+            <form id="messageForm" class="space-chat-form">
+                <input type="text" id="messageInput" class="space-input" placeholder="Transmission de données..." required autocomplete="off">
+                <button type="submit" class="space-btn" id="sendBtn">ENVOYER</button>
             </form>
         </main>
     </div>

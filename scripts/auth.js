@@ -8,49 +8,43 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 // DOM Elements
-const authForm = document.getElementById('authForm');
+const loginForm = document.getElementById('loginForm');
+const signupForm = document.getElementById('signupForm');
 const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const authError = document.getElementById('authError');
-const switchAuthModeBtn = document.getElementById('switchAuthMode');
-const authModeText = document.getElementById('authModeText');
-const submitBtn = document.querySelector('#authForm button[type="submit"]');
 
-if (authForm) {
-    // Action 1: Connexion (via le bouton principal)
-    authForm.addEventListener('submit', (e) => {
+if (loginForm) {
+    // Action 1: Connexion sur index.html
+    loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = emailInput.value;
         const password = passwordInput.value;
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
 
-        authError.textContent = "";
+        if (authError) authError.textContent = "";
         if (submitBtn) submitBtn.disabled = true;
 
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log("Connecté:", userCredential.user);
-                window.location.assign("chat.html");
+                window.location.assign("hub.html");
             })
             .catch((error) => {
                 console.error("Erreur de connexion:", error);
-                authError.textContent = "Erreur : Email ou mot de passe incorrect.";
+                if (authError) authError.textContent = "Erreur : Email ou mot de passe incorrect.";
                 if (submitBtn) submitBtn.disabled = false;
             });
     });
 }
 
-if (switchAuthModeBtn) {
-    // Action 2: Création de compte directe au clic sur "Créer un compte"
-    switchAuthModeBtn.addEventListener('click', (e) => {
+if (signupForm) {
+    // Action 2: Création de compte sur signup.html
+    signupForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        const email = emailInput ? emailInput.value : '';
-        const password = passwordInput ? passwordInput.value : '';
-        
-        if (!email || !password) {
-            if (authError) authError.textContent = "Veuillez remplir l'email et le mot de passe avant de cliquer sur Créer un compte.";
-            return;
-        }
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const submitBtn = signupForm.querySelector('button[type="submit"]');
 
         if (authError) authError.textContent = "";
         if (submitBtn) submitBtn.disabled = true;
@@ -58,7 +52,7 @@ if (switchAuthModeBtn) {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log("Compte créé:", userCredential.user);
-                window.location.assign("chat.html");
+                window.location.assign("hub.html");
             })
             .catch((error) => {
                 console.error("Erreur de création:", error);
@@ -85,6 +79,10 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         // Utilisateur connecté
         if (loginLink) loginLink.style.display = 'none';
+        
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        if (userEmailDisplay) userEmailDisplay.textContent = user.email;
+
         if (logoutBtn) {
             logoutBtn.style.display = 'inline-block';
             logoutBtn.addEventListener('click', () => {
@@ -94,10 +92,10 @@ onAuthStateChanged(auth, (user) => {
             });
         }
         
-        // Redirection automatique vers le chat si on est sur la page d'accueil ou de login
+        // Redirection automatique vers le hub si on est sur la page d'accueil ou de login
         const path = window.location.pathname;
-        if (path.endsWith('index.html') || path.endsWith('login.html') || path === '/' || path.endsWith('/lycee-europe/')) {
-            window.location.replace("chat.html");
+        if (path.endsWith('index.html') || path.endsWith('login.html') || path.endsWith('signup.html') || path === '/' || path.endsWith('/lycee-europe/')) {
+            window.location.replace("hub.html");
         }
     } else {
         // Déconnecté
