@@ -50,7 +50,7 @@ if (signupForm) {
 
         // Sécurité : Vérification stricte du domaine email
         if (!email.toLowerCase().endsWith('@goofy.bz')) {
-            if (authError) authError.textContent = "Erreur : Seules les adresses se terminant par @goofy.bz sont autorisées.";
+            if (authError) authError.textContent = "Erreur : Seules les adresses fournis par les admins sont autorisées.";
             return;
         }
 
