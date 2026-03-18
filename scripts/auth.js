@@ -42,11 +42,18 @@ if (signupForm) {
     // Action 2: Création de compte sur signup.html
     signupForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const email = emailInput.value;
+        const email = emailInput.value.trim();
         const password = passwordInput.value;
         const submitBtn = signupForm.querySelector('button[type="submit"]');
 
         if (authError) authError.textContent = "";
+
+        // Sécurité : Vérification stricte du domaine email
+        if (!email.toLowerCase().endsWith('@goofy.bz')) {
+            if (authError) authError.textContent = "Erreur : Seules les adresses se terminant par @goofy.bz sont autorisées.";
+            return;
+        }
+
         if (submitBtn) submitBtn.disabled = true;
 
         createUserWithEmailAndPassword(auth, email, password)
