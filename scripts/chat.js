@@ -14,7 +14,8 @@ import {
 // Sécurisation de la page : Si pas connecté, redirection vers /login.html
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        window.location.href = "login.html";
+        console.log("Utilisateur non connecté, redirection vers login...");
+        window.location.assign("login.html");
     } else {
         // Affichage de l'email de l'utilisateur
         document.getElementById('userEmailDisplay').textContent = user.email;
@@ -26,7 +27,7 @@ onAuthStateChanged(auth, (user) => {
 // Déconnexion
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
     signOut(auth).then(() => {
-        window.location.href = "index.html";
+        window.location.assign("index.html");
     });
 });
 

@@ -1,0 +1,211 @@
+/* space-theme.css - Aesthetic requested by user */
+body.space-body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #040814;
+    background-image: radial-gradient(circle at 50% 50%, #0a1128 0%, #040814 100%);
+    color: #e2e8f0;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Background Stars */
+.stars {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+.stars::after {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.9), rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 200px 90px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 250px 200px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 300px 50px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 380px 150px, rgba(255,255,255,0.7), rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 100px 250px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 350px 300px, rgba(255,255,255,0.9), rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 400px 400px;
+    animation: stars-move 100s linear infinite;
+    opacity: 0.6;
+}
+@keyframes stars-move {
+    from { transform: translateY(0); }
+    to { transform: translateY(-400px); }
+}
+
+.space-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 550px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.space-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    margin-bottom: 2.5rem;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.space-card {
+    background: rgba(10, 15, 30, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(56, 116, 255, 0.2);
+    border-radius: 12px;
+    padding: 2.5rem;
+    width: 100%;
+    box-shadow: 0 0 40px rgba(0, 40, 120, 0.3), inset 0 0 20px rgba(56, 116, 255, 0.05);
+}
+
+.space-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    border: 1px solid rgba(56, 116, 255, 0.4);
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    background: rgba(15, 25, 50, 0.6);
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.icon-info {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #60a5fa;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #60a5fa;
+}
+
+.space-card-header span {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+}
+
+.space-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-group {
+    width: 100%;
+}
+
+.space-input {
+    width: 100%;
+    padding: 1.2rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    text-align: center;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.space-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 400;
+}
+
+.space-input:focus {
+    border-color: #3b82f6;
+    background: rgba(15, 25, 45, 0.5);
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+.space-btn {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 1.2rem;
+    background: transparent;
+    border: 1px solid #ffffff;
+    border-radius: 4px;
+    color: white;
+    font-weight: 500;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.space-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.auth-switch {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.auth-switch a {
+    color: #60a5fa;
+    text-decoration: none;
+    transition: color 0.3s;
+    font-weight: 500;
+}
+
+.auth-switch a:hover {
+    color: #93c5fd;
+    text-decoration: underline;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.9rem;
+    min-height: 20px;
+    text-shadow: 0 0 5px rgba(239, 68, 68, 0.3);
+}
+
+/* Scrollbar adjustment */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #040814;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e3a8a;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #3b82f6;
+}

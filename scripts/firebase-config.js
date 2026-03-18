@@ -28,6 +28,7 @@ try {
     console.log("🔥 Firebase Initialisé !");
 } catch (error) {
     console.error("Erreur d'initialisation Firebase. Avez-vous rempli les clés API ?", error);
+    alert("Erreur de connexion serveur. Consultez la console.");
 }
 
 export { app, auth, db };

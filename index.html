@@ -3,44 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Étudiant - Lycée Europe</title>
-    <link rel="stylesheet" href="styles/main.css">
-    <!-- Google Fonts: Inter -->
+    <title>SITE CRÉÉ PAR LES BTS CIEL POUR LES BTS CIEL</title>
+    <!-- On charge uniquement le thème spatial pour cette page -->
+    <link rel="stylesheet" href="styles/space-theme.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <nav class="navbar">
-        <div class="nav-brand">Lycée Europe <span class="badge">BTS</span></div>
-        <div class="nav-links">
-            <a href="index.html" class="active">Accueil</a>
-            <a href="chat.html">Tchat</a>
-            <button id="logoutBtn" class="btn btn-outline" style="display: none;">Se déconnecter</button>
-            <a href="login.html" id="loginLink" class="btn btn-primary">Connexion</a>
-        </div>
-    </nav>
-
-    <main class="container hero-section">
-        <div class="hero-content">
-            <h1>Bienvenue sur votre <span class="text-gradient">Espace Étudiant</span></h1>
-            <p>La plateforme dédiée aux élèves du BTS du Lycée Europe. Communiquez avec vos camarades, partagez vos ressources et bien plus.</p>
-            <div class="hero-actions">
-                <a href="chat.html" class="btn btn-primary btn-large">Rejoindre le Tchat</a>
-                <a href="#features" class="btn btn-outline btn-large">Découvrir les fonctionnalités</a>
+<body class="space-body">
+    <!-- Fond étoilé -->
+    <div class="stars"></div>
+    
+    <div class="space-container">
+        <!-- Titre principal -->
+        <h1 class="space-title">SITE CRÉÉ PAR LES BTS CIEL POUR LES BTS CIEL</h1>
+        
+        <!-- Carte Glassmorphism -->
+        <div class="space-card">
+            <!-- Header avec icône IMPORTANT -->
+            <div class="space-card-header">
+                <div class="icon-info">i</div>
+                <span>IMPORTANT</span>
             </div>
-        </div>
-        <div class="hero-image">
-            <div class="glass-card decorative-card">
-                <div class="mock-chat">
-                    <div class="mock-message received">Salut! Quelqu'un a le cours de dev de ce matin ?</div>
-                    <div class="mock-message sent">Oui je te l'envoie tout de suite !</div>
-                    <div class="mock-message received">Super merci 🙏</div>
+            
+            <!-- Formulaire de connexion -->
+            <form id="authForm" class="space-form">
+                <div class="form-group">
+                    <input type="email" id="email" required placeholder="MAIL" class="space-input">
                 </div>
-            </div>
-        </div>
-    </main>
+                
+                <div class="form-group">
+                    <input type="password" id="password" required placeholder="MDP" class="space-input">
+                </div>
+                
+                <!-- Zone d'affichage des erreurs -->
+                <div id="authError" class="error-message"></div>
 
-    <script src="scripts/app.js"></script>
+                <!-- Bouton de soumission -->
+                <button type="submit" class="space-btn" id="submitBtnDynamic">CONNEXION</button>
+                
+                <!-- Lien pour basculer Créer un compte / Se connecter -->
+                <div class="auth-switch">
+                    <p><span id="authModeText"></span> <a href="#" id="switchAuthMode">Créer un compte</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module" src="scripts/firebase-config.js"></script>
+    <script type="module" src="scripts/auth.js"></script>
 </body>
 </html>

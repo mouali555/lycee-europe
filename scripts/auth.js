@@ -16,64 +16,64 @@ const switchAuthModeBtn = document.getElementById('switchAuthMode');
 const authModeText = document.getElementById('authModeText');
 const submitBtn = document.querySelector('#authForm button[type="submit"]');
 
-// Mode: true = login (connexion), false = signup (inscription)
-let isLoginMode = true;
-
-if (switchAuthModeBtn) {
-    switchAuthModeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        isLoginMode = !isLoginMode;
-
-        if (isLoginMode) {
-            submitBtn.textContent = "Se connecter";
-            switchAuthModeBtn.textContent = "Créer un compte";
-            if (authModeText) authModeText.textContent = "Pas encore de compte ?";
-            document.querySelector('.auth-header p').textContent = "Connectez-vous à votre espace BTS";
-        } else {
-            submitBtn.textContent = "Créer mon compte";
-            switchAuthModeBtn.textContent = "Se connecter";
-            if (authModeText) authModeText.textContent = "Déjà un compte ?";
-            document.querySelector('.auth-header p').textContent = "Rejoignez l'espace de votre promotion";
-        }
-
-        authError.textContent = "";
-    });
-}
-
 if (authForm) {
+    // Action 1: Connexion (via le bouton principal)
     authForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const email = emailInput.value;
         const password = passwordInput.value;
 
         authError.textContent = "";
-        submitBtn.disabled = true;
+        if (submitBtn) submitBtn.disabled = true;
 
-        if (isLoginMode) {
-            // Connexion
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    console.log("Connecté:", userCredential.user);
-                    window.location.assign("chat.html");
-                })
-                .catch((error) => {
-                    console.error("Erreur de connexion:", error);
-                    authError.textContent = "Erreur : Email ou mot de passe incorrect.";
-                    submitBtn.disabled = false;
-                });
-        } else {
-            // Inscription
-            createUserWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    console.log("Compte créé:", userCredential.user);
-                    window.location.assign("chat.html");
-                })
-                .catch((error) => {
-                    console.error("Erreur de création:", error);
-                    authError.textContent = "Erreur : " + error.message;
-                    submitBtn.disabled = false;
-                });
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                console.log("Connecté:", userCredential.user);
+                window.location.assign("chat.html");
+            })
+            .catch((error) => {
+                console.error("Erreur de connexion:", error);
+                authError.textContent = "Erreur : Email ou mot de passe incorrect.";
+                if (submitBtn) submitBtn.disabled = false;
+            });
+    });
+}
+
+if (switchAuthModeBtn) {
+    // Action 2: Création de compte directe au clic sur "Créer un compte"
+    switchAuthModeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        const email = emailInput ? emailInput.value : '';
+        const password = passwordInput ? passwordInput.value : '';
+        
+        if (!email || !password) {
+            if (authError) authError.textContent = "Veuillez remplir l'email et le mot de passe avant de cliquer sur Créer un compte.";
+            return;
         }
+
+        if (authError) authError.textContent = "";
+        if (submitBtn) submitBtn.disabled = true;
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                console.log("Compte créé:", userCredential.user);
+                window.location.assign("chat.html");
+            })
+            .catch((error) => {
+                console.error("Erreur de création:", error);
+                // Traduction des erreurs Firebase courantes pour une meilleure UX
+                if (error.code === 'auth/email-already-in-use') {
+                    if (authError) authError.textContent = "Erreur : Cet email est déjà utilisé. Connectez-vous.";
+                } else if (error.code === 'auth/weak-password') {
+                    if (authError) authError.textContent = "Erreur : Le mot de passe doit faire au moins 6 caractères.";
+                } else if (error.code === 'auth/invalid-email') {
+                    if (authError) authError.textContent = "Erreur : L'adresse email n'est pas valide.";
+                } else {
+                    if (authError) authError.textContent = "Erreur : " + error.message;
+                }
+                if (submitBtn) submitBtn.disabled = false;
+            });
     });
 }
 
@@ -92,6 +92,12 @@ onAuthStateChanged(auth, (user) => {
                     window.location.href = "index.html";
                 });
             });
+        }
+        
+        // Redirection automatique vers le chat si on est sur la page d'accueil ou de login
+        const path = window.location.pathname;
+        if (path.endsWith('index.html') || path.endsWith('login.html') || path === '/' || path.endsWith('/lycee-europe/')) {
+            window.location.replace("chat.html");
         }
     } else {
         // Déconnecté
