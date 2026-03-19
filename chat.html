@@ -4,46 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tchat BTS - Lycée Europe</title>
-    <!-- On charge le thème spatial -->
+
+    <!-- Thème spatial -->
     <link rel="stylesheet" href="styles/space-theme.css">
+
+    <!-- Police Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="space-body" style="justify-content: flex-start;">
+<body class="space-body">
+
     <div class="stars"></div>
-    
-    <nav class="space-navbar">
-        <div style="font-weight: 600; font-size: 1.1rem; letter-spacing: 1px;">
-            <a href="hub.html" style="color: inherit; text-decoration: none;">LYCÉE EUROPE</a> <span style="color: #60a5fa; margin-left: 0.5rem; font-size: 0.8rem; border: 1px solid #60a5fa; padding: 2px 6px; border-radius: 12px;">BTS CIEL</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <span id="userEmailDisplay" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Chargement...</span>
-            <button id="logoutBtn" class="space-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; margin: 0;">DÉCONNEXION</button>
-        </div>
-    </nav>
 
-    <div class="space-chat-layout">
-        <!-- Main chat area (Single Room) -->
-        <main class="space-chat-card">
-            <div class="space-chat-header">
-                <h2># GÉNÉRAL</h2>
-                <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; margin-bottom: 0;">Tchat principal de la promotion BTS CIEL</p>
-            </div>
-            
-            <div class="space-chat-messages" id="messagesList">
-                <div class="message system">Connexion au réseau encrypté...</div>
+    <header class="space-header">
+        <nav class="space-navbar" aria-label="Navigation principale">
+            <div class="navbar-left">
+                <a href="hub.html" class="brand">LYCÉE EUROPE</a>
+                <span class="badge-bts">BTS CIEL</span>
             </div>
 
-            <form id="messageForm" class="space-chat-form">
-                <input type="text" id="messageInput" class="space-input" placeholder="Transmission de données..." required autocomplete="off">
-                <button type="submit" class="space-btn" id="sendBtn">ENVOYER</button>
+            <div class="navbar-right">
+                <span id="userEmailDisplay" class="user-email">Chargement...</span>
+                <span class="user-status-dot" aria-hidden="true"></span>
+                <span class="user-status-label">En ligne</span>
+                <button id="logoutBtn" class="space-btn btn-small" type="button">
+                    DÉCONNEXION
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="space-chat-layout" aria-label="Zone de discussion BTS CIEL">
+        <section class="space-chat-card" aria-labelledby="room-title">
+            <header class="space-chat-header">
+                <div>
+                    <h1 id="room-title"># GÉNÉRAL</h1>
+                    <p class="room-subtitle">
+                        Tchat principal de la promotion BTS CIEL — messages synchronisés en temps réel via Firebase.
+                    </p>
+                </div>
+                <div class="room-meta">
+                    <span class="room-pill">Canal public</span>
+                    <span class="room-pill room-pill-secure">Connexion sécurisée</span>
+                </div>
+            </header>
+
+            <div
+                class="space-chat-messages"
+                id="messagesList"
+                aria-live="polite"
+                aria-label="Messages du tchat"
+            >
+                <div class="message message--system">
+                    Connexion au réseau encrypté...
+                </div>
+            </div>
+
+            <form id="messageForm" class="space-chat-form" autocomplete="off">
+                <label for="messageInput" class="visually-hidden">Votre message</label>
+                <input
+                    type="text"
+                    id="messageInput"
+                    class="space-input"
+                    placeholder="Transmission de données..."
+                    required
+                >
+                <button
+                    type="submit"
+                    class="space-btn"
+                    id="sendBtn"
+                >
+                    ENVOYER
+                </button>
             </form>
-        </main>
-    </div>
+        </section>
+    </main>
 
-    <!-- Firebase SDKs -->
-    <script type="module" src="scripts/firebase-config.js"></script>
-    <script type="module" src="scripts/chat.js"></script>
+    <!-- Firebase + logique du tchat -->
+    <script type="module" src="scripts/firebase-config.js" defer></script>
+    <script type="module" src="scripts/chat.js" defer></script>
 </body>
 </html>
