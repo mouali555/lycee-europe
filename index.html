@@ -3,43 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SITE CRÉÉ PAR LES BTS CIEL POUR LES BTS CIEL</title>
-    <!-- On charge uniquement le thème spatial pour cette page -->
-    <link rel="stylesheet" href="styles/space-theme.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Connexion - Écosystème CIEL</title>
+    <link rel="stylesheet" href="styles/nature-theme.css">
 </head>
-<body class="space-body">
-    <!-- Fond étoilé -->
-    <div class="stars"></div>
+<body>
+    <div class="ambient-light"></div>
     
-    <div class="space-container">
+    <div class="center-container">
         <!-- Titre principal -->
-        <h1 class="space-title">SITE CRÉÉ PAR LES BTS CIEL POUR LES BTS CIEL</h1>
+        <h1 class="nature-title">ÉCOSYSTÈME BTS CIEL</h1>
         
         <!-- Carte Glassmorphism -->
-        <div class="space-card">
+        <div class="nature-card">
             
             <!-- Formulaire de connexion -->
-            <form id="loginForm" class="space-form">
-                <div class="form-group">
-                    <input type="email" id="email" required placeholder="MAIL" class="space-input">
+            <form id="loginForm" class="nature-form">
+                <div>
+                    <input type="email" id="email" required placeholder="Email Académique" class="nature-input">
                 </div>
                 
-                <div class="form-group">
-                    <input type="password" id="password" required placeholder="MDP" class="space-input">
+                <div>
+                    <input type="password" id="password" required placeholder="Mot de passe" class="nature-input">
                 </div>
                 
                 <!-- Zone d'affichage des erreurs -->
                 <div id="authError" class="error-message"></div>
 
                 <!-- Bouton de soumission -->
-                <button type="submit" class="space-btn">CONNEXION</button>
+                <button type="submit" class="nature-btn">CONNEXION</button>
                 
                 <!-- Lien pour Créer un compte sur l'autre page -->
                 <div class="auth-switch">
-                    <p><a href="signup.html">Créer un compte</a></p>
+                    <p><a href="signup.html">Créer un profil étudiant</a></p>
                 </div>
             </form>
         </div>

@@ -4,107 +4,492 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HUB - Lycée Europe</title>
-    <link rel="stylesheet" href="styles/space-theme.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .hub-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            width: 100%;
-            margin-top: 2.5rem;
+        /* CSS reset & variables */
+        :root {
+            /* Palette Forêt Mystique / Bioluminescence */
+            --bg-base: #0a0f0c;
+            --bg-glass: rgba(20, 31, 23, 0.6);
+            --bg-card: rgba(28, 43, 33, 0.5);
+            --primary: #4ade80; /* Nature green */
+            --primary-glow: #22c55e;
+            --text-main: #f0fdf4;
+            --text-muted: #86efac;
+            --border-glass: rgba(74, 222, 128, 0.15);
+            --accent: #facc15;
+            --danger: #ef4444;
         }
-        .hub-module {
-            background: rgba(15, 25, 50, 0.4);
-            border: 1px solid rgba(56, 116, 255, 0.3);
-            border-radius: 12px;
-            padding: 2.5rem 1.5rem;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(74, 222, 128, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(34, 197, 94, 0.08), transparent 25%);
+            overflow-x: hidden;
+        }
+
+        /* Ambient background animation */
+        .ambient-light {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at top right, rgba(74,222,128,0.1) 0%, transparent 40%),
+                radial-gradient(circle at bottom left, rgba(234,179,8,0.05) 0%, transparent 40%);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-glass);
+            padding: 2rem;
             display: flex;
             flex-direction: column;
+            gap: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .brand {
+            display: flex;
             align-items: center;
-            justify-content: center;
-            min-height: 180px;
+            gap: 1rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
         }
-        .hub-module:hover {
-            transform: translateY(-8px) scale(1.02);
-            background: rgba(30, 58, 138, 0.4);
-            border-color: rgba(56, 116, 255, 0.8);
-            box-shadow: 0 15px 40px rgba(0, 40, 120, 0.5), inset 0 0 20px rgba(56, 116, 255, 0.2);
+        
+        .brand-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-glow));
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; /* Organic shape */
+            display: flex; align-items: center; justify-content: center;
+            color: var(--bg-base);
+            font-size: 1.2rem;
+            animation: morph 8s ease-in-out infinite;
         }
-        .hub-module h3 {
-            color: white;
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            letter-spacing: 2px;
+
+        @keyframes morph {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+            34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+            67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+            100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
         }
-        .hub-module p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            line-height: 1.4;
+
+        .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+        .nav-item {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
-        /* Style des futurs modules bloqués */
-        .hub-module.locked {
-            opacity: 0.5;
+        .nav-item:hover, .nav-item.active {
+            background: rgba(74, 222, 128, 0.1);
+            color: var(--primary);
+            box-shadow: inset 0 0 20px rgba(74, 222, 128, 0.05);
+        }
+
+        /* Main Content */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 4rem;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Topbar */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .search-bar {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            width: 300px;
+            color: var(--text-main);
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        .search-bar:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+            width: 350px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 0.5rem 1rem 0.5rem 0.5rem;
+            border-radius: 40px;
+        }
+
+        .avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--primary-glow);
+            border: 2px solid var(--bg-base);
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--bg-base); font-weight: bold;
+        }
+
+        #logoutBtn {
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: var(--danger);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+        #logoutBtn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Hero Card */
+        .hero-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(20, 31, 23, 0.8));
+            border: 1px solid var(--border-glass);
+            border-radius: 30px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .hero-card::before {
+            content: ''; position: absolute; right: -50px; top: -50px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.2;
+            border-radius: 50%;
+            animation: pulse 6s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.1; }
+            100% { transform: scale(1.5); opacity: 0.3; }
+        }
+
+        .hero-title { font-size: 2.5rem; margin-bottom: 1rem; font-weight: 700; }
+        .hero-subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; line-height: 1.6; }
+
+        /* Modules Grid inside Main */
+        .modules-section {
+            margin-top: 3rem;
+        }
+        .section-title {
+            font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--text-main);
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .section-title::before {
+            content: ''; display: inline-block; width: 12px; height: 12px;
+            background: var(--primary); border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .module-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 30px 10px 30px 10px; /* Organic leaf-like border */
+            padding: 2rem;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+        }
+        .module-card::after {
+            content: ''; position: absolute; bottom: 0; right: 0;
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, rgba(74, 222, 128, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, 30%);
+            transition: all 0.4s ease;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-5px);
+            background: rgba(38, 58, 45, 0.6);
+            border-color: var(--primary);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(74, 222, 128, 0.05);
+            border-radius: 10px 30px 10px 30px; /* shape morph on hover */
+        }
+        .module-card:hover::after {
+            transform: translate(10%, 10%) scale(1.5);
+            background: radial-gradient(circle, rgba(74, 222, 128, 0.2) 0%, transparent 70%);
+        }
+
+        .module-icon {
+            font-size: 2rem; margin-bottom: 1rem;
+        }
+        .module-title { font-size: 1.3rem; margin-bottom: 0.5rem; font-weight: 600; z-index: 1; }
+        .module-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; z-index: 1; }
+
+        /* Locked modules modifier */
+        .module-card.locked {
+            opacity: 0.6;
             cursor: not-allowed;
-            border-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px; /* Rigid shape for locked */
+            border-color: rgba(255,255,255,0.05);
+            background: rgba(20,20,20,0.5);
         }
-        .hub-module.locked:hover {
+        .module-card.locked:hover {
             transform: none;
-            background: rgba(15, 25, 50, 0.4);
-            border-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
             box-shadow: none;
+        }
+        .locked-badge {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            background: rgba(0,0,0,0.5); padding: 0.2rem 0.6rem;
+            border-radius: 10px; font-size: 0.8rem; color: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 2;
+        }
+
+        /* Widgets Area */
+        .widget-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .widget {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        .widget h3 {
+            font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .activity-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+        .activity-item {
+            display: flex; gap: 1rem; align-items: flex-start;
+            padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .activity-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .act-icon {
+            width: 35px; height: 35px; border-radius: 50%;
+            background: rgba(74, 222, 128, 0.1); color: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .act-content p { font-size: 0.95rem; margin-bottom: 0.2rem; }
+        .act-time { font-size: 0.8rem; color: var(--text-muted); opacity: 0.7; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-glass); padding: 1rem; flex-direction: row; justify-content: space-between; align-items: center;}
+            .nav-menu { display: none; }
+            .main-wrapper { padding: 1rem 1.5rem; }
+            .topbar { flex-direction: column; gap: 1rem; align-items: stretch; }
+            .search-bar { width: 100%; border-radius: 15px;}
+            .search-bar:focus { width: 100%; }
         }
     </style>
 </head>
-<body class="space-body" style="justify-content: flex-start;">
-    <div class="stars"></div>
-    
-    <nav class="space-navbar">
-        <div style="font-weight: 600; font-size: 1.1rem; letter-spacing: 1px;">
-            LYCÉE EUROPE <span style="color: #60a5fa; margin-left: 0.5rem; font-size: 0.8rem; border: 1px solid #60a5fa; padding: 2px 6px; border-radius: 12px;">HUB</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 1.5rem;">
-            <span id="userEmailDisplay" style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Chargement...</span>
-            <button id="logoutBtn" class="space-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto; margin: 0;">DÉCONNEXION</button>
-        </div>
-    </nav>
+<body>
+    <div class="ambient-light"></div>
 
-    <div class="space-container" style="max-width: 900px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
-        <h1 class="space-title">PORTAIL BTS CIEL</h1>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">CI</div>
+            Lycée Europe
+        </div>
         
-        <div class="space-card" style="padding: 3rem;">
-            <p style="color: rgba(255,255,255,0.8); text-align: center; font-size: 1.05rem;">
-                Bienvenue sur le hub central. Sélectionnez un module pour commencer.
-            </p>
+        <ul class="nav-menu">
+            <li><a href="#" class="nav-item active"><span>🌱</span> Vue d'ensemble</a></li>
+            <li><a href="chat.html" class="nav-item"><span>💬</span> Tchat Général</a></li>
+            <li><a href="#" class="nav-item"><span>🧪</span> Laboratoire & TP</a></li>
+            <li><a href="#" class="nav-item"><span>📁</span> Ressources</a></li>
+            <li><a href="#" class="nav-item"><span>📅</span> Agenda</a></li>
+        </ul>
 
-            <div class="hub-grid">
-                <!-- Module Tchat (Actif) -->
-                <a href="chat.html" class="hub-module">
-                    <h3>TCHAT</h3>
-                    <p>Salon de communication général entre les étudiants</p>
-                </a>
-                
-                <!-- Modules Futurs (Désactivés) -->
-                <a href="#" class="hub-module locked" onclick="event.preventDefault();">
-                    <h3>COURS & TP</h3>
-                    <p>Module en cours de développement...</p>
-                </a>
-                
-                <a href="#" class="hub-module locked" onclick="event.preventDefault();">
-                    <h3>RESSOURCES</h3>
-                    <p>Module en cours de développement...</p>
-                </a>
+        <div style="margin-top: auto; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 15px; text-align: center; font-size: 0.8rem; color: var(--text-muted);">
+            Prochaine Évaluation:<br>
+            <strong style="color: var(--text-main);">Réseaux & Sécurité</strong> (J-3)
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <input type="text" class="search-bar" placeholder="Rechercher un cours, un TP, un étudiant...">
+            
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <div class="user-profile">
+                    <div class="avatar" id="avatarDisplay">E</div>
+                    <div style="display: flex; flex-direction: column;">
+                        <span id="userEmailDisplay" style="font-size: 0.9rem; font-weight: 500;">Chargement...</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">BTS CIEL - 1ère Année</span>
+                    </div>
+                </div>
+                <button id="logoutBtn">Déconnexion</button>
+            </div>
+        </header>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column: Hero & Modules -->
+            <div>
+                <div class="hero-card">
+                    <h1 class="hero-title">Bonjour, bienvenue sur ton Écosystème.</h1>
+                    <p class="hero-subtitle">
+                        Retrouve ici tous tes outils de travail, échange avec tes camarades dans le tchat, et accède à l'ensemble de tes ressources de formation.
+                    </p>
+                </div>
+
+                <div class="modules-section">
+                    <h2 class="section-title">Espaces de travail</h2>
+                    <div class="modules-grid">
+                        
+                        <!-- Module Actif -->
+                        <a href="chat.html" class="module-card">
+                            <div class="module-icon">💬</div>
+                            <h3 class="module-title">Le Tchat</h3>
+                            <p class="module-desc">Salon d'échange en temps réel avec ta classe et tes professeurs.</p>
+                        </a>
+
+                        <!-- Nouveaux Modules -->
+                        <a href="#" class="module-card">
+                            <div class="module-icon">🧪</div>
+                            <h3 class="module-title">Laboratoire TP</h3>
+                            <p class="module-desc">Environnement de simulation et dépôts de tes travaux pratiques.</p>
+                        </a>
+
+                        <a href="#" class="module-card locked" onclick="event.preventDefault();">
+                            <div class="locked-badge">Verrouillé</div>
+                            <div class="module-icon">📚</div>
+                            <h3 class="module-title">Bibliothèque</h3>
+                            <p class="module-desc">Ressources, PDF, et documentations réseau.</p>
+                        </a>
+
+                        <a href="#" class="module-card locked" onclick="event.preventDefault();">
+                            <div class="locked-badge">À venir</div>
+                            <div class="module-icon">🚀</div>
+                            <h3 class="module-title">Gestion Projets</h3>
+                            <p class="module-desc">Suivi et organisation des projets de fin d'année.</p>
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Widgets -->
+            <div class="widget-panel">
+                <!-- Widget Stats -->
+                <div class="widget">
+                    <h3>Ta Progression (Mois)</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem;">
+                        <span style="font-size: 2rem; font-weight: 700; color: var(--primary);">78%</span>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">+12% (Semaine)</span>
+                    </div>
+                    <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                        <div style="width: 78%; height: 100%; background: var(--primary); border-radius: 4px; box-shadow: 0 0 10px var(--primary);"></div>
+                    </div>
+                </div>
+
+                <!-- Widget Activity -->
+                <div class="widget">
+                    <h3>Flux d'Activité</h3>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="act-icon">📝</div>
+                            <div class="act-content">
+                                <p>Nouveau PDF ajouté : <strong>Adressage IPv4</strong></p>
+                                <span class="act-time">Il y a 2 heures</span>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="act-icon">💬</div>
+                            <div class="act-content">
+                                <p><strong>Thomas</strong> a envoyé un message dans le tchat</p>
+                                <span class="act-time">Aujourd'hui, 10:15</span>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="act-icon">⚠️</div>
+                            <div class="act-content">
+                                <p>Rendu TP : <strong>Configuration Switch</strong></p>
+                                <span class="act-time" style="color: var(--accent);">Échéance demain</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase Scripts Originaux Intacts -->
     <script type="module" src="scripts/firebase-config.js"></script>
     <script type="module" src="scripts/auth.js"></script>
+    <script>
+        // Extra JS pour générer la lettre de l'avatar au chargement
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailDisplay = document.getElementById('userEmailDisplay');
+            const avatarDisplay = document.getElementById('avatarDisplay');
+            
+            // Observer les changements sur le span userEmailDisplay géré par auth.js
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    const text = emailDisplay.textContent;
+                    if (text && text !== 'Chargement...') {
+                        avatarDisplay.textContent = text.charAt(0).toUpperCase();
+                    }
+                });
+            });
+            
+            if (emailDisplay) {
+                observer.observe(emailDisplay, { childList: true, subtree: true });
+            }
+        });
+    </script>
 </body>
 </html>
