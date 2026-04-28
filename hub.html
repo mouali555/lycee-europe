@@ -7,293 +7,344 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* ── TOKENS ────────────────────────────────────── */
+        /* ═══════════════════════════════════════════════════
+           TOKENS
+        ═══════════════════════════════════════════════════ */
         :root {
-            --bg-void:       #080810;
-            --bg-base:       #0E0E16;
-            --bg-elevated:   #13131E;
-            --bg-overlay:    #18182A;
-            --bg-hover:      rgba(255,255,255,0.04);
-            --accent:        #7C6FF7;
-            --accent-b:      #A89FFF;
-            --accent-dim:    rgba(124,111,247,0.14);
-            --accent-glow:   rgba(124,111,247,0.25);
-            --text-1:        #EDEDFF;
-            --text-2:        #8A8AA8;
-            --text-3:        #4A4A6A;
-            --border:        rgba(255,255,255,0.07);
-            --border-b:      rgba(255,255,255,0.12);
-            --success:       #34D399;
-            --danger:        #F87171;
-            --warning:       #FBBF24;
-            --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-xl: 20px;
-            --ease: 0.25s cubic-bezier(0.4,0,0.2,1);
-            --sidebar-w: 240px;
+            --void:     #07070F;
+            --base:     #0D0D18;
+            --surface:  #12121F;
+            --overlay:  #17172A;
+            --hover:    rgba(255,255,255,0.04);
+            --v:        #7C6FF7;   /* violet */
+            --v-light:  #9D90FF;
+            --v-dim:    rgba(124,111,247,0.13);
+            --v-border: rgba(124,111,247,0.28);
+            --v-glow:   rgba(124,111,247,0.22);
+            --t1: #EEEEFF;
+            --t2: #8787A8;
+            --t3: #45455E;
+            --b:  rgba(255,255,255,0.06);
+            --bb: rgba(255,255,255,0.11);
+            --ok:   #34D399;
+            --warn: #FBBF24;
+            --err:  #F87171;
+            --r3: 6px; --r6: 10px; --r8: 14px; --r12: 20px;
+            --ease: 0.22s cubic-bezier(0.4,0,0.2,1);
+            --sw: 232px;
         }
 
-        /* ── RESET ─────────────────────────────────────── */
+        /* ═══════════════════════════════════════════════════
+           RESET
+        ═══════════════════════════════════════════════════ */
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         html{scroll-behavior:smooth}
         body{
-            font-family:'Inter',system-ui,sans-serif;font-size:14px;
-            line-height:1.6;color:var(--text-1);background:var(--bg-void);
-            display:flex;min-height:100vh;-webkit-font-smoothing:antialiased;
+            font-family:'Inter',system-ui,sans-serif;
+            background:var(--void);color:var(--t1);
+            display:flex;min-height:100vh;
+            font-size:13.5px;line-height:1.6;
+            -webkit-font-smoothing:antialiased;
         }
         a{text-decoration:none;color:inherit}
-        h1,h2,h3,h4{font-weight:700;letter-spacing:-0.3px;line-height:1.2;color:var(--text-1)}
+        a:focus,button:focus{outline:none}
+        h1,h2,h3,h4{font-weight:700;letter-spacing:-0.35px;color:var(--t1)}
         ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar-thumb{background:var(--bb);border-radius:99px}
         ::-webkit-scrollbar-track{background:transparent}
-        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:99px}
 
-        /* ── SIDEBAR ───────────────────────────────────── */
+        /* ═══════════════════════════════════════════════════
+           SIDEBAR
+        ═══════════════════════════════════════════════════ */
         .sidebar{
-            width:var(--sidebar-w);
-            background:var(--bg-elevated);
-            border-right:1px solid var(--border);
-            padding:1.25rem 0.875rem;
-            display:flex;flex-direction:column;gap:1.75rem;
-            position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;
+            width:var(--sw);flex-shrink:0;
+            background:var(--surface);
+            border-right:1px solid var(--b);
+            display:flex;flex-direction:column;
+            padding:1.25rem 0.75rem;gap:0;
+            position:sticky;top:0;height:100vh;overflow-y:auto;
         }
 
-        .brand{display:flex;align-items:center;gap:0.625rem;padding:0 0.5rem}
-        .brand-mark{
-            width:32px;height:32px;border-radius:var(--r-md);
-            background:linear-gradient(135deg,var(--accent),#6058E0);
+        /* Brand */
+        .brand{
+            display:flex;align-items:center;gap:0.6rem;
+            padding:0.25rem 0.5rem 1.5rem;
+        }
+        .brand-ico{
+            width:30px;height:30px;border-radius:var(--r6);
+            background:linear-gradient(135deg,var(--v),#5548D9);
             display:flex;align-items:center;justify-content:center;
-            box-shadow:0 0 16px var(--accent-glow);flex-shrink:0;
+            box-shadow:0 0 16px var(--v-glow);flex-shrink:0;
         }
-        .brand-name{font-size:0.875rem;font-weight:700;color:var(--text-1)}
-        .brand-sub{font-size:0.68rem;color:var(--text-3);font-weight:400}
+        .brand-name{font-size:0.85rem;font-weight:700;line-height:1.2}
+        .brand-sub{font-size:0.68rem;color:var(--t3);font-weight:400}
 
-        .nav-label{
-            font-size:0.65rem;font-weight:700;text-transform:uppercase;
-            letter-spacing:0.09em;color:var(--text-3);
-            padding:0 0.75rem;margin-bottom:0.2rem;
+        /* section label */
+        .nav-section{
+            font-size:0.62rem;font-weight:700;text-transform:uppercase;
+            letter-spacing:0.1em;color:var(--t3);
+            padding:0.75rem 0.75rem 0.4rem;
         }
-        .nav-menu{list-style:none;display:flex;flex-direction:column;gap:2px}
-        .nav-item{
+
+        /* Nav items */
+        .nav{list-style:none;display:flex;flex-direction:column;gap:1px}
+        .nav-link{
             display:flex;align-items:center;gap:0.625rem;
-            padding:0.575rem 0.75rem;border-radius:var(--r-md);
-            color:var(--text-2);font-size:0.825rem;font-weight:500;
-            transition:all var(--ease);cursor:pointer;
+            padding:0.58rem 0.75rem;border-radius:var(--r6);
+            color:var(--t2);font-size:0.825rem;font-weight:500;
+            transition:background var(--ease),color var(--ease);
+            cursor:pointer;
         }
-        .nav-item svg{flex-shrink:0;opacity:0.6;transition:opacity var(--ease)}
-        .nav-item:hover{background:var(--bg-hover);color:var(--text-1)}
-        .nav-item:hover svg{opacity:1}
-        .nav-item.active{background:var(--accent-dim);color:var(--accent-b);font-weight:600}
-        .nav-item.active svg{opacity:1;stroke:var(--accent-b)}
-
-        .sidebar-card{
-            margin-top:auto;
-            background:var(--bg-overlay);
-            border:1px solid var(--border-b);
-            border-radius:var(--r-lg);
-            padding:1rem;
-            font-size:0.78rem;
-            color:var(--text-2);
-            line-height:1.5;
+        .nav-link svg{flex-shrink:0;stroke:currentColor;opacity:0.65;transition:opacity var(--ease)}
+        .nav-link:hover{background:var(--hover);color:var(--t1)}
+        .nav-link:hover svg{opacity:1}
+        .nav-link.active{
+            background:var(--v-dim);color:var(--v-light);font-weight:600;
         }
-        .sidebar-card .sc-label{
-            font-size:0.65rem;font-weight:700;text-transform:uppercase;
-            letter-spacing:0.08em;color:var(--text-3);display:block;margin-bottom:0.35rem;
+        .nav-link.active svg{opacity:1}
+
+        /* Divider */
+        .nav-divider{height:1px;background:var(--b);margin:0.75rem 0.5rem}
+
+        /* Sidebar bottom card */
+        .sidebar-bottom{margin-top:auto}
+        .sidebar-eval{
+            background:var(--overlay);border:1px solid var(--bb);
+            border-radius:var(--r8);padding:0.875rem 0.875rem;
+            font-size:0.775rem;line-height:1.55;color:var(--t2);
         }
-        .sidebar-card strong{color:var(--text-1);font-weight:600}
+        .sidebar-eval .eval-label{
+            font-size:0.6rem;font-weight:700;text-transform:uppercase;
+            letter-spacing:0.09em;color:var(--t3);display:block;margin-bottom:0.4rem;
+        }
+        .sidebar-eval strong{color:var(--t1);font-weight:600;display:block;margin-bottom:0.15rem}
+        .eval-chip{
+            display:inline-flex;align-items:center;gap:0.3rem;
+            margin-top:0.5rem;font-size:0.7rem;font-weight:600;color:var(--warn);
+            background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);
+            border-radius:var(--r3);padding:0.2rem 0.5rem;
+        }
 
-        /* ── MAIN ──────────────────────────────────────── */
-        .main{flex:1;display:flex;flex-direction:column;padding:1.5rem 2rem;overflow-y:auto;min-width:0}
+        /* ═══════════════════════════════════════════════════
+           MAIN
+        ═══════════════════════════════════════════════════ */
+        .main{
+            flex:1;display:flex;flex-direction:column;
+            background:var(--base);
+            padding:1.5rem 2rem;overflow-y:auto;min-width:0;
+        }
 
-        /* ── TOPBAR ────────────────────────────────────── */
+        /* ═══════════════════════════════════════════════════
+           TOPBAR
+        ═══════════════════════════════════════════════════ */
         .topbar{
             display:flex;justify-content:space-between;align-items:center;
-            margin-bottom:2rem;gap:1rem;flex-wrap:wrap;
+            margin-bottom:2rem;gap:1rem;
         }
+        .topbar-left{display:flex;align-items:center;gap:0.75rem}
+        .topbar-right{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap}
+
+        .page-title{font-size:1rem;font-weight:700;color:var(--t1)}
+        .page-sub{font-size:0.775rem;color:var(--t3)}
 
         .search{
-            background:var(--bg-elevated);
-            border:1px solid var(--border-b);
-            padding:0.6rem 1rem;border-radius:999px;
-            width:260px;color:var(--text-1);
-            font-family:inherit;font-size:0.825rem;outline:none;
+            background:var(--surface);border:1px solid var(--bb);
+            border-radius:var(--r3);padding:0.55rem 0.875rem 0.55rem 2.25rem;
+            color:var(--t1);font-size:0.8rem;outline:none;width:220px;
             transition:all var(--ease);
         }
-        .search::placeholder{color:var(--text-3)}
-        .search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);width:300px}
-
-        .topbar-right{display:flex;align-items:center;gap:0.875rem}
+        .search-wrap{position:relative}
+        .search-wrap svg{
+            position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);
+            stroke:var(--t3);pointer-events:none;
+        }
+        .search::placeholder{color:var(--t3)}
+        .search:focus{border-color:var(--v);box-shadow:0 0 0 3px var(--v-dim);width:260px}
 
         .user-pill{
-            display:flex;align-items:center;gap:0.625rem;
-            background:var(--bg-elevated);border:1px solid var(--border-b);
-            padding:0.35rem 0.875rem 0.35rem 0.35rem;border-radius:999px;
+            display:flex;align-items:center;gap:0.6rem;
+            background:var(--surface);border:1px solid var(--bb);
+            border-radius:var(--r3);padding:0.35rem 0.875rem 0.35rem 0.35rem;
         }
         .avatar{
-            width:30px;height:30px;border-radius:50%;
-            background:linear-gradient(135deg,var(--accent),#9D78FF);
-            color:#fff;font-weight:700;font-size:0.8rem;
+            width:28px;height:28px;border-radius:50%;
+            background:linear-gradient(135deg,var(--v),#9078FF);
+            color:#fff;font-weight:700;font-size:0.75rem;
             display:flex;align-items:center;justify-content:center;flex-shrink:0;
         }
-        .user-email-text{font-size:0.775rem;font-weight:500;color:var(--text-1)}
-        .user-role-text{font-size:0.65rem;color:var(--text-3)}
+        .user-info{display:flex;flex-direction:column}
+        .u-email{font-size:0.775rem;font-weight:600;color:var(--t1)}
+        .u-role{font-size:0.64rem;color:var(--t3)}
 
         #logoutBtn{
-            background:transparent;border:1px solid rgba(248,113,113,.25);
-            color:var(--danger);padding:0.4rem 0.875rem;border-radius:var(--r-md);
-            cursor:pointer;font-family:inherit;font-size:0.775rem;font-weight:600;
+            background:transparent;border:1px solid rgba(248,113,113,0.22);
+            color:var(--err);padding:0.4rem 0.875rem;border-radius:var(--r3);
+            cursor:pointer;font-family:inherit;font-size:0.76rem;font-weight:600;
             transition:all var(--ease);
         }
-        #logoutBtn:hover{background:rgba(248,113,113,.08);border-color:var(--danger)}
+        #logoutBtn:hover{background:rgba(248,113,113,0.08);border-color:var(--err)}
+        #logoutBtn:focus{outline:none}
 
-        /* ── DASHBOARD GRID ────────────────────────────── */
-        .dash-grid{display:grid;grid-template-columns:1fr 300px;gap:1.5rem;align-items:start}
+        /* ═══════════════════════════════════════════════════
+           DASHBOARD
+        ═══════════════════════════════════════════════════ */
+        .dash{display:grid;grid-template-columns:1fr 288px;gap:1.5rem;align-items:start}
 
-        /* ── HERO ──────────────────────────────────────── */
+        /* ─── HERO ─── */
         .hero{
-            background:var(--bg-elevated);
-            border:1px solid var(--border-b);
-            border-radius:var(--r-xl);
-            padding:2rem 2.5rem;
+            background:var(--surface);border:1px solid var(--bb);
+            border-radius:var(--r12);padding:2rem 2.25rem;
             position:relative;overflow:hidden;
         }
-        .hero::before{
-            content:'';position:absolute;top:-80px;right:-80px;
-            width:250px;height:250px;border-radius:50%;
-            background:radial-gradient(circle,rgba(124,111,247,0.15),transparent 70%);
+        .hero::after{
+            content:'';position:absolute;top:0;left:0;right:0;height:1px;
+            background:linear-gradient(90deg,transparent,rgba(124,111,247,0.45),transparent);
+        }
+        .hero-bg{
+            position:absolute;top:-60px;right:-60px;
+            width:280px;height:280px;border-radius:50%;
+            background:radial-gradient(circle,rgba(124,111,247,0.12) 0%,transparent 70%);
             pointer-events:none;
         }
-        .hero::after{
-            content:'';position:absolute;inset:0;height:1px;top:0;
-            background:linear-gradient(90deg,transparent,rgba(124,111,247,0.4),transparent);
+        .hero-tag{
+            display:inline-flex;align-items:center;gap:0.35rem;
+            font-size:0.68rem;font-weight:700;text-transform:uppercase;
+            letter-spacing:0.1em;color:var(--v-light);margin-bottom:0.75rem;
         }
-        .hero-eyebrow{
-            font-size:0.7rem;font-weight:700;letter-spacing:0.1em;
-            text-transform:uppercase;color:var(--accent-b);margin-bottom:0.625rem;
-            display:flex;align-items:center;gap:0.4rem;
+        .hero-tag::before{
+            content:'';width:5px;height:5px;border-radius:50%;
+            background:var(--v);box-shadow:0 0 8px var(--v);
         }
-        .hero-eyebrow::before{
-            content:'';width:6px;height:6px;border-radius:50%;
-            background:var(--accent);box-shadow:0 0 8px var(--accent);
+        .hero-title{
+            font-size:1.65rem;font-weight:800;color:var(--t1);
+            margin-bottom:0.6rem;line-height:1.2;
         }
-        .hero-title{font-size:1.75rem;font-weight:800;color:var(--text-1);margin-bottom:0.75rem}
-        .hero-sub{font-size:0.875rem;color:var(--text-2);line-height:1.65;max-width:520px}
+        .hero-sub{font-size:0.84rem;color:var(--t2);line-height:1.65;max-width:500px}
 
-        /* Stats row */
-        .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem}
-        .stat-item{
-            background:var(--bg-overlay);border:1px solid var(--border);
-            border-radius:var(--r-lg);padding:1rem 1.25rem;
-        }
-        .stat-val{font-size:1.5rem;font-weight:800;color:var(--text-1)}
-        .stat-label{font-size:0.72rem;color:var(--text-3);margin-top:0.1rem;font-weight:500}
-        .stat-delta{font-size:0.72rem;font-weight:600;margin-top:0.25rem}
-        .stat-delta.up{color:var(--success)}
-        .stat-delta.warn{color:var(--warning)}
+        /* Stats */
+        .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:1.75rem;background:var(--b);border-radius:var(--r8);overflow:hidden}
+        .stat{background:var(--overlay);padding:1rem 1.25rem}
+        .stat-n{font-size:1.45rem;font-weight:800;color:var(--t1);line-height:1}
+        .stat-lbl{font-size:0.7rem;color:var(--t3);margin-top:0.2rem;font-weight:500;text-transform:uppercase;letter-spacing:0.05em}
+        .stat-d{font-size:0.7rem;font-weight:600;margin-top:0.35rem}
+        .stat-d.ok{color:var(--ok)}
+        .stat-d.warn{color:var(--warn)}
 
-        /* ── MODULES ───────────────────────────────────── */
-        .section{margin-top:1.5rem}
-        .section-head{
+        /* ─── MODULES ─── */
+        .section-hd{
             display:flex;align-items:center;gap:0.5rem;
-            margin-bottom:1rem;font-size:0.825rem;font-weight:700;color:var(--text-2);
-            text-transform:uppercase;letter-spacing:0.07em;
+            margin:1.75rem 0 0.875rem;
         }
-        .modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.875rem}
-
-        .mod-card{
-            background:var(--bg-elevated);border:1px solid var(--border);
-            border-radius:var(--r-lg);padding:1.25rem;
-            display:flex;flex-direction:column;gap:0.625rem;
-            transition:all var(--ease);position:relative;overflow:hidden;
+        .section-hd-label{
+            font-size:0.65rem;font-weight:700;text-transform:uppercase;
+            letter-spacing:0.09em;color:var(--t3);
         }
-        .mod-card.link{cursor:pointer}
-        .mod-card.link:hover{border-color:rgba(124,111,247,0.4);background:var(--bg-overlay);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 24px rgba(124,111,247,0.08)}
+        .section-hd-line{flex:1;height:1px;background:var(--b)}
 
-        .mod-icon{
-            width:38px;height:38px;border-radius:var(--r-md);
-            background:var(--accent-dim);border:1px solid rgba(124,111,247,0.2);
-            display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+        .mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:0.75rem}
+
+        .mod{
+            background:var(--surface);border:1px solid var(--b);
+            border-radius:var(--r8);padding:1.25rem;
+            display:flex;flex-direction:column;gap:0.6rem;
+            position:relative;overflow:hidden;
+            transition:border-color var(--ease),transform var(--ease),box-shadow var(--ease),background var(--ease);
         }
-        .mod-title{font-size:0.875rem;font-weight:700;color:var(--text-1)}
-        .mod-desc{font-size:0.775rem;color:var(--text-2);line-height:1.5}
+        .mod.clickable{cursor:pointer}
+        .mod.clickable:hover{
+            border-color:var(--v-border);background:var(--overlay);
+            transform:translateY(-2px);
+            box-shadow:0 8px 32px rgba(0,0,0,0.45),0 0 20px rgba(124,111,247,0.07);
+        }
+        .mod.locked{opacity:0.45;cursor:default}
+        .mod.locked:hover{transform:none;border-color:var(--b);box-shadow:none;background:var(--surface)}
 
-        .mod-arrow{
+        .mod-ico{
+            width:36px;height:36px;border-radius:var(--r6);
+            background:var(--v-dim);border:1px solid var(--v-border);
+            display:flex;align-items:center;justify-content:center;font-size:1rem;
+        }
+        .mod-t{font-size:0.85rem;font-weight:700;color:var(--t1)}
+        .mod-d{font-size:0.76rem;color:var(--t2);line-height:1.5}
+        .mod-cta{
             margin-top:auto;font-size:0.72rem;font-weight:600;
-            color:var(--accent-b);opacity:0;transition:opacity var(--ease);
+            color:var(--v-light);opacity:0;transition:opacity var(--ease);
         }
-        .mod-card.link:hover .mod-arrow{opacity:1}
+        .mod.clickable:hover .mod-cta{opacity:1}
 
-        .mod-card.locked{opacity:0.5;cursor:not-allowed;background:var(--bg-elevated)}
-        .mod-card.locked:hover{transform:none;border-color:var(--border);box-shadow:none}
-
-        .lock-badge{
+        .lock-tag{
             position:absolute;top:0.875rem;right:0.875rem;
-            font-size:0.65rem;font-weight:700;
-            padding:0.15rem 0.5rem;border-radius:999px;
-            background:var(--bg-overlay);color:var(--text-3);
-            border:1px solid var(--border-b);
+            font-size:0.62rem;font-weight:700;
+            padding:0.15rem 0.5rem;border-radius:var(--r3);
+            background:var(--overlay);color:var(--t3);border:1px solid var(--bb);
         }
 
-        /* ── WIDGET PANEL ──────────────────────────────── */
-        .widget-panel{display:flex;flex-direction:column;gap:1rem}
+        /* ─── WIDGETS ─── */
+        .widgets{display:flex;flex-direction:column;gap:1rem}
 
         .widget{
-            background:var(--bg-elevated);border:1px solid var(--border);
-            border-radius:var(--r-lg);padding:1.25rem;
+            background:var(--surface);border:1px solid var(--b);
+            border-radius:var(--r8);padding:1.25rem;
         }
-        .w-title{
-            font-size:0.65rem;font-weight:700;text-transform:uppercase;
-            letter-spacing:0.09em;color:var(--text-3);margin-bottom:1rem;
+        .w-lbl{
+            font-size:0.6rem;font-weight:700;text-transform:uppercase;
+            letter-spacing:0.1em;color:var(--t3);margin-bottom:1rem;
         }
 
-        /* Progress */
-        .prog-val{font-size:1.875rem;font-weight:800;color:var(--text-1);line-height:1}
-        .prog-sub{font-size:0.75rem;color:var(--text-3);margin:0.25rem 0 0.875rem}
-        .prog-track{width:100%;height:5px;background:rgba(255,255,255,0.07);border-radius:99px;overflow:hidden}
-        .prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-b));transition:width 1.2s ease-out}
+        /* progress */
+        .prog-n{font-size:1.75rem;font-weight:800;color:var(--t1);line-height:1}
+        .prog-s{font-size:0.72rem;color:var(--t3);margin:0.3rem 0 1rem}
+        .prog-bar{width:100%;height:4px;background:var(--b);border-radius:99px;overflow:hidden}
+        .prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--v),var(--v-light));transition:width 1s ease-out}
 
-        /* Activity */
-        .act-list{list-style:none;display:flex;flex-direction:column;gap:0}
-        .act-item{
+        /* activity */
+        .acts{display:flex;flex-direction:column}
+        .act{
             display:flex;gap:0.75rem;align-items:flex-start;
-            padding:0.75rem 0;border-bottom:1px solid var(--border);
+            padding:0.7rem 0;border-bottom:1px solid var(--b);
         }
-        .act-item:first-child{padding-top:0}
-        .act-item:last-child{border:none;padding-bottom:0}
+        .act:first-child{padding-top:0}
+        .act:last-child{border:none;padding-bottom:0}
         .act-ico{
-            width:30px;height:30px;border-radius:var(--r-sm);font-size:0.875rem;
-            background:var(--bg-overlay);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+            width:28px;height:28px;border-radius:var(--r3);font-size:0.8rem;
+            background:var(--overlay);display:flex;align-items:center;justify-content:center;flex-shrink:0;
         }
-        .act-desc{font-size:0.8rem;color:var(--text-2);line-height:1.4}
-        .act-desc strong{color:var(--text-1);font-weight:600}
-        .act-time{font-size:0.7rem;color:var(--text-3);margin-top:0.1rem}
-        .act-time.warn{color:var(--warning);font-weight:600}
+        .act-txt{font-size:0.78rem;color:var(--t2);line-height:1.4}
+        .act-txt strong{color:var(--t1);font-weight:600}
+        .act-time{font-size:0.68rem;color:var(--t3);margin-top:0.1rem}
+        .act-time.warn{color:var(--warn);font-weight:600}
 
-        /* ── RESPONSIVE ────────────────────────────────── */
-        @media(max-width:1100px){.dash-grid{grid-template-columns:1fr}}
+        /* ═══════════════════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════════════════ */
+        @media(max-width:1100px){.dash{grid-template-columns:1fr}}
         @media(max-width:768px){
             body{flex-direction:column}
-            .sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;flex-wrap:wrap;gap:0.75rem;align-items:center;justify-content:space-between;padding:1rem}
-            .nav-menu,.sidebar-card{display:none}
+            .sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid var(--b);flex-direction:row;flex-wrap:wrap;padding:0.875rem;gap:0.75rem}
+            .brand{padding-bottom:0}
+            .nav,.sidebar-bottom,.nav-section,.nav-divider{display:none}
             .main{padding:1rem}
             .topbar{flex-direction:column;align-items:stretch}
-            .search,.search:focus{width:100%;border-radius:var(--r-md)}
-            .stats-row{grid-template-columns:1fr 1fr}
+            .search,.search:focus{width:100%}
+            .stats{grid-template-columns:1fr 1fr}
         }
 
-        /* ── ANIMATIONS ────────────────────────────────── */
-        @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-        .hero          {animation:fadeUp .4s ease-out both}
-        .section       {animation:fadeUp .4s .08s ease-out both}
-        .widget-panel  {animation:fadeUp .4s .12s ease-out both}
+        /* ═══════════════════════════════════════════════════
+           ANIMATIONS
+        ═══════════════════════════════════════════════════ */
+        @keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .hero    {animation:up .38s ease-out both}
+        .mods    {animation:up .38s .07s ease-out both}
+        .widgets {animation:up .38s .1s ease-out both}
     </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar">
     <div class="brand">
-        <div class="brand-mark">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
+        <div class="brand-ico">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </div>
         <div>
             <div class="brand-name">Lycée Europe</div>
@@ -301,61 +352,66 @@
         </div>
     </div>
 
-    <div>
-        <div class="nav-label">Navigation</div>
-        <ul class="nav-menu">
-            <li>
-                <a href="#" class="nav-item active">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                    Vue d'ensemble
-                </a>
-            </li>
-            <li>
-                <a href="chat.html" class="nav-item">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    Tchat Général
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-item">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
-                    Laboratoire & TP
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-item">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-                    Ressources
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-item">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    Agenda
-                </a>
-            </li>
-        </ul>
-    </div>
+    <div class="nav-section">Navigation</div>
+    <ul class="nav">
+        <li><a href="#" class="nav-link active">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Vue d'ensemble
+        </a></li>
+        <li><a href="chat.html" class="nav-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Tchat Général
+        </a></li>
+        <li><a href="#" class="nav-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+            Laboratoire & TP
+        </a></li>
+        <li><a href="#" class="nav-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Ressources
+        </a></li>
+    </ul>
 
-    <div class="sidebar-card">
-        <span class="sc-label">📌 Prochaine éval.</span>
-        <strong>Réseaux & Sécurité</strong><br>
-        Dans 3 jours
+    <div class="nav-divider"></div>
+
+    <ul class="nav">
+        <li><a href="#" class="nav-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Agenda
+        </a></li>
+    </ul>
+
+    <div class="sidebar-bottom">
+        <div class="sidebar-eval">
+            <span class="eval-label">📌 Évaluation</span>
+            <strong>Réseaux & Sécurité</strong>
+            Cours sur l'adressage IPv4 et les VLAN
+            <div class="eval-chip">⏰ Dans 3 jours</div>
+        </div>
     </div>
 </aside>
 
-<!-- MAIN -->
+<!-- ═══ MAIN ═══ -->
 <main class="main">
 
     <!-- Topbar -->
     <header class="topbar">
-        <input type="text" class="search" placeholder="Rechercher un cours, TP, étudiant…" aria-label="Recherche">
+        <div class="topbar-left">
+            <div>
+                <div class="page-title">Vue d'ensemble</div>
+                <div class="page-sub">Lundi 28 avril 2026</div>
+            </div>
+        </div>
         <div class="topbar-right">
+            <div class="search-wrap">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" class="search" placeholder="Rechercher…">
+            </div>
             <div class="user-pill">
                 <div class="avatar" id="avatarDisplay">E</div>
-                <div>
-                    <div class="user-email-text" id="userEmailDisplay">Chargement…</div>
-                    <div class="user-role-text">BTS CIEL · 1ère Année</div>
+                <div class="user-info">
+                    <span class="u-email" id="userEmailDisplay">Chargement…</span>
+                    <span class="u-role">BTS CIEL · 1ère Année</span>
                 </div>
             </div>
             <button id="logoutBtn">Déconnexion</button>
@@ -363,124 +419,120 @@
     </header>
 
     <!-- Dashboard -->
-    <div class="dash-grid">
+    <div class="dash">
 
-        <!-- Colonne gauche -->
+        <!-- Gauche -->
         <div>
             <!-- Hero -->
             <div class="hero">
-                <div class="hero-eyebrow">Tableau de bord</div>
-                <h1 class="hero-title">Bonjour, bonne journée. ✦</h1>
-                <p class="hero-sub">Retrouvez l'ensemble de vos outils — échangez avec votre classe, accédez à vos ressources et suivez votre progression en temps réel.</p>
-                <div class="stats-row">
-                    <div class="stat-item">
-                        <div class="stat-val">78%</div>
-                        <div class="stat-label">Progression</div>
-                        <div class="stat-delta up">↑ +12% ce mois</div>
+                <div class="hero-bg"></div>
+                <div class="hero-tag">Tableau de bord</div>
+                <h1 class="hero-title">Bonne journée. ✦</h1>
+                <p class="hero-sub">Retrouvez vos outils, suivez votre progression et échangez avec votre promotion — tout en un seul endroit.</p>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-n">78%</div>
+                        <div class="stat-lbl">Progression</div>
+                        <div class="stat-d ok">↑ +12% ce mois</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-val">4</div>
-                        <div class="stat-label">TPs rendus</div>
-                        <div class="stat-delta up">↑ 2 cette semaine</div>
+                    <div class="stat">
+                        <div class="stat-n">4</div>
+                        <div class="stat-lbl">TPs rendus</div>
+                        <div class="stat-d ok">↑ 2 cette semaine</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-val">J−3</div>
-                        <div class="stat-label">Prochaine éval.</div>
-                        <div class="stat-delta warn">⚠ Réseaux</div>
+                    <div class="stat">
+                        <div class="stat-n">J−3</div>
+                        <div class="stat-lbl">Évaluation</div>
+                        <div class="stat-d warn">⚠ Réseaux</div>
                     </div>
                 </div>
             </div>
 
             <!-- Modules -->
-            <div class="section">
-                <div class="section-head">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    Espaces de travail
+            <div class="section-hd">
+                <span class="section-hd-label">Espaces de travail</span>
+                <div class="section-hd-line"></div>
+            </div>
+            <div class="mods">
+                <a href="chat.html" class="mod clickable">
+                    <div class="mod-ico">💬</div>
+                    <div class="mod-t">Tchat Général</div>
+                    <div class="mod-d">Échangez en direct avec votre classe et vos professeurs.</div>
+                    <div class="mod-cta">Rejoindre le salon →</div>
+                </a>
+                <a href="#" class="mod clickable">
+                    <div class="mod-ico">🧪</div>
+                    <div class="mod-t">Laboratoire TP</div>
+                    <div class="mod-d">Simulez et déposez vos travaux pratiques.</div>
+                    <div class="mod-cta">Accéder →</div>
+                </a>
+                <div class="mod locked">
+                    <div class="lock-tag">🔒 Verrouillé</div>
+                    <div class="mod-ico">📚</div>
+                    <div class="mod-t">Bibliothèque</div>
+                    <div class="mod-d">PDF, fiches et documentations réseau.</div>
                 </div>
-                <div class="modules-grid">
-                    <a href="chat.html" class="mod-card link">
-                        <div class="mod-icon">💬</div>
-                        <div class="mod-title">Tchat Général</div>
-                        <div class="mod-desc">Échanges en direct avec votre classe et vos profs.</div>
-                        <div class="mod-arrow">Rejoindre →</div>
-                    </a>
-                    <a href="#" class="mod-card link">
-                        <div class="mod-icon">🧪</div>
-                        <div class="mod-title">Laboratoire TP</div>
-                        <div class="mod-desc">Simulez, déposez et suivez vos travaux pratiques.</div>
-                        <div class="mod-arrow">Accéder →</div>
-                    </a>
-                    <div class="mod-card locked">
-                        <div class="lock-badge">🔒 Verrouillé</div>
-                        <div class="mod-icon">📚</div>
-                        <div class="mod-title">Bibliothèque</div>
-                        <div class="mod-desc">PDF, fiches et docs techniques réseau.</div>
-                    </div>
-                    <div class="mod-card locked">
-                        <div class="lock-badge">🚀 Bientôt</div>
-                        <div class="mod-icon">📊</div>
-                        <div class="mod-title">Gestion Projets</div>
-                        <div class="mod-desc">Suivi et organisation des projets de fin d'année.</div>
-                    </div>
+                <div class="mod locked">
+                    <div class="lock-tag">🚀 Bientôt</div>
+                    <div class="mod-ico">📊</div>
+                    <div class="mod-t">Gestion Projets</div>
+                    <div class="mod-d">Suivi des projets de fin d'année.</div>
                 </div>
             </div>
         </div>
 
-        <!-- Colonne droite -->
-        <div class="widget-panel">
-            <!-- Progression -->
+        <!-- Droite -->
+        <div class="widgets">
             <div class="widget">
-                <div class="w-title">Progression du mois</div>
-                <div class="prog-val">78%</div>
-                <div class="prog-sub">+12% · En bonne trajectoire →</div>
-                <div class="prog-track"><div class="prog-fill" style="width:78%"></div></div>
+                <div class="w-lbl">Progression du mois</div>
+                <div class="prog-n">78%</div>
+                <div class="prog-s">+12% · Excellente trajectoire</div>
+                <div class="prog-bar"><div class="prog-fill" style="width:78%"></div></div>
             </div>
 
-            <!-- Activité -->
             <div class="widget">
-                <div class="w-title">Flux d'activité</div>
-                <ul class="act-list">
-                    <li class="act-item">
+                <div class="w-lbl">Activité récente</div>
+                <div class="acts">
+                    <div class="act">
                         <div class="act-ico">📄</div>
                         <div>
-                            <div class="act-desc">Nouveau doc : <strong>Adressage IPv4</strong></div>
+                            <div class="act-txt">Nouveau doc : <strong>Adressage IPv4</strong></div>
                             <div class="act-time">Il y a 2 heures</div>
                         </div>
-                    </li>
-                    <li class="act-item">
+                    </div>
+                    <div class="act">
                         <div class="act-ico">💬</div>
                         <div>
-                            <div class="act-desc"><strong>Thomas</strong> a posté dans le tchat</div>
+                            <div class="act-txt"><strong>Thomas</strong> a posté dans le tchat</div>
                             <div class="act-time">Aujourd'hui, 10h15</div>
                         </div>
-                    </li>
-                    <li class="act-item">
+                    </div>
+                    <div class="act">
                         <div class="act-ico">⚠️</div>
                         <div>
-                            <div class="act-desc">Rendu TP : <strong>Config Switch</strong></div>
+                            <div class="act-txt">Rendu TP : <strong>Config Switch</strong></div>
                             <div class="act-time warn">⏰ Demain matin</div>
                         </div>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
 </main>
 
+<!-- Firebase -->
 <script type="module" src="scripts/firebase-config.js"></script>
 <script type="module" src="scripts/auth.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const emailEl = document.getElementById('userEmailDisplay');
-        const avatarEl = document.getElementById('avatarDisplay');
-        if (emailEl) {
-            new MutationObserver(() => {
-                const t = emailEl.textContent;
-                if (t && t !== 'Chargement…') avatarEl.textContent = t.charAt(0).toUpperCase();
-            }).observe(emailEl, { childList: true, subtree: true });
-        }
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    const eEl = document.getElementById('userEmailDisplay');
+    const aEl = document.getElementById('avatarDisplay');
+    if (eEl) new MutationObserver(() => {
+        const t = eEl.textContent;
+        if (t && t !== 'Chargement…') aEl.textContent = t.charAt(0).toUpperCase();
+    }).observe(eEl, {childList:true, subtree:true});
+});
 </script>
 </body>
 </html>

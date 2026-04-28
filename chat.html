@@ -5,51 +5,270 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tchat — BTS CIEL</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="styles/nature-theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void:    #07070F;
+            --base:    #0D0D18;
+            --surface: #12121F;
+            --overlay: #17172A;
+            --v:       #7C6FF7;
+            --v-l:     #9D90FF;
+            --v-dim:   rgba(124,111,247,0.14);
+            --v-bd:    rgba(124,111,247,0.28);
+            --t1: #EEEEFF;
+            --t2: #8787A8;
+            --t3: #45455E;
+            --b:  rgba(255,255,255,0.06);
+            --bb: rgba(255,255,255,0.11);
+            --ok:   #34D399;
+            --err:  #F87171;
+            --r3: 6px; --r6: 10px; --r8: 14px; --r12: 20px; --rf: 9999px;
+            --ease: 0.22s cubic-bezier(0.4,0,0.2,1);
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%}
+        body{
+            font-family:'Inter',system-ui,sans-serif;font-size:13.5px;
+            line-height:1.6;color:var(--t1);background:var(--void);
+            display:flex;flex-direction:column;overflow:hidden;
+            -webkit-font-smoothing:antialiased;
+        }
+        a{text-decoration:none;color:inherit}
+        a:focus,button:focus{outline:none}
+        ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar-thumb{background:var(--bb);border-radius:99px}
+        ::-webkit-scrollbar-track{background:transparent}
+
+        /* ── WRAPPER ── */
+        .wrap{
+            display:flex;flex-direction:column;
+            max-width:860px;width:100%;height:100vh;
+            margin:0 auto;padding:1.125rem;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar{
+            display:flex;justify-content:space-between;align-items:center;
+            background:var(--surface);border:1px solid var(--bb);
+            border-radius:var(--r8);padding:0.7rem 1.125rem;
+            margin-bottom:0.875rem;flex-shrink:0;
+        }
+        .tl{display:flex;align-items:center;gap:0.75rem}
+        .tr{display:flex;align-items:center;gap:0.875rem}
+
+        .back-btn{
+            width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+            border:1px solid var(--bb);border-radius:var(--r3);
+            color:var(--t2);font-size:0.95rem;
+            transition:all var(--ease);
+        }
+        .back-btn:hover{background:rgba(255,255,255,0.06);color:var(--t1)}
+
+        .room-name{font-size:0.875rem;font-weight:700;color:var(--t1)}
+
+        .badge-ciel{
+            font-size:0.68rem;font-weight:700;
+            padding:0.18rem 0.6rem;border-radius:var(--rf);
+            background:var(--v-dim);color:var(--v-l);
+            border:1px solid var(--v-bd);
+        }
+
+        .online{display:flex;align-items:center;gap:0.4rem;font-size:0.775rem;color:var(--t2)}
+        .dot{
+            width:7px;height:7px;background:var(--ok);border-radius:50%;
+            box-shadow:0 0 6px var(--ok);flex-shrink:0;
+            animation:pulse 2.5s ease-in-out infinite;
+        }
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+
+        #userEmailDisplay{
+            max-width:160px;white-space:nowrap;overflow:hidden;
+            text-overflow:ellipsis;
+        }
+
+        .logout-btn{
+            background:transparent;border:1px solid rgba(248,113,113,0.25);
+            color:var(--err);padding:0.38rem 0.8rem;border-radius:var(--r3);
+            cursor:pointer;font-family:inherit;font-size:0.74rem;font-weight:600;
+            transition:all var(--ease);
+        }
+        .logout-btn:hover{background:rgba(248,113,113,0.08);border-color:var(--err)}
+
+        /* ── CHAT CARD ── */
+        .room{
+            flex:1;display:flex;flex-direction:column;
+            background:var(--surface);border:1px solid var(--bb);
+            border-radius:var(--r12);overflow:hidden;min-height:0;
+            position:relative;
+        }
+        /* top glow line */
+        .room::after{
+            content:'';position:absolute;top:0;left:0;right:0;height:1px;z-index:1;
+            background:linear-gradient(90deg,transparent,rgba(124,111,247,0.4),transparent);
+            pointer-events:none;
+        }
+
+        /* ── CHAT HEADER ── */
+        .room-hd{
+            padding:1rem 1.375rem;border-bottom:1px solid var(--b);flex-shrink:0;
+            display:flex;align-items:center;justify-content:space-between;
+        }
+        .room-hd-left h2{font-size:0.9rem;font-weight:700;margin-bottom:0.1rem}
+        .room-hd-left p{font-size:0.75rem;color:var(--t3)}
+        .room-hd-right{
+            font-size:0.68rem;font-weight:600;color:var(--t3);
+            display:flex;align-items:center;gap:0.35rem;
+        }
+
+        /* ── MESSAGES ── */
+        .msgs{
+            flex:1;overflow-y:auto;
+            padding:1.25rem 1.375rem;
+            display:flex;flex-direction:column;gap:0.75rem;
+            background:var(--base);
+        }
+
+        /* ── INPUT FORM ── */
+        .form{
+            display:flex;align-items:center;gap:0.625rem;
+            padding:0.875rem 1.125rem;border-top:1px solid var(--b);
+            background:var(--surface);flex-shrink:0;
+        }
+        .msg-input{
+            flex:1;padding:0.7rem 1.125rem;
+            background:var(--overlay);border:1px solid var(--b);
+            border-radius:var(--rf);color:var(--t1);
+            font-size:0.84rem;outline:none;
+            transition:border-color var(--ease),box-shadow var(--ease);
+        }
+        .msg-input::placeholder{color:var(--t3)}
+        .msg-input:focus{border-color:var(--v);box-shadow:0 0 0 3px var(--v-dim)}
+
+        .send-btn{
+            flex-shrink:0;width:36px;height:36px;border-radius:50%;
+            background:linear-gradient(135deg,var(--v),#5548D9);
+            border:none;color:#fff;cursor:pointer;
+            display:flex;align-items:center;justify-content:center;
+            transition:all var(--ease);
+            box-shadow:0 2px 10px rgba(124,111,247,0.3);
+        }
+        .send-btn:hover{transform:scale(1.08);box-shadow:0 4px 18px rgba(124,111,247,0.5)}
+        .send-btn:active{transform:scale(0.98)}
+
+        /* ── MESSAGE BUBBLES ── */
+        .message{display:flex;flex-direction:column;max-width:68%;animation:up .2s ease-out both}
+        .message.mine {align-self:flex-end}
+        .message.other{align-self:flex-start}
+
+        .msg-meta{font-size:0.68rem;color:var(--t3);margin-bottom:0.25rem;padding:0 0.2rem}
+        .message.mine .msg-meta{text-align:right}
+
+        .msg-bubble{
+            padding:0.65rem 0.95rem;border-radius:var(--r8);
+            font-size:0.84rem;line-height:1.5;word-wrap:break-word;color:var(--t1);
+        }
+        .message.mine .msg-bubble{
+            background:rgba(124,111,247,0.22);
+            border:1px solid rgba(124,111,247,0.32);
+            border-bottom-right-radius:3px;
+        }
+        .message.other .msg-bubble{
+            background:var(--overlay);border:1px solid var(--bb);
+            border-bottom-left-radius:3px;
+        }
+        .message.system{
+            align-self:center;max-width:unset;
+        }
+        .message.system .msg-bubble{
+            background:transparent;border:none;
+            font-size:0.72rem;color:var(--t3);
+            padding:0.2rem 0.5rem;
+        }
+
+        @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:640px){
+            .wrap{padding:0.75rem}
+            .topbar{flex-direction:column;gap:0.625rem;align-items:flex-start}
+            .tr{width:100%;justify-content:space-between}
+            .message{max-width:86%}
+        }
+    </style>
 </head>
-<body class="chat-body">
+<body>
+<div class="wrap">
 
-    <div class="chat-layout">
-        <!-- Topbar -->
-        <header class="chat-topbar">
-            <div class="chat-topbar-left">
-                <a href="hub.html" class="chat-back-link" title="Retour">←</a>
-                <span class="chat-topbar-title">Salon Général</span>
-                <span style="font-size:0.72rem;font-weight:600;padding:0.18rem 0.6rem;border-radius:999px;background:rgba(124,111,247,0.15);color:#A89FFF;border:1px solid rgba(124,111,247,0.3)">BTS CIEL</span>
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="tl">
+            <a href="hub.html" class="back-btn" title="Retour au Hub">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </a>
+            <span class="room-name">Salon Général</span>
+            <span class="badge-ciel">BTS CIEL</span>
+        </div>
+        <div class="tr">
+            <div class="online">
+                <div class="dot"></div>
+                <span id="userEmailDisplay">Chargement…</span>
             </div>
-            <div class="chat-topbar-right">
-                <div class="chat-status">
-                    <div class="status-dot"></div>
-                    <span id="userEmailDisplay">Chargement…</span>
-                </div>
-                <button id="logoutBtn" class="btn-logout">Déconnexion</button>
-            </div>
-        </header>
+            <button id="logoutBtn" class="logout-btn">Déconnexion</button>
+        </div>
+    </header>
 
-        <!-- Room -->
-        <main class="chat-room-container">
-            <div class="chat-header">
+    <!-- Room -->
+    <div class="room">
+        <div class="room-hd">
+            <div class="room-hd-left">
                 <h2>💬 Salon Général</h2>
-                <p>Échanges en temps réel · Promotion BTS CIEL</p>
+                <p>Discussion en temps réel · Promotion BTS CIEL</p>
             </div>
-
-            <div class="messages-list" id="messagesList">
-                <div class="message system">Synchronisation en cours…</div>
+            <div class="room-hd-right">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="var(--ok)" stroke="none"><circle cx="12" cy="12" r="10"/></svg>
+                En ligne
             </div>
+        </div>
 
-            <form id="messageForm" class="chat-form">
-                <input type="text" id="messageInput" class="nature-input" placeholder="Écrire un message…" required autocomplete="off">
-                <button type="submit" class="chat-send-btn" id="sendBtn" title="Envoyer">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="22" y1="2" x2="11" y2="13"/>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                    </svg>
-                </button>
-            </form>
-        </main>
+        <div class="msgs" id="messagesList">
+            <div class="message system">
+                <div class="msg-bubble">Synchronisation en cours…</div>
+            </div>
+        </div>
+
+        <form id="messageForm" class="form">
+            <input type="text" id="messageInput" class="msg-input" placeholder="Écrire un message…" required autocomplete="off">
+            <button type="submit" class="send-btn" id="sendBtn" title="Envoyer">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+            </button>
+        </form>
     </div>
 
-    <script type="module" src="scripts/firebase-config.js"></script>
-    <script type="module" src="scripts/chat.js"></script>
+</div>
+
+<script type="module" src="scripts/firebase-config.js"></script>
+<script type="module" src="scripts/chat.js"></script>
+
+<!-- Patch : chat.js injecte .message-inner mais notre CSS utilise .msg-bubble -->
+<script>
+// On surcharge la génération de messages pour utiliser nos classes CSS
+(function(){
+    const _createElement = document.createElement.bind(document);
+    // On laisse chat.js tourner normalement, on patche juste le style APRÈS
+    const observer = new MutationObserver(() => {
+        document.querySelectorAll('.message-inner:not(.patched)').forEach(el => {
+            el.classList.add('msg-bubble','patched');
+        });
+        document.querySelectorAll('.message-meta:not(.patched)').forEach(el => {
+            el.classList.add('msg-meta','patched');
+        });
+    });
+    observer.observe(document.getElementById('messagesList') || document.body, {childList:true, subtree:true});
+})();
+</script>
 </body>
 </html>
