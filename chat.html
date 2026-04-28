@@ -3,42 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tchat BTS - Le Salon Bleu</title>
+    <meta name="description" content="Salon de discussion général — BTS CIEL, Lycée Europe.">
+    <title>Tchat — BTS CIEL</title>
     <link rel="stylesheet" href="styles/nature-theme.css">
 </head>
-<body>
-    <div class="ambient-light"></div>
-    
+<body class="chat-body">
+
     <div class="chat-layout">
+
+        <!-- Topbar -->
         <header class="chat-topbar">
-            <div style="font-weight: 600; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
-                <a href="hub.html" style="color: var(--text-main); text-decoration: none; font-size: 1.5rem;">←</a>
-                <span>LYCÉE EUROPE <span style="color: var(--primary); font-size: 0.9rem; padding: 2px 8px; border: 1px solid var(--border-glass); border-radius: 12px; margin-left: 0.5rem; background: rgba(74, 222, 128, 0.1);">BTS CIEL</span></span>
-            </div>
-            
-            <div style="display: flex; align-items: center; gap: 1.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <div style="width: 10px; height: 10px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary);"></div>
-                    <span id="userEmailDisplay" style="font-size: 0.95rem; color: var(--text-muted);">Chargement...</span>
+            <div class="chat-topbar-left">
+                <a href="hub.html" class="chat-back-link" title="Retour au Hub">
+                    ←
+                </a>
+                <div>
+                    <div class="chat-topbar-title">Salon Général</div>
                 </div>
-                <button id="logoutBtn" style="background: transparent; border: 1px solid rgba(239, 68, 68, 0.5); color: var(--danger); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-family: inherit;">Déconnexion</button>
+                <span style="font-size:0.78rem; font-weight:600; padding:0.2rem 0.65rem; border-radius:9999px; background:var(--accent-light); color:var(--accent-hover); border:1px solid rgba(90,138,114,.2);">BTS CIEL</span>
+            </div>
+
+            <div class="chat-topbar-right">
+                <div class="chat-status">
+                    <div class="chat-status-dot"></div>
+                    <span id="userEmailDisplay" style="font-size:0.825rem; color:var(--text-secondary);">Chargement…</span>
+                </div>
+                <button id="logoutBtn" class="btn-danger" style="background:transparent; border:1px solid rgba(220,38,38,.25); color:var(--danger); padding:.45rem .875rem; border-radius:var(--radius-md); cursor:pointer; font-family:inherit; font-size:0.8rem; font-weight:600; transition:all .3s ease-in-out;">
+                    Déconnexion
+                </button>
             </div>
         </header>
 
+        <!-- Room -->
         <main class="chat-room-container">
+
+            <!-- En-tête du salon -->
             <div class="chat-header">
-                <h2>Salon Général 🌱</h2>
-                <p>Échange en direct avec tes camarades de promotion.</p>
-            </div>
-            
-            <div class="messages-list" id="messagesList">
-                <div class="message system">Synchronisation avec l'Hôte...</div>
+                <h2>💬 Salon Général</h2>
+                <p>Discussion en temps réel avec la promotion BTS CIEL</p>
             </div>
 
+            <!-- Messages -->
+            <div class="messages-list" id="messagesList">
+                <div class="message system">Synchronisation en cours…</div>
+            </div>
+
+            <!-- Zone de saisie -->
             <form id="messageForm" class="chat-form">
-                <input type="text" id="messageInput" class="nature-input" placeholder="Écrire un message..." required autocomplete="off">
-                <button type="submit" class="nature-btn" id="sendBtn">ENVOYER</button>
+                <input
+                    type="text"
+                    id="messageInput"
+                    class="nature-input"
+                    placeholder="Écrire un message…"
+                    required
+                    autocomplete="off"
+                    aria-label="Zone de saisie du message"
+                >
+                <button type="submit" class="chat-send-btn" id="sendBtn" title="Envoyer" aria-label="Envoyer le message">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
             </form>
+
         </main>
     </div>
 

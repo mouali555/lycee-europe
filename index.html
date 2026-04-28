@@ -3,41 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - Écosystème CIEL</title>
+    <meta name="description" content="Connexion à l'Écosystème BTS CIEL — Lycée Europe. Votre espace de travail numérique.">
+    <title>Connexion — Écosystème CIEL</title>
     <link rel="stylesheet" href="styles/nature-theme.css">
 </head>
-<body>
-    <div class="ambient-light"></div>
-    
-    <div class="center-container">
-        <!-- Titre principal -->
-        <h1 class="nature-title">ÉCOSYSTÈME BTS CIEL</h1>
-        
-        <!-- Carte Glassmorphism -->
-        <div class="nature-card">
-            
-            <!-- Formulaire de connexion -->
-            <form id="loginForm" class="nature-form">
-                <div>
-                    <input type="email" id="email" required placeholder="Email Académique" class="nature-input">
+<body class="auth-body">
+
+    <div class="auth-panel">
+
+        <!-- Logo / Marque -->
+        <a href="#" class="auth-brand">
+            <div class="auth-brand-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12C2 6.48 6.48 2 12 2z"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+            </div>
+            <span class="auth-brand-name">Lycée Europe — BTS CIEL</span>
+        </a>
+
+        <!-- Carte principale -->
+        <div class="auth-card">
+            <div class="auth-card-header">
+                <h1 class="auth-card-title">Bon retour 👋</h1>
+                <p class="auth-card-subtitle">Connectez-vous à votre espace de travail pour accéder à vos cours, ressources et outils.</p>
+            </div>
+
+            <form id="loginForm" class="nature-form" novalidate>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Adresse email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        class="nature-input"
+                        placeholder="prénom.nom@goofy.bz"
+                        autocomplete="email"
+                        required
+                    >
                 </div>
-                
-                <div>
-                    <input type="password" id="password" required placeholder="Mot de passe" class="nature-input">
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Mot de passe</label>
+                    <input
+                        type="password"
+                        id="password"
+                        class="nature-input"
+                        placeholder="••••••••"
+                        autocomplete="current-password"
+                        required
+                    >
                 </div>
-                
-                <!-- Zone d'affichage des erreurs -->
+
                 <div id="authError" class="error-message"></div>
 
-                <!-- Bouton de soumission -->
-                <button type="submit" class="nature-btn">CONNEXION</button>
-                
-                <!-- Lien pour Créer un compte sur l'autre page -->
-                <div class="auth-switch">
-                    <p><a href="signup.html">Créer un profil étudiant</a></p>
-                </div>
+                <button type="submit" class="nature-btn">Se connecter</button>
+
             </form>
         </div>
+
+        <!-- Lien inscription -->
+        <p class="auth-footer">
+            Pas encore de compte ?
+            <a href="signup.html">Créer un profil étudiant →</a>
+        </p>
+
     </div>
 
     <!-- Firebase SDKs -->
