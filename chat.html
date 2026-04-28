@@ -3,60 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tchat · BTS CIEL</title>
+    <title>Tchat · Lycée Europe</title>
     <link rel="stylesheet" href="styles/nature-theme.css">
+    <style>
+        body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .chat-topbar {
+            flex-shrink: 0; height: 48px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; gap: 12px;
+            background: var(--s1); border-bottom: 1px solid var(--b1);
+        }
+        .chat-tl { display: flex; align-items: center; gap: 10px; }
+        .chat-tr { display: flex; align-items: center; gap: 10px; }
+        .chat-room { font-size: 13.5px; font-weight: 600; }
+        .user-info { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--t3); }
+    </style>
 </head>
 <body class="chat-page">
-<div class="chat-layout">
 
-    <!-- Header -->
     <header class="chat-topbar">
-        <div class="chat-topbar-left">
-            <a href="hub.html" class="btn-icon" title="Retour au tableau de bord">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"/>
-                </svg>
+        <div class="chat-tl">
+            <a href="hub.html" class="btn-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
             </a>
-            <span class="chat-room-name">Salon Général</span>
-            <span class="badge">BTS CIEL</span>
+            <span class="chat-room">Salon général</span>
+            <span class="badge badge-accent">BTS CIEL</span>
         </div>
-        <div class="chat-topbar-right">
-            <div class="online-indicator">
-                <div class="online-dot"></div>
+        <div class="chat-tr">
+            <div class="user-info">
+                <div class="dot-online"></div>
                 <span id="userEmailDisplay">Chargement…</span>
             </div>
-            <button id="logoutBtn" class="btn btn-danger-ghost">Déconnexion</button>
+            <button id="logoutBtn" class="btn btn-danger btn-sm">Déconnexion</button>
         </div>
     </header>
 
-    <!-- Messages -->
-    <main class="messages-area" id="messagesList">
+    <main class="chat-msgs" id="messagesList">
         <div class="message system">
             <div class="message-inner">Connexion au salon en cours…</div>
         </div>
     </main>
 
-    <!-- Input -->
-    <footer class="chat-input-area">
+    <footer class="chat-input-bar">
         <form id="messageForm" style="display:contents">
-            <input
-                type="text"
-                id="messageInput"
-                class="input"
-                placeholder="Écrire un message au salon…"
-                autocomplete="off"
-                required
-            >
-            <button type="submit" class="send-btn" id="sendBtn" title="Envoyer">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <input id="messageInput" type="text" class="input" placeholder="Écrire au salon général…" autocomplete="off" required>
+            <button type="submit" class="send-btn" id="sendBtn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13"/>
                     <polygon points="22 2 15 22 11 13 2 9 22 2"/>
                 </svg>
             </button>
         </form>
     </footer>
-
-</div>
 
 <script type="module" src="scripts/firebase-config.js"></script>
 <script type="module" src="scripts/chat.js"></script>
