@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratoire TP · Lycée Europe</title>
+    <style>
+        :root{--bg:#0d1117;--bg-surface:#161b22;--bg-elevated:#1c2128;--border:#30363d;--border-muted:#21262d;--text:#e6edf3;--text-muted:#7d8590;--text-subtle:#484f58;--accent:#388bfd;--accent-hover:#58a6ff;--success:#3fb950;--danger:#f85149;--warning:#d29922;--font:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;--r:6px;--sw:240px}
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%}
+        body{font-family:var(--font);font-size:14px;line-height:1.5;color:var(--text);background:var(--bg);display:flex;min-height:100vh;-webkit-font-smoothing:antialiased}
+        a{color:var(--accent);text-decoration:none}a:hover{color:var(--accent-hover)}a:focus,button:focus{outline:none}
+        h1,h2,h3{font-weight:600;line-height:1.25;color:var(--text)}
+        ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+        .sidebar{width:var(--sw);flex-shrink:0;background:var(--bg-surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto}
+        .sidebar-brand{display:flex;align-items:center;gap:10px;padding:16px;border-bottom:1px solid var(--border-muted)}
+        .brand-icon{width:32px;height:32px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .brand-icon svg{stroke:var(--text-muted)}.brand-name{font-size:13px;font-weight:600;color:var(--text)}.brand-sub{font-size:11px;color:var(--text-subtle)}
+        .sidebar-nav{padding:8px;flex:1}.nav-section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-subtle);padding:8px 8px 4px}
+        .nav-list{list-style:none}.nav-item{margin-bottom:1px}
+        .nav-link{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r);color:var(--text-muted);font-size:13px;font-weight:500;transition:background 80ms ease,color 80ms ease;text-decoration:none}
+        .nav-link svg{flex-shrink:0;stroke:currentColor;opacity:.7}.nav-link:hover{background:rgba(177,186,196,.08);color:var(--text);text-decoration:none}
+        .nav-link.active{background:rgba(177,186,196,.08);color:var(--text);font-weight:600}.nav-link.active svg{opacity:1}
+        .sidebar-divider{height:1px;background:var(--border-muted);margin:8px}.sidebar-footer{padding:8px}
+        .eval-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px}
+        .eval-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-subtle);display:block;margin-bottom:4px}
+        .eval-title{font-size:13px;font-weight:600;color:var(--text)}.eval-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
+        .eval-badge{display:inline-block;margin-top:6px;font-size:11px;font-weight:600;color:var(--warning);background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.3);border-radius:20px;padding:2px 8px}
+        .main{flex:1;overflow-y:auto;min-width:0}
+        .topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:var(--bg-surface);border-bottom:1px solid var(--border);gap:12px}
+        .topbar-left{display:flex;align-items:center;gap:8px}.topbar-right{display:flex;align-items:center;gap:10px}
+        .page-breadcrumb{font-size:13px;color:var(--text-subtle)}.page-heading{font-size:14px;font-weight:600;color:var(--text)}
+        .user-pill{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border:1px solid var(--border);border-radius:20px;background:var(--bg-surface)}
+        .avatar{width:26px;height:26px;border-radius:50%;background:#1f3a5c;border:1px solid var(--border);color:var(--accent);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        #userEmailDisplay{font-size:12px;font-weight:500;color:var(--text-muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        #logoutBtn{background:transparent;border:1px solid var(--border);border-radius:var(--r);color:var(--danger);font-family:var(--font);font-size:12px;font-weight:500;padding:4px 10px;cursor:pointer;transition:background 80ms ease,border-color 80ms ease}
+        #logoutBtn:hover{background:rgba(248,81,73,.08);border-color:rgba(248,81,73,.4)}
+        .content{padding:32px 24px}
+        .content-header{margin-bottom:24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+        .content-header h1{font-size:18px}.content-header p{font-size:13px;color:var(--text-muted);margin-top:4px}
+        .btn-primary{display:inline-flex;align-items:center;gap:6px;background:#238636;border:1px solid rgba(240,246,252,.1);color:#fff;font-family:var(--font);font-size:13px;font-weight:500;padding:6px 14px;border-radius:var(--r);cursor:pointer;transition:background 80ms ease}
+        .btn-primary:hover{background:#2ea043}
+        /* TP Cards */
+        .tp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:32px}
+        .tp-card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px}
+        .tp-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+        .tp-number{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-subtle)}
+        .status-badge{font-size:11px;font-weight:600;border-radius:20px;padding:2px 8px}
+        .status-done{color:var(--success);background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3)}
+        .status-pending{color:var(--warning);background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.3)}
+        .status-todo{color:var(--text-subtle);background:var(--bg-elevated);border:1px solid var(--border-muted)}
+        .tp-title{font-size:14px;font-weight:600;color:var(--text)}
+        .tp-meta{font-size:12px;color:var(--text-muted)}
+        .tp-desc{font-size:12px;color:var(--text-muted);line-height:1.5}
+        .tp-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border-muted);margin-top:auto}
+        .tp-date{font-size:11px;color:var(--text-subtle)}
+        .btn-sm{font-size:12px;font-weight:500;color:var(--accent);background:transparent;border:1px solid var(--border);border-radius:var(--r);padding:4px 10px;cursor:pointer;font-family:var(--font);transition:background 80ms ease,border-color 80ms ease;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+        .btn-sm:hover{background:rgba(56,139,253,.08);border-color:rgba(56,139,253,.4);color:var(--accent-hover);text-decoration:none}
+        /* Progress summary */
+        .progress-summary{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+        .prog-cell{background:var(--bg-surface);padding:16px}
+        .prog-n{font-size:20px;font-weight:700;color:var(--text)}.prog-l{font-size:12px;color:var(--text-muted);margin-top:4px}
+        .section-heading{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-subtle);margin-bottom:12px}
+        @media(max-width:768px){body{flex-direction:column}.sidebar{width:100%;height:auto;position:static;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;align-items:center;padding:0 12px;min-height:48px}.sidebar-nav,.sidebar-footer,.sidebar-divider{display:none}.sidebar-brand{border-bottom:none;padding:8px 0}.content{padding:16px}.progress-summary{grid-template-columns:1fr 1fr}}
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><div><div class="brand-name">Lycée Europe</div><div class="brand-sub">BTS CIEL</div></div></div>
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Général</div>
+        <ul class="nav-list">
+            <li><a href="hub.html" class="nav-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Vue d'ensemble</a></li>
+            <li><a href="chat.html" class="nav-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Tchat Général</a></li>
+            <li><a href="tp.html" class="nav-link active"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>Laboratoire &amp; TP</a></li>
+            <li><a href="ressources.html" class="nav-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Ressources</a></li>
+        </ul>
+        <div class="sidebar-divider"></div>
+        <div class="nav-section-label">Organisation</div>
+        <ul class="nav-list">
+            <li><a href="agenda.html" class="nav-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda</a></li>
+            <li><a href="profil.html" class="nav-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Mon Profil</a></li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer"><div class="eval-card"><span class="eval-label">Prochaine évaluation</span><div class="eval-title">Réseaux &amp; Sécurité</div><div class="eval-sub">Adressage IPv4, VLAN</div><span class="eval-badge">⏰ Dans 3 jours</span></div></div>
+</aside>
+
+<div class="main">
+    <header class="topbar">
+        <div class="topbar-left"><span class="page-breadcrumb">Lycée Europe /</span><span class="page-heading">Laboratoire &amp; TP</span></div>
+        <div class="topbar-right"><div class="user-pill"><div class="avatar" id="avatarDisplay">E</div><span id="userEmailDisplay">Chargement…</span></div><button id="logoutBtn">Déconnexion</button></div>
+    </header>
+
+    <main class="content">
+        <div class="content-header">
+            <div><h1>Travaux Pratiques</h1><p>Suivez vos TPs, consultez les énoncés et déposez vos rendus.</p></div>
+        </div>
+
+        <!-- Progress summary -->
+        <div class="progress-summary">
+            <div class="prog-cell"><div class="prog-n" style="color:var(--success)">4</div><div class="prog-l">TPs rendus</div></div>
+            <div class="prog-cell"><div class="prog-n" style="color:var(--warning)">1</div><div class="prog-l">En cours</div></div>
+            <div class="prog-cell"><div class="prog-n">3</div><div class="prog-l">À faire</div></div>
+            <div class="prog-cell"><div class="prog-n">8</div><div class="prog-l">Total</div></div>
+        </div>
+
+        <!-- TP List -->
+        <div class="section-heading">Tous les TPs — Semestre 2</div>
+        <div class="tp-grid">
+            <div class="tp-card">
+                <div class="tp-header"><span class="tp-number">TP 01</span><span class="status-badge status-done">✓ Rendu</span></div>
+                <div class="tp-title">Introduction à Packet Tracer</div>
+                <div class="tp-meta">Réseaux · M. Dupont</div>
+                <div class="tp-desc">Prise en main du logiciel de simulation réseau Cisco Packet Tracer.</div>
+                <div class="tp-footer"><span class="tp-date">Rendu le 5 mars 2026</span><a href="#" class="btn-sm">Voir →</a></div>
+            </div>
+            <div class="tp-card">
+                <div class="tp-header"><span class="tp-number">TP 02</span><span class="status-badge status-done">✓ Rendu</span></div>
+                <div class="tp-title">Configuration d'un réseau LAN</div>
+                <div class="tp-meta">Réseaux · M. Dupont</div>
+                <div class="tp-desc">Mise en place d'un réseau local avec commutateurs et routeurs Cisco.</div>
+                <div class="tp-footer"><span class="tp-date">Rendu le 19 mars 2026</span><a href="#" class="btn-sm">Voir →</a></div>
+            </div>
+            <div class="tp-card">
+                <div class="tp-header"><span class="tp-number">TP 03</span><span class="status-badge status-done">✓ Rendu</span></div>
+                <div class="tp-title">Adressage IPv4 et sous-réseaux</div>
+                <div class="tp-meta">Réseaux · M. Dupont</div>
+                <div class="tp-desc">Calcul de plages CIDR, configuration d'adresses IP sur des machines virtuelles.</div>
+                <div class="tp-footer"><span class="tp-date">Rendu le 2 avr. 2026</span><a href="#" class="btn-sm">Voir →</a></div>
+            </div>
+            <div class="tp-card">
+                <div class="tp-header"><span class="tp-number">TP 04</span><span class="status-badge status-done">✓ Rendu</span></div>
+                <div class="tp-title">Configuration d'un Switch Cisco</div>
+                <div class="tp-meta">Réseaux · M. Dupont</div>
+                <div class="tp-desc">Configuration du nom d'hôte, des mots de passe et des VLAN sur un switch.</div>
+                <div class="tp-footer"><span class="tp-date">Rendu le 16 avr. 2026</span><a href="#" class="btn-sm">Voir →</a></div>
+            </div>
+            <div class="tp-card">
+                <div class="tp-header"><span class="tp-number">TP 05</span><span class="status-badge status-pending">⏳ En cours</span></div>
+                <div class="tp-title">VLAN et Trunking 802.1Q</div>
+                <div class="tp-meta">Réseaux · M. Dupont</div>
+                <div class="tp-desc">Segmentation réseau par VLANs et configuration du trunking entre switches.</div>
+                <div class="tp-footer"><span class="tp-date" style="color:var(--warning)">⏰ À rendre le 30 avr.</span><a href="#" class="btn-sm">Ouvrir →</a></div>
+            </div>
+            <div class="tp-card">
+                <div class="tp-header"><span class="tp-number">TP 06</span><span class="status-badge status-todo">À faire</span></div>
+                <div class="tp-title">Routage statique inter-VLAN</div>
+                <div class="tp-meta">Réseaux · M. Dupont</div>
+                <div class="tp-desc">Mise en place du routage entre VLANs via un routeur (Router-on-a-stick).</div>
+                <div class="tp-footer"><span class="tp-date">Disponible le 5 mai 2026</span><a href="#" class="btn-sm" style="opacity:.5;pointer-events:none">Bientôt</a></div>
+            </div>
+            <div class="tp-card">
+                <div class="tp-header"><span class="tp-number">TP 07</span><span class="status-badge status-todo">À faire</span></div>
+                <div class="tp-title">Services réseau : DHCP, DNS</div>
+                <div class="tp-meta">Réseaux · M. Dupont</div>
+                <div class="tp-desc">Configuration d'un serveur DHCP et DNS sous Windows Server 2022.</div>
+                <div class="tp-footer"><span class="tp-date">Disponible le 12 mai 2026</span><a href="#" class="btn-sm" style="opacity:.5;pointer-events:none">Bientôt</a></div>
+            </div>
+            <div class="tp-card">
+                <div class="tp-header"><span class="tp-number">TP 08</span><span class="status-badge status-todo">À faire</span></div>
+                <div class="tp-title">Sécurité réseau — ACL Cisco</div>
+                <div class="tp-meta">Réseaux · M. Dupont</div>
+                <div class="tp-desc">Mise en place de listes de contrôle d'accès standards et étendues.</div>
+                <div class="tp-footer"><span class="tp-date">Disponible le 19 mai 2026</span><a href="#" class="btn-sm" style="opacity:.5;pointer-events:none">Bientôt</a></div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script type="module">
+    import { auth } from './scripts/firebase-config.js';
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+    onAuthStateChanged(auth, (user) => {
+        if (!user) { window.location.replace('index.html'); return; }
+        document.getElementById('userEmailDisplay').textContent = user.email;
+        document.getElementById('avatarDisplay').textContent = user.email.charAt(0).toUpperCase();
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.assign('index.html'));
+        });
+    });
+</script>
+</body>
+</html>
