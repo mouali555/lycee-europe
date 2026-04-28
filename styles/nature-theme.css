@@ -1,411 +1,298 @@
 /* ============================================================
-   nature-theme.css — Design System "Naturelle"
-   Inspiration: Linear, Vercel, Stripe
+   nature-theme.css — Dark Premium "Obsidian"
+   Lycée Europe · BTS CIEL
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ============================================================
-   1. DESIGN TOKENS
+   TOKENS
    ============================================================ */
 :root {
-    /* Palette */
-    --bg-base:          #F7F5F0;
-    --bg-surface:       #FFFFFF;
-    --bg-subtle:        #F0EDE6;
-    --bg-accent-light:  #EAF4EE;
-
-    /* Texte */
-    --text-primary:     #1A1A2E;
-    --text-secondary:   #4B5563;
-    --text-muted:       #9CA3AF;
-    --text-inverse:     #FFFFFF;
-
-    /* Accents */
-    --accent:           #5A8A72;   /* Vert sauge principal */
-    --accent-hover:     #3D6E57;   /* Hover foncé */
-    --accent-light:     #EAF4EE;   /* Fond accent léger */
-    --accent-blue:      #4A7FA5;   /* Secondaire / liens */
-
-    /* Bordures & ombres */
-    --border:           #E5E1D8;
-    --border-focus:     #5A8A72;
-    --shadow-xs:        0 1px 3px rgba(26, 26, 46, 0.06);
-    --shadow-sm:        0 2px 8px rgba(26, 26, 46, 0.08);
-    --shadow-md:        0 4px 20px rgba(26, 26, 46, 0.10);
-    --shadow-lg:        0 8px 40px rgba(26, 26, 46, 0.12);
-
-    /* Danger */
-    --danger:           #DC2626;
-    --danger-light:     #FEF2F2;
-
-    /* Spacing */
-    --radius-sm:        8px;
-    --radius-md:        12px;
-    --radius-lg:        16px;
-    --radius-xl:        24px;
-    --radius-full:      9999px;
-
-    /* Transitions */
-    --transition:       0.3s ease-in-out;
+    --bg-void:        #080810;
+    --bg-base:        #0E0E16;
+    --bg-elevated:    #13131E;
+    --bg-overlay:     #18182A;
+    --accent:         #7C6FF7;
+    --accent-bright:  #A89FFF;
+    --accent-dim:     rgba(124,111,247,0.14);
+    --accent-glow:    rgba(124,111,247,0.28);
+    --text-1:         #EDEDFF;
+    --text-2:         #8A8AA8;
+    --text-3:         #4A4A6A;
+    --border:         rgba(255,255,255,0.07);
+    --border-b:       rgba(255,255,255,0.13);
+    --border-accent:  rgba(124,111,247,0.35);
+    --success:        #34D399;
+    --danger:         #F87171;
+    --warning:        #FBBF24;
+    --r-sm:  6px;
+    --r-md:  10px;
+    --r-lg:  14px;
+    --r-xl:  20px;
+    --r-full:9999px;
+    --ease: 0.25s cubic-bezier(0.4,0,0.2,1);
 }
 
 /* ============================================================
-   2. RESET & BASE
+   RESET GLOBAL
    ============================================================ */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
-
-html { scroll-behavior: smooth; }
-
+html {
+    scroll-behavior: smooth;
+    height: 100%;
+}
 body {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    font-size: 1rem;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 15px;
     line-height: 1.6;
-    color: var(--text-primary);
-    background-color: var(--bg-base);
+    color: var(--text-1);
+    background-color: var(--bg-void);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    min-height: 100vh;
 }
-
-/* ============================================================
-   3. TYPOGRAPHIE
-   ============================================================ */
+a { text-decoration: none; color: inherit; }
+button, input, textarea, select { font-family: inherit; font-size: inherit; }
+img, svg { display: block; max-width: 100%; }
 h1, h2, h3, h4 {
     font-weight: 700;
     letter-spacing: -0.4px;
     line-height: 1.25;
-    color: var(--text-primary);
+    color: var(--text-1);
 }
 
 /* ============================================================
-   4. SCROLLBAR CUSTOM
+   SCROLLBAR
    ============================================================ */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-full); }
-::-webkit-scrollbar-thumb:hover { background: #C7C3BA; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
 
 /* ============================================================
-   5. COMPOSANTS RÉUTILISABLES
+   COMPOSANTS PARTAGÉS
    ============================================================ */
 
-/* --- Boutons --- */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    font-family: inherit;
-    font-size: 0.925rem;
-    font-weight: 600;
-    border-radius: var(--radius-md);
-    border: 1.5px solid transparent;
-    cursor: pointer;
-    transition: all var(--transition);
-    text-decoration: none;
-    white-space: nowrap;
-    user-select: none;
-}
-
-.btn-primary {
-    background: var(--accent);
-    color: var(--text-inverse);
-    border-color: var(--accent);
-    box-shadow: var(--shadow-sm);
-}
-.btn-primary:hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-}
-.btn-primary:active { transform: translateY(0); }
-
-.btn-ghost {
-    background: transparent;
-    color: var(--text-secondary);
-    border-color: var(--border);
-}
-.btn-ghost:hover {
-    background: var(--bg-subtle);
-    color: var(--text-primary);
-    border-color: #D1CCC3;
-}
-
-.btn-danger {
-    background: transparent;
-    color: var(--danger);
-    border-color: rgba(220, 38, 38, 0.3);
-    font-size: 0.85rem;
-    padding: 0.5rem 1rem;
-}
-.btn-danger:hover {
-    background: var(--danger-light);
-    border-color: var(--danger);
-}
-
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-/* --- Champs de formulaire --- */
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.form-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-}
-
+/* Inputs */
 .nature-input {
     width: 100%;
-    padding: 0.85rem 1.1rem;
-    font-family: inherit;
-    font-size: 0.95rem;
-    color: var(--text-primary);
-    background: var(--bg-surface);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-md);
+    padding: 0.8rem 1rem;
+    background: var(--bg-overlay);
+    border: 1px solid var(--border-b);
+    border-radius: var(--r-md);
+    color: var(--text-1);
+    font-size: 0.9rem;
     outline: none;
-    transition: all var(--transition);
+    transition: border-color var(--ease), box-shadow var(--ease), background var(--ease);
 }
-
-.nature-input::placeholder { color: var(--text-muted); }
+.nature-input::placeholder { color: var(--text-3); }
 .nature-input:focus {
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 3px rgba(90, 138, 114, 0.12);
+    border-color: var(--accent);
+    background: var(--bg-elevated);
+    box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
-/* --- Cartes --- */
-.card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: 2rem;
-    transition: box-shadow var(--transition);
-}
-.card:hover { box-shadow: var(--shadow-md); }
-
-/* --- Badge --- */
-.badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.2rem 0.65rem;
-    font-size: 0.75rem;
+/* Bouton principal */
+.nature-btn {
+    display: block;
+    width: 100%;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #7C6FF7, #5A52DC);
+    border: none;
+    border-radius: var(--r-md);
+    color: #fff;
+    font-size: 0.9rem;
     font-weight: 600;
-    border-radius: var(--radius-full);
-    background: var(--accent-light);
-    color: var(--accent-hover);
-    border: 1px solid rgba(90, 138, 114, 0.2);
+    cursor: pointer;
+    transition: transform var(--ease), box-shadow var(--ease), opacity var(--ease);
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 20px var(--accent-glow);
+    position: relative;
+    overflow: hidden;
 }
-.badge-gray {
-    background: var(--bg-subtle);
-    color: var(--text-muted);
-    border-color: var(--border);
+.nature-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(255,255,255,0.08), transparent);
+    opacity: 0;
+    transition: opacity var(--ease);
+}
+.nature-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,111,247,0.45); }
+.nature-btn:hover::after { opacity: 1; }
+.nature-btn:active { transform: translateY(0); }
+.nature-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+/* Formulaire */
+.nature-form { display: flex; flex-direction: column; gap: 1.1rem; }
+
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.form-label {
+    font-size: 0.79rem;
+    font-weight: 500;
+    color: var(--text-2);
+    letter-spacing: 0.005em;
 }
 
-/* --- Message d'erreur --- */
+/* Erreur */
 .error-message {
-    font-size: 0.875rem;
+    font-size: 0.82rem;
     color: var(--danger);
-    min-height: 1.2em;
+    background: rgba(248,113,113,0.08);
+    border: 1px solid rgba(248,113,113,0.22);
+    border-radius: var(--r-md);
+    padding: 0.6rem 0.875rem;
     text-align: center;
-    background: var(--danger-light);
-    border-radius: var(--radius-md);
-    padding: 0.6rem 1rem;
-    display: none;
+    min-height: 0;
+    display: none; /* caché par défaut */
 }
+/* Affiché dès qu'il a du contenu */
 .error-message:not(:empty) { display: block; }
 
 /* ============================================================
-   6. AMBIENT BACKGROUND (Auth pages)
+   AUTH PAGES (index.html + signup.html)
    ============================================================ */
-.ambient-light {
+body.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: var(--bg-void);
+    background-image:
+        radial-gradient(ellipse 900px 600px at 50% -80px, rgba(124,111,247,0.18), transparent),
+        radial-gradient(ellipse 700px 500px at 80% 100%,  rgba(90,82,220,0.09),   transparent);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Grille subtile en arrière-plan */
+body.auth-page::before {
+    content: '';
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: 0;
-    background:
-        radial-gradient(ellipse at 20% 20%, rgba(90, 138, 114, 0.07) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(74, 127, 165, 0.05) 0%, transparent 50%);
-}
-
-/* ============================================================
-   7. AUTH LAYOUT (Login & Signup)
-   ============================================================ */
-.auth-body {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    position: relative;
-    background-color: var(--bg-base);
     background-image:
-        radial-gradient(ellipse at 20% 20%, rgba(90, 138, 114, 0.07) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(74, 127, 165, 0.05) 0%, transparent 50%);
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent);
+    z-index: 0;
 }
 
-.auth-panel {
+/* Wrapper centré */
+.auth-wrapper {
     width: 100%;
-    max-width: 440px;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    animation: slide-up 0.5s ease-out both;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.45s ease-out both;
 }
 
-.auth-brand {
+/* Logo */
+.auth-logo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.65rem;
+    margin-bottom: 2.25rem;
     text-decoration: none;
 }
-
-.auth-brand-icon {
-    width: 40px;
-    height: 40px;
-    background: var(--accent);
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.2rem;
+.auth-logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), #9078FF);
+    border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 20px var(--accent-glow);
     flex-shrink: 0;
-    box-shadow: var(--shadow-sm);
+}
+.auth-logo-text {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-2);
+    letter-spacing: 0.01em;
 }
 
-.auth-brand-name {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.3px;
-}
-
+/* Carte */
 .auth-card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
-    padding: 2.5rem;
-    box-shadow: var(--shadow-md);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-b);
+    border-radius: var(--r-xl);
+    padding: 2.5rem 2.25rem;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.5), 0 0 60px rgba(124,111,247,0.07);
+    position: relative;
+    overflow: hidden;
 }
-
-.auth-card-header {
-    margin-bottom: 1.75rem;
+/* Ligne lumineuse en haut */
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 10%, rgba(124,111,247,0.55) 50%, transparent 90%);
 }
 
 .auth-card-title {
     font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-weight: 800;
+    color: var(--text-1);
     margin-bottom: 0.4rem;
 }
-
-.auth-card-subtitle {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
+.auth-card-sub {
+    font-size: 0.875rem;
+    color: var(--text-2);
+    margin-bottom: 2rem;
+    line-height: 1.55;
 }
 
-.auth-info-box {
-    background: var(--accent-light);
-    border: 1px solid rgba(90, 138, 114, 0.2);
-    border-radius: var(--radius-md);
+/* Box info */
+.auth-info {
+    background: var(--accent-dim);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--r-md);
     padding: 0.875rem 1rem;
-    font-size: 0.85rem;
-    color: var(--accent-hover);
+    font-size: 0.82rem;
+    color: var(--accent-bright);
+    margin-bottom: 1.5rem;
     line-height: 1.5;
 }
 
-.nature-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-}
-
-.nature-btn {
-    width: 100%;
-    padding: 0.925rem;
-    font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-inverse);
-    background: var(--accent);
-    border: 1.5px solid var(--accent);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all var(--transition);
-    margin-top: 0.5rem;
-    box-shadow: var(--shadow-sm);
-}
-.nature-btn:hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
-}
-.nature-btn:active { transform: translateY(0); }
-.nature-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-
+/* Footer */
 .auth-footer {
+    margin-top: 1.5rem;
     text-align: center;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
+    font-size: 0.82rem;
+    color: var(--text-2);
 }
-.auth-footer a {
-    color: var(--accent);
-    font-weight: 600;
-    text-decoration: none;
-    transition: color var(--transition);
-}
-.auth-footer a:hover { color: var(--accent-hover); text-decoration: underline; }
-
-/* Back link */
-.auth-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color var(--transition);
-}
-.auth-back:hover { color: var(--text-primary); }
+.auth-footer a { color: var(--accent-bright); font-weight: 500; transition: color var(--ease); }
+.auth-footer a:hover { color: #fff; }
 
 /* ============================================================
-   8. CHAT — Structure
+   CHAT PAGE (chat.html)
    ============================================================ */
-.chat-body {
-    height: 100vh;
+body.chat-body {
     display: flex;
     flex-direction: column;
-    background: var(--bg-base);
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-void);
 }
 
 .chat-layout {
     display: flex;
     flex-direction: column;
+    max-width: 900px;
     width: 100%;
-    max-width: 860px;
     height: 100vh;
     margin: 0 auto;
-    padding: 1.5rem 1.5rem;
+    padding: 1.25rem;
 }
 
 /* Topbar */
@@ -413,244 +300,183 @@ h1, h2, h3, h4 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--bg-surface);
+    background: var(--bg-elevated);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 0.875rem 1.25rem;
-    margin-bottom: 1.25rem;
-    box-shadow: var(--shadow-xs);
+    border-radius: var(--r-lg);
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
     flex-shrink: 0;
-}
-
-.chat-topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 0.875rem;
-}
-
-.chat-back-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    text-decoration: none;
-    transition: all var(--transition);
-    border: 1px solid var(--border);
-    font-size: 1rem;
-}
-.chat-back-link:hover {
-    background: var(--bg-subtle);
-    color: var(--text-primary);
-}
-
-.chat-topbar-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.chat-topbar-right {
-    display: flex;
-    align-items: center;
     gap: 1rem;
 }
+.chat-topbar-left  { display: flex; align-items: center; gap: 0.875rem; }
+.chat-topbar-right { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 
-.chat-status {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
+.chat-back-link {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border-b);
+    border-radius: var(--r-sm);
+    color: var(--text-2);
+    font-size: 1rem;
+    transition: all var(--ease);
+    text-decoration: none;
 }
+.chat-back-link:hover { background: rgba(255,255,255,0.06); color: var(--text-1); }
 
-.chat-status-dot {
-    width: 8px;
-    height: 8px;
-    background: #22C55E;
+.chat-topbar-title { font-size: 0.9rem; font-weight: 700; color: var(--text-1); }
+
+.chat-status { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-2); }
+
+.status-dot {
+    width: 7px; height: 7px;
+    background: var(--success);
     border-radius: 50%;
-    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
-    animation: pulse-dot 2s infinite;
+    box-shadow: 0 0 6px var(--success);
+    animation: blink 2.5s ease-in-out infinite;
+    flex-shrink: 0;
 }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
-@keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+.btn-logout {
+    background: transparent;
+    border: 1px solid rgba(248,113,113,0.3);
+    color: var(--danger);
+    padding: 0.4rem 0.875rem;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: all var(--ease);
+    white-space: nowrap;
 }
+.btn-logout:hover { background: rgba(248,113,113,0.08); border-color: var(--danger); }
 
-/* Room Container */
+/* Room */
 .chat-room-container {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background: var(--bg-surface);
+    background: var(--bg-elevated);
     border: 1px solid var(--border);
-    border-radius: var(--radius-xl);
+    border-radius: var(--r-xl);
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    min-height: 0;
+    min-height: 0; /* CRITIQUE : permet au flex-child de scroll */
 }
 
-/* Chat Header */
+/* Chat header */
 .chat-header {
-    padding: 1.25rem 1.75rem;
+    padding: 1.1rem 1.5rem;
     border-bottom: 1px solid var(--border);
-    background: var(--bg-surface);
     flex-shrink: 0;
 }
-.chat-header h2 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.15rem;
-}
-.chat-header p {
-    font-size: 0.825rem;
-    color: var(--text-muted);
-}
+.chat-header h2 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem; }
+.chat-header p  { font-size: 0.8rem; color: var(--text-3); }
 
 /* Messages */
 .messages-list {
     flex: 1;
     overflow-y: auto;
-    padding: 1.5rem 1.75rem;
+    padding: 1.25rem 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.875rem;
     background: var(--bg-base);
 }
 
-/* Chat Form */
+/* Formulaire envoi */
 .chat-form {
-    padding: 1rem 1.25rem;
-    border-top: 1px solid var(--border);
-    background: var(--bg-surface);
     display: flex;
     gap: 0.75rem;
     align-items: center;
+    padding: 0.875rem 1.25rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg-elevated);
     flex-shrink: 0;
 }
-
 .chat-form .nature-input {
-    border-radius: var(--radius-full);
-    padding: 0.8rem 1.25rem;
-    background: var(--bg-subtle);
-    border-color: transparent;
-    font-size: 0.9rem;
+    border-radius: var(--r-full);
+    background: var(--bg-overlay);
+    padding: 0.7rem 1.25rem;
+    font-size: 0.875rem;
+    border-color: var(--border);
 }
-.chat-form .nature-input:focus {
-    background: var(--bg-surface);
-    border-color: var(--border-focus);
-}
+.chat-form .nature-input:focus { border-color: var(--accent); }
 
 .chat-send-btn {
     flex-shrink: 0;
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-full);
-    background: var(--accent);
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #5A52DC);
     border: none;
-    color: white;
+    color: #fff;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--transition);
-    font-size: 1rem;
-    box-shadow: var(--shadow-sm);
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--ease);
+    box-shadow: 0 2px 12px var(--accent-glow);
 }
-.chat-send-btn:hover {
-    background: var(--accent-hover);
-    transform: scale(1.05);
-    box-shadow: var(--shadow-md);
-}
+.chat-send-btn:hover { transform: scale(1.08); box-shadow: 0 4px 20px rgba(124,111,247,0.5); }
 
-/* ---- Bulles de messages ---- */
+/* Bulles */
 .message {
     display: flex;
     flex-direction: column;
-    max-width: 68%;
-    animation: slide-up 0.2s ease-out both;
+    max-width: 70%;
+    animation: fadeUp 0.2s ease-out both;
 }
 .message.mine  { align-self: flex-end; }
 .message.other { align-self: flex-start; }
 
 .message-meta {
-    font-size: 0.75rem;
-    color: var(--text-muted);
+    font-size: 0.72rem;
+    color: var(--text-3);
     margin-bottom: 0.3rem;
     padding: 0 0.25rem;
 }
 .message.mine .message-meta { text-align: right; }
 
 .message-inner {
-    padding: 0.75rem 1.1rem;
-    border-radius: var(--radius-lg);
-    font-size: 0.9rem;
+    padding: 0.7rem 1rem;
+    border-radius: var(--r-lg);
+    font-size: 0.875rem;
     line-height: 1.5;
-    color: var(--text-primary);
     word-wrap: break-word;
+    color: var(--text-1);
 }
-
 .message.mine .message-inner {
-    background: var(--accent);
-    color: var(--text-inverse);
+    background: rgba(124,111,247,0.25);
+    border: 1px solid rgba(124,111,247,0.35);
     border-bottom-right-radius: 4px;
 }
-
 .message.other .message-inner {
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
+    background: var(--bg-overlay);
+    border: 1px solid var(--border-b);
     border-bottom-left-radius: 4px;
 }
-
 .message.system {
     align-self: center;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    background: var(--bg-subtle);
-    padding: 0.35rem 0.875rem;
-    border-radius: var(--radius-full);
-    border: 1px solid var(--border);
     max-width: unset;
+    font-size: 0.75rem;
+    color: var(--text-3);
+    background: var(--bg-overlay);
+    padding: 0.3rem 0.875rem;
+    border-radius: var(--r-full);
+    border: 1px solid var(--border);
 }
 
 /* ============================================================
-   9. ANIMATIONS
+   ANIMATIONS
    ============================================================ */
-@keyframes slide-up {
-    from { opacity: 0; transform: translateY(12px); }
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes fade-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-.animate-in { animation: slide-up 0.4s ease-out both; }
-
 /* ============================================================
-   10. RESPONSIVE — AUTH
-   ============================================================ */
-@media (max-width: 480px) {
-    .auth-card { padding: 1.75rem 1.25rem; }
-}
-
-/* ============================================================
-   11. RESPONSIVE — CHAT
+   RESPONSIVE CHAT
    ============================================================ */
 @media (max-width: 640px) {
     .chat-layout { padding: 0.75rem; }
-    .chat-topbar {
-        flex-direction: column;
-        gap: 0.75rem;
-        align-items: flex-start;
-        padding: 0.875rem 1rem;
-    }
+    .chat-topbar { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
     .chat-topbar-right { width: 100%; justify-content: space-between; }
     .message { max-width: 85%; }
-    .messages-list { padding: 1rem; }
 }

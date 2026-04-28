@@ -3,74 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Connexion à l'Écosystème BTS CIEL — Lycée Europe. Votre espace de travail numérique.">
+    <meta name="description" content="Connexion — Écosystème BTS CIEL, Lycée Europe.">
     <title>Connexion — Écosystème CIEL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="styles/nature-theme.css">
 </head>
-<body class="auth-body">
+<body class="auth-page">
 
-    <div class="auth-panel">
+    <div class="auth-wrapper">
 
-        <!-- Logo / Marque -->
-        <a href="#" class="auth-brand">
-            <div class="auth-brand-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12C2 6.48 6.48 2 12 2z"/>
-                    <path d="M12 6v6l4 2"/>
+        <!-- Logo -->
+        <a href="#" class="auth-logo">
+            <div class="auth-logo-mark">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                 </svg>
             </div>
-            <span class="auth-brand-name">Lycée Europe — BTS CIEL</span>
+            <span class="auth-logo-text">Lycée Europe · BTS CIEL</span>
         </a>
 
-        <!-- Carte principale -->
+        <!-- Card -->
         <div class="auth-card">
-            <div class="auth-card-header">
-                <h1 class="auth-card-title">Bon retour 👋</h1>
-                <p class="auth-card-subtitle">Connectez-vous à votre espace de travail pour accéder à vos cours, ressources et outils.</p>
-            </div>
+            <h1 class="auth-card-title">Bon retour.</h1>
+            <p class="auth-card-sub">Connectez-vous pour accéder à votre espace de travail, vos cours et votre promotion.</p>
 
             <form id="loginForm" class="nature-form" novalidate>
-
                 <div class="form-group">
                     <label class="form-label" for="email">Adresse email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        class="nature-input"
-                        placeholder="prénom.nom@goofy.bz"
-                        autocomplete="email"
-                        required
-                    >
+                    <input type="email" id="email" class="nature-input" placeholder="prenom.nom@goofy.bz" autocomplete="email" required>
                 </div>
-
                 <div class="form-group">
                     <label class="form-label" for="password">Mot de passe</label>
-                    <input
-                        type="password"
-                        id="password"
-                        class="nature-input"
-                        placeholder="••••••••"
-                        autocomplete="current-password"
-                        required
-                    >
+                    <input type="password" id="password" class="nature-input" placeholder="••••••••" autocomplete="current-password" required>
                 </div>
-
                 <div id="authError" class="error-message"></div>
-
-                <button type="submit" class="nature-btn">Se connecter</button>
-
+                <button type="submit" class="nature-btn">Se connecter →</button>
             </form>
         </div>
 
-        <!-- Lien inscription -->
+        <!-- Footer lien -->
         <p class="auth-footer">
-            Pas encore de compte ?
-            <a href="signup.html">Créer un profil étudiant →</a>
+            Pas encore de compte ? <a href="signup.html">Créer un profil étudiant</a>
         </p>
-
     </div>
 
-    <!-- Firebase SDKs -->
     <script type="module" src="scripts/firebase-config.js"></script>
     <script type="module" src="scripts/auth.js"></script>
 </body>
