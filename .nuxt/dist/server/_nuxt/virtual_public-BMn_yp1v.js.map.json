@@ -1,0 +1,1 @@
+{"file":"virtual_public-BMn_yp1v.js","mappings":";AAAuD,MAAA,aAAe,gBAAgB,iBAAiB;","names":[],"sources":["../../../../virtual:public?%2Fvideo-fond.mp4"],"sourcesContent":["import { publicAssetsURL } from '#internal/nuxt/paths';export default publicAssetsURL(\"/video-fond.mp4\")"],"version":3}
