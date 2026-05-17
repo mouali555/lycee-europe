@@ -57,9 +57,18 @@
               <p class="text-xs text-violet-300/60 mt-0.5 font-mono">Réseau chiffré. <span class="text-violet-400">/help</span> pour l'aide.</p>
             </div>
           </div>
-          <button @click="disconnect" class="text-xs font-mono text-violet-300/50 hover:text-red-400 transition-colors uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-white/5">
-            Déconnexion
-        </button>
+          <div class="flex items-center gap-3">
+            <NuxtLink to="/nexus" class="text-xs px-3.5 py-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-violet-600 hover:from-fuchsia-500 hover:to-violet-500 text-white font-medium transition-all shadow-[0_0_15px_rgba(217,70,239,0.3)] hover:shadow-[0_0_20px_rgba(217,70,239,0.5)] border border-fuchsia-500/20 flex items-center gap-1.5 font-mono">
+              <span class="relative flex h-1.5 w-1.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-pink-500"></span>
+              </span>
+              Visual Lab
+            </NuxtLink>
+            <button @click="disconnect" class="text-xs font-mono text-violet-300/50 hover:text-red-400 transition-colors uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-white/5">
+              Déconnexion
+            </button>
+          </div>
       </header>
 
         <div class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-6 p-6 custom-scrollbar" ref="messagesContainer">
@@ -74,7 +83,7 @@
               {{ msg.author }} <span class="opacity-40 lowercase ml-1">{{ msg.time }}</span>
           </div>
           <div 
-              class="text-sm md:text-base break-words p-4 rounded-2xl shadow-lg leading-relaxed"
+              class="text-sm md:text-base break-words p-4 rounded-2xl shadow-lg leading-relaxed relative group"
               :class="msg.isAdmin 
                 ? 'bg-gradient-to-br from-fuchsia-900/60 to-violet-900/60 text-fuchsia-50 border border-fuchsia-500/40 shadow-[0_0_15px_rgba(217,70,239,0.2)] rounded-tl-sm' 
                 : (msg.isMine 
@@ -84,6 +93,15 @@
             <!-- Affichage de l'image si elle existe -->
               <img v-if="msg.imageUrl && msg.imageUrl.startsWith('https://')" :src="msg.imageUrl" class="max-w-sm w-full rounded-xl mb-3 border border-white/10 shadow-md" alt="Média" />
             <span v-if="msg.text">{{ msg.text }}</span>
+            <!-- Bouton de suppression pour l'Admin -->
+            <button 
+              v-if="isAdmin" 
+              @click="deleteMessage(msg.id)"
+              class="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md hover:scale-110 z-20 cursor-pointer"
+              title="Supprimer le message"
+            >
+              ✕
+            </button>
           </div>
         </div>
       </div>
@@ -113,7 +131,7 @@
 <script setup>
 import { ref, nextTick, watch, onUnmounted } from 'vue'
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } from 'firebase/firestore'
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot, doc, deleteDoc } from 'firebase/firestore'
 import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { getStorage, ref as fbRef, uploadBytes, getDownloadURL } from 'firebase/storage'
 
@@ -208,7 +226,7 @@ const pushSystemMessage = (text) => {
 const initChat = () => {
   if (!db) return
   
-  const q = query(collection(db, "messages"), orderBy("createdAt", "asc"), limit(50))
+  const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(50))
   
   unsubscribe = onSnapshot(q, (snapshot) => {
     const newMessages = []
@@ -237,7 +255,11 @@ const initChat = () => {
       })
     })
     
-    messages.value = newMessages
+    // On inverse le tableau pour afficher du plus ancien au plus récent chronologiquement
+    messages.value = newMessages.reverse()
+  }, (err) => {
+    pushSystemMessage("Erreur de connexion Firebase : " + err.message)
+    console.error("Erreur de connexion Firebase :", err)
   })
 }
 
@@ -279,12 +301,40 @@ const handleFileUpload = async (event) => {
   }
 }
 
+const deleteMessage = async (msgId) => {
+  if (!confirm("Voulez-vous vraiment supprimer ce message ?")) return
+  
+  try {
+    await deleteDoc(doc(db, "messages", msgId))
+    pushSystemMessage("Message supprimé de la base de données.")
+  } catch (err) {
+    pushSystemMessage("Erreur de suppression : " + err.message)
+  }
+}
+
 const sendMessage = async () => {
   if (!newMessage.value.trim() || !db) return
   
   const textToSend = newMessage.value.trim().substring(0, 500) // SÉCURITÉ : Coupe à 500 caractères max
   newMessage.value = '' // On vide l'input immédiatement pour l'UX
   
+  // Commande d'aide /help
+  if (textToSend === '/help') {
+    pushSystemMessage("Commandes Nexus disponibles :")
+    pushSystemMessage("/nick <pseudo> : Modifier votre identifiant visible")
+    pushSystemMessage("/login <email> <mot_de_passe> : Connexion administrateur")
+    pushSystemMessage("/clear : Effacer localement les messages de l'écran")
+    return
+  }
+
+  // Commande d'effacement local /clear
+  if (textToSend === '/clear') {
+    localClearTime.value = Date.now()
+    messages.value = []
+    pushSystemMessage("Écran nettoyé localement.")
+    return
+  }
+
   // Système de commandes cachées
   if (textToSend.startsWith('/login ')) {
     const parts = textToSend.split(' ')
@@ -329,6 +379,7 @@ const sendMessage = async () => {
       createdAt: serverTimestamp()
     })
   } catch (err) {
+    pushSystemMessage("Erreur d'envoi : " + err.message)
     console.error("Erreur lors de l'envoi :", err)
   }
 }
