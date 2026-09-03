@@ -449,7 +449,7 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import('./index-DqpgdPnk.mjs')
+    component: () => import('./index-9SBpjzkT.mjs')
   },
   {
     name: "nexus",
