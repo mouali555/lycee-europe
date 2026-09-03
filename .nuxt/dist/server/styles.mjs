@@ -1,6 +1,6 @@
 const interopDefault = r => r.default || r || []
 export default {
-  "node_modules/nuxt/dist/app/entry.js": () => import('./_nuxt/entry-styles.DjXJbix0.mjs').then(interopDefault),
+  "node_modules/nuxt/dist/app/entry.js": () => import('./_nuxt/entry-styles.IkhgUoEF.mjs').then(interopDefault),
   "pages/chat.vue": () => import('./_nuxt/chat-styles.BG16KPTN.mjs').then(interopDefault),
   "pages/nexus.vue": () => import('./_nuxt/nexus-styles.Cl_GgOgW.mjs').then(interopDefault),
   "pages/chat.vue?vue&type=style&index=0&scoped=06cb805e&lang.css": () => import('./_nuxt/chat-styles.BG16KPTN.mjs').then(interopDefault),

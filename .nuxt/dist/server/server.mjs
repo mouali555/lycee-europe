@@ -427,12 +427,12 @@ const _routes = [
   {
     name: "index",
     path: "/",
-    component: () => import("./_nuxt/index-Bzd0YmsB.js")
+    component: () => import("./_nuxt/index-DqpgdPnk.js")
   },
   {
     name: "nexus",
     path: "/nexus",
-    component: () => import("./_nuxt/nexus-8rbnLzV7.js")
+    component: () => import("./_nuxt/nexus-Cnp2VtKD.js")
   },
   {
     name: "filieres",
