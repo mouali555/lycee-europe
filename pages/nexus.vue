@@ -294,16 +294,8 @@
     <!-- ========================================== -->
     <div v-else-if="currentMode === 'genesis'" class="absolute inset-0 z-20 flex flex-col justify-between p-12 md:p-16">
       
-      <!-- Fond d'Arrière-Plan : Vidéo 'futur.mp4' ralentie à 75% et stylisée -->
-      <video 
-        autoplay 
-        loop 
-        muted 
-        playsinline 
-        src="/futur.mp4" 
-        @loadedmetadata="$event.target.playbackRate = 0.75"
-        class="absolute inset-0 w-full h-full object-cover z-0 genesis-video"
-      ></video>
+      <!-- Fond de secours sans asset externe manquant -->
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(20,184,166,0.18),_rgba(2,6,23,0.96)_72%)] z-0 genesis-video"></div>
 
       <!-- Superposition de brume lumineuse magique (glowing dynamic effect) -->
       <div class="absolute inset-0 bg-cyan-950/5 mix-blend-overlay pointer-events-none glow-mist z-1"></div>

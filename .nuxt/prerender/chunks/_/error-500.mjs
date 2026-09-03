@@ -1,4 +1,4 @@
-import { escapeHtml } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/@vue/shared/dist/shared.cjs.prod.js';
+import { escapeHtml } from 'file:///workspaces/lycee-europe/node_modules/@vue/shared/dist/shared.cjs.prod.js';
 
 const _messages = {
 	"appName": "Nuxt",

@@ -1,14 +1,14 @@
-import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { getResponseStatusText, getResponseStatus, getQuery, createError, appendResponseHeader } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/h3/dist/index.mjs';
-import { joinRelativeURL, encodePath, joinURL } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/ufo/dist/index.mjs';
-import { renderToString } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/vue/server-renderer/index.mjs';
-import { a as useRuntimeConfig, b as useStorage, d as defineRenderHandler, g as getRouteRules, u as useNitroApp } from './nitro.mjs';
-import { createHead as createHead$1, propsToString, renderSSRHead } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unhead/dist/server.mjs';
+import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///workspaces/lycee-europe/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { getResponseStatusText, getResponseStatus, getQuery, createError, appendResponseHeader } from 'file:///workspaces/lycee-europe/node_modules/h3/dist/index.mjs';
+import { joinRelativeURL, encodePath, joinURL } from 'file:///workspaces/lycee-europe/node_modules/ufo/dist/index.mjs';
+import { renderToString } from 'file:///workspaces/lycee-europe/node_modules/vue/server-renderer/index.mjs';
+import { a as useRuntimeConfig, b as useStorage, d as defineRenderHandler, g as getRouteRules, u as useNitroApp } from '../nitro/nitro.mjs';
+import { createHead as createHead$1, propsToString, renderSSRHead } from 'file:///workspaces/lycee-europe/node_modules/unhead/dist/server.mjs';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { stringify, uneval } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/devalue/index.js';
-import { walkResolver } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unhead/dist/utils.mjs';
-import { isRef, toValue, hasInjectionContext, inject, ref, watchEffect, getCurrentInstance, onBeforeUnmount, onDeactivated, onActivated } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/vue/index.mjs';
-import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unhead/dist/plugins.mjs';
+import { stringify, uneval } from 'file:///workspaces/lycee-europe/node_modules/devalue/index.js';
+import { walkResolver } from 'file:///workspaces/lycee-europe/node_modules/unhead/dist/utils.mjs';
+import { isRef, toValue, hasInjectionContext, inject, ref, watchEffect, getCurrentInstance, onBeforeUnmount, onDeactivated, onActivated } from 'file:///workspaces/lycee-europe/node_modules/vue/index.mjs';
+import { DeprecationsPlugin, PromisesPlugin, TemplateParamsPlugin, AliasSortingPlugin } from 'file:///workspaces/lycee-europe/node_modules/unhead/dist/plugins.mjs';
 
 const VueResolver = (_, value) => {
   return isRef(value) ? toValue(value) : value;
@@ -554,5 +554,5 @@ const renderer = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: handler
 }, Symbol.toStringTag, { value: 'Module' }));
 
-export { baseURL as b, headSymbol as h, publicAssetsURL as p, renderer as r, useHead as u };
+export { buildAssetsURL as a, baseURL as b, headSymbol as h, publicAssetsURL as p, renderer as r, useHead as u };
 //# sourceMappingURL=renderer.mjs.map

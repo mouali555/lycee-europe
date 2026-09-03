@@ -1,33 +1,34 @@
-import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { hasInjectionContext, getCurrentInstance, defineComponent, ref, inject, h, Suspense, Fragment, createApp, provide, shallowReactive, onErrorCaptured, onServerPrefetch, unref, createVNode, resolveDynamicComponent, reactive, effectScope, defineAsyncComponent, mergeProps, getCurrentScope, toRef, shallowRef, isReadonly, useSSRContext, isRef, isShallow, isReactive, toRaw } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/vue/index.mjs';
-import { $fetch } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/ofetch/dist/node.mjs';
+import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { hasInjectionContext, getCurrentInstance, defineComponent, ref, inject, h, Suspense, Fragment, createApp, provide, shallowReactive, onErrorCaptured, onServerPrefetch, unref, createVNode, resolveDynamicComponent, reactive, effectScope, defineAsyncComponent, mergeProps, getCurrentScope, toRef, shallowRef, isReadonly, useSSRContext, isRef, isShallow, isReactive, toRaw } from 'file:///workspaces/lycee-europe/node_modules/vue/index.mjs';
+import { $fetch } from 'file:///workspaces/lycee-europe/node_modules/ofetch/dist/node.mjs';
 import { b as baseURL } from '../_/renderer.mjs';
-import { createHooks } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/hookable/dist/index.mjs';
-import { getContext, executeAsync } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unctx/dist/index.mjs';
-import { sanitizeStatusCode, createError as createError$1, appendHeader } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/h3/dist/index.mjs';
-import { RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/vue-router/vue-router.node.mjs';
-import { defu } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/defu/dist/defu.mjs';
-import { parseURL, encodePath, decodePath, hasProtocol, isScriptProtocol, joinURL, withQuery } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/ufo/dist/index.mjs';
-import { ssrRenderSuspense, ssrRenderComponent, ssrRenderVNode, ssrRenderAttrs } from 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/vue/server-renderer/index.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import '../_/nitro.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/destr/dist/index.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/node-mock-http/dist/index.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unstorage/dist/index.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unstorage/drivers/fs.mjs';
-import 'file:///F:/SITE/lycee-europe/lycee-europe/node_modules/@nuxt/nitro-server/dist/runtime/utils/cache-driver.js';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unstorage/drivers/fs-lite.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/ohash/dist/index.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/klona/dist/index.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/scule/dist/index.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/radix3/dist/index.mjs';
+import { createHooks } from 'file:///workspaces/lycee-europe/node_modules/hookable/dist/index.mjs';
+import { getContext, executeAsync } from 'file:///workspaces/lycee-europe/node_modules/unctx/dist/index.mjs';
+import { sanitizeStatusCode, createError as createError$1, appendHeader } from 'file:///workspaces/lycee-europe/node_modules/h3/dist/index.mjs';
+import { RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'file:///workspaces/lycee-europe/node_modules/vue-router/vue-router.node.mjs';
+import { defu } from 'file:///workspaces/lycee-europe/node_modules/defu/dist/defu.mjs';
+import { parseURL, encodePath, decodePath, hasProtocol, isScriptProtocol, joinURL, withQuery } from 'file:///workspaces/lycee-europe/node_modules/ufo/dist/index.mjs';
+import { ssrRenderSuspense, ssrRenderComponent, ssrRenderVNode, ssrRenderAttrs } from 'file:///workspaces/lycee-europe/node_modules/vue/server-renderer/index.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import '../nitro/nitro.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/destr/dist/index.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/node-mock-http/dist/index.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/unstorage/dist/index.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/unstorage/drivers/fs.mjs';
+import 'node:crypto';
+import 'file:///workspaces/lycee-europe/node_modules/unstorage/drivers/fs-lite.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/unstorage/drivers/lru-cache.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/ohash/dist/index.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/klona/dist/index.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/scule/dist/index.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/radix3/dist/index.mjs';
 import 'node:fs';
 import 'node:url';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/pathe/dist/index.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unhead/dist/server.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/pathe/dist/index.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/unhead/dist/server.mjs';
 import 'node:async_hooks';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/devalue/index.js';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unhead/dist/utils.mjs';
-import 'file://F:/SITE/lycee-europe/lycee-europe/node_modules/unhead/dist/plugins.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/devalue/index.js';
+import 'file:///workspaces/lycee-europe/node_modules/unhead/dist/utils.mjs';
+import 'file:///workspaces/lycee-europe/node_modules/unhead/dist/plugins.mjs';
 
 if (!globalThis.$fetch) {
   globalThis.$fetch = $fetch.create({
@@ -438,22 +439,27 @@ const _routes = [
   {
     name: "chat",
     path: "/chat",
-    component: () => import('./chat-BgQV8-cy.mjs')
+    component: () => import('./chat-CLkHZIVj.mjs')
   },
   {
     name: "clubs",
     path: "/clubs",
-    component: () => import('./clubs-CBl2MZ4k.mjs')
+    component: () => import('./clubs-BkhazHVN.mjs')
   },
   {
     name: "index",
     path: "/",
-    component: () => import('./index-CVCf0r1C.mjs')
+    component: () => import('./index-Bzd0YmsB.mjs')
+  },
+  {
+    name: "nexus",
+    path: "/nexus",
+    component: () => import('./nexus-8rbnLzV7.mjs')
   },
   {
     name: "filieres",
     path: "/filieres",
-    component: () => import('./filieres-CwV9Vo6K.mjs')
+    component: () => import('./filieres-C7uyyfOA.mjs')
   }
 ];
 const ROUTE_KEY_PARENTHESES_RE = /(:\w+)\([^)]+\)/g;
@@ -972,8 +978,8 @@ const _sfc_main$1 = {
     const statusText = _error.statusMessage ?? (is404 ? "Page Not Found" : "Internal Server Error");
     const description = _error.message || _error.toString();
     const stack = void 0;
-    const _Error404 = defineAsyncComponent(() => import('./error-404-vIkaFjGD.mjs'));
-    const _Error = defineAsyncComponent(() => import('./error-500-Cmu8AbH8.mjs'));
+    const _Error404 = defineAsyncComponent(() => import('./error-404-CII5mqkl.mjs'));
+    const _Error = defineAsyncComponent(() => import('./error-500-DlUM07Yk.mjs'));
     const ErrorTemplate = is404 ? _Error404 : _Error;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(ErrorTemplate), mergeProps({ status: unref(status), statusText: unref(statusText), statusCode: unref(status), statusMessage: unref(statusText), description: unref(description), stack: unref(stack) }, _attrs), null, _parent));

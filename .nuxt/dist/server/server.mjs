@@ -1,12 +1,12 @@
 import { shallowReactive, reactive, effectScope, getCurrentScope, hasInjectionContext, getCurrentInstance, inject, toRef, shallowRef, isReadonly, isRef, isShallow, isReactive, toRaw, defineComponent, provide, h, ref, Suspense, Fragment, useSSRContext, defineAsyncComponent, unref, mergeProps, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, createApp } from "vue";
-import { $fetch } from "F:/SITE/lycee-europe/lycee-europe/node_modules/ofetch/dist/node.mjs";
+import { $fetch } from "/workspaces/lycee-europe/node_modules/ofetch/dist/node.mjs";
 import { baseURL } from "#internal/nuxt/paths";
-import { createHooks } from "F:/SITE/lycee-europe/lycee-europe/node_modules/hookable/dist/index.mjs";
-import { getContext, executeAsync } from "F:/SITE/lycee-europe/lycee-europe/node_modules/unctx/dist/index.mjs";
-import { sanitizeStatusCode, createError as createError$1, appendHeader } from "F:/SITE/lycee-europe/lycee-europe/node_modules/h3/dist/index.mjs";
+import { createHooks } from "/workspaces/lycee-europe/node_modules/hookable/dist/index.mjs";
+import { getContext, executeAsync } from "/workspaces/lycee-europe/node_modules/unctx/dist/index.mjs";
+import { sanitizeStatusCode, createError as createError$1, appendHeader } from "/workspaces/lycee-europe/node_modules/h3/dist/index.mjs";
 import { START_LOCATION, createMemoryHistory, createRouter, RouterView } from "vue-router";
-import { defu } from "F:/SITE/lycee-europe/lycee-europe/node_modules/defu/dist/defu.mjs";
-import { hasProtocol, joinURL, withQuery, parseURL, encodePath, decodePath, isScriptProtocol } from "F:/SITE/lycee-europe/lycee-europe/node_modules/ufo/dist/index.mjs";
+import { defu } from "/workspaces/lycee-europe/node_modules/defu/dist/defu.mjs";
+import { hasProtocol, joinURL, withQuery, parseURL, encodePath, decodePath, isScriptProtocol } from "/workspaces/lycee-europe/node_modules/ufo/dist/index.mjs";
 import { ssrRenderAttrs, ssrRenderComponent, ssrRenderSuspense, ssrRenderVNode } from "vue/server-renderer";
 if (!globalThis.$fetch) {
   globalThis.$fetch = $fetch.create({
@@ -417,22 +417,27 @@ const _routes = [
   {
     name: "chat",
     path: "/chat",
-    component: () => import("./_nuxt/chat-BgQV8-cy.js")
+    component: () => import("./_nuxt/chat-CLkHZIVj.js")
   },
   {
     name: "clubs",
     path: "/clubs",
-    component: () => import("./_nuxt/clubs-CBl2MZ4k.js")
+    component: () => import("./_nuxt/clubs-BkhazHVN.js")
   },
   {
     name: "index",
     path: "/",
-    component: () => import("./_nuxt/index-CVCf0r1C.js")
+    component: () => import("./_nuxt/index-Bzd0YmsB.js")
+  },
+  {
+    name: "nexus",
+    path: "/nexus",
+    component: () => import("./_nuxt/nexus-8rbnLzV7.js")
   },
   {
     name: "filieres",
     path: "/filieres",
-    component: () => import("./_nuxt/filieres-CwV9Vo6K.js")
+    component: () => import("./_nuxt/filieres-C7uyyfOA.js")
   }
 ];
 const ROUTE_KEY_PARENTHESES_RE = /(:\w+)\([^)]+\)/g;
@@ -958,8 +963,8 @@ const _sfc_main$1 = {
     const statusText = _error.statusMessage ?? (is404 ? "Page Not Found" : "Internal Server Error");
     const description = _error.message || _error.toString();
     const stack = void 0;
-    const _Error404 = defineAsyncComponent(() => import("./_nuxt/error-404-vIkaFjGD.js"));
-    const _Error = defineAsyncComponent(() => import("./_nuxt/error-500-Cmu8AbH8.js"));
+    const _Error404 = defineAsyncComponent(() => import("./_nuxt/error-404-CII5mqkl.js"));
+    const _Error = defineAsyncComponent(() => import("./_nuxt/error-500-DlUM07Yk.js"));
     const ErrorTemplate = is404 ? _Error404 : _Error;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(ErrorTemplate), mergeProps({ status: unref(status), statusText: unref(statusText), statusCode: unref(status), statusMessage: unref(statusText), description: unref(description), stack: unref(stack) }, _attrs), null, _parent));
