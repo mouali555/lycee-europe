@@ -417,7 +417,7 @@ const _routes = [
   {
     name: "chat",
     path: "/chat",
-    component: () => import("./_nuxt/chat-CLkHZIVj.js")
+    component: () => import("./_nuxt/chat-QBAEK_9D.js")
   },
   {
     name: "clubs",

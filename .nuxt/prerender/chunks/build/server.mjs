@@ -439,7 +439,7 @@ const _routes = [
   {
     name: "chat",
     path: "/chat",
-    component: () => import('./chat-CLkHZIVj.mjs')
+    component: () => import('./chat-QBAEK_9D.mjs')
   },
   {
     name: "clubs",

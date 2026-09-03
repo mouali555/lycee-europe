@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen overflow-hidden bg-[#03000a] text-gray-200 flex flex-col font-sans selection:bg-violet-500/30 relative">
+  <div class="negev-chat-page h-screen overflow-hidden bg-[#03000a] text-gray-200 flex flex-col font-sans selection:bg-violet-500/30 relative">
     
     <!-- Arrière-plan Vidéo Espace / Galaxie -->
     <div class="fixed top-0 left-0 w-full h-screen overflow-hidden bg-[#03000a] z-0 pointer-events-none">
@@ -28,7 +28,7 @@
       <div class="max-w-md w-full bg-white/[0.03] backdrop-blur-2xl border border-white/10 p-10 rounded-[2rem] shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]">
         <div class="text-violet-400 text-sm mb-8 text-center font-mono uppercase tracking-[0.2em] flex items-center justify-center gap-3">
           <span class="w-2 h-2 rounded-full bg-violet-500 animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.8)]"></span>
-          Astra.Link_
+          NEGEV // קהילה
         </div>
         <form @submit.prevent="checkPassword" class="flex flex-col gap-5 relative">
           <input 
@@ -36,7 +36,7 @@
             type="password" 
             autofocus
             :disabled="isAuthenticating"
-            placeholder="Clé d'accès..." 
+            placeholder="מפתח גישה..."
             class="w-full bg-black/20 border border-violet-500/20 rounded-xl py-4 px-5 text-xl text-white focus:border-violet-400 focus:bg-white/5 outline-none transition-all disabled:opacity-50 text-center tracking-[0.2em]"
           />
           <p v-if="isAuthenticating" class="text-violet-400 text-xs text-center mt-2 absolute -bottom-8 w-full animate-pulse">Synchronisation quantique...</p>
@@ -53,8 +53,8 @@
           <div class="flex items-center gap-4">
             <div class="w-3 h-3 rounded-full bg-violet-500 shadow-[0_0_10px_rgba(139,92,246,0.8)] animate-pulse"></div>
             <div>
-              <h1 class="text-xl font-bold text-white tracking-wide">NEXUS<span class="text-violet-500">_COMMS</span></h1>
-              <p class="text-xs text-violet-300/60 mt-0.5 font-mono">Réseau chiffré. <span class="text-violet-400">/help</span> pour l'aide.</p>
+              <h1 class="text-xl font-bold text-white tracking-wide">NEGEV<span class="text-violet-500">_CHAT</span></h1>
+              <p class="text-xs text-violet-300/60 mt-0.5 font-mono">קהילת הלילה · <span class="text-violet-400">שבת שלום</span></p>
             </div>
           </div>
           <div class="flex items-center gap-3">
@@ -63,10 +63,10 @@
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-pink-500"></span>
               </span>
-              Visual Lab
+              Maison Negev
             </NuxtLink>
             <button @click="disconnect" class="text-xs font-mono text-violet-300/50 hover:text-red-400 transition-colors uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-white/5">
-              Déconnexion
+              יציאה · Déconnexion
             </button>
           </div>
       </header>
@@ -114,7 +114,7 @@
           v-model="newMessage" 
           type="text" 
           maxlength="500"
-            placeholder="Écrire un message..." 
+            placeholder="Écrire un message... / כתבו הודעה..."
             class="flex-1 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-violet-500 focus:bg-white/10 focus:ring-1 focus:ring-violet-500 outline-none transition-all placeholder-violet-300/30"
         />
         <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="hidden" />
