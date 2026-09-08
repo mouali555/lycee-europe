@@ -1,413 +1,2255 @@
 <template>
-  <div class="h-screen overflow-hidden bg-[#03000a] text-gray-200 flex flex-col font-sans selection:bg-violet-500/30 relative">
-    
-    <!-- Arrière-plan Vidéo Espace / Galaxie -->
-    <div class="fixed top-0 left-0 w-full h-screen overflow-hidden bg-[#03000a] z-0 pointer-events-none">
-      <!-- Dégradé violet en fond de secours -->
-      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-violet-900/30 via-black to-[#020005]"></div>
-      
-      <video 
-        class="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover opacity-60 mix-blend-screen blur-[1px]"
-        muted 
-        playsinline
-        autoplay
-        loop
-        src="/video-galaxie.mp4"
-      ></video>
-      
-      <!-- Dégradé par dessus la vidéo pour assombrir et teinter en violet profond -->
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-[#03000a]/60 to-[#03000a]"></div>
-      
-      <!-- Orbes lumineuses pour l'effet nébuleuse additionnel -->
-      <div class="absolute top-[10%] left-[15%] w-96 h-96 bg-violet-600/20 rounded-full blur-[120px] mix-blend-screen"></div>
-      <div class="absolute bottom-[20%] right-[10%] w-[40rem] h-[40rem] bg-fuchsia-800/10 rounded-full blur-[150px] mix-blend-screen"></div>
-    </div>
+  <div class="chat-app" v-if="currentUser">
 
-    <!-- Écran de verrouillage -->
-    <div v-if="!isAuthenticated" class="flex-1 flex flex-col items-center justify-center p-4 z-10 relative">
-      <div class="max-w-md w-full bg-white/[0.03] backdrop-blur-2xl border border-white/10 p-10 rounded-[2rem] shadow-[0_8px_32px_0_rgba(0,0,0,0.4)]">
-        <div class="text-violet-400 text-sm mb-8 text-center font-mono uppercase tracking-[0.2em] flex items-center justify-center gap-3">
-          <span class="w-2 h-2 rounded-full bg-violet-500 animate-pulse shadow-[0_0_10px_rgba(139,92,246,0.8)]"></span>
-          Astra.Link_
-        </div>
-        <form @submit.prevent="checkPassword" class="flex flex-col gap-5 relative">
-          <input 
-            v-model="passwordInput" 
-            type="password" 
-            autofocus
-            :disabled="isAuthenticating"
-            placeholder="Clé d'accès..." 
-            class="w-full bg-black/20 border border-violet-500/20 rounded-xl py-4 px-5 text-xl text-white focus:border-violet-400 focus:bg-white/5 outline-none transition-all disabled:opacity-50 text-center tracking-[0.2em]"
-          />
-          <p v-if="isAuthenticating" class="text-violet-400 text-xs text-center mt-2 absolute -bottom-8 w-full animate-pulse">Synchronisation quantique...</p>
-          <p v-if="error" class="text-red-400 text-xs text-center mt-2 absolute -bottom-8 w-full">{{ error }}</p>
-        </form>
+    <!-- Toast notification (Commandes secrètes & modération) -->
+    <Transition name="slide-down">
+      <div v-if="toastMsg" class="admin-toast glass-heavy">
+        <span class="admin-toast-icon">👑</span>
+        <span class="admin-toast-text">{{ toastMsg }}</span>
+        <button class="admin-toast-close" @click="toastMsg = ''">✕</button>
       </div>
-    </div>
+    </Transition>
 
-    <!-- Interface du Tchat -->
-    <div v-else class="flex-1 flex flex-col max-w-5xl w-full mx-auto p-4 md:p-6 z-10 relative h-screen">
-      <div class="flex-1 flex flex-col bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] overflow-hidden">
-        
-        <header class="px-6 py-5 border-b border-white/5 bg-black/20 flex justify-between items-center shrink-0">
-          <div class="flex items-center gap-4">
-            <div class="w-3 h-3 rounded-full bg-violet-500 shadow-[0_0_10px_rgba(139,92,246,0.8)] animate-pulse"></div>
-            <div>
-              <h1 class="text-xl font-bold text-white tracking-wide">NEXUS<span class="text-violet-500">_COMMS</span></h1>
-              <p class="text-xs text-violet-300/60 mt-0.5 font-mono">Réseau chiffré. <span class="text-violet-400">/help</span> pour l'aide.</p>
+    <!-- ══ SIDEBAR ═══════════════════════════════════════════ -->
+    <aside class="sidebar" :class="{ open: sidebarOpen }">
+
+      <!-- Header sidebar -->
+      <div class="sidebar-header">
+        <NuxtLink to="/" class="sidebar-logo">
+          <div class="sidebar-logo-icon">🎓</div>
+          <div>
+            <div class="sidebar-logo-text">Lycée Europe</div>
+            <div class="sidebar-logo-sub">Chat ∙ Communauté</div>
+          </div>
+        </NuxtLink>
+        <button class="mobile-close-btn" @click="sidebarOpen = false">✕</button>
+      </div>
+
+      <!-- Profil utilisateur -->
+      <div class="user-profile">
+        <div class="user-avatar-wrapper">
+          <div class="user-avatar" :style="`background: ${userColor}`">
+            {{ userInitials }}
+          </div>
+          <div class="status-dot"></div>
+        </div>
+        <div class="user-info">
+          <div class="user-name">
+            {{ currentUser.displayName || 'Anonyme' }}
+            <span v-if="isAdmin" class="admin-badge-gold" title="Super Admin Actif">👑 ADMIN</span>
+          </div>
+          <div class="user-email">{{ currentUser.email }}</div>
+        </div>
+        <button class="settings-btn" @click="showSettings = !showSettings" title="Paramètres">⚙</button>
+      </div>
+
+      <!-- Recherche -->
+      <div class="sidebar-search">
+        <div class="input-wrapper">
+          <span class="input-icon">🔍</span>
+          <input
+            v-model="searchQuery"
+            type="text"
+            class="input-field"
+            placeholder="Rechercher un salon..."
+          />
+        </div>
+      </div>
+
+      <!-- Liste des 3 salons -->
+      <div class="rooms-section">
+        <div class="rooms-category">
+          <span class="category-label">Salons officiels (3)</span>
+        </div>
+        <button
+          v-for="room in filteredRooms"
+          :key="room.id"
+          class="room-btn"
+          :class="{ active: currentRoom === room.id }"
+          @click="joinRoom(room)"
+        >
+          <span class="room-icon">{{ room.icon }}</span>
+          <div class="room-info">
+            <span class="room-name"># {{ room.name }}</span>
+            <span class="room-desc">{{ room.desc }}</span>
+          </div>
+          <span v-if="room.unread" class="room-unread">{{ room.unread }}</span>
+        </button>
+      </div>
+
+      <!-- Déconnexion -->
+      <div class="sidebar-footer">
+        <button class="logout-btn" @click="handleLogout">
+          <span>🚪</span> Se déconnecter
+        </button>
+      </div>
+    </aside>
+
+    <!-- ══ ZONE PRINCIPALE ════════════════════════════════════ -->
+    <main class="chat-main">
+
+      <!-- Header du chat -->
+      <div class="chat-header glass">
+        <!-- Mobile menu -->
+        <button class="mobile-menu-btn" @click="sidebarOpen = true">☰</button>
+
+        <div class="chat-header-info">
+          <div class="ch-room-icon">{{ activeRoom?.icon || '💬' }}</div>
+          <div>
+            <h2 class="ch-room-name"># {{ activeRoom?.name || 'général' }}</h2>
+            <p class="ch-room-desc">{{ activeRoom?.desc || '' }} ∙ {{ onlineCount }} en ligne</p>
+          </div>
+        </div>
+
+        <div class="chat-header-actions">
+          <button class="icon-btn" title="Rechercher" @click="showSearch = !showSearch" data-tooltip="Rechercher dans ce salon">🔍</button>
+          <button class="icon-btn" title="Membres" @click="showMembers = !showMembers" data-tooltip="Membres en ligne">👥</button>
+          <div class="online-pill">
+            <span class="status-dot" style="width:6px;height:6px;"></span>
+            {{ onlineCount }} en ligne
+            <span v-if="isAdmin" class="admin-pill-badge" title="Mode Admin Actif">👑 Admin</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barre de recherche dans les messages -->
+      <Transition name="slide-down">
+        <div v-if="showSearch" class="msg-search-bar glass">
+          <div class="input-wrapper">
+            <span class="input-icon">🔍</span>
+            <input v-model="msgSearch" class="input-field" placeholder="Rechercher dans les messages..." />
+          </div>
+          <button @click="showSearch = false; msgSearch = ''" class="btn btn-glass btn-sm">✕</button>
+        </div>
+      </Transition>
+
+      <!-- Zone messages -->
+      <div class="messages-area" ref="messagesArea" @scroll="handleScroll">
+
+        <!-- Welcome banner -->
+        <div class="welcome-banner">
+          <div class="wb-icon">{{ activeRoom?.icon || '💬' }}</div>
+          <h3 class="wb-title">Bienvenue dans #{{ activeRoom?.name || 'général' }}</h3>
+          <p class="wb-desc">{{ activeRoom?.desc || 'Discutez avec votre communauté.' }}</p>
+          <div class="wb-divider">
+            <span class="wb-divider-text">Début du salon ∙ {{ todayDate }}</span>
+          </div>
+        </div>
+
+        <!-- Groupe de messages -->
+        <template v-for="(group, gi) in groupedMessages" :key="gi">
+          <!-- Séparateur de date -->
+          <div class="date-separator" v-if="group.showDate">
+            <span class="ds-line"></span>
+            <span class="ds-text">{{ group.date }}</span>
+            <span class="ds-line"></span>
+          </div>
+
+          <!-- Message -->
+          <div
+            class="msg-group"
+            :class="{
+              'msg-mine': group.isOwn,
+              'anim-fade-up': true,
+              highlighted: msgSearch && group.messages.some(m => m.text.toLowerCase().includes(msgSearch.toLowerCase()))
+            }"
+          >
+            <div v-if="!group.isOwn" class="msg-avatar" :style="`background: ${group.color}`">
+              {{ group.initials }}
+            </div>
+            <div class="msg-content">
+              <div class="msg-header" v-if="!group.isOwn">
+                <span class="msg-author">{{ group.author }}</span>
+                <span v-if="group.isAdmin" class="admin-badge-gold">👑 ADMIN</span>
+                <span class="msg-time">{{ group.time }}</span>
+              </div>
+              <div
+                v-for="(msg, mi) in group.messages"
+                :key="msg.id"
+                class="msg-bubble"
+                :class="{ mine: group.isOwn }"
+                @mouseenter="hoveredMsg = msg.id"
+                @mouseleave="hoveredMsg = null"
+              >
+                <!-- Image si partagée -->
+                <img v-if="msg.imageUrl" :src="msg.imageUrl" class="msg-image" @click="openLightbox(msg.imageUrl)" />
+                <!-- Fichier joint (document, archive, etc.) -->
+                <a
+                  v-else-if="msg.fileUrl"
+                  :href="msg.fileUrl"
+                  target="_blank"
+                  :download="msg.fileName || 'fichier'"
+                  class="msg-file-attachment"
+                >
+                  <span class="file-icon-badge">📄</span>
+                  <div class="file-info">
+                    <span class="file-name">{{ msg.fileName || 'Fichier joint' }}</span>
+                    <span class="file-size">{{ formatFileSize(msg.fileSize) }}</span>
+                  </div>
+                  <span class="file-download-btn" title="Télécharger">⬇</span>
+                </a>
+                <!-- Texte -->
+                <span v-if="msg.text" v-html="formatMessage(msg.text, msgSearch)"></span>
+                <!-- Timestamp sur mine -->
+                <span v-if="group.isOwn && mi === group.messages.length - 1" class="msg-time-mine">
+                  <span v-if="isAdmin" class="admin-badge-gold" style="margin-right:4px;">👑 ADMIN</span>
+                  {{ group.time }}
+                </span>
+
+                <!-- Actions au hover -->
+                <Transition name="fade-fast">
+                  <div v-if="hoveredMsg === msg.id" class="msg-actions">
+                    <button v-for="emoji in quickReactions" :key="emoji" class="reaction-btn" @click="addReaction(msg, emoji)" :title="emoji">{{ emoji }}</button>
+                    <button v-if="group.isOwn || isAdmin" class="reaction-btn danger" @click="deleteMessage(msg)" :title="isAdmin && !group.isOwn ? '👑 Modération Admin : Supprimer ce message' : 'Supprimer'">🗑</button>
+                  </div>
+                </Transition>
+
+                <!-- Réactions -->
+                <div v-if="msg.reactions && Object.keys(msg.reactions).length" class="msg-reactions">
+                  <button
+                    v-for="(count, emoji) in msg.reactions"
+                    :key="emoji"
+                    class="reaction-pill"
+                    :class="{ active: hasReacted(msg, emoji) }"
+                    @click="addReaction(msg, emoji)"
+                  >{{ emoji }} {{ count }}</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="flex items-center gap-3">
-            <NuxtLink to="/nexus" class="text-xs px-3.5 py-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-violet-600 hover:from-fuchsia-500 hover:to-violet-500 text-white font-medium transition-all shadow-[0_0_15px_rgba(217,70,239,0.3)] hover:shadow-[0_0_20px_rgba(217,70,239,0.5)] border border-fuchsia-500/20 flex items-center gap-1.5 font-mono">
-              <span class="relative flex h-1.5 w-1.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-pink-500"></span>
-              </span>
-              Visual Lab
-            </NuxtLink>
-            <button @click="disconnect" class="text-xs font-mono text-violet-300/50 hover:text-red-400 transition-colors uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-white/5">
-              Déconnexion
-            </button>
-          </div>
-      </header>
+        </template>
 
-        <div class="flex-1 overflow-y-auto overflow-x-hidden flex flex-col gap-6 p-6 custom-scrollbar" ref="messagesContainer">
-        <div 
-          v-for="msg in messages" 
-          :key="msg.id"
-            class="max-w-[80%] flex flex-col group"
-            :class="msg.isMine ? 'self-end items-end' : 'self-start items-start'"
-        >
-            <div class="text-[11px] mb-1.5 uppercase tracking-wider px-1 font-mono" :class="msg.isAdmin ? 'text-fuchsia-400 font-bold' : 'text-violet-300/60'">
-              <span v-if="msg.isAdmin" class="bg-fuchsia-500/20 px-1.5 py-0.5 rounded mr-1 text-[9px] border border-fuchsia-500/30">ADMIN</span>
-              {{ msg.author }} <span class="opacity-40 lowercase ml-1">{{ msg.time }}</span>
+        <!-- Ancre scroll -->
+        <div ref="messagesBottom"></div>
+      </div>
+
+      <!-- Bouton scroll to bottom -->
+      <Transition name="scale-up">
+        <button v-if="showScrollBtn" class="scroll-bottom-btn" @click="scrollToBottom">
+          ↓ <span v-if="newMessagesCount > 0">{{ newMessagesCount }} nouveau{{ newMessagesCount > 1 ? 'x' : '' }}</span>
+        </button>
+      </Transition>
+
+      <!-- ══ BARRE D'ENVOI ════════════════════════════════════ -->
+      <div class="input-area glass">
+
+        <!-- Barre d'outils -->
+        <div class="input-toolbar">
+          <button class="tool-btn" @click="triggerFileUpload" title="Image">📎</button>
+          <button class="tool-btn" @click="showEmojiPicker = !showEmojiPicker" title="Emoji">😄</button>
+          <button class="tool-btn" @click="insertFormat('**')" title="Gras">𝐁</button>
+          <button class="tool-btn" @click="insertFormat('_')" title="Italique">𝐼</button>
+          <button class="tool-btn" @click="insertFormat('`')" title="Code">〈/〉</button>
+        </div>
+
+        <!-- Emoji picker -->
+        <Transition name="scale-up">
+          <div v-if="showEmojiPicker" class="emoji-picker glass-heavy">
+            <div class="ep-tabs">
+              <button v-for="cat in emojiCategories" :key="cat.name" class="ep-tab" :class="{ active: activeEmojiCat === cat.name }" @click="activeEmojiCat = cat.name">
+                {{ cat.icon }}
+              </button>
+            </div>
+            <div class="ep-grid">
+              <button
+                v-for="emoji in currentEmojis"
+                :key="emoji"
+                class="ep-emoji"
+                @click="insertEmoji(emoji)"
+              >{{ emoji }}</button>
+            </div>
           </div>
-          <div 
-              class="text-sm md:text-base break-words p-4 rounded-2xl shadow-lg leading-relaxed relative group"
-              :class="msg.isAdmin 
-                ? 'bg-gradient-to-br from-fuchsia-900/60 to-violet-900/60 text-fuchsia-50 border border-fuchsia-500/40 shadow-[0_0_15px_rgba(217,70,239,0.2)] rounded-tl-sm' 
-                : (msg.isMine 
-                  ? 'bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-violet-900/20 rounded-tr-sm' 
-                  : 'bg-white/10 text-gray-100 backdrop-blur-md border border-white/5 rounded-tl-sm')"
-          >
-            <!-- Affichage de l'image si elle existe -->
-              <img v-if="msg.imageUrl && msg.imageUrl.startsWith('https://')" :src="msg.imageUrl" class="max-w-sm w-full rounded-xl mb-3 border border-white/10 shadow-md" alt="Média" />
-            <span v-if="msg.text">{{ msg.text }}</span>
-            <!-- Bouton de suppression pour l'Admin -->
-            <button 
-              v-if="isAdmin" 
-              @click="deleteMessage(msg.id)"
-              class="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-md hover:scale-110 z-20 cursor-pointer"
-              title="Supprimer le message"
-            >
-              ✕
-            </button>
+        </Transition>
+
+        <!-- Prévisualisation du fichier sélectionné -->
+        <div v-if="selectedFile" class="file-preview-bar">
+          <div class="file-preview-card">
+            <img v-if="filePreviewUrl" :src="filePreviewUrl" class="file-preview-thumb" />
+            <span v-else class="file-preview-icon">📎</span>
+            <div class="file-preview-details">
+              <span class="file-preview-name">{{ selectedFile.name }}</span>
+              <span class="file-preview-size">{{ formatFileSize(selectedFile.size) }}</span>
+            </div>
+            <button class="file-preview-remove" @click="clearSelectedFile" title="Retirer le fichier">✕</button>
           </div>
         </div>
-      </div>
 
-        <form @submit.prevent="sendMessage" class="p-4 bg-black/20 border-t border-white/5 flex gap-3 shrink-0 items-center">
-          <button type="button" @click="triggerFileInput" class="w-11 h-11 flex items-center justify-center rounded-xl bg-white/5 text-violet-300 hover:bg-violet-500/30 hover:text-white transition-all border border-white/5" title="Joindre une image">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        <!-- Input principal -->
+        <div class="main-input-row">
+          <div class="user-avatar-small" :style="`background: ${userColor}`">{{ userInitials }}</div>
+          <div class="input-box-wrap">
+            <textarea
+              ref="messageInput"
+              v-model="newMessage"
+              class="message-textarea"
+              :placeholder="`Message dans #${activeRoom?.name || 'général'}…`"
+              @keydown.enter.exact.prevent="sendMessage"
+              @keydown.enter.shift.exact="newMessage += '\n'"
+              @input="handleTyping"
+              rows="1"
+            ></textarea>
+            <input ref="fileInput" type="file" style="display:none" @change="onFileSelected" />
+          </div>
+          <button
+            class="send-btn"
+            :class="{ active: newMessage.trim() || selectedFile }"
+            @click="sendMessage"
+            :disabled="(!newMessage.trim() && !selectedFile) || isSending"
+            title="Envoyer"
+          >
+            <span v-if="isSending" class="spinner" style="width:16px;height:16px;border-width:2px;"></span>
+            <span v-else>➤</span>
           </button>
-        <input 
-          v-model="newMessage" 
-          type="text" 
-          maxlength="500"
-            placeholder="Écrire un message..." 
-            class="flex-1 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:border-violet-500 focus:bg-white/10 focus:ring-1 focus:ring-violet-500 outline-none transition-all placeholder-violet-300/30"
-        />
-        <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*" class="hidden" />
-          <button type="submit" class="h-11 px-6 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-medium transition-all shadow-[0_0_15px_rgba(124,58,237,0.4)] flex items-center gap-2">
-            <span class="hidden md:inline">Envoyer</span>
-            <svg class="w-4 h-4 md:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-          </button>
-      </form>
+        </div>
+
+        <!-- Hint -->
+        <div class="input-hint">
+          <span>Entrée pour envoyer</span>
+          <span>Maj+Entrée pour nouvelle ligne</span>
+        </div>
       </div>
-    </div>
+    </main>
+
+    <!-- ══ PANNEAU MEMBRES ════════════════════════════════════ -->
+    <Transition name="slide-left">
+      <aside class="members-panel glass" v-if="showMembers">
+        <div class="mp-header">
+          <h3>Membres en ligne ({{ onlineCount }})</h3>
+          <button class="icon-btn" @click="showMembers = false">✕</button>
+        </div>
+        <div class="mp-list">
+          <div v-for="m in onlineMembers" :key="m.uid" class="mp-member">
+            <div class="mp-avatar" :style="`background: ${m.color || stringToColor(m.uid || '1')}`">
+              {{ getMemberInitials(m) }}
+            </div>
+            <div>
+              <div class="mp-name">{{ m.name || m.email || 'Utilisateur' }}</div>
+              <div class="mp-status">En ligne</div>
+            </div>
+            <div class="status-dot" style="margin-left: auto;"></div>
+          </div>
+        </div>
+      </aside>
+    </Transition>
+
+    <!-- ══ LIGHTBOX ════════════════════════════════════════════ -->
+    <Transition name="fade-fast">
+      <div v-if="lightboxUrl" class="lightbox" @click="lightboxUrl = null">
+        <img :src="lightboxUrl" class="lightbox-img" @click.stop />
+        <button class="lightbox-close" @click="lightboxUrl = null">✕</button>
+      </div>
+    </Transition>
+
+    <!-- ══ SETTINGS MODAL ═════════════════════════════════════ -->
+    <Transition name="scale-up">
+      <div v-if="showSettings" class="settings-modal glass-heavy" @click.self="showSettings = false">
+        <div class="settings-inner">
+          <h3 class="settings-title">⚙ Paramètres</h3>
+          <div class="settings-section">
+            <label class="settings-label">Couleur de profil</label>
+            <div class="color-picker">
+              <button
+                v-for="c in profileColors"
+                :key="c"
+                class="color-swatch"
+                :style="`background: ${c}`"
+                :class="{ selected: userColor === c }"
+                @click="userColor = c"
+              ></button>
+            </div>
+          </div>
+          <div class="settings-section">
+            <label class="settings-label">Notifications sonores</label>
+            <label class="toggle-switch">
+              <input type="checkbox" v-model="soundEnabled" />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <button class="btn btn-primary btn-sm" style="margin-top: 16px;" @click="showSettings = false">Fermer</button>
+        </div>
+      </div>
+    </Transition>
+
+  </div>
+
+  <!-- ══ REDIRECT SI NON CONNECTÉ ══════════════════════════════ -->
+  <div v-else class="loading-screen">
+    <div class="loading-spinner"></div>
+    <p>Vérification de votre session…</p>
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick, watch, onUnmounted } from 'vue'
-import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot, doc, deleteDoc } from 'firebase/firestore'
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { getStorage, ref as fbRef, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { ref, computed, reactive, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import {
+  getAuth, onAuthStateChanged, signOut
+} from 'firebase/auth'
+import {
+  getFirestore, collection, addDoc, query, orderBy,
+  onSnapshot, serverTimestamp, doc, deleteDoc,
+  updateDoc, getDoc, setDoc, limit
+} from 'firebase/firestore'
+import {
+  getStorage, ref as storageRef, uploadBytes, getDownloadURL
+} from 'firebase/storage'
 
-// Configuration Firebase (récupérée de ton ancien projet)
-const firebaseConfig = {
-  apiKey: "AIzaSyCpo7up--nfVG4zj_Zeu4kB7pr34ad4ceM",
-  authDomain: "lycee-europe-private.firebaseapp.com",
-  projectId: "lycee-europe-private",
-  storageBucket: "lycee-europe-private.firebasestorage.app",
-  messagingSenderId: "259168134432",
-  appId: "1:259168134432:web:470f5536d9305b4cf86345"
+useHead({ title: 'Chat' })
+
+const { $firebase } = useNuxtApp()
+
+// ── State ─────────────────────────────────────────────────────
+const currentUser   = ref(null)
+const messages      = ref([])
+const newMessage    = ref('')
+const currentRoom   = ref('general')
+const sidebarOpen   = ref(false)
+const showMembers   = ref(false)
+const showSearch    = ref(false)
+const showSettings  = ref(false)
+const showEmojiPicker = ref(false)
+const msgSearch     = ref('')
+const searchQuery   = ref('')
+const hoveredMsg    = ref(null)
+const isSending     = ref(false)
+const lightboxUrl   = ref(null)
+const showScrollBtn = ref(false)
+const newMessagesCount = ref(0)
+const soundEnabled  = ref(true)
+const someoneTyping = ref(false)
+const typingText    = ref('')
+const activeEmojiCat = ref('Smileys')
+const messagesArea  = ref(null)
+const messagesBottom = ref(null)
+const messageInput  = ref(null)
+const fileInput     = ref(null)
+const userColor     = ref('#7c3aed')
+
+// ── Admin secret & Toast ──────────────────────────────────────
+const isAdmin       = ref(false)
+const toastMsg      = ref('')
+let toastTimer      = null
+
+function showToast(msg) {
+  toastMsg.value = msg
+  clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => {
+    toastMsg.value = ''
+  }, 4500)
 }
 
-let db;
-let auth;
-let storage;
-// Initialisation côté client pour éviter les erreurs Nuxt liées au Server-Side Rendering (SSR)
-if (typeof window !== 'undefined') {
-  const app = initializeApp(firebaseConfig)
-  db = getFirestore(app)
-  auth = getAuth(app)
-  storage = getStorage(app)
-}
-
-// Système de mot de passe simple
-const isAuthenticated = ref(false)
-const passwordInput = ref('')
-const error = ref('')
-const isAuthenticating = ref(false)
-const SECRET_PASSWORD = 'matrix' 
-
-const isAdmin = ref(false)
-const fileInput = ref(null)
-
-const checkPassword = () => {
-  if (isAuthenticating.value) return
-  
-  isAuthenticating.value = true
-  error.value = ''
-  
-  // Récupère le pseudo sauvegardé s'il existe
-  const savedNick = localStorage.getItem('matrix_nick')
-  if (savedNick) myPseudo.value = savedNick
-
-  // Simule un délai de décryptage pour le style
-  setTimeout(() => {
-    if (passwordInput.value === SECRET_PASSWORD) {
-      isAuthenticated.value = true
-      error.value = ''
-      initChat() // Démarre la connexion Firebase une fois authentifié
-    } else {
-      error.value = 'ACCÈS REFUSÉ. L\'IP a été loggée.'
-      passwordInput.value = ''
-    }
-    isAuthenticating.value = false
-  }, 1200)
-}
-
-// Logique Tchat (Firebase)
-const messages = ref([])
-const newMessage = ref('')
-const messagesContainer = ref(null)
-const mySessionId = ref(Math.random().toString(36).substring(2, 10)) // ID unique pour différencier "mes" messages
-let unsubscribe = null
-const myPseudo = ref('NEO') // Pseudo par défaut
-const localClearTime = ref(0) // Permet d'ignorer les messages avant un /clear
-
-// Surveillance automatique des messages pour forcer le scroll en bas
-watch(messages, async () => {
-  await nextTick() // Attend la fin du rendu HTML de Vue.js
-  if (messagesContainer.value) {
-    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
-  }
-  // Double sécurité (pour les ralentissements réseaux du chargement initial)
-  setTimeout(() => {
-    if (messagesContainer.value) messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
-  }, 150)
-}, { deep: true })
-
-// Fonction utilitaire pour envoyer un message système uniquement sur mon écran
-const pushSystemMessage = (text) => {
-  const now = new Date()
-  messages.value.push({
-    id: Date.now() + Math.random(),
-    text: text,
-    author: "SYSTEM",
-    time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    isMine: false
-  })
-}
-
-const initChat = () => {
-  if (!db) return
-  
-  const q = query(collection(db, "messages"), orderBy("createdAt", "desc"), limit(50))
-  
-  unsubscribe = onSnapshot(q, (snapshot) => {
-    const newMessages = []
-    
-    snapshot.forEach((doc) => {
-      const msg = doc.data()
-      
-      // Si le message est plus vieux que notre dernier /clear, on l'ignore
-      const msgTimeMs = msg.createdAt ? msg.createdAt.toMillis() : Date.now()
-      if (msgTimeMs < localClearTime.value) return
-
-      let timeString = "Transmission..."
-      if (msg.createdAt) {
-        const date = msg.createdAt.toDate()
-        timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
-
-      newMessages.push({
-        id: doc.id,
-        text: msg.text,
-        imageUrl: msg.imageUrl,
-        author: msg.author || msg.email?.split('@')[0] || "ANONYMOUS",
-        isAdmin: msg.isAdmin || false,
-        time: timeString,
-        isMine: msg.uid === mySessionId.value || msg.uid === mySessionId.value // Ajuste selon si tu remets l'Auth Firebase
-      })
+function playAdminSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    const notes = [523.25, 659.25, 783.99, 1046.50]
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = 'triangle'
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.09)
+      gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.09)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.09 + 0.35)
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start(ctx.currentTime + i * 0.09)
+      osc.stop(ctx.currentTime + i * 0.09 + 0.35)
     })
-    
-    // On inverse le tableau pour afficher du plus ancien au plus récent chronologiquement
-    messages.value = newMessages.reverse()
-  }, (err) => {
-    pushSystemMessage("Erreur de connexion Firebase : " + err.message)
-    console.error("Erreur de connexion Firebase :", err)
-  })
+  } catch {}
 }
 
-// Logique d'upload d'image
-const triggerFileInput = () => {
-  if (fileInput.value) fileInput.value.click()
+const profileColors = [
+  '#7c3aed', '#ec4899', '#f97316', '#3b82f6',
+  '#14b8a6', '#8b5cf6', '#06b6d4', '#10b981'
+]
+
+// ── Salons (Exactement 3 salons) ──────────────────────────────
+const rooms = [
+  { id: 'general',  name: 'général',  icon: '📣', desc: 'Discussion générale & vie du lycée', unread: 0 },
+  { id: 'entraide', name: 'entraide', icon: '📚', desc: 'Devoirs, cours & révisions', unread: 0 },
+  { id: 'detente',  name: 'détente',  icon: '🎮', desc: 'Pause café & bavardages', unread: 0 },
+]
+
+const filteredRooms = computed(() => {
+  if (!searchQuery.value) return rooms
+  return rooms.filter(r => r.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+})
+
+const activeRoom = computed(() => rooms.find(r => r.id === currentRoom.value) || rooms[0])
+
+// ── Emojis ────────────────────────────────────────────────────
+const emojiCategories = [
+  { name: 'Smileys', icon: '😄', emojis: ['😀','😂','🥹','😊','😍','🤩','😎','🥳','😏','🤔','😅','🫡','😴','🤯','🥸','🤗','😇','🫶','🙏','👀','💪','✌️','👍','❤️','🔥','⭐','💯','🎉','✨','💥'] },
+  { name: 'Lycée', icon: '📚', emojis: ['📚','📖','✏️','📝','🖊️','📐','📏','🔬','🔭','💡','🧪','🧬','🎓','🏫','📋','📊','📈','🗒️','💻','🖥️','⌨️','🖱️','📱','⏰','📅','🗂️'] },
+  { name: 'Fun', icon: '🎮', emojis: ['🎮','🎲','🎯','🎸','🎵','🎨','🏆','🥇','⚽','🏀','🎾','🎳','🎭','🎬','🎪','🎢','🎡','🎠','🚀','🌈','🦄','🐸','🦊','🐉','🌟','🌙','☀️','🌊','🏖️','🌴'] },
+  { name: 'Bouffe', icon: '🍕', emojis: ['🍕','🍔','🌮','🍜','🍣','🍰','🎂','🍩','🧁','🍪','🍫','🧃','☕','🧋','🍵','🍺','🥤','🍿','🥗','🍎','🍓','🍇','🥑','🌽','🥪','🍟','🌯','🥙','🫔'] },
+]
+
+const quickReactions = ['👍','❤️','😂','🔥','😮','👏']
+
+const currentEmojis = computed(() => {
+  return emojiCategories.find(c => c.name === activeEmojiCat.value)?.emojis || []
+})
+
+// ── Gestion des fichiers ──────────────────────────────────────
+const selectedFile = ref(null)
+const filePreviewUrl = ref(null)
+
+function triggerFileUpload() {
+  fileInput.value?.click()
 }
 
-const handleFileUpload = async (event) => {
-  const file = event.target.files[0]
-  if (!file || !storage || !db) return
-  
-  // SÉCURITÉ : Limite la taille du fichier à 5 Mo maximum
-  if (file.size > 5 * 1024 * 1024) {
-    pushSystemMessage("Erreur : Fichier trop volumineux (Max 5 Mo).")
+function onFileSelected(e) {
+  const file = e.target.files?.[0]
+  if (!file) return
+  if (file.size > 20 * 1024 * 1024) {
+    alert('Fichier trop volumineux (20 Mo maximum).')
     if (fileInput.value) fileInput.value.value = ''
     return
   }
-
-  pushSystemMessage("Upload sécurisé en cours...")
-  
-  try {
-    const storageReference = fbRef(storage, `chat_images/${Date.now()}_${file.name}`)
-    await uploadBytes(storageReference, file)
-    const url = await getDownloadURL(storageReference)
-    
-    await addDoc(collection(db, "messages"), {
-      text: "",
-      imageUrl: url,
-      uid: auth?.currentUser?.uid || mySessionId.value,
-      author: myPseudo.value,
-      isAdmin: isAdmin.value,
-      createdAt: serverTimestamp()
-    })
-  } catch (err) {
-    pushSystemMessage("Erreur d'upload : " + err.message)
-  } finally {
-    if (fileInput.value) fileInput.value.value = '' // Reset de l'input
+  selectedFile.value = file
+  if (file.type.startsWith('image/')) {
+    filePreviewUrl.value = URL.createObjectURL(file)
+  } else {
+    filePreviewUrl.value = null
   }
+  if (fileInput.value) fileInput.value.value = ''
 }
 
-const deleteMessage = async (msgId) => {
-  if (!confirm("Voulez-vous vraiment supprimer ce message ?")) return
-  
-  try {
-    await deleteDoc(doc(db, "messages", msgId))
-    pushSystemMessage("Message supprimé de la base de données.")
-  } catch (err) {
-    pushSystemMessage("Erreur de suppression : " + err.message)
+function clearSelectedFile() {
+  if (filePreviewUrl.value) {
+    URL.revokeObjectURL(filePreviewUrl.value)
   }
+  selectedFile.value = null
+  filePreviewUrl.value = null
 }
 
-const sendMessage = async () => {
-  if (!newMessage.value.trim() || !db) return
-  
-  const textToSend = newMessage.value.trim().substring(0, 500) // SÉCURITÉ : Coupe à 500 caractères max
-  newMessage.value = '' // On vide l'input immédiatement pour l'UX
-  
-  // Commande d'aide /help
-  if (textToSend === '/help') {
-    pushSystemMessage("Commandes Nexus disponibles :")
-    pushSystemMessage("/nick <pseudo> : Modifier votre identifiant visible")
-    pushSystemMessage("/login <email> <mot_de_passe> : Connexion administrateur")
-    pushSystemMessage("/clear : Effacer localement les messages de l'écran")
-    return
+function formatFileSize(bytes) {
+  if (!bytes) return ''
+  if (bytes < 1024) return bytes + ' o'
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko'
+  return (bytes / (1024 * 1024)).toFixed(1) + ' Mo'
+}
+
+// ── Vrai nombre de membres en ligne (sans mensonge) ───────────
+const onlineMembers = ref([])
+const onlineCount = computed(() => onlineMembers.value.length || 1)
+
+function getMemberInitials(m) {
+  const name = m.name || m.email || '?'
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+}
+
+const userInitials = computed(() => {
+  const name = currentUser.value?.displayName || currentUser.value?.email || '?'
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+})
+
+// ── Firebase subscriptions & presence ─────────────────────────
+let unsubMessages = null
+let unsubPresence = null
+let presenceTimer = null
+
+function initPresence(user) {
+  if (!user || !$firebase) return
+  const db = getFirestore($firebase)
+  const myPresenceRef = doc(db, 'presence', user.uid)
+
+  const myData = {
+    uid: user.uid,
+    name: user.displayName || user.email.split('@')[0] || 'Utilisateur',
+    email: user.email,
+    color: userColor.value,
+    lastSeen: Date.now()
   }
 
-  // Commande d'effacement local /clear
-  if (textToSend === '/clear') {
-    localClearTime.value = Date.now()
-    messages.value = []
-    pushSystemMessage("Écran nettoyé localement.")
-    return
-  }
+  // Enregistre sa propre présence
+  setDoc(myPresenceRef, myData).catch(() => {})
 
-  // Système de commandes cachées
-  if (textToSend.startsWith('/login ')) {
-    const parts = textToSend.split(' ')
-    if (parts.length === 3 && auth) {
-      signInWithEmailAndPassword(auth, parts[1], parts[2]).then((cred) => {
-        isAdmin.value = true
-        myPseudo.value = "ADMIN"
-        mySessionId.value = cred.user.uid // Synchronise avec Firebase Auth
-        pushSystemMessage("Accès Administrateur accordé.")
-      }).catch(err => {
-        pushSystemMessage("Erreur réseau : " + err.message)
+  // Heartbeat toutes les 45s
+  presenceTimer = setInterval(() => {
+    setDoc(myPresenceRef, { ...myData, color: userColor.value, lastSeen: Date.now() }).catch(() => {})
+  }, 45000)
+
+  // Écoute les utilisateurs réellement connectés (dernière activité < 3 minutes)
+  try {
+    unsubPresence = onSnapshot(collection(db, 'presence'), (snap) => {
+      const now = Date.now()
+      const list = []
+      snap.forEach(d => {
+        const u = d.data()
+        if (u && (!u.lastSeen || (now - u.lastSeen < 180000))) {
+          list.push({ ...u, uid: d.id })
+        }
       })
+      // Vérifie que l'utilisateur actuel figure toujours au moins dans la liste
+      if (!list.some(u => u.uid === user.uid)) {
+        list.unshift(myData)
+      }
+      onlineMembers.value = list
+    }, () => {
+      // Si la collection presence est bloquée par les règles Firestore,
+      // on affiche honnêtement uniquement l'utilisateur connecté (1 en ligne)
+      onlineMembers.value = [myData]
+    })
+  } catch {
+    onlineMembers.value = [myData]
+  }
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('beforeunload', () => {
+      deleteDoc(myPresenceRef).catch(() => {})
+    })
+  }
+}
+
+// ── Messages groupés ──────────────────────────────────────────
+const groupedMessages = computed(() => {
+  const filtered = msgSearch.value
+    ? messages.value.filter(m => (m.text || '').toLowerCase().includes(msgSearch.value.toLowerCase()) || (m.fileName || '').toLowerCase().includes(msgSearch.value.toLowerCase()))
+    : messages.value
+
+  const groups = []
+  let lastAuthor = null
+  let lastDate = null
+  let lastGroup = null
+
+  filtered.forEach((msg) => {
+    const ts = msg.createdAt?.toDate?.() || (msg.createdAt?.seconds ? new Date(msg.createdAt.seconds * 1000) : new Date())
+    const dateStr = formatDate(ts)
+    const timeStr = formatTime(ts)
+    const isOwn = msg.uid === currentUser.value?.uid
+    const authorName = msg.displayName || msg.author || msg.email?.split('@')[0] || 'Anonyme'
+    const initials = authorName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+    const color = stringToColor(msg.uid || authorName)
+
+    const showDate = dateStr !== lastDate
+    if (showDate) lastDate = dateStr
+
+    const sameAuthorRecent = msg.uid === lastAuthor && !showDate && lastGroup && (ts - (lastGroup.messages.at(-1)?.createdAt?.toDate?.() || new Date()) < 300000)
+
+    if (sameAuthorRecent && lastGroup) {
+      lastGroup.messages.push(msg)
     } else {
-      pushSystemMessage("Usage: /login <email> <mot_de_passe>")
+      lastGroup = {
+        author: authorName,
+        initials,
+        color,
+        isOwn,
+        isAdmin: !!msg.isAdmin,
+        time: timeStr,
+        date: dateStr,
+        showDate,
+        messages: [msg],
+      }
+      groups.push(lastGroup)
     }
-    return
+    lastAuthor = msg.uid
+  })
+
+  return groups
+})
+
+const todayDate = computed(() => new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }))
+
+// ── Auth & Lifecycle ──────────────────────────────────────────
+onMounted(async () => {
+  // Charge l'état admin secret sauvegardé
+  const savedAdmin = localStorage.getItem('chat_admin_goofy')
+  if (savedAdmin === 'true') {
+    isAdmin.value = true
   }
 
-  if (textToSend.startsWith('/nick ')) {
-    const newName = textToSend.replace('/nick ', '').trim().substring(0, 15)
-    if (newName) {
-      myPseudo.value = newName
-      // Message système local
-      const now = new Date()
-      messages.value.push({
-        id: Date.now(),
-        text: `Identifiant mis à jour : ${myPseudo.value}`,
-        author: "SYSTEM",
-        time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isMine: false
-      })
+  const auth = getAuth($firebase)
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentUser.value = user
+      const savedColor = localStorage.getItem('profileColor')
+      if (savedColor) userColor.value = savedColor
+      initPresence(user)
+      subscribeToRoom(currentRoom.value)
+    } else {
+      navigateTo('/login')
     }
-    return
-  }
+  })
+})
 
-  try {
-    await addDoc(collection(db, "messages"), {
-      text: textToSend,
-      uid: auth?.currentUser?.uid || mySessionId.value,
-      author: myPseudo.value,
-      isAdmin: isAdmin.value,
-      createdAt: serverTimestamp()
-    })
-  } catch (err) {
-    pushSystemMessage("Erreur d'envoi : " + err.message)
-    console.error("Erreur lors de l'envoi :", err)
-  }
-}
-
-const disconnect = () => {
-  if (auth && auth.currentUser) signOut(auth)
-  isAuthenticated.value = false
-  passwordInput.value = ''
-  isAdmin.value = false
-  messages.value = []
-  if (unsubscribe) unsubscribe()
-}
+watch(userColor, (val) => localStorage.setItem('profileColor', val))
 
 onUnmounted(() => {
-  if (unsubscribe) unsubscribe() // Coupe l'écouteur si on quitte la page
+  if (unsubMessages) unsubMessages()
+  if (unsubPresence) unsubPresence()
+  if (presenceTimer) clearInterval(presenceTimer)
+  if (currentUser.value && $firebase) {
+    const db = getFirestore($firebase)
+    deleteDoc(doc(db, 'presence', currentUser.value.uid)).catch(() => {})
+  }
 })
+
+// ── Firebase Messages (collection "messages" globale avec filtre de salon) ──
+function subscribeToRoom(roomId) {
+  if (unsubMessages) unsubMessages()
+  messages.value = []
+
+  const db = getFirestore($firebase)
+  // On écoute la collection "messages" (racine autorisée par Firestore)
+  const q = query(
+    collection(db, "messages"),
+    orderBy('createdAt', 'desc'),
+    limit(150)
+  )
+
+  unsubMessages = onSnapshot(q, (snap) => {
+    const prevCount = messages.value.length
+    const allMsgs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+
+    // Tri chronologique ascendant
+    allMsgs.sort((a, b) => {
+      const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 0)
+      const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 0)
+      return ta - tb
+    })
+
+    // Filtre pour le salon actuel (les anciens messages sans champ 'room' vont dans 'general')
+    messages.value = allMsgs.filter(m => {
+      const msgRoom = m.room || 'general'
+      return msgRoom === currentRoom.value
+    })
+
+    if (messages.value.length > prevCount && prevCount > 0) {
+      newMessagesCount.value++
+      if (soundEnabled.value) playNotificationSound()
+    }
+    nextTick(scrollToBottom)
+  }, (err) => {
+    console.error('Erreur écoute messages Firestore:', err)
+  })
+}
+
+async function sendMessage() {
+  const text = newMessage.value.trim()
+  const file = selectedFile.value
+
+  // 👑 COMMANDE ULTRA SECRÈTE : /admingoofyahah
+  if (text.toLowerCase() === '/admingoofyahah') {
+    newMessage.value = ''
+    isAdmin.value = !isAdmin.value
+    localStorage.setItem('chat_admin_goofy', isAdmin.value ? 'true' : 'false')
+    playAdminSound()
+    if (isAdmin.value) {
+      showToast('👑 MODE ADMIN ACTIVÉ ! Vous avez les pleins pouvoirs de modération et pouvez supprimer n\'importe quel message.')
+    } else {
+      showToast('🛡️ Mode Admin désactivé.')
+    }
+    return
+  }
+
+  // Commande admin supplémentaire : /clear pour vider l'écran localement
+  if (isAdmin.value && text.toLowerCase() === '/clear') {
+    newMessage.value = ''
+    messages.value = []
+    showToast('🧹 Messages nettoyés localement.')
+    return
+  }
+
+  if ((!text && !file) || isSending.value) return
+
+  isSending.value = true
+  const db = getFirestore($firebase)
+
+  let uploadedFileUrl = null
+  let isImage = false
+
+  try {
+    if (file) {
+      isImage = file.type.startsWith('image/')
+      try {
+        const storage = getStorage($firebase)
+        const path = `chat_files/${Date.now()}_${file.name}`
+        const fileRef = storageRef(storage, path)
+        await uploadBytes(fileRef, file)
+        uploadedFileUrl = await getDownloadURL(fileRef)
+      } catch (storageErr) {
+        console.warn('Firebase Storage échoué, utilisation du fallback local...', storageErr)
+        // Secours pour petits fichiers (< 800Ko)
+        if (file.size < 800 * 1024) {
+          uploadedFileUrl = await new Promise((resolve) => {
+            const reader = new FileReader()
+            reader.onload = (ev) => resolve(ev.target.result)
+            reader.onerror = () => resolve(null)
+            reader.readAsDataURL(file)
+          })
+        } else {
+          alert('Impossible de transférer ce fichier via le stockage Firebase. Limitez à 800 Ko en mode direct.')
+          isSending.value = false
+          return
+        }
+      }
+    }
+
+    const payload = {
+      text: text || '',
+      author: currentUser.value.displayName || currentUser.value.email.split('@')[0] || 'Anonyme',
+      displayName: currentUser.value.displayName || currentUser.value.email.split('@')[0] || 'Anonyme',
+      email: currentUser.value.email,
+      uid: currentUser.value.uid,
+      room: currentRoom.value,
+      isAdmin: !!isAdmin.value,
+      createdAt: serverTimestamp(),
+      reactions: {},
+    }
+
+    if (uploadedFileUrl) {
+      payload.fileUrl = uploadedFileUrl
+      payload.fileName = file.name
+      payload.fileSize = file.size
+      payload.fileType = file.type
+      if (isImage) {
+        payload.imageUrl = uploadedFileUrl
+      }
+    }
+
+    // Écrit dans la collection "messages" autorisée
+    await addDoc(collection(db, "messages"), payload)
+
+    newMessage.value = ''
+    clearSelectedFile()
+    showEmojiPicker.value = false
+    nextTick(() => { autoResizeTextarea(); scrollToBottom() })
+  } catch (err) {
+    console.error('Erreur sendMessage:', err)
+    alert('Erreur lors de l\'envoi du message : ' + (err.message || 'Vérifiez la connexion.'))
+  } finally {
+    isSending.value = false
+  }
+}
+
+async function deleteMessage(msg) {
+  if (isAdmin.value && msg.uid !== currentUser.value?.uid) {
+    const authorName = msg.author || msg.displayName || 'cet utilisateur'
+    if (!confirm(`👑 Action Administrateur :\nVoulez-vous supprimer le message de "${authorName}" ?`)) {
+      return
+    }
+  }
+  try {
+    const db = getFirestore($firebase)
+    await deleteDoc(doc(db, "messages", msg.id))
+    // Mise à jour immédiate locale de la liste
+    messages.value = messages.value.filter(m => m.id !== msg.id)
+    showToast('Message supprimé 🗑️')
+  } catch (err) {
+    console.error('Erreur suppression message:', err)
+    alert('Erreur lors de la suppression : ' + (err.message || 'Impossible de supprimer ce message.'))
+  }
+}
+
+async function addReaction(msg, emoji) {
+  try {
+    const db = getFirestore($firebase)
+    const refDoc = doc(db, "messages", msg.id)
+    const snap = await getDoc(refDoc)
+    const reactions = snap.data()?.reactions || {}
+    const key = `${emoji}`
+    reactions[key] = (reactions[key] || 0) + 1
+    await updateDoc(refDoc, { reactions })
+  } catch (err) {
+    console.error('Erreur réaction:', err)
+  }
+}
+
+function hasReacted(msg, emoji) {
+  return false
+}
+
+// ── UI helpers ────────────────────────────────────────────────
+function joinRoom(room) {
+  currentRoom.value = room.id
+  room.unread = 0
+  sidebarOpen.value = false
+  subscribeToRoom(room.id)
+}
+
+async function handleLogout() {
+  if (currentUser.value && $firebase) {
+    const db = getFirestore($firebase)
+    deleteDoc(doc(db, 'presence', currentUser.value.uid)).catch(() => {})
+  }
+  const auth = getAuth($firebase)
+  await signOut(auth)
+  navigateTo('/')
+}
+
+function scrollToBottom() {
+  messagesBottom.value?.scrollIntoView({ behavior: 'smooth' })
+  showScrollBtn.value = false
+  newMessagesCount.value = 0
+}
+
+function handleScroll() {
+  if (!messagesArea.value) return
+  const el = messagesArea.value
+  const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100
+  showScrollBtn.value = !atBottom
+}
+
+function handleTyping() {
+  autoResizeTextarea()
+}
+
+function autoResizeTextarea() {
+  const el = messageInput.value
+  if (!el) return
+  el.style.height = 'auto'
+  el.style.height = Math.min(el.scrollHeight, 150) + 'px'
+}
+
+function insertEmoji(emoji) {
+  newMessage.value += emoji
+  showEmojiPicker.value = false
+  messageInput.value?.focus()
+}
+
+function insertFormat(delim) {
+  const el = messageInput.value
+  if (!el) return
+  const start = el.selectionStart
+  const end = el.selectionEnd
+  const selected = newMessage.value.slice(start, end)
+  newMessage.value = newMessage.value.slice(0, start) + delim + selected + delim + newMessage.value.slice(end)
+}
+
+function openLightbox(url) {
+  lightboxUrl.value = url
+}
+
+// ── Formatage ─────────────────────────────────────────────────
+function formatMessage(text, search) {
+  if (!text) return ''
+  let html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/_(.*?)_/g, '<em>$1</em>')
+    .replace(/`(.*?)`/g, '<code class="inline-code">$1</code>')
+    .replace(/\n/g, '<br>')
+
+  if (search) {
+    const re = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')
+    html = html.replace(re, '<mark class="search-highlight">$1</mark>')
+  }
+  return html
+}
+
+function formatDate(date) {
+  const today = new Date()
+  const yesterday = new Date(today)
+  yesterday.setDate(today.getDate() - 1)
+  if (date.toDateString() === today.toDateString()) return "Aujourd'hui"
+  if (date.toDateString() === yesterday.toDateString()) return 'Hier'
+  return date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+}
+
+function formatTime(date) {
+  return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+}
+
+function stringToColor(str) {
+  if (!str) return '#7c3aed'
+  const colors = ['#7c3aed','#ec4899','#f97316','#3b82f6','#14b8a6','#8b5cf6','#06b6d4','#10b981','#f59e0b']
+  let hash = 0
+  for (const c of str) hash = c.charCodeAt(0) + ((hash << 5) - hash)
+  return colors[Math.abs(hash) % colors.length]
+}
+
+function playNotificationSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    osc.frequency.setValueAtTime(880, ctx.currentTime)
+    gain.gain.setValueAtTime(0.1, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+    osc.start()
+    osc.stop(ctx.currentTime + 0.3)
+  } catch {}
+}
 </script>
 
 <style scoped>
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+/* ── Layout principal ──────────────────────────────────────── */
+.chat-app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+
+/* ── Sidebar ───────────────────────────────────────────────── */
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(24px);
+  border-right: 1px solid var(--glass-border);
+  overflow: hidden;
+  z-index: 100;
+  transition: transform var(--t-slow);
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(139, 92, 246, 0.3);
+
+.sidebar-header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.sidebar-logo-icon {
+  font-size: 1.5rem;
+}
+
+.sidebar-logo-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .9rem;
+  color: var(--text-primary);
+}
+
+.sidebar-logo-sub {
+  font-size: .65rem;
+  color: var(--text-muted);
+}
+
+/* User profile */
+.user-profile {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.user-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .875rem;
+  color: white;
+}
+
+.user-avatar-wrapper .status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--bg-base);
+  border-radius: 50%;
+}
+
+.user-info { flex: 1; min-width: 0; }
+
+.user-name {
+  font-weight: 600;
+  font-size: .85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-email {
+  font-size: .7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.settings-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: var(--r-sm);
+  transition: all var(--t-fast);
+}
+
+.settings-btn:hover {
+  color: var(--text-primary);
+  background: var(--glass-bg);
+}
+
+/* Search */
+.sidebar-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.sidebar-search .input-field {
+  padding: 8px 8px 8px 38px;
+  font-size: .8rem;
+  border-radius: var(--r-md);
+}
+
+/* Rooms */
+.rooms-section {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 8px;
+}
+
+.rooms-category {
+  padding: 8px 8px 4px;
+}
+
+.category-label {
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.room-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--r-md);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--t-fast);
+  color: var(--text-secondary);
+}
+
+.room-btn:hover {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+}
+
+.room-btn.active {
+  background: linear-gradient(135deg, rgba(124,58,237,.25), rgba(236,72,153,.15));
+  color: var(--text-primary);
+  border: 1px solid rgba(168,85,247,.2);
+}
+
+.room-icon { font-size: 1rem; flex-shrink: 0; }
+
+.room-info { flex: 1; min-width: 0; }
+
+.room-name {
+  display: block;
+  font-size: .85rem;
+  font-weight: 500;
+}
+
+.room-desc {
+  display: block;
+  font-size: .7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.room-unread {
+  background: var(--g-accent);
+  color: white;
+  border-radius: var(--r-full);
+  font-size: .65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* Sidebar footer */
+.sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.logout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--r-lg);
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.2);
+  color: #fca5a5;
+  font-size: .875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--t-base);
+}
+
+.logout-btn:hover {
+  background: rgba(239,68,68,.2);
+  border-color: rgba(239,68,68,.4);
+}
+
+/* ── Zone principale ───────────────────────────────────────── */
+.chat-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Chat header */
+.chat-header {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid var(--glass-border);
+  border-radius: 0;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-sm);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.chat-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.ch-room-icon { font-size: 1.5rem; }
+
+.ch-room-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.ch-room-desc {
+  font-size: .75rem;
+  color: var(--text-muted);
+}
+
+.chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-fast);
+  color: var(--text-secondary);
+}
+
+.icon-btn:hover {
+  background: var(--glass-bg-md);
+  color: var(--text-primary);
+}
+
+.online-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-full);
+  font-size: .75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Message search bar */
+.msg-search-bar {
+  padding: 12px 24px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  border-bottom: 1px solid var(--glass-border);
+  border-radius: 0;
+  flex-shrink: 0;
+}
+
+.msg-search-bar .input-field {
+  font-size: .875rem;
+  padding: 8px 8px 8px 38px;
+}
+
+/* Messages area */
+.messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Welcome banner */
+.welcome-banner {
+  text-align: center;
+  padding: 40px 24px;
+  margin-bottom: 16px;
+}
+
+.wb-icon { font-size: 3rem; margin-bottom: 16px; }
+
+.wb-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.wb-desc {
+  font-size: .9rem;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.wb-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.wb-divider::before, .wb-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border);
+}
+
+.wb-divider-text {
+  font-size: .75rem;
+  color: var(--text-muted);
+}
+
+/* Date separator */
+.date-separator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.ds-line {
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border);
+}
+
+.ds-text {
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  background: var(--glass-bg);
+  padding: 4px 12px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--glass-border);
+}
+
+/* Message groups */
+.msg-group {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 2px 0;
+}
+
+.msg-group.msg-mine {
+  flex-direction: row-reverse;
+}
+
+.msg-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .8rem;
+  color: white;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.msg-content { display: flex; flex-direction: column; gap: 2px; max-width: 70%; }
+
+.msg-group.msg-mine .msg-content { align-items: flex-end; }
+
+.msg-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  margin-bottom: 4px;
+}
+
+.msg-author {
+  font-weight: 600;
+  font-size: .85rem;
+}
+
+.msg-time {
+  font-size: .7rem;
+  color: var(--text-muted);
+}
+
+.msg-bubble {
+  position: relative;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  background: var(--glass-bg-md);
+  border: 1px solid var(--glass-border);
+  font-size: .875rem;
+  line-height: 1.6;
+  max-width: 100%;
+  word-break: break-word;
+  transition: all var(--t-fast);
+}
+
+.msg-bubble:hover {
+  border-color: rgba(255,255,255,.2);
+}
+
+.msg-bubble.mine {
+  background: linear-gradient(135deg, rgba(124,58,237,.4), rgba(236,72,153,.3));
+  border: 1px solid rgba(168,85,247,.3);
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 16px;
+  box-shadow: 0 4px 16px rgba(168,85,247,.2);
+}
+
+.msg-time-mine {
+  display: block;
+  font-size: .65rem;
+  color: rgba(255,255,255,.5);
+  text-align: right;
+  margin-top: 4px;
+}
+
+.msg-image {
+  max-width: 280px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: transform var(--t-base);
+  margin-top: 4px;
+}
+
+.msg-image:hover { transform: scale(1.02); }
+
+/* Fichier joint dans message */
+.msg-file-attachment {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--r-md);
+  margin-top: 4px;
+  margin-bottom: 4px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all var(--t-fast);
+}
+
+.msg-file-attachment:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--c-purple-2);
+  transform: translateY(-1px);
+}
+
+.file-icon-badge {
+  font-size: 1.4rem;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  background: rgba(168, 85, 247, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.file-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.file-size {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.file-download-btn {
+  margin-left: auto;
+  font-size: 0.95rem;
+  color: var(--c-purple-2);
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  transition: all var(--t-fast);
+}
+
+/* Prévisualisation fichier sélectionné avant envoi */
+.file-preview-bar {
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+}
+
+.file-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-preview-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--glass-border);
+}
+
+.file-preview-icon {
+  font-size: 1.3rem;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  background: rgba(168, 85, 247, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-preview-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.file-preview-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-preview-size {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.file-preview-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px 10px;
+  font-size: 1rem;
+  border-radius: var(--r-sm);
+  transition: all var(--t-fast);
+}
+
+.file-preview-remove:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* Message actions */
+.msg-actions {
+  position: absolute;
+  top: -36px;
+  right: 0;
+  display: flex;
+  gap: 4px;
+  background: var(--glass-bg-heavy);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-full);
+  padding: 4px 8px;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.reaction-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  border-radius: var(--r-sm);
+  transition: transform var(--t-fast);
+}
+
+.reaction-btn:hover { transform: scale(1.2); }
+
+.reaction-btn.danger { filter: grayscale(1); opacity: .7; }
+.reaction-btn.danger:hover { filter: none; opacity: 1; }
+
+/* Réactions */
+.msg-reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.reaction-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-full);
+  font-size: .8rem;
+  cursor: pointer;
+  transition: all var(--t-fast);
+}
+
+.reaction-pill:hover, .reaction-pill.active {
+  background: rgba(168,85,247,.2);
+  border-color: rgba(168,85,247,.4);
+}
+
+/* Typing indicator */
+.typing-indicator {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.typing-avatar { font-size: 1.2rem; }
+
+.typing-bubble {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+}
+
+.typing-text {
+  font-size: .75rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Scroll to bottom */
+.scroll-bottom-btn {
+  position: absolute;
+  bottom: 140px;
+  right: 24px;
+  padding: 10px 18px;
+  background: var(--g-accent);
+  border: none;
+  border-radius: var(--r-full);
+  color: white;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(168,85,247,.5);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--t-spring);
+}
+
+.scroll-bottom-btn:hover { transform: translateY(-2px); }
+
+/* ── Zone de saisie ────────────────────────────────────────── */
+.input-area {
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--glass-border);
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.input-toolbar {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.tool-btn {
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-size: .9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all var(--t-fast);
+}
+
+.tool-btn:hover {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+}
+
+/* Emoji picker */
+.emoji-picker {
+  border-radius: var(--r-xl);
+  padding: 16px;
+  position: absolute;
+  bottom: 130px;
+  left: 24px;
+  z-index: 100;
+  width: 340px;
+}
+
+.ep-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.ep-tab {
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--r-full);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all var(--t-fast);
+}
+
+.ep-tab.active, .ep-tab:hover {
+  background: var(--glass-bg-md);
+  border-color: var(--glass-border);
+}
+
+.ep-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.ep-emoji {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+  border-radius: var(--r-sm);
+  transition: all var(--t-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ep-emoji:hover {
+  background: var(--glass-bg-md);
+  transform: scale(1.2);
+}
+
+/* Main input row */
+.main-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.user-avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .7rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.input-box-wrap {
+  flex: 1;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition: all var(--t-base);
+}
+
+.input-box-wrap:focus-within {
+  border-color: var(--c-purple-2);
+  box-shadow: 0 0 0 3px rgba(168,85,247,.2);
+}
+
+.message-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: .9rem;
+  resize: none;
+  min-height: 44px;
+  max-height: 150px;
+  line-height: 1.5;
+}
+
+.message-textarea::placeholder { color: var(--text-muted); }
+
+.send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-spring);
+  flex-shrink: 0;
+}
+
+.send-btn.active {
+  background: var(--g-accent);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 20px rgba(168,85,247,.5);
+}
+
+.send-btn.active:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 32px rgba(168,85,247,.7);
+}
+
+.send-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.input-hint {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  font-size: .65rem;
+  color: var(--text-muted);
+}
+
+/* ── Membres panel ─────────────────────────────────────────── */
+.members-panel {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--glass-border);
+  border-radius: 0;
+}
+
+.mp-header {
+  padding: 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--glass-border);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+.mp-list {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.mp-member {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--r-md);
+  transition: background var(--t-fast);
+}
+
+.mp-member:hover { background: var(--glass-bg); }
+
+.mp-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .75rem;
+  color: white;
+}
+
+.mp-name { font-size: .85rem; font-weight: 500; }
+.mp-status { font-size: .7rem; color: #22c55e; }
+
+/* ── Lightbox ──────────────────────────────────────────────── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0,0,0,.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: var(--r-xl);
+  object-fit: contain;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Settings modal ────────────────────────────────────────── */
+.settings-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 80px;
+  justify-content: flex-start;
+  padding-left: 16px;
+}
+
+.settings-inner {
+  width: 280px;
+  padding: 24px;
+  border-radius: var(--r-xl);
+  background: rgba(20,20,30,.95);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+}
+
+.settings-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.settings-section {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.color-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--t-fast);
+}
+
+.color-swatch.selected {
+  border-color: white;
+  transform: scale(1.15);
+}
+
+/* Toggle switch */
+.toggle-switch { position: relative; display: inline-block; }
+.toggle-switch input { display: none; }
+
+.toggle-track {
+  display: block;
+  width: 44px;
+  height: 24px;
+  background: rgba(255,255,255,.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--t-base);
+  position: relative;
+}
+
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: all var(--t-base);
+}
+
+.toggle-switch input:checked + .toggle-track {
+  background: var(--c-purple-1);
+}
+
+.toggle-switch input:checked + .toggle-track::after {
+  transform: translateX(20px);
+}
+
+/* ── Loading screen ────────────────────────────────────────── */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(255,255,255,.1);
+  border-top-color: var(--c-purple-2);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ── Misc inline styles ────────────────────────────────────── */
+:deep(.inline-code) {
+  background: rgba(255,255,255,.1);
+  padding: 2px 6px;
   border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: .85em;
+}
+
+:deep(.search-highlight) {
+  background: rgba(249,115,22,.3);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.highlighted .msg-bubble {
+  border-color: rgba(249,115,22,.4);
+  box-shadow: 0 0 0 2px rgba(249,115,22,.2);
+}
+
+/* ── Transitions ───────────────────────────────────────────── */
+.slide-down-enter-active, .slide-down-leave-active { transition: all .3s ease; }
+.slide-down-enter-from, .slide-down-leave-to { transform: translateY(-10px); opacity: 0; }
+
+.slide-left-enter-active, .slide-left-leave-active { transition: all .35s var(--t-spring); }
+.slide-left-enter-from, .slide-left-leave-to { transform: translateX(100%); opacity: 0; }
+
+.scale-up-enter-active, .scale-up-leave-active { transition: all .3s var(--t-spring); }
+.scale-up-enter-from, .scale-up-leave-to { transform: scale(.9); opacity: 0; }
+
+.fade-fast-enter-active, .fade-fast-leave-active { transition: opacity .15s ease; }
+.fade-fast-enter-from, .fade-fast-leave-to { opacity: 0; }
+
+/* ── Mobile responsive ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    z-index: 200;
+  }
+
+  .sidebar.open { transform: translateX(0); }
+
+  .mobile-menu-btn { display: flex; }
+  .mobile-close-btn { display: flex; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--r-sm); padding: 4px 8px; cursor: pointer; color: var(--text-primary); }
+
+  .members-panel { display: none; }
+
+  .online-pill { display: none; }
+
+  .emoji-picker { left: 8px; right: 8px; width: auto; }
+}
+
+@media (min-width: 769px) {
+  .mobile-close-btn { display: none; }
+}
+
+/* ── Admin Badges & Toast ──────────────────────────────────── */
+.admin-badge-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(234, 179, 8, 0.35));
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--r-full);
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+  margin-left: 6px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  vertical-align: middle;
+}
+
+.admin-pill-badge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  font-weight: 800;
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  margin-left: 6px;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+.admin-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 22px;
+  border-radius: var(--r-full);
+  background: rgba(18, 13, 30, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 24px rgba(245, 158, 11, 0.3);
+  color: #fef08a;
+  font-size: 0.88rem;
+  font-weight: 600;
+  max-width: 90vw;
+}
+
+.admin-toast-icon {
+  font-size: 1.3rem;
+  animation: pulse 1.5s infinite;
+}
+
+.admin-toast-close {
+  background: none;
+  border: none;
+  color: rgba(254, 240, 138, 0.7);
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 2px 6px;
+  border-radius: 50%;
+  transition: all var(--t-fast);
+}
+
+.admin-toast-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
 }
 </style>

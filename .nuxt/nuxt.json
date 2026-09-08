@@ -1,9 +1,9 @@
 {
-  "_hash": "sqz9h2EyceUaVTomqSdYRyOrOleoomAXPa4sZw5p3VE",
+  "_hash": "ak0nw8EyYaKAJfQCdXiyJK2XvYaJA8vxNg69o5LukFE",
   "project": {
-    "rootDir": "F:/SITE/lycee-europe/lycee-europe"
+    "rootDir": "C:/Users/Utilisateur/Documents/site lycee/lycee-europe"
   },
   "versions": {
-    "nuxt": "3.21.5"
+    "nuxt": "3.13.0"
   }
 }

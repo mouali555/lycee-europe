@@ -6,3 +6,5 @@ futur.mp4
 public/futur.mp4
 docs/futur.mp4
 docs/_nuxt/futur.*.mp4
+.env
+implementation_plan.md
