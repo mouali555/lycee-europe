@@ -1,9 +1,9 @@
 node_modules
 .nuxt
 .output
-futur.mp4
-public/futur.mp4
-docs/futur.mp4
-docs/_nuxt/futur.*.mp4
+dist
+_nuxt
+*.html
+_payload.json
 .env
 implementation_plan.md

@@ -1,6 +1,6 @@
 // nuxt.config.ts — Lycée Europe v2.0
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
 
   // CSS principal (design system)
   css: ['~/assets/css/main.css'],

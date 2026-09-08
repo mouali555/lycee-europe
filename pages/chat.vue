@@ -529,9 +529,13 @@ function formatFileSize(bytes) {
   return (bytes / (1024 * 1024)).toFixed(1) + ' Mo'
 }
 
-// ── Vrai nombre de membres en ligne (sans mensonge) ───────────
-const onlineMembers = ref([])
-const onlineCount = computed(() => onlineMembers.value.length || 1)
+// ── Vrai nombre de membres en ligne (Multi-onglets & Multi-appareils) ───
+const tabId = typeof window !== 'undefined'
+  ? ('tab_' + Math.random().toString(36).substring(2, 9))
+  : 'tab_init'
+
+const localTabs = ref([])
+const firestorePresences = ref([])
 
 function getMemberInitials(m) {
   const name = m.name || m.email || '?'
@@ -543,63 +547,186 @@ const userInitials = computed(() => {
   return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
 })
 
-// ── Firebase subscriptions & presence ─────────────────────────
-let unsubMessages = null
-let unsubPresence = null
-let presenceTimer = null
+// Membres en ligne unifiés (Multi-onglets synchronisés + Firestore cross-appareils)
+const onlineMembers = computed(() => {
+  const list = []
 
-function initPresence(user) {
-  if (!user || !$firebase) return
-  const db = getFirestore($firebase)
-  const myPresenceRef = doc(db, 'presence', user.uid)
+  // 1. Onglets locaux (même navigateur / machine)
+  const tabs = localTabs.value || []
+  let ownTabCounter = 0
+  tabs.forEach(t => {
+    ownTabCounter++
+    const isPrimary = t.id === tabId
+    const tabSuffix = tabs.length > 1 ? (isPrimary ? ' (Vous)' : ` (Onglet ${ownTabCounter})`) : ''
+    list.push({
+      id: t.id,
+      uid: t.uid,
+      name: (t.name || 'Utilisateur') + tabSuffix,
+      email: t.email,
+      color: t.color || userColor.value,
+      isLocal: true,
+      isPrimary
+    })
+  })
 
-  const myData = {
-    uid: user.uid,
-    name: user.displayName || user.email.split('@')[0] || 'Utilisateur',
-    email: user.email,
-    color: userColor.value,
-    lastSeen: Date.now()
-  }
-
-  // Enregistre sa propre présence
-  setDoc(myPresenceRef, myData).catch(() => {})
-
-  // Heartbeat toutes les 45s
-  presenceTimer = setInterval(() => {
-    setDoc(myPresenceRef, { ...myData, color: userColor.value, lastSeen: Date.now() }).catch(() => {})
-  }, 45000)
-
-  // Écoute les utilisateurs réellement connectés (dernière activité < 3 minutes)
-  try {
-    unsubPresence = onSnapshot(collection(db, 'presence'), (snap) => {
-      const now = Date.now()
-      const list = []
-      snap.forEach(d => {
-        const u = d.data()
-        if (u && (!u.lastSeen || (now - u.lastSeen < 180000))) {
-          list.push({ ...u, uid: d.id })
-        }
+  // 2. Utilisateurs distants (autres appareils / comptes depuis Firestore)
+  const localUids = new Set(tabs.map(t => t.uid))
+  firestorePresences.value.forEach(fp => {
+    if (!localUids.has(fp.uid) && !list.some(m => m.uid === fp.uid)) {
+      list.push({
+        id: 'remote_' + fp.uid,
+        uid: fp.uid,
+        name: fp.name || fp.email || 'Utilisateur',
+        email: fp.email,
+        color: fp.color || stringToColor(fp.uid),
+        isLocal: false
       })
-      // Vérifie que l'utilisateur actuel figure toujours au moins dans la liste
-      if (!list.some(u => u.uid === user.uid)) {
-        list.unshift(myData)
-      }
-      onlineMembers.value = list
-    }, () => {
-      // Si la collection presence est bloquée par les règles Firestore,
-      // on affiche honnêtement uniquement l'utilisateur connecté (1 en ligne)
-      onlineMembers.value = [myData]
+    }
+  })
+
+  // Fallback de sécurité : l'utilisateur courant doit toujours être présent
+  if (list.length === 0 && currentUser.value) {
+    list.push({
+      id: tabId,
+      uid: currentUser.value.uid,
+      name: currentUser.value.displayName || currentUser.value.email?.split('@')[0] || 'Utilisateur',
+      email: currentUser.value.email,
+      color: userColor.value,
+      isLocal: true,
+      isPrimary: true
     })
-  } catch {
-    onlineMembers.value = [myData]
   }
 
-  if (typeof window !== 'undefined') {
-    window.addEventListener('beforeunload', () => {
-      deleteDoc(myPresenceRef).catch(() => {})
-    })
+  return list
+})
+
+const onlineCount = computed(() => onlineMembers.value.length || 1)
+
+// ── Multi-onglets & Firebase subscriptions ──────────────────────
+let unsubMessages = null
+let presenceTimer = null
+let tabHeartbeatTimer = null
+let presenceChannel = null
+
+function updateLocalTabsHeartbeat(user) {
+  if (typeof window === 'undefined' || !user) return
+  try {
+    const raw = localStorage.getItem('lycee_chat_tabs')
+    let tabsMap = {}
+    if (raw) {
+      try { tabsMap = JSON.parse(raw) } catch {}
+    }
+    const now = Date.now()
+    // Nettoie les onglets inactifs (> 10 secondes sans ping)
+    const cleaned = {}
+    for (const [id, t] of Object.entries(tabsMap)) {
+      if (t && t.lastSeen && (now - t.lastSeen < 10000)) {
+        cleaned[id] = t
+      }
+    }
+    // Met à jour son propre onglet
+    cleaned[tabId] = {
+      id: tabId,
+      uid: user.uid,
+      name: user.displayName || user.email?.split('@')[0] || 'Élève',
+      email: user.email,
+      color: userColor.value,
+      lastSeen: now
+    }
+    localStorage.setItem('lycee_chat_tabs', JSON.stringify(cleaned))
+    localTabs.value = Object.values(cleaned)
+  } catch {
+    localTabs.value = [{
+      id: tabId,
+      uid: user.uid,
+      name: user.displayName || user.email?.split('@')[0] || 'Élève',
+      email: user.email,
+      color: userColor.value,
+      lastSeen: Date.now()
+    }]
   }
 }
+
+function removeLocalTab() {
+  if (typeof window === 'undefined') return
+  try {
+    const raw = localStorage.getItem('lycee_chat_tabs')
+    if (raw) {
+      const tabsMap = JSON.parse(raw)
+      delete tabsMap[tabId]
+      localStorage.setItem('lycee_chat_tabs', JSON.stringify(tabsMap))
+    }
+  } catch {}
+}
+
+function initPresence(user) {
+  if (!user) return
+
+  // 1. Synchronisation multi-onglets immédiate
+  updateLocalTabsHeartbeat(user)
+  if (tabHeartbeatTimer) clearInterval(tabHeartbeatTimer)
+  tabHeartbeatTimer = setInterval(() => updateLocalTabsHeartbeat(user), 3500)
+
+  // Écoute les changements d'onglets (storage event & BroadcastChannel)
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'lycee_chat_tabs' && e.newValue) {
+        try {
+          const map = JSON.parse(e.newValue)
+          const now = Date.now()
+          localTabs.value = Object.values(map).filter(t => t && (now - t.lastSeen < 10000))
+        } catch {}
+      }
+    })
+
+    if (typeof BroadcastChannel !== 'undefined') {
+      try {
+        presenceChannel = new BroadcastChannel('lycee_chat_presence')
+        presenceChannel.onmessage = (ev) => {
+          if (ev.data?.type === 'HEARTBEAT' || ev.data?.type === 'JOIN' || ev.data?.type === 'LEAVE') {
+            updateLocalTabsHeartbeat(user)
+          }
+        }
+        presenceChannel.postMessage({ type: 'JOIN', id: tabId })
+      } catch {}
+    }
+
+    window.addEventListener('beforeunload', () => {
+      removeLocalTab()
+      if (presenceChannel) {
+        try { presenceChannel.postMessage({ type: 'LEAVE', id: tabId }) } catch {}
+      }
+      if ($firebase && user) {
+        const db = getFirestore($firebase)
+        deleteDoc(doc(db, 'messages', 'presence_' + user.uid)).catch(() => {})
+      }
+    })
+  }
+
+  // 2. Synchronisation distante via Firestore (collection messages autorisée)
+  if ($firebase) {
+    const db = getFirestore($firebase)
+    const myPresenceRef = doc(db, 'messages', 'presence_' + user.uid)
+
+    const sendFirestoreHeartbeat = () => {
+      setDoc(myPresenceRef, {
+        room: '__presence__',
+        isPresence: true,
+        uid: user.uid,
+        name: user.displayName || user.email?.split('@')[0] || 'Utilisateur',
+        email: user.email,
+        color: userColor.value,
+        lastSeen: Date.now(),
+        createdAt: serverTimestamp()
+      }, { merge: true }).catch(() => {})
+    }
+
+    sendFirestoreHeartbeat()
+    if (presenceTimer) clearInterval(presenceTimer)
+    presenceTimer = setInterval(sendFirestoreHeartbeat, 30000)
+  }
+}
+
 
 // ── Messages groupés ──────────────────────────────────────────
 const groupedMessages = computed(() => {
@@ -676,15 +803,22 @@ watch(userColor, (val) => localStorage.setItem('profileColor', val))
 
 onUnmounted(() => {
   if (unsubMessages) unsubMessages()
-  if (unsubPresence) unsubPresence()
   if (presenceTimer) clearInterval(presenceTimer)
+  if (tabHeartbeatTimer) clearInterval(tabHeartbeatTimer)
+  removeLocalTab()
+  if (presenceChannel) {
+    try {
+      presenceChannel.postMessage({ type: 'LEAVE', id: tabId })
+      presenceChannel.close()
+    } catch {}
+  }
   if (currentUser.value && $firebase) {
     const db = getFirestore($firebase)
-    deleteDoc(doc(db, 'presence', currentUser.value.uid)).catch(() => {})
+    deleteDoc(doc(db, 'messages', 'presence_' + currentUser.value.uid)).catch(() => {})
   }
 })
 
-// ── Firebase Messages (collection "messages" globale avec filtre de salon) ──
+// ── Firebase Messages (collection "messages" globale avec filtre de salon & présence) ──
 function subscribeToRoom(roomId) {
   if (unsubMessages) unsubMessages()
   messages.value = []
@@ -699,17 +833,30 @@ function subscribeToRoom(roomId) {
 
   unsubMessages = onSnapshot(q, (snap) => {
     const prevCount = messages.value.length
-    const allMsgs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+    const allDocs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
 
-    // Tri chronologique ascendant
-    allMsgs.sort((a, b) => {
+    // 1. Extraction des présences distantes (< 2 minutes)
+    const now = Date.now()
+    firestorePresences.value = allDocs
+      .filter(d => (d.isPresence || d.room === '__presence__') && d.uid && (now - (d.lastSeen || 0) < 120000))
+      .map(d => ({
+        uid: d.uid,
+        name: d.name || d.email?.split('@')[0] || 'Utilisateur',
+        email: d.email,
+        color: d.color,
+        lastSeen: d.lastSeen
+      }))
+
+    // 2. Filtre et tri chronologique ascendant des VRAIS messages de discussion
+    const realMsgs = allDocs.filter(m => !m.isPresence && m.room !== '__presence__')
+    realMsgs.sort((a, b) => {
       const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 0)
       const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 0)
       return ta - tb
     })
 
     // Filtre pour le salon actuel (les anciens messages sans champ 'room' vont dans 'general')
-    messages.value = allMsgs.filter(m => {
+    messages.value = realMsgs.filter(m => {
       const msgRoom = m.room || 'general'
       return msgRoom === currentRoom.value
     })
