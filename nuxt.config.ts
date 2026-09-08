@@ -1,10 +1,4 @@
 // nuxt.config.ts — Lycée Europe v2.0
-import { fileURLToPath } from 'url'
-import { dirname, resolve } from 'path'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
@@ -46,13 +40,6 @@ export default defineNuxtConfig({
       hmr: {
         protocol: 'ws',
       }
-    }
-  },
-
-  // Nitro : output vers /dist pour GitHub Pages
-  nitro: {
-    output: {
-      publicDir: resolve(__dirname, 'dist')
     }
   },
 
