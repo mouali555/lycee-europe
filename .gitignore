@@ -1,9 +1,5 @@
 node_modules
 .nuxt
 .output
-dist
-_nuxt
-*.html
-_payload.json
 .env
 implementation_plan.md
