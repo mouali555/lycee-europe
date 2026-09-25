@@ -1,343 +1,91 @@
+<script setup>
+import { computed, ref } from 'vue'
+useHead({ title: 'La vie lycéenne', meta: [{ name: 'description', content: 'Sport, culture, foyer et engagement : découvrez les possibilités de vivre pleinement vos années au Lycée de l’Europe.' }] })
+const selectedCategory = ref('Tout découvrir')
+const categories = ['Tout découvrir', 'Sport', 'Culture', 'Détente']
+const activities = [
+  {
+    "id": "sport",
+    "category": "Sport",
+    "title": "L’esprit d’équipe.",
+    "subtitle": "Association sportive",
+    "description": "Se retrouver sur le terrain, se dépasser ensemble et faire vivre les couleurs du lycée.",
+    "theme": "sport",
+    "keywords": [
+      "Pratique",
+      "Rencontres",
+      "Collectif"
+    ],
+    "detail": "L’association sportive fait partie de la vie de l’établissement. Elle permet de prolonger la pratique sportive et de partager une activité avec d’autres élèves.",
+    "next": "Rapprochez-vous des professeurs d’EPS pour connaître les activités proposées, les créneaux de cette année et les conditions d’adhésion."
+  },
+  {
+    "id": "culture",
+    "category": "Culture",
+    "title": "Un autre regard.",
+    "subtitle": "Photo & cinéma-audiovisuel",
+    "description": "Observer, imaginer, raconter. Explorer les images et partager son regard sur le monde.",
+    "theme": "culture",
+    "keywords": [
+      "Photographie",
+      "Cinéma",
+      "Création"
+    ],
+    "detail": "Le site du lycée présente un club photo ainsi que des activités de cinéma-audiovisuel. L’option et le club audiovisuel participent à la vie culturelle de l’établissement.",
+    "next": "Consultez la vie scolaire ou les enseignants concernés pour connaître les projets proposés et les modalités de participation."
+  },
+  {
+    "id": "foyer",
+    "category": "Détente",
+    "title": "Des moments pour se retrouver.",
+    "subtitle": "Les temps hors cours",
+    "description": "Une pause, une rencontre, une discussion. Ces petits moments qui font aussi les années lycée.",
+    "theme": "relax",
+    "keywords": [
+      "Pause",
+      "Échanges",
+      "Rencontres"
+    ],
+    "detail": "Les temps hors cours font aussi partie de la vie au lycée. Ils sont l’occasion de rencontrer d’autres élèves, de discuter et de prendre part à la vie collective.",
+    "next": "La vie scolaire vous renseigne sur les espaces accessibles aux élèves, leurs horaires d’ouverture et les règles d’utilisation."
+  }
+]
+const filteredActivities = computed(() => activities.filter(activity => selectedCategory.value === 'Tout découvrir' || activity.category === selectedCategory.value))
+</script>
+
 <template>
-  <div class="bg-page relative" style="font-family:'Heebo',sans-serif; min-height:100vh;">
-
-    <!-- TICKER -->
-    <div class="ticker-outer">
-      <div class="ticker-inner">
-        <span>✡ VIE LYCÉENNE • חיי התלמיד • SPORT • CULTURE • CVL • MDL • CLUBS • 🇮🇱 גאווה • DUNKERQUE •</span>
-        <span>יחד • ENSEMBLE • אמנות • ARTS • ספורט • SPORT • מועצה • CONSEIL • ✡ VIE LYCÉENNE •</span>
-        <span>✡ VIE LYCÉENNE • חיי התלמיד • SPORT • CULTURE • CVL • MDL • CLUBS • 🇮🇱 גאווה • DUNKERQUE •</span>
-        <span>יחד • ENSEMBLE • אמנות • ARTS • ספורט • SPORT • מועצה • CONSEIL • ✡ VIE LYCÉENNE •</span>
-      </div>
-    </div>
-
-    <!-- OVERLAY RAYURES DRAPEAU -->
-    <div class="flag-stripes-overlay"></div>
-
-    <!-- NAVBAR -->
-    <nav class="navbar-il">
-      <div class="flex items-center gap-3">
-        <div class="flex flex-col w-9 h-6 rounded overflow-hidden border border-white/20 flex-shrink-0">
-          <div style="background:#0038b8; height:33.3%;"></div>
-          <div style="background:#fff; height:33.4%; display:flex; align-items:center; justify-content:center;">
-            <svg viewBox="0 0 20 14" width="16" height="11">
-              <polygon points="10,1 13,6 7,6" fill="none" stroke="#0038b8" stroke-width="1.2"/>
-              <polygon points="10,13 7,8 13,8" fill="none" stroke="#0038b8" stroke-width="1.2"/>
-            </svg>
-          </div>
-          <div style="background:#0038b8; height:33.3%;"></div>
-        </div>
-        <span class="text-white font-black tracking-widest text-sm uppercase">LYCÉE DE L'EUROPE</span>
-      </div>
-      <div class="flex items-center gap-6 text-xs font-bold tracking-widest uppercase text-blue-200/70">
-        <NuxtLink to="/" class="hover:text-white transition-colors">Accueil</NuxtLink>
-        <NuxtLink to="/filieres" class="hover:text-white transition-colors">Filières</NuxtLink>
-        <NuxtLink to="/clubs" class="text-white border-b border-blue-500 pb-0.5">Vie Lycéenne</NuxtLink>
-      </div>
-    </nav>
-
-    <!-- ============================================================
-         HERO
-         ============================================================ -->
-    <section class="relative flex flex-col items-center justify-center text-center overflow-hidden pt-[92px]" style="min-height:50vh;">
-
-      <!-- Bandes latérales -->
-      <div class="absolute top-0 left-0 h-full w-3 opacity-50"
-        style="background:linear-gradient(180deg,#0038b8 0%,#0038b8 16%,transparent 16%,transparent 84%,#0038b8 84%,#0038b8 100%);"></div>
-      <div class="absolute top-0 right-0 h-full w-3 opacity-50"
-        style="background:linear-gradient(180deg,#0038b8 0%,#0038b8 16%,transparent 16%,transparent 84%,#0038b8 84%,#0038b8 100%);"></div>
-
-      <!-- Étoiles de David décoratives -->
-      <div class="absolute top-20 left-10 opacity-10 star-float" style="animation-delay:0s;">
-        <svg viewBox="0 0 60 60" width="60" height="60">
-          <polygon points="30,4 8,44 52,44" fill="none" stroke="#0038b8" stroke-width="2"/>
-          <polygon points="30,56 52,16 8,16" fill="none" stroke="#0038b8" stroke-width="2"/>
-        </svg>
-      </div>
-      <div class="absolute bottom-8 right-10 opacity-10 star-float" style="animation-delay:-2s;">
-        <svg viewBox="0 0 60 60" width="45" height="45">
-          <polygon points="30,4 8,44 52,44" fill="none" stroke="#0038b8" stroke-width="2"/>
-          <polygon points="30,56 52,16 8,16" fill="none" stroke="#0038b8" stroke-width="2"/>
-        </svg>
-      </div>
-
-      <!-- Watermark hébreu -->
-      <span class="heb-watermark z-0" style="font-size:25vw; top:50%; left:50%; transform:translate(-50%,-50%);">ח</span>
-
-      <div class="relative z-10 px-6">
-        <div class="mb-8">
-          <NuxtLink to="/" class="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase transition-all" style="color:#0038b8;">
-            <span>←</span> Retour au portail
-          </NuxtLink>
-        </div>
-
-        <div class="flex items-center justify-center gap-3 mb-5">
-          <span class="text-2xl">🇮🇱</span>
-          <svg viewBox="0 0 50 50" width="40" height="40" style="filter:drop-shadow(0 0 8px #0038b8);">
-            <polygon points="25,4 7,36 43,36" fill="none" stroke="#0038b8" stroke-width="2.5"/>
-            <polygon points="25,46 43,14 7,14" fill="none" stroke="#0038b8" stroke-width="2.5"/>
-          </svg>
-          <span class="text-2xl">🇮🇱</span>
-        </div>
-
-        <p class="font-hebrew text-base tracking-widest mb-4"
-          style="color:#0038b8; direction:rtl; font-family:'Frank Ruhl Libre',serif; font-weight:700;">
-          חיי התלמיד • גאווה • יחד
-        </p>
-
-        <h1 class="font-black leading-none mb-4" style="
-          font-size: clamp(3rem, 10vw, 8rem);
-          font-family:'Heebo',sans-serif;
-          background: linear-gradient(170deg, #ffffff 0%, #c0d4ff 50%, #0038b8 100%);
-          -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-        ">Vie Lycéenne</h1>
-
-        <p class="text-blue-200/50 text-lg max-w-xl mx-auto font-light">
-          L'<strong class="text-white">engagement</strong> et l'épanouissement personnel au cœur de l'établissement 🇮🇱
-        </p>
-      </div>
+  <div class="student-life">
+    <section class="container life-hero">
+      <div class="life-hero-copy"><p class="eyebrow"><span class="small-line"></span> La vie lycéenne</p><h1>Vos années.<br>Vos idées.<br><em>Votre place.</em></h1><p class="hero-description">Un lycée, c’est aussi tout ce qui se passe entre les cours. Des rencontres, des projets et des expériences qui font grandir.</p><a class="button button-primary" href="#activites">Trouver ce qui m’anime <span aria-hidden="true">↗</span></a></div>
+      <div class="life-visual" aria-hidden="true"><div class="visual-grid"></div><div class="visual-top"><span>LYCÉE DE L’EUROPE</span><span>DUNKERQUE ↗</span></div><div class="circle-word">Faire.<br><i>Ensemble.</i></div><svg class="loop-art" viewBox="0 0 500 500" fill="none"><ellipse cx="251" cy="251" rx="225" ry="88" transform="rotate(-39 251 251)" stroke="#e5ef97" stroke-width="2"/><ellipse cx="251" cy="251" rx="225" ry="88" transform="rotate(39 251 251)" stroke="#e5ef97" stroke-width="2"/><circle cx="78" cy="113" r="9" fill="#e5ef97"/><circle cx="416" cy="376" r="9" fill="#e5ef97"/></svg><div class="visual-bottom"><span>LA CURIOSITÉ NOUS RASSEMBLE.</span><span>↓</span></div><span class="idea-sticker">Une idée ?<br><strong>À vous de jouer.</strong><span>↗</span></span></div>
     </section>
-
-    <!-- Barre drapeau -->
-    <div class="w-full" style="height:6px; background:linear-gradient(90deg,#0038b8,#0047d4 30%,#fff 50%,#0047d4 70%,#0038b8); opacity:0.6;"></div>
-
-    <!-- ============================================================
-         CONTENU MDL + CVL
-         ============================================================ -->
-    <section class="py-20 px-6">
-      <div class="max-w-6xl mx-auto space-y-10">
-
-        <!-- MDL -->
-        <div class="card-il p-10 reveal relative">
-          <!-- Barre latérale gauche drapeau -->
-          <div class="absolute left-0 top-4 bottom-4 w-1 rounded-r-full"
-            style="background:linear-gradient(180deg,#0038b8,#0047d4 50%,#0038b8);"></div>
-
-          <!-- Drapeaux corners -->
-          <div class="absolute top-4 right-4 flex items-center gap-2 opacity-40">
-            <span class="text-lg">✡</span>
-            <div class="overflow-hidden rounded" style="width:24px;height:17px;border:1px solid rgba(0,56,184,0.4);">
-              <div style="background:#0038b8;height:33%;"></div>
-              <div style="background:#fff;height:34%;"></div>
-              <div style="background:#0038b8;height:33%;"></div>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-6 pl-4">
-            <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0 relative"
-              style="background:rgba(0,56,184,0.15); border:1px solid rgba(0,56,184,0.5); box-shadow:0 0 30px rgba(0,56,184,0.2);">
-              🏛️
-              <span class="absolute -top-2 -right-2 text-base">✡</span>
-            </div>
-            <div class="flex-1">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="badge-il">✡ ASSOCIATION</div>
-                <div class="badge-il">🇮🇱 ÉLÈVES</div>
-              </div>
-              <h2 class="text-3xl md:text-4xl font-black text-white mb-1">Maison Des Lycéens</h2>
-              <p class="text-xs font-hebrew text-blue-400/50 mb-4" style="direction:rtl; font-family:'Frank Ruhl Libre',serif;">
-                בית התלמידים • עמותת התלמידים
-              </p>
-              <p class="text-blue-100/55 leading-relaxed">
-                La MDL est une association gérée directement par les élèves. Elle anime la vie culturelle, artistique et sportive de l'établissement. Elle permet de financer les clubs, le foyer, les sorties et les événements festifs du lycée de l'Europe.
-              </p>
-
-              <!-- Émojis drapeaux déco -->
-              <div class="flex items-center gap-1.5 mt-5">
-                <span v-for="i in 8" :key="i" class="text-base">🇮🇱</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CVL -->
-        <div class="card-il p-10 reveal relative" style="animation-delay:.15s;">
-          <div class="absolute left-0 top-4 bottom-4 w-1 rounded-r-full"
-            style="background:linear-gradient(180deg,#0038b8,#0047d4 50%,#0038b8);"></div>
-
-          <div class="absolute top-4 right-4 flex items-center gap-2 opacity-40">
-            <span class="text-lg">✡</span>
-            <div class="overflow-hidden rounded" style="width:24px;height:17px;border:1px solid rgba(0,56,184,0.4);">
-              <div style="background:#0038b8;height:33%;"></div>
-              <div style="background:#fff;height:34%;"></div>
-              <div style="background:#0038b8;height:33%;"></div>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-6 pl-4">
-            <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl flex-shrink-0 relative"
-              style="background:rgba(0,56,184,0.15); border:1px solid rgba(0,56,184,0.5); box-shadow:0 0 30px rgba(0,56,184,0.2);">
-              🗣️
-              <span class="absolute -top-2 -right-2 text-base">✡</span>
-            </div>
-            <div class="flex-1">
-              <div class="flex items-center gap-3 mb-2">
-                <div class="badge-il">✡ DÉMOCRATIE</div>
-                <div class="badge-il">🇮🇱 CVL</div>
-              </div>
-              <h2 class="text-3xl md:text-4xl font-black text-white mb-1">Conseil des Délégués</h2>
-              <p class="text-xs font-hebrew text-blue-400/50 mb-4" style="direction:rtl; font-family:'Frank Ruhl Libre',serif;">
-                מועצת התלמידים • ייצוג
-              </p>
-              <p class="text-blue-100/55 leading-relaxed">
-                Le CVL est l'instance où les lycéens sont associés aux décisions de l'établissement. Aménagement des espaces de détente, actions solidaires, santé, environnement... C'est ici que votre voix porte pour améliorer le quotidien de tous.
-              </p>
-              <div class="flex items-center gap-1.5 mt-5">
-                <span v-for="i in 8" :key="i" class="text-base">🇮🇱</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Séparateur drapeau central -->
-        <div class="flex items-center justify-center gap-4 py-4 reveal">
-          <div class="h-px flex-1 max-w-xs" style="background:linear-gradient(90deg,transparent,#0038b8);"></div>
-          <div class="flex items-center gap-3">
-            <span class="text-xl">✡</span>
-            <span class="text-xl">🇮🇱</span>
-            <span class="font-hebrew text-sm font-black" style="color:#0038b8;">מועדונים</span>
-            <span class="text-xl">🇮🇱</span>
-            <span class="text-xl">✡</span>
-          </div>
-          <div class="h-px flex-1 max-w-xs" style="background:linear-gradient(90deg,#0038b8,transparent);"></div>
-        </div>
-
-        <!-- GRILLE CLUBS 3 colonnes -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-          <!-- Sport -->
-          <div class="card-il p-8 reveal relative" style="animation-delay:.1s;">
-            <!-- Flag stripe top -->
-            <div class="absolute top-0 left-0 right-0 overflow-hidden rounded-t-xl" style="height:6px;">
-              <div style="background:#0038b8; height:33%;"></div>
-              <div style="background:#fff; height:34%;"></div>
-              <div style="background:#0038b8; height:33%;"></div>
-            </div>
-
-            <div class="mt-2 w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto relative"
-              style="background:rgba(0,56,184,0.15); border:1px solid rgba(0,56,184,0.5);">
-              🏃‍♂️
-              <span class="absolute -top-2 -right-2 text-xs">✡</span>
-            </div>
-            <div class="text-center">
-              <div class="badge-il mx-auto mb-3 inline-flex">🇮🇱 SPORT</div>
-              <h3 class="text-xl font-black text-white mb-1">Association Sportive</h3>
-              <p class="text-xs font-hebrew text-blue-400/40 mb-3" style="direction:rtl;">ספורט</p>
-              <div class="text-xs text-blue-300/50 mb-1 tracking-widest uppercase font-bold">UNSS</div>
-              <p class="text-sm text-blue-200/40 leading-relaxed">Tournois inter-lycées, entraînements le midi et le mercredi avec les professeurs d'EPS.</p>
-            </div>
-            <div class="flex justify-center gap-1 mt-5">
-              <span v-for="i in 4" :key="i" class="text-sm">🇮🇱</span>
-            </div>
-          </div>
-
-          <!-- Art & Musique -->
-          <div class="card-il p-8 reveal relative" style="animation-delay:.2s;">
-            <div class="absolute top-0 left-0 right-0 overflow-hidden rounded-t-xl" style="height:6px;">
-              <div style="background:#0038b8; height:33%;"></div>
-              <div style="background:#fff; height:34%;"></div>
-              <div style="background:#0038b8; height:33%;"></div>
-            </div>
-
-            <div class="mt-2 w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto relative"
-              style="background:rgba(0,56,184,0.15); border:1px solid rgba(0,56,184,0.5);">
-              🎸
-              <span class="absolute -top-2 -right-2 text-xs">✡</span>
-            </div>
-            <div class="text-center">
-              <div class="badge-il mx-auto mb-3 inline-flex">🇮🇱 CULTURE</div>
-              <h3 class="text-xl font-black text-white mb-1">Clubs Art & Musique</h3>
-              <p class="text-xs font-hebrew text-blue-400/40 mb-3" style="direction:rtl;">אמנות ומוזיקה</p>
-              <div class="text-xs text-blue-300/50 mb-1 tracking-widest uppercase font-bold">CRÉATIVITÉ</div>
-              <p class="text-sm text-blue-200/40 leading-relaxed">Salles équipées, concerts et représentations théâtrales au sein du lycée.</p>
-            </div>
-            <div class="flex justify-center gap-1 mt-5">
-              <span v-for="i in 4" :key="i" class="text-sm">🇮🇱</span>
-            </div>
-          </div>
-
-          <!-- Foyer -->
-          <div class="card-il p-8 reveal relative" style="animation-delay:.3s;">
-            <div class="absolute top-0 left-0 right-0 overflow-hidden rounded-t-xl" style="height:6px;">
-              <div style="background:#0038b8; height:33%;"></div>
-              <div style="background:#fff; height:34%;"></div>
-              <div style="background:#0038b8; height:33%;"></div>
-            </div>
-
-            <div class="mt-2 w-14 h-14 rounded-2xl flex items-center justify-center text-3xl mb-4 mx-auto relative"
-              style="background:rgba(0,56,184,0.15); border:1px solid rgba(0,56,184,0.5);">
-              ♟️
-              <span class="absolute -top-2 -right-2 text-xs">✡</span>
-            </div>
-            <div class="text-center">
-              <div class="badge-il mx-auto mb-3 inline-flex">🇮🇱 DÉTENTE</div>
-              <h3 class="text-xl font-black text-white mb-1">Foyer des Lycéens</h3>
-              <p class="text-xs font-hebrew text-blue-400/40 mb-3" style="direction:rtl;">מרכז הנוער</p>
-              <div class="text-xs text-blue-300/50 mb-1 tracking-widest uppercase font-bold">מנוחה</div>
-              <p class="text-sm text-blue-200/40 leading-relaxed">Baby-foot, jeux de société, échecs et espaces de discussion entre les cours.</p>
-            </div>
-            <div class="flex justify-center gap-1 mt-5">
-              <span v-for="i in 4" :key="i" class="text-sm">🇮🇱</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bloc final propagande -->
-        <div class="reveal mt-10">
-          <div class="relative p-8 rounded-2xl text-center overflow-hidden"
-            style="background:rgba(0,56,184,0.1); border:1px solid rgba(0,56,184,0.4);">
-            <div class="absolute top-0 left-0 right-0 h-1.5" style="background:linear-gradient(90deg,#0038b8,#fff 50%,#0038b8);"></div>
-            <div class="absolute bottom-0 left-0 right-0 h-1.5" style="background:linear-gradient(90deg,#0038b8,#fff 50%,#0038b8);"></div>
-
-            <div class="flex justify-center gap-2 mb-4">
-              <span class="text-xl">✡</span>
-              <span class="text-xl">🇮🇱</span>
-              <span class="text-xl">🇮🇱</span>
-              <span class="text-xl">🇮🇱</span>
-              <span class="text-xl">✡</span>
-            </div>
-            <p class="font-hebrew text-xl font-black mb-2"
-              style="color:#0038b8; direction:rtl; font-family:'Frank Ruhl Libre',serif;">
-              יחד • גאווה • ליצה דה לארופ
-            </p>
-            <p class="text-xs text-blue-300/50 tracking-widest uppercase">Ensemble • Fierté • Lycée de l'Europe</p>
-          </div>
-        </div>
-
+    <section id="engagement" class="engagement-section"><div class="container">
+      <div class="section-top"><div><p class="eyebrow">S’engager au quotidien</p><h2>Votre voix.<br><em>Une vraie place.</em></h2></div><p>Faire bouger les choses commence souvent par une idée, et l’envie de la partager.</p></div>
+      <div class="engagement-grid">
+        <article class="engagement-card mdl-card"><div class="engagement-top"><span>01 / DONNER VIE AUX PROJETS</span><svg viewBox="0 0 36 36" width="37" height="37" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M8 31V14l10-8 10 8v17M4 31h28M14 31V21h8v10M18 6V2"/></svg></div><span class="big-acronym">MDL<span>.</span></span><h3>La Maison des lycéens</h3><p>Une association portée par les élèves pour faire vivre le lycée : culture, arts, sport, sorties et événements collectifs.</p><div class="engagement-tags"><span>Imaginer</span><span>Organiser</span><span>Partager</span></div><details><summary>Comment participer <span aria-hidden="true">+</span></summary><div class="engagement-detail"><p>Vous avez envie de contribuer à un club, d’aider à organiser un événement ou de proposer une activité ? Adressez-vous aux élèves de la MDL ou à la vie scolaire pour découvrir les projets en cours et les modalités d’adhésion.</p></div></details></article>
+        <article class="engagement-card cvl-card"><div class="engagement-top"><span>02 / FAIRE ENTENDRE SA VOIX</span><svg viewBox="0 0 36 36" width="37" height="37" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M6 6h24v19H16l-7 6v-6H6V6Z"/><path d="M12 13h12M12 18h8"/></svg></div><span class="big-acronym">CVL<span>.</span></span><h3>Le Conseil de la vie lycéenne</h3><p>Un espace pour représenter les élèves et contribuer aux décisions qui améliorent le quotidien de tous.</p><div class="engagement-tags"><span>Écouter</span><span>Proposer</span><span>Représenter</span></div><details><summary>Comment s’impliquer <span aria-hidden="true">+</span></summary><div class="engagement-detail"><p>Aménagement des espaces, solidarité, santé, environnement : partagez vos propositions avec vos représentants. La vie scolaire peut vous renseigner sur le fonctionnement du CVL et les élections des élèves représentants.</p></div></details></article>
       </div>
+    </div></section>
+    <section id="activites" class="container activities-section">
+      <div class="section-top"><div><p class="eyebrow">Au rythme de vos envies</p><h2>Du temps pour<br><em>ce qui vous anime.</em></h2></div><p>Sur le terrain, autour des images ou entre deux cours : il y a mille façons de créer des liens.</p></div>
+      <div class="activity-toolbar"><div class="activity-filters" role="group" aria-label="Filtrer les activités"><button v-for="category in categories" :key="category" :class="{ active: selectedCategory === category }" :aria-pressed="selectedCategory === category" @click="selectedCategory = category">{{ category }}</button></div><p aria-live="polite">{{ filteredActivities.length }} univers à découvrir</p></div>
+      <div class="activities-grid">
+        <article v-for="activity in filteredActivities" :key="activity.id" class="activity-card" :class="activity.theme">
+          <div class="activity-illustration" aria-hidden="true"><span>{{ activity.category }}</span><svg v-if="activity.id === 'sport'" viewBox="0 0 300 190" fill="none"><circle cx="157" cy="97" r="64" stroke="currentColor" stroke-width="2"/><path d="M94 97h127M157 34v127M110 53c63 20 63 70 0 90M204 53c-63 20-63 70 0 90" stroke="currentColor" stroke-width="2"/><path d="m46 74 34-8m-31 29h25m-23 28 29 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="236" cy="41" r="4" fill="currentColor"/></svg><svg v-else-if="activity.id === 'culture'" viewBox="0 0 300 190" fill="none"><path d="M80 64h33l10-18h54l10 18h32v87H80V64Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="150" cy="106" r="31" stroke="currentColor" stroke-width="2"/><circle cx="150" cy="106" r="21" stroke="currentColor" stroke-width="2"/><circle cx="200" cy="80" r="4" fill="currentColor"/><path d="M82 141h136M131 38h38" stroke="currentColor" stroke-width="2"/><circle cx="238" cy="48" r="4" fill="currentColor"/></svg><svg v-else viewBox="0 0 300 190" fill="none"><path d="M82 42h84v64h-44l-25 23v-23H82V42Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M180 81h40v64h-15v20l-24-20h-45v-25" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M101 64h46M101 80h31M164 107h36M157 123h43" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="221" cy="43" r="4" fill="currentColor"/></svg></div>
+          <div class="activity-content"><p class="activity-subtitle">{{ activity.subtitle }}</p><h3>{{ activity.title }}</h3><p class="activity-description">{{ activity.description }}</p><div class="activity-keywords"><span v-for="keyword in activity.keywords" :key="keyword">{{ keyword }}</span></div><details><summary>En savoir plus <span aria-hidden="true">+</span></summary><div class="activity-detail"><p>{{ activity.detail }}</p><h4>Le premier pas</h4><p>{{ activity.next }}</p></div></details></div>
+        </article>
+      </div>
+      <p class="activities-note">Les activités et les créneaux peuvent évoluer dans l’année. La vie scolaire vous renseigne sur les possibilités du moment. <a href="https://lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer">Consulter les actualités du lycée ↗</a></p>
     </section>
-
-    <!-- FOOTER -->
-    <footer class="footer-il">
-      <div class="w-20 mx-auto mb-5 overflow-hidden rounded" style="height:34px; border:1px solid rgba(0,56,184,0.4);">
-        <div style="background:#0038b8; height:33%;"></div>
-        <div style="background:#fff; height:34%; display:flex;align-items:center;justify-content:center;">
-          <svg viewBox="0 0 60 16" width="60" height="16">
-            <polygon points="30,2 8,14 52,14" fill="none" stroke="#0038b8" stroke-width="1.5"/>
-            <polygon points="30,14 52,2 8,2" fill="none" stroke="#0038b8" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <div style="background:#0038b8; height:33%;"></div>
-      </div>
-      <p class="text-xs text-gray-700 font-mono tracking-[0.3em] uppercase">© 2024 LYCÉE DE L'EUROPE — DUNKERQUE 🇮🇱</p>
-    </footer>
-
+    <section class="container idea-section"><div class="idea-symbol" aria-hidden="true">↗</div><div><p class="eyebrow">Les bonnes idées se partagent</p><h2>Et si le prochain projet<br>commençait par <em>vous ?</em></h2><p>Un club à imaginer, une cause à défendre, un événement à créer : échangez avec la MDL, vos représentants ou la vie scolaire pour donner une première forme à votre idée.</p></div><a class="button button-primary" href="#engagement">Découvrir les interlocuteurs <span aria-hidden="true">↑</span></a></section>
   </div>
 </template>
 
-<script setup>
-import { onMounted, onUnmounted } from 'vue'
-let observer = null
-onMounted(() => {
-  const els = document.querySelectorAll('.reveal')
-  observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') })
-  }, { threshold: 0.1 })
-  els.forEach(el => {
-    const rect = el.getBoundingClientRect()
-    if (rect.top < window.innerHeight) el.classList.add('visible')
-    else observer.observe(el)
-  })
-})
-onUnmounted(() => { if (observer) observer.disconnect() })
-</script>
+<style scoped>
+.activities-note a{color:#2748df;text-decoration:underline;text-underline-offset:3px}
+.student-life{background:#f8f7f2;color:#162b32}.life-hero{display:grid;grid-template-columns:1.05fr 1fr;gap:85px;align-items:center;padding-top:75px;padding-bottom:85px}.life-hero-copy .eyebrow{display:flex;align-items:center;gap:12px}.small-line{width:28px;height:2px;background:#2748df}h1{font-size:clamp(57px,6.3vw,87px);font-weight:600;line-height:1.01;letter-spacing:-.06em;margin:28px 0}em{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:-.045em;color:#2748df}.hero-description{font-size:15px;line-height:1.85;color:#626e6e;max-width:405px;margin:27px 0 28px}.life-visual{position:relative;background:#2748df;aspect-ratio:1/1.08;border-radius:14px;isolation:isolate;color:#e5ef97;min-width:0}.visual-grid{position:absolute;inset:0;background-image:linear-gradient(#ffffff0d 1px,transparent 1px),linear-gradient(90deg,#ffffff0d 1px,transparent 1px);background-size:44px 44px;border-radius:14px}.visual-top,.visual-bottom{position:absolute;left:28px;right:28px;display:flex;justify-content:space-between;font-size:8px;letter-spacing:.12em;z-index:2}.visual-top{top:28px}.visual-bottom{bottom:28px;align-items:center}.visual-bottom>span:last-child{font-size:24px}.loop-art{position:absolute;width:100%;height:100%;inset:0}.circle-word{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:clamp(40px,5vw,70px);font-weight:600;letter-spacing:-.065em;line-height:1.1;z-index:1}.circle-word i{font-family:Georgia,'Times New Roman',serif;font-weight:400;letter-spacing:-.05em}.idea-sticker{position:absolute;right:-18px;bottom:56px;padding:21px 60px 21px 22px;background:#e5ef97;color:#162b32;transform:rotate(-8deg);font-size:13px;line-height:1.6;box-shadow:0 6px 15px #162b321a;z-index:3}.idea-sticker>span{font-size:26px;position:absolute;right:20px;top:21px}.idea-sticker strong{font-weight:700}.engagement-section{background:#f0f1eb;border-top:1px solid #dce0d6;padding:82px 0 86px;scroll-margin-top:110px}.section-top{display:flex;align-items:flex-end;justify-content:space-between;gap:50px;margin-bottom:40px}.section-top h2,.idea-section h2{font-size:clamp(35px,4vw,52px);letter-spacing:-.045em;line-height:1.15;font-weight:500;margin:16px 0 0}.section-top>p{max-width:310px;font-size:14px;line-height:1.8;color:#677169;margin:0 0 4px}.engagement-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px}.engagement-card{padding:31px 34px 0;border-radius:12px;display:flex;flex-direction:column;overflow:hidden}.mdl-card{background:#162b32;color:#f4f6ef}.cvl-card{background:#e5ef97;color:#162b32}.engagement-top{display:flex;align-items:center;justify-content:space-between;gap:20px}.engagement-top>span{font-size:9px;letter-spacing:.1em;font-weight:600}.mdl-card .engagement-top{color:#cbd2bb}.big-acronym{font-size:91px;letter-spacing:-.085em;font-weight:600;line-height:1;margin:40px 0 27px}.big-acronym>span{color:#dbe999}.cvl-card .big-acronym>span{color:#2748df}.engagement-card h3{font-size:22px;letter-spacing:-.03em;font-weight:500;margin:0 0 15px}.engagement-card>p{font-size:14px;line-height:1.8;margin:0;max-width:400px;opacity:.76}.engagement-tags{display:flex;gap:8px;margin:27px 0 30px}.engagement-tags>span{border:1px solid #ffffff30;font-size:10px;border-radius:30px;padding:6px 12px}.cvl-card .engagement-tags>span{border-color:#162b3230}.engagement-card details{margin-top:auto;border-top:1px solid #ffffff25}.cvl-card details{border-color:#162b3225}details summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:center;font-size:12px;font-weight:600;padding:22px 0}summary::-webkit-details-marker{display:none}summary>span{font-size:23px;line-height:1;font-weight:400;transition:transform .2s}details[open]>summary>span{transform:rotate(45deg)}.engagement-detail{padding:0 0 25px}.engagement-detail p{font-size:13px;line-height:1.85;margin:0;opacity:.85}.activities-section{padding-top:90px;padding-bottom:80px;scroll-margin-top:100px}.activity-toolbar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:28px}.activity-toolbar>p{font-size:11px;color:#69756d}.activity-filters{display:flex;flex-wrap:wrap;gap:8px}.activity-filters button{border:1px solid #cdd4c9;border-radius:30px;font:inherit;font-size:12px;font-weight:600;padding:10px 18px;background:transparent;color:#4a5856;cursor:pointer;transition:background .2s,color .2s}.activity-filters button:hover{background:#e5e9df}.activity-filters button.active{background:#162b32;border-color:#162b32;color:white}.activities-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}.activity-card{border:1px solid #d8ded3;border-radius:12px;overflow:hidden;background:#fcfcf8}.activity-illustration{height:222px;background:#e6edce;color:#56722d;position:relative;overflow:hidden}.activity-illustration>span{position:absolute;top:20px;left:22px;text-transform:uppercase;font-size:9px;letter-spacing:.15em;font-weight:700}.activity-illustration svg{position:absolute;width:90%;height:190px;bottom:-2px;left:5%}.culture .activity-illustration{background:#e5e6f5;color:#645196}.relax .activity-illustration{background:#f4e1d4;color:#a96241}.activity-content{padding:25px 24px 0}.activity-subtitle{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#798273;font-weight:700;margin:0 0 12px}.activity-content h3{font-size:26px;letter-spacing:-.04em;line-height:1.2;font-weight:500;margin:0 0 15px;min-height:62px}.activity-description{font-size:13px;line-height:1.8;color:#65715f;margin:0;min-height:70px}.activity-keywords{display:flex;gap:6px;flex-wrap:wrap;margin:24px 0 23px}.activity-keywords>span{border:1px solid #d6decf;font-size:9px;border-radius:30px;padding:5px 9px}.activity-content details{border-top:1px solid #dce2d5}.activity-detail{padding-bottom:24px}.activity-detail p{font-size:12px;line-height:1.8;color:#63705c;margin:0}.activity-detail h4{font-size:12px;margin:20px 0 8px}.activities-note{font-size:11px;color:#7c8379;line-height:1.8;margin-top:25px}.idea-section{border-top:1px solid #d8dfd1;display:grid;grid-template-columns:70px 1fr auto;gap:28px;align-items:center;padding-top:60px;padding-bottom:85px}.idea-symbol{width:63px;height:63px;border-radius:50%;background:#e5ef97;display:flex;align-items:center;justify-content:center;font-size:32px;align-self:start;margin-top:3px}.idea-section h2{font-size:35px}.idea-section p:last-child{font-size:13px;line-height:1.85;color:#687561;margin:20px 0 0;max-width:540px}.idea-section .button{font-size:11px;white-space:nowrap}.idea-section .eyebrow{font-size:9px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #2748df;outline-offset:4px}.mdl-card summary:focus-visible{outline-color:#e5ef97}
+@media(max-width:1000px){.life-hero{gap:50px}.life-visual{aspect-ratio:1/1.2}.visual-top,.visual-bottom{left:20px;right:20px;font-size:7px}.idea-sticker{right:-10px;bottom:50px;font-size:11px;padding:18px 50px 18px 18px}.idea-sticker>span{font-size:22px;right:16px;top:20px}.engagement-card{padding:27px 26px 0}.engagement-card h3{font-size:20px}.activities-grid{gap:15px}.activity-content{padding:24px 20px 0}.activity-content h3{font-size:24px;min-height:58px}.activity-description{min-height:94px}.activity-illustration{height:198px}.activity-keywords{gap:4px}.activity-keywords>span{padding:5px 7px;font-size:8px}.idea-section{grid-template-columns:65px 1fr;gap:24px}.idea-section .button{grid-column:2;justify-self:start}.circle-word{font-size:50px}}
+@media(max-width:700px){.life-hero{grid-template-columns:1fr;padding-top:43px;padding-bottom:55px;gap:38px}.life-hero h1{font-size:clamp(46px,14.7vw,67px)}.hero-description{max-width:440px;font-size:15px}.life-visual{aspect-ratio:1.1;max-width:460px;width:calc(100% - 10px);justify-self:center}.circle-word{font-size:clamp(43px,14vw,64px)}.visual-top,.visual-bottom{font-size:8px}.idea-sticker{bottom:42px;font-size:11px;right:-10px}.engagement-section{padding:55px 0}.section-top{display:block;margin-bottom:28px}.section-top h2{font-size:39px}.section-top>p{max-width:100%;margin:20px 0 0}.engagement-grid{grid-template-columns:1fr;gap:18px}.big-acronym{font-size:84px;margin:30px 0 22px}.engagement-card h3{font-size:24px}.engagement-card>p{max-width:100%}.activities-section{padding-top:60px;padding-bottom:55px}.activity-toolbar>p{display:none}.activity-filters{gap:7px}.activity-filters button{font-size:10px;padding:9px 13px}.activities-grid{grid-template-columns:1fr;gap:22px}.activity-illustration{height:220px}.activity-illustration svg{height:195px}.activity-content{padding:25px 25px 0}.activity-content h3{font-size:28px;min-height:0}.activity-description{min-height:0}.activity-keywords>span{font-size:10px;padding:5px 10px}.idea-section{grid-template-columns:1fr;gap:23px;padding-top:40px;padding-bottom:60px}.idea-section h2{font-size:32px}.idea-section .button{grid-column:auto}.idea-symbol{width:49px;height:49px;font-size:25px}.idea-section p:last-child{margin-top:18px}}
+</style>
+
+

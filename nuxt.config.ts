@@ -21,7 +21,7 @@ export default defineNuxtConfig({
       firebaseApiKey:            process.env.NUXT_PUBLIC_FIREBASE_API_KEY            || '',
       firebaseAuthDomain:        process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN        || '',
       firebaseProjectId:         process.env.NUXT_PUBLIC_FIREBASE_PROJECT_ID         || '',
-      firebaseStorageBucket:     process.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET     || '',
+      firebaseStorageBucket:     process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET     || '',
       firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '',
       firebaseAppId:             process.env.NUXT_PUBLIC_FIREBASE_APP_ID             || '',
     }
@@ -49,8 +49,8 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'fr' },
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'theme-color', content: '#7c3aed' },
-        { name: 'description', content: 'Lycée Europe — Établissement d\'excellence. Espace numérique élève.' },
+        { name: 'theme-color', content: '#f8f7f2' },
+        { name: 'description', content: 'Lycée Europe — Formations, vie lycéenne et communauté à Dunkerque.' },
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
