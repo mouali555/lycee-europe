@@ -1,31 +1,607 @@
+<script setup>
+useHead({
+  title: 'À propos & Confidentialité — Mentions Légales',
+  meta: [
+    {
+      name: 'description',
+      content: 'Découvrez la philosophie du projet Lycée Europe, la gouvernance de vos données, l’architecture technique et les sources documentaires du portail.'
+    }
+  ]
+})
+</script>
+
 <template>
   <main class="information-page">
+    <!-- ══════════════════════════════════════════
+         INTRO HEADER
+    ══════════════════════════════════════════ -->
     <header class="information-intro info-container">
-      <span class="info-eyebrow"><span /> Le portail, en toute clarté</span>
-      <h1>Un espace ouvert.<br /><em>Des repères clairs.</em></h1>
-      <p>À propos de ce projet, de vos données et des contenus que vous découvrez ici.</p>
+      <p class="info-eyebrow text-label-acid">
+        <span class="eyebrow-dot"></span> 04 / GOUVERNANCE & TRANSPARENCE
+      </p>
+      <h1 class="info-title">
+        <span>UN ESPACE OUVERT.</span>
+        <span class="ht-outline">DES REPÈRES</span>
+        <span class="ht-acid">CLAIRS.<span class="info-star" aria-hidden="true">✦</span></span>
+      </h1>
+      <p class="info-lead">
+        À propos de cette plateforme indépendante, de la gestion de vos données et de la déontologie qui guide cet espace numérique.
+      </p>
     </header>
+
+    <!-- ══════════════════════════════════════════
+         MAIN LAYOUT (SIDEBAR + CONTENT)
+    ══════════════════════════════════════════ -->
     <div class="information-layout info-container">
+      <!-- Sticky Sidebar -->
       <aside class="information-sidebar">
-        <nav aria-label="Sommaire des informations"><a href="#projet"><span>01</span> Le projet <span aria-hidden="true">↗</span></a><a href="#donnees"><span>02</span> Vos données <span aria-hidden="true">↗</span></a><a href="#preferences"><span>03</span> Votre navigation <span aria-hidden="true">↗</span></a><a href="#credits"><span>04</span> Sources & crédits <span aria-hidden="true">↗</span></a></nav>
-        <div class="official-note"><span aria-hidden="true">↗</span><h2>Le bon point de départ</h2><p>Pour une démarche scolaire ou une information administrative, consultez le site officiel du lycée.</p><a href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer">Site de l’établissement <span aria-hidden="true">↗</span></a></div>
+        <nav aria-label="Sommaire des sections" class="info-nav">
+          <a href="#projet" class="nav-item">
+            <span class="item-num">01 //</span>
+            <span class="item-label">Le projet</span>
+            <span class="item-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a href="#donnees" class="nav-item">
+            <span class="item-num">02 //</span>
+            <span class="item-label">Vos données</span>
+            <span class="item-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a href="#preferences" class="nav-item">
+            <span class="item-num">03 //</span>
+            <span class="item-label">Votre navigation</span>
+            <span class="item-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a href="#credits" class="nav-item">
+            <span class="item-num">04 //</span>
+            <span class="item-label">Sources & crédits</span>
+            <span class="item-arrow" aria-hidden="true">↗</span>
+          </a>
+        </nav>
+
+        <!-- Official Lycée Notice Box -->
+        <div class="official-notice-card">
+          <div class="notice-icon" aria-hidden="true">✦</div>
+          <span class="notice-badge">CANAL OFFICIEL</span>
+          <h2 class="notice-heading">Démarches scolaires & administratives</h2>
+          <p class="notice-desc">
+            Pour toute inscription, dossier Parcoursup, scolarité officielle ou contact avec le secrétariat, consultez le portail institutionnel.
+          </p>
+          <a href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer" class="notice-btn">
+            Site de l’établissement <span aria-hidden="true">↗</span>
+          </a>
+        </div>
       </aside>
+
+      <!-- Articles Content -->
       <div class="information-content">
-        <section id="projet" aria-labelledby="project-heading"><span class="section-number">01 / À PROPOS</span><h2 id="project-heading">Un projet autour du lycée.</h2><p>Ce portail est un projet indépendant de présentation et de communauté autour du Lycée de l’Europe à Dunkerque. Il réunit la découverte de l’établissement, un espace d’échange et Nexus, une galerie d’univers visuels.</p><p>Il ne constitue pas le site institutionnel de l’établissement. Les inscriptions, les démarches administratives et les informations officielles relèvent du <a href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer">site du Lycée de l’Europe</a>.</p></section>
-        <section id="donnees" aria-labelledby="data-heading"><span class="section-number">02 / VOTRE COMPTE</span><h2 id="data-heading">Comprendre ce que vous partagez.</h2><div class="data-item"><h3>Connexion et profil</h3><p>L’espace membre utilise Firebase Authentication, un service Google, pour gérer la connexion par e-mail ou avec Google. Votre adresse e-mail, votre identifiant et les informations de profil associées à votre compte servent à vous identifier dans cet espace.</p></div><div class="data-item"><h3>Messages et fichiers</h3><p>Les échanges sont enregistrés dans Cloud Firestore. Les fichiers partagés utilisent Firebase Storage. Les messages et leurs pièces jointes sont visibles par les personnes qui ont accès au salon concerné ; ce sont des échanges de groupe.</p><p>Partagez uniquement les informations et les fichiers que vous souhaitez rendre accessibles aux autres participants. Les accès et la conservation des données dépendent de la configuration du projet Firebase associé à ce portail.</p></div><div class="data-item"><h3>Une question sur vos données ?</h3><p>Adressez-vous à la personne qui vous a donné accès à ce portail pour les demandes liées à votre compte, à vos messages ou à vos fichiers. Les coordonnées du gestionnaire de ce projet ne sont pas renseignées ici.</p></div></section>
-        <section id="preferences" aria-labelledby="preferences-heading"><span class="section-number">03 / VOTRE NAVIGATION</span><h2 id="preferences-heading">Votre navigateur garde vos choix.</h2><p>Certaines préférences de l’interface peuvent être enregistrées sur cet appareil. L’option « Rester connecté sur cet appareil » conserve votre session au-delà de la fermeture du navigateur. Sans cette option, la connexion utilise la session du navigateur.</p><p>Sur un appareil partagé, déconnectez-vous après utilisation. Vous pouvez également effacer les données de ce site dans les paramètres de votre navigateur ; vos préférences et votre session locale seront alors supprimées.</p><p>Les polices Manrope et DM Sans sont chargées depuis Google Fonts. Leur affichage implique une connexion aux serveurs de ce service. Les liens vers les sites externes vous conduisent vers des services qui appliquent leurs propres règles de confidentialité.</p></section>
-        <section id="credits" aria-labelledby="credits-heading"><span class="section-number">04 / SOURCES & CRÉDITS</span><h2 id="credits-heading">Des contenus, des origines.</h2><div class="source-links"><a href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer"><span><strong>Le site du Lycée de l’Europe</strong><small>Présentation, vie de l’établissement et actualités</small></span><span aria-hidden="true">↗</span></a><a href="https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe" target="_blank" rel="noopener noreferrer"><span><strong>La fiche de l’établissement sur Onisep</strong><small>Informations et orientation</small></span><span aria-hidden="true">↗</span></a></div><p><strong>Photographie du campus :</strong> © A-Z Production, site de l’établissement. <strong>Photographies des actualités :</strong> Lycée de l’Europe, publications de son site.</p><p><strong>Univers Nexus :</strong> les vidéos Submerge et Chivalry et l’illustration Genesis sont des médias conservés du projet d’origine.</p></section>
+        <!-- Section 01 -->
+        <section id="projet" aria-labelledby="project-heading" class="info-section">
+          <div class="section-tag-line">
+            <span class="section-number">01 / À PROPOS DE LA PLATEFORME</span>
+          </div>
+          <h2 id="project-heading" class="section-headline">Un projet communautaire autour du lycée.</h2>
+          <p>
+            Ce portail est une initiative indépendante de présentation, de design et de communauté autour du <strong>Lycée de l’Europe à Dunkerque</strong>.
+            Il réunit la découverte dynamique des filières, un espace d’échange en temps réel et le studio créatif <strong>Nexus</strong>.
+          </p>
+          <p>
+            Il ne se substitue pas au site institutionnel du Ministère de l’Éducation Nationale.
+            Les démarches officielles, les formalités de rentrée et les informations légales relèvent du
+            <a href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer" class="text-link">
+              site officiel du Lycée de l’Europe ↗
+            </a>.
+          </p>
+        </section>
+
+        <!-- Section 02 -->
+        <section id="donnees" aria-labelledby="data-heading" class="info-section">
+          <div class="section-tag-line">
+            <span class="section-number">02 / VOTRE COMPTE & VOS DONNÉES</span>
+          </div>
+          <h2 id="data-heading" class="section-headline">Comprendre ce que vous partagez.</h2>
+
+          <div class="data-block">
+            <h3 class="data-title">Authentification & Profils</h3>
+            <p>
+              L’espace communautaire utilise <strong>Firebase Authentication</strong> (Google Cloud Platform) pour gérer les sessions sécurisées par e-mail ou via un compte Google.
+              Votre adresse e-mail, pseudonyme et identifiant unique servent exclusivement à vous reconnaître dans l’espace d’échange.
+            </p>
+          </div>
+
+          <div class="data-block">
+            <h3 class="data-title">Messages & Pièces Jointes</h3>
+            <p>
+              Les flux de conversation sont enregistrés sur <strong>Cloud Firestore</strong> et les éventuelles pièces jointes sur <strong>Firebase Storage</strong>.
+              Les salons étant des espaces d’échange collectifs, les messages y sont accessibles à tous les membres connectés du salon concerné.
+            </p>
+            <p>
+              Adoptez les règles fondamentales de prudence numérique : ne partagez jamais de données personnelles sensibles, de coordonnées bancaires ou de mots de passe.
+            </p>
+          </div>
+
+          <div class="data-block">
+            <h3 class="data-title">Gestion de vos données</h3>
+            <p>
+              Pour toute demande de rectification ou de suppression de vos contributions ou de votre compte, adressez-vous directement aux modérateurs de la communauté ou aux administrateurs du projet Firebase.
+            </p>
+          </div>
+        </section>
+
+        <!-- Section 03 -->
+        <section id="preferences" aria-labelledby="preferences-heading" class="info-section">
+          <div class="section-tag-line">
+            <span class="section-number">03 / NAVIGATEUR & EXPÉRIENCE</span>
+          </div>
+          <h2 id="preferences-heading" class="section-headline">Votre appareil garde le contrôle.</h2>
+          <p>
+            Les préférences d'interface sont conservées en local dans le stockage de votre navigateur (LocalStorage).
+            L'option « Rester connecté sur cet appareil » maintient la persistance de votre session Firebase au-delà de la fermeture de la fenêtre.
+          </p>
+          <p>
+            Sur un poste partagé (en salle informatique ou au CDI), pensez toujours à vous déconnecter en fin d’utilisation via le bouton prévu à cet effet dans la barre latérale du chat.
+          </p>
+          <p>
+            Les typographies modernes <em>Syne</em>, <em>Space Grotesk</em> et <em>Space Mono</em> sont servies via Google Fonts.
+            Leur affichage peut impliquer un appel sécurisé aux réseaux de diffusion de contenu.
+          </p>
+        </section>
+
+        <!-- Section 04 -->
+        <section id="credits" aria-labelledby="credits-heading" class="info-section">
+          <div class="section-tag-line">
+            <span class="section-number">04 / SOURCES & CRÉDITS CRÉATIFS</span>
+          </div>
+          <h2 id="credits-heading" class="section-headline">Des contenus, des origines.</h2>
+
+          <div class="source-links-grid">
+            <a href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer" class="source-card">
+              <div>
+                <strong class="source-name">Le site officiel du Lycée de l’Europe</strong>
+                <span class="source-desc">Présentation des cursus, vie scolaire et calendrier</span>
+              </div>
+              <span class="source-arrow" aria-hidden="true">↗</span>
+            </a>
+
+            <a href="https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe" target="_blank" rel="noopener noreferrer" class="source-card">
+              <div>
+                <strong class="source-name">Fiche établissement ONISEP</strong>
+                <span class="source-desc">Nomenclature officielle des spécialités et filières BTS</span>
+              </div>
+              <span class="source-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div class="credits-notes">
+            <p>
+              <strong>Iconographie du campus :</strong> Photographies © Lycée de l'Europe Dunkerque & A-Z Production.
+            </p>
+            <p>
+              <strong>Univers Nexus :</strong> Les clips vidéo <em>Submerge</em> et <em>Chivalry</em> ainsi que le concept <em>Genesis</em> sont des œuvres visuelles originales intégrées au studio créatif.
+            </p>
+          </div>
+        </section>
       </div>
     </div>
-    <div class="information-end info-container"><span>La découverte continue.</span><NuxtLink to="/">Retour à l’accueil <span aria-hidden="true">↗</span></NuxtLink></div>
+
+    <!-- ══════════════════════════════════════════
+         FOOTER RETURN CALLOUT
+    ══════════════════════════════════════════ -->
+    <div class="information-end info-container">
+      <span class="end-quote">La curiosité commence ici. L'exploration continue.</span>
+      <NuxtLink to="/" class="end-link">
+        Retour à l’accueil <span aria-hidden="true">↗</span>
+      </NuxtLink>
+    </div>
   </main>
 </template>
 
-<script setup>
-useHead({ title: 'À propos & confidentialité', meta: [{ name: 'description', content: 'Découvrez le projet Lycée Europe, le fonctionnement des comptes et des données, ainsi que les sources et crédits des contenus du portail.' }] })
-</script>
-
 <style scoped>
-.information-page{background:#f8f7f2;color:#14272e;padding-bottom:70px}.info-container{width:min(1220px,calc(100% - 112px));margin-inline:auto}.information-intro{padding-top:62px;padding-bottom:63px;border-bottom:1px solid #d8dcd4}.info-eyebrow{display:flex;align-items:center;gap:9px;color:#2748df;text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:750}.info-eyebrow>span{height:6px;width:6px;border-radius:50%;background:#2748df}.information-intro h1{font-size:clamp(44px,5.6vw,76px);letter-spacing:-.065em;font-weight:500;line-height:1.07;margin:25px 0 23px}.information-intro h1 em{font-family:Georgia,serif;font-weight:400;color:#2748df;letter-spacing:-.055em}.information-intro>p{font-size:13px;line-height:1.8;color:#667771;max-width:480px;margin:0}.information-layout{display:grid;grid-template-columns:260px 1fr;gap:95px;padding-top:46px}.information-sidebar{align-self:start;position:sticky;top:116px}.information-sidebar nav{display:flex;flex-direction:column}.information-sidebar nav a{display:flex;align-items:center;gap:15px;padding:17px 0;border-bottom:1px solid #d8dcd4;color:#14272e;text-decoration:none;font-size:12px;font-weight:650}.information-sidebar nav a>span:first-child{font-size:9px;color:#7e8b82;font-weight:500}.information-sidebar nav a>span:last-child{margin-left:auto;font-size:18px}.information-sidebar nav a:hover{color:#2748df}.official-note{background:#e5ef97;border-radius:6px;padding:23px;margin-top:36px}.official-note>span{display:block;font-size:29px;line-height:1;margin-bottom:26px}.official-note h2{font-size:16px;line-height:1.35;font-weight:650;letter-spacing:-.035em;margin:0 0 12px}.official-note p{font-size:11px;line-height:1.7;margin:0;color:#4b5b41}.official-note a{display:flex;justify-content:space-between;align-items:center;gap:15px;color:#14272e;text-decoration:none;font-size:10px;font-weight:750;margin-top:24px}.official-note a span{font-size:19px}.information-content section{scroll-margin-top:115px;padding-bottom:37px;margin-bottom:37px;border-bottom:1px solid #d8dcd4}.information-content section:last-child{margin-bottom:0;border-bottom:0;padding-bottom:0}.section-number{color:#2748df;font-size:9px;letter-spacing:.13em;font-weight:750}.information-content h2{font-size:31px;font-weight:550;line-height:1.2;letter-spacing:-.045em;margin:16px 0 24px}.information-content p{font-size:12px;line-height:1.95;color:#607068;margin:0 0 15px}.information-content p:last-child{margin-bottom:0}.information-content p a{color:#2748df;text-decoration-thickness:1px;text-underline-offset:3px}.information-content strong{color:#243b34;font-weight:700}.data-item{margin-bottom:25px}.data-item:last-child{margin-bottom:0}.information-content h3{font-size:13px;letter-spacing:-.02em;font-weight:750;margin:0 0 9px}.source-links{display:flex;flex-direction:column;border:1px solid #d8dcd4;border-radius:6px;padding:0 21px;margin:0 0 26px}.source-links a{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:20px 0;color:#14272e;text-decoration:none}.source-links a+a{border-top:1px solid #d8dcd4}.source-links a>span:last-child{font-size:23px;color:#2748df}.source-links strong{display:block;font-size:12px}.source-links small{display:block;font-size:10px;color:#6f7b74;margin-top:6px;line-height:1.5}.source-links a:hover strong{color:#2748df}.information-end{margin-top:65px;padding-top:27px;border-top:1px solid #d8dcd4;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:12px}.information-end>span{color:#6f7b74}.information-end a{display:flex;align-items:center;gap:25px;color:#2748df;font-weight:700;text-decoration:none}.information-end a span{font-size:24px}.information-page a:focus-visible{outline:2px solid #2748df;outline-offset:5px;border-radius:3px}@media(max-width:1000px){.info-container{width:calc(100% - 64px)}.information-layout{grid-template-columns:220px 1fr;gap:48px}.information-content h2{font-size:27px}}@media(max-width:760px){.info-container{width:calc(100% - 40px)}.information-intro{padding-top:38px;padding-bottom:36px}.info-eyebrow{font-size:8px}.information-intro h1{font-size:46px;letter-spacing:-.06em}.information-intro>p{font-size:12px}.information-layout{grid-template-columns:1fr;gap:37px;padding-top:20px}.information-sidebar{position:static}.information-sidebar nav{display:grid;grid-template-columns:1fr 1fr;column-gap:24px}.information-sidebar nav a{font-size:10px;gap:8px;padding:15px 0}.official-note{display:none}.information-content h2{font-size:27px;margin-top:13px;margin-bottom:20px}.information-content p{font-size:12px}.information-content section{scroll-margin-top:90px}.source-links{padding-inline:15px}.source-links strong{font-size:11px}.source-links small{font-size:9px}.information-end{margin-top:40px;font-size:10px}.information-page{padding-bottom:45px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
-</style>
+/* ── Container & Global Reset ───────────────────────────────── */
+.information-page {
+  background: var(--void);
+  color: var(--white);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  padding-bottom: 96px;
+}
 
+.info-container {
+  width: min(var(--container-max), calc(100% - var(--container-pad) * 2));
+  margin-inline: auto;
+}
+
+/* ── Intro Header ───────────────────────────────────────────── */
+.information-intro {
+  padding-top: clamp(60px, 8vw, 100px);
+  padding-bottom: clamp(40px, 6vw, 60px);
+  border-bottom: 1px solid rgba(250, 250, 250, 0.08);
+}
+
+.info-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--acid);
+  margin-bottom: 20px;
+}
+
+.eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--acid);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--acid);
+}
+
+.info-title {
+  font-family: var(--font-display);
+  font-size: clamp(46px, 6vw, 80px);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ht-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(250, 250, 250, 0.4);
+}
+
+.ht-acid {
+  color: var(--acid);
+  text-shadow: 0 0 30px rgba(204, 255, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.info-star {
+  font-size: 0.6em;
+  color: var(--acid);
+}
+
+.info-lead {
+  font-size: clamp(15px, 1.2vw, 17px);
+  line-height: 1.75;
+  color: var(--white-dim);
+  max-width: 600px;
+  margin: 0;
+}
+
+/* ── Main Layout ────────────────────────────────────────────── */
+.information-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: clamp(40px, 6vw, 80px);
+  padding-top: 50px;
+  align-items: flex-start;
+}
+
+/* ── Sidebar & Nav ──────────────────────────────────────────── */
+.information-sidebar {
+  position: sticky;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.info-nav {
+  display: flex;
+  flex-direction: column;
+  background: var(--onyx-2);
+  border: 1px solid rgba(250, 250, 250, 0.08);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  color: var(--white-dim);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(250, 250, 250, 0.06);
+  transition: all var(--t-fast);
+}
+
+.nav-item:last-child {
+  border-bottom: none;
+}
+
+.nav-item:hover {
+  background: var(--onyx-3);
+  color: var(--acid);
+}
+
+.item-num {
+  color: var(--acid);
+  font-size: 10px;
+}
+
+.item-arrow {
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+/* ── Official Notice Card ───────────────────────────────────── */
+.official-notice-card {
+  background: var(--onyx-2);
+  border: 1px solid rgba(204, 255, 0, 0.3);
+  border-radius: var(--r-md);
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.notice-icon {
+  color: var(--acid);
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.notice-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--acid);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.notice-heading {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 10px;
+  color: var(--white);
+}
+
+.notice-desc {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--white-dim);
+  margin: 0 0 20px;
+}
+
+.notice-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--void);
+  background: var(--acid);
+  padding: 10px 16px;
+  border-radius: var(--r-xs);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-weight: 700;
+  transition: opacity var(--t-fast);
+}
+
+.notice-btn:hover {
+  opacity: 0.9;
+}
+
+/* ── Articles Content ───────────────────────────────────────── */
+.info-section {
+  padding-bottom: 48px;
+  margin-bottom: 48px;
+  border-bottom: 1px solid rgba(250, 250, 250, 0.08);
+  scroll-margin-top: 120px;
+}
+
+.info-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section-tag-line {
+  margin-bottom: 12px;
+}
+
+.section-number {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--acid);
+}
+
+.section-headline {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.2vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin: 0 0 20px;
+  color: var(--white);
+}
+
+.info-section p {
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--white-dim);
+  margin: 0 0 18px;
+  max-width: 720px;
+}
+
+.text-link {
+  color: var(--acid);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.data-block {
+  background: var(--onyx-2);
+  border: 1px solid rgba(250, 250, 250, 0.08);
+  border-radius: var(--r-md);
+  padding: 24px 28px;
+  margin-bottom: 20px;
+}
+
+.data-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+  color: var(--white);
+}
+
+.data-block p {
+  margin: 0 0 10px;
+}
+
+.data-block p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Source Links Grid ──────────────────────────────────────── */
+.source-links-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 24px 0 32px;
+}
+
+.source-card {
+  background: var(--onyx-2);
+  border: 1px solid rgba(250, 250, 250, 0.1);
+  border-radius: var(--r-md);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--t-fast), transform var(--t-fast);
+}
+
+.source-card:hover {
+  border-color: var(--acid);
+  transform: translateY(-2px);
+}
+
+.source-name {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.source-desc {
+  font-size: 12px;
+  color: var(--white-muted);
+  display: block;
+}
+
+.source-arrow {
+  color: var(--acid);
+  font-size: 18px;
+}
+
+.credits-notes {
+  border-left: 2px solid var(--acid);
+  padding-left: 18px;
+  margin-top: 24px;
+}
+
+.credits-notes p {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+/* ── Footer Return Bar ──────────────────────────────────────── */
+.information-end {
+  margin-top: 60px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(250, 250, 250, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.end-quote {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--white-muted);
+}
+
+.end-link {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--acid);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  transition: opacity var(--t-fast);
+}
+
+.end-link:hover {
+  opacity: 0.8;
+}
+
+/* ── Focus States ───────────────────────────────────────────── */
+a:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 4px;
+  border-radius: var(--r-xs);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .information-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .information-sidebar {
+    position: static;
+  }
+  .source-links-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .information-end {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>

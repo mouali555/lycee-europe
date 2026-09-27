@@ -1,26 +1,774 @@
 <script setup>
-useHead({title:'L’avenir commence ici',meta:[{name:'description',content:'Le portail Lycée Europe à Dunkerque : découvre les formations, la vie lycéenne, les projets et ton espace élève.'}]})
+useHead({title:"L'avenir commence ici",meta:[{name:'description',content:'Lycée Europe à Dunkerque — plateforme créative et communautaire. Formations, vie lycéenne, studio Nexus et espace élève.'}]})
 const newsFilter=ref('Tout')
-const news=[{category:'Savoir-faire',title:'L’acier entre les mains des lycéens.',description:'Découpe, pliage, soudure : des élèves de terminale découvrent la chaudronnerie en fabriquant leurs propres objets.',image:'/images/atelier.jpg',alt:'Créations et atelier du stage de chaudronnerie au lycée',tag:'IMMERSION EN ATELIER'},{category:'Ouverture',title:'La citoyenneté se vit aussi hors des murs.',description:'Les élèves de l’atelier défense découvrent le Sénat et les lieux où s’écrit la vie démocratique.',image:'/images/senat.png',alt:'Visite de l’atelier défense au Sénat',tag:'SORTIE PÉDAGOGIQUE'},{category:'Culture',title:'Un autre regard sur le grand écran.',description:'L’option et le club audiovisuel partent à la rencontre des séries et de leurs créateurs au festival Séries Mania.',image:null,alt:'',tag:'CINÉMA & AUDIOVISUEL'}]
+const news=[{category:'Savoir-faire',title:"L'acier entre les mains des lycéens.",description:'Découpe, pliage, soudure : des élèves de terminale découvrent la chaudronnerie en fabriquant leurs propres objets.',image:'/images/atelier.jpg',alt:'Créations et atelier du stage de chaudronnerie au lycée',tag:'IMMERSION EN ATELIER'},{category:'Ouverture',title:'La citoyenneté se vit aussi hors des murs.',description:"Les élèves de l'atelier défense découvrent le Sénat et les lieux où s'écrit la vie démocratique.",image:'/images/senat.png',alt:"Visite de l'atelier défense au Sénat",tag:'SORTIE PÉDAGOGIQUE'},{category:'Culture',title:'Un autre regard sur le grand écran.',description:"L'option et le club audiovisuel partent à la rencontre des séries et de leurs créateurs au festival Séries Mania.",image:null,alt:'',tag:'CINÉMA & AUDIOVISUEL'}]
 const filteredNews=computed(()=>newsFilter.value==='Tout'?news:news.filter(n=>n.category===newsFilter.value))
-const tracks=[{number:'01',label:'EXPLORER & CHOISIR',title:'La voie générale',description:'Cultiver sa curiosité, approfondir ses spécialités et dessiner la suite.',tag:'Seconde · Première · Terminale',icon:'orbit'},{number:'02',label:'COMPRENDRE & CRÉER',title:'La voie technologique',description:'Passer de l’idée au projet, avec les sciences et les technologies.',tag:'Baccalauréat STI2D',icon:'cube'},{number:'03',label:'SE SPÉCIALISER & AVANCER',title:'L’enseignement supérieur',description:'Développer son expertise en BTS ou préparer les grandes écoles.',tag:'BTS · Classes préparatoires',icon:'arrow'}]
+const tracks=[{number:'01',label:'EXPLORER & CHOISIR',title:'La voie générale',description:'Cultiver sa curiosité, approfondir ses spécialités et dessiner la suite.',tag:'Seconde · Première · Terminale',icon:'orbit'},{number:'02',label:'COMPRENDRE & CRÉER',title:'La voie technologique',description:"Passer de l'idée au projet, avec les sciences et les technologies.",tag:'Baccalauréat STI2D',icon:'cube'},{number:'03',label:'SE SPÉCIALISER & AVANCER',title:"L'enseignement supérieur",description:'Développer son expertise en BTS ou préparer les grandes écoles.',tag:'BTS · Classes préparatoires',icon:'arrow'}]
 </script>
-<template><main>
-<section class="hero container" aria-labelledby="hero-title"><div class="hero-copy"><p class="eyebrow">BIENVENUE AU LYCÉE EUROPE</p><h1 id="hero-title">L’avenir<br/>commence <span class="hero-final"><em class="serif">ici.</em><svg class="hero-spark" width="84" height="84" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 0v100M0 50h100M14.6 14.6l70.8 70.8M14.6 85.4l70.8-70.8" stroke="currentColor" stroke-width="9"/></svg></span></h1><p class="hero-description">Des idées à explorer. Des talents à révéler.<br/>À Dunkerque, un lieu pour apprendre, grandir<br class="desktop-br"/> et construire ce qui vient après.</p><div class="hero-buttons"><NuxtLink to="/filieres" class="button button-blue">Trouver ma voie <span aria-hidden="true">↗</span></NuxtLink><a href="#lycee" class="discover-link">Découvrir le lycée <span aria-hidden="true">↓</span></a></div><div class="hero-note"><span></span><p>DE LA SECONDE À L’ENSEIGNEMENT SUPÉRIEUR</p></div></div><div class="hero-visual"><div class="photo-frame"><img src="/images/campus.jpg" alt="L’entrée du lycée de l’Europe à Dunkerque, éclairée au petit matin" width="1024" height="682" fetchpriority="high"/><div class="photo-top"><span class="photo-label"><i></i> UN LIEU, TOUS LES POSSIBLES</span><span class="photo-number">01 / EUROPE</span></div><span class="photo-credit">Photographie © A-Z Production</span><div class="photo-location"><svg width="15" height="17" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M18 9c0 7-8 13-8 13S2 16 2 9a8 8 0 1 1 16 0Z"/><circle cx="10" cy="9" r="2.5"/></svg><span>51° N · 02° E<br/><strong>Dunkerque, France</strong></span></div></div><div class="hero-postcard"><span class="postcard-spark" aria-hidden="true">✳</span><span>Ta prochaine<br/><strong>grande aventure.</strong></span><NuxtLink to="/clubs" aria-label="Découvrir la vie lycéenne">↗</NuxtLink></div><span class="visual-caption">APPRENDRE ENSEMBLE. ALLER PLUS LOIN.</span></div></section>
-<div class="quick-links container"><span class="quick-title">TON QUOTIDIEN,<br/><strong>EN UN CLIC.</strong></span><a href="https://0590072h.index-education.net/pronote/eleve.html?login=true" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 2v6M16 2v6M4 11h16M8 15h3m2 0h3"/></svg><span>Pronote<small>Ton suivi scolaire</small></span><span class="quick-arrow">↗</span></a><NuxtLink to="/chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M20 16a2 2 0 0 1-2 2H9l-5 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/><path d="M8 9h8M8 13h5"/></svg><span>La communauté<small>Échanger & s’entraider</small></span><span class="quick-arrow">↗</span></NuxtLink><NuxtLink to="/filieres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M3 5c4-1 7 0 9 2 2-2 5-3 9-2v15c-4-1-7 0-9 2-2-2-5-3-9-2ZM12 7v15"/></svg><span>Mon orientation<small>Imaginer la suite</small></span><span class="quick-arrow">↗</span></NuxtLink></div>
-<section id="lycee" class="intro-section container"><div class="intro-label"><p class="eyebrow">L’ESPRIT EUROPE</p><span>UN ANCRAGE LOCAL.<br/>UN HORIZON SANS LIMITES.</span></div><div><h2>Bien plus qu’un lycée.<br/>Un <em class="serif">point de départ.</em></h2><div class="intro-bottom"><p>On vient pour apprendre. On reste pour les rencontres, les projets et les déclics. À Europe, chacun peut trouver sa place et donner une nouvelle dimension à ses ambitions.</p><NuxtLink to="/clubs" class="text-link">Vivre le lycée <span aria-hidden="true">↗</span></NuxtLink></div></div></section>
-<section class="pathways-section"><div class="container"><div class="section-top"><div><p class="eyebrow">À CHACUN SON PARCOURS</p><h2 class="section-heading">Le bon chemin,<br/>c’est <em class="serif">le tien.</em></h2></div><div class="section-aside"><p>Des parcours différents.<br/>La même envie d’aller plus loin.</p><NuxtLink to="/filieres" class="text-link">Toutes nos formations <span aria-hidden="true">↗</span></NuxtLink></div></div><div class="pathways-grid"><NuxtLink v-for="track in tracks" :key="track.number" to="/filieres" class="track-card"><div class="track-top"><span>{{track.label}}</span><span>{{track.number}}</span></div><div class="track-illustration" :class="track.icon" aria-hidden="true"><svg v-if="track.icon==='orbit'" viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.4"><ellipse cx="100" cy="70" rx="64" ry="23" transform="rotate(-35 100 70)"/><ellipse cx="100" cy="70" rx="64" ry="23" transform="rotate(35 100 70)"/><ellipse cx="100" cy="70" rx="64" ry="23" transform="rotate(90 100 70)"/><circle cx="100" cy="70" r="7" fill="currentColor"/></svg><svg v-else-if="track.icon==='cube'" viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.4"><path d="m100 12 55 32v62l-55 32-55-32V44Z M45 44l55 32 55-32 M100 76v62 M100 12v62 M45 106l55-32 55 32"/><path d="m73 28 55 32v63M73 123V60l55-32" opacity=".4"/></svg><svg v-else viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M45 120V87h35V54h35V21h38v99ZM45 120 153 21M111 21h42v42"/><path d="M59 129h103V36" opacity=".4"/></svg></div><h3>{{track.title}}</h3><p>{{track.description}}</p><div class="track-bottom"><span>{{track.tag}}</span><span class="track-go">↗</span></div></NuxtLink></div></div></section>
-<section class="life-section container"><div class="life-art"><div class="life-art-label"><span>LA VIE EN GRAND</span><span>EUROPE / COLLECTIF</span></div><div class="life-art-title">À toi<br/>de <em class="serif">jouer.</em></div><div class="life-shape" aria-hidden="true"><svg viewBox="0 0 200 200" fill="none"><path d="M100 0v200M0 100h200M29 29l142 142M29 171 171 29" stroke="#e5ef97" stroke-width="43"/></svg></div><div class="life-tags"><span>Culture</span><span>Sport</span><span>Engagement</span><span>Rencontres</span></div></div><div class="life-copy"><p class="eyebrow">LA VIE NE S’ARRÊTE PAS AUX COURS</p><h2 class="section-heading">Des passions.<br/>Des rencontres.<br/><em class="serif">Tes années lycée.</em></h2><p class="life-description">Une scène, un terrain, une idée à partager. Les clubs et les projets sont là pour sortir du cadre, essayer autre chose et faire bouger le lycée.</p><div class="life-facts"><div><span>01</span><p><strong>Trouve ton collectif</strong>Du sport à la création, des envies à partager.</p></div><div><span>02</span><p><strong>Fais entendre ta voix</strong>Avec la Maison des lycéens et le CVL.</p></div></div><NuxtLink to="/clubs" class="button button-primary">Explorer la vie lycéenne <span aria-hidden="true">↗</span></NuxtLink></div></section>
-<section id="actualites" class="news-section container"><div class="section-top"><div><p class="eyebrow">LES PROJETS À EUROPE</p><h2 class="section-heading">Le lycée <em class="serif">en mouvement.</em></h2></div><a class="text-link" href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer">Le journal de l’établissement <span aria-hidden="true">↗</span></a></div><div class="news-filters" aria-label="Filtrer les actualités"><button v-for="filter in ['Tout','Savoir-faire','Ouverture','Culture']" :key="filter" :class="{selected:newsFilter===filter}" :aria-pressed="newsFilter===filter" @click="newsFilter=filter">{{filter}}</button><span>{{filteredNews.length}} {{filteredNews.length>1?'histoires à découvrir':'histoire à découvrir'}}</span></div><div class="news-grid" aria-live="polite"><a v-for="item in filteredNews" :key="item.title" href="https://www.lycee-europe-dunkerque.fr/" class="news-card" target="_blank" rel="noopener noreferrer"><div class="news-image"><img v-if="item.image" :src="item.image" :alt="item.alt" loading="lazy" width="600" height="400"/><div v-else class="cinema-art" aria-hidden="true"><span>SÉRIES<br/><em>MANIA</em><small>LE MONDE FAIT SON CINÉMA.</small></span><span class="cinema-asterisk">✳</span></div><span class="news-category">{{item.category}}</span><span class="news-image-go" aria-hidden="true">↗</span></div><p class="news-label">{{item.tag}}</p><h3>{{item.title}}</h3><p class="news-description">{{item.description}}</p></a></div><p class="news-source">Sélection de projets présentés sur le <a href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer">site de l’établissement ↗</a></p></section>
-<section class="community-section container"><div class="community-banner"><div><p class="eyebrow">ON AVANCE MIEUX ENSEMBLE</p><h2>Ton lycée.<br/><em class="serif">Ton espace.</em></h2><p>Une question sur un cours ? Une idée à partager ?<br/>Retrouve la communauté dans ton espace élève.</p><NuxtLink to="/login" class="button button-lime">Rejoindre mon espace <span aria-hidden="true">↗</span></NuxtLink></div><div class="community-visual" aria-hidden="true"><div class="community-orbit"></div><div class="community-orbit orbit-two"></div><div class="chat-visual-card"><span class="chat-mini-brand">europe<span>✳</span></span><span class="chat-mini-label">L’ESPACE QUI NOUS RASSEMBLE</span><div v-for="(room,i) in [{name:'général',desc:'La vie du lycée, ensemble.'},{name:'entraide',desc:'Un coup de main fait la différence.'},{name:'détente',desc:'On fait une pause ?'}]" :key="room.name" class="chat-mini-room"><span class="room-symbol" :class="'symbol-'+i">#</span><div><strong>{{room.name}}</strong><small>{{room.desc}}</small></div><span>↗</span></div><span class="chat-mini-footer">UN ESPACE POUR CHACUN</span></div><span class="community-star">✳</span></div></div></section>
-<section id="contact" class="contact-section container"><div><p class="eyebrow">ET SI ON SE RENCONTRAIT ?</p><h2 class="section-heading">Tout commence<br/>par un <em class="serif">premier pas.</em></h2><a href="mailto:ce.0590072h@ac-lille.fr" class="text-link">Écrire à l’établissement <span aria-hidden="true">↗</span></a></div><div class="contact-info"><div><span>NOUS TROUVER</span><p>809, rue du Banc Vert<br/>59640 Dunkerque</p><a href="https://www.google.com/maps/search/?api=1&query=Lyc%C3%A9e+de+l%27Europe+809+rue+du+Banc+Vert+Dunkerque" target="_blank" rel="noopener noreferrer">Voir l’itinéraire ↗</a></div><div><span>NOUS CONTACTER</span><a class="contact-phone" href="tel:+33328587210">03 28 58 72 10</a><a href="mailto:ce.0590072h@ac-lille.fr">ce.0590072h@ac-lille.fr</a><small>Coordonnées de l’établissement</small></div></div></section>
+<template><main class="home">
+
+<!-- ═══════════════════════════════════════
+     HERO — ouverture manifeste
+═══════════════════════════════════════ -->
+<section class="hero" aria-labelledby="hero-title">
+  <!-- Formes décoratives flottantes -->
+  <div class="hero-shapes" aria-hidden="true">
+    <svg class="shape-ring-lg anim-float" viewBox="0 0 200 200" fill="none">
+      <ellipse cx="100" cy="100" rx="98" ry="98" stroke="rgba(204,255,0,.15)" stroke-width="1"/>
+      <ellipse cx="100" cy="100" rx="74" ry="74" stroke="rgba(204,255,0,.08)" stroke-width="1"/>
+    </svg>
+    <svg class="shape-star-hero anim-float" style="animation-delay:-8s" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+      <path d="M40 0v80M0 40h80M11.7 11.7l56.6 56.6M11.7 68.3l56.6-56.6" stroke="var(--acid)" stroke-width="2.5"/>
+    </svg>
+    <div class="hero-blob-acid" aria-hidden="true"></div>
+  </div>
+
+  <div class="hero-grid container">
+    <!-- Left copy -->
+    <div class="hero-copy">
+      <p class="hero-eyebrow text-label-acid">Bienvenue au lycée europe · Dunkerque</p>
+      <h1 id="hero-title" class="hero-title">
+        <span class="ht-line">L'avenir</span>
+        <span class="ht-line ht-outline">commence</span>
+        <span class="ht-line ht-acid">ici.<span class="hero-star-inline" aria-hidden="true">✦</span></span>
+      </h1>
+      <p class="hero-desc">Des idées à explorer. Des talents à révéler.<br>À Dunkerque, un lieu pour apprendre, grandir<br class="desktop-br"/> et construire ce qui vient après.</p>
+      <div class="hero-actions">
+        <NuxtLink to="/filieres" class="btn-acid btn-acid-lg">Trouver ma voie <span aria-hidden="true">↗</span></NuxtLink>
+        <a href="#lycee" class="hero-discover">Découvrir <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-meta" aria-hidden="true">
+        <span></span>
+        <span class="text-label">De la seconde à l'enseignement supérieur</span>
+      </div>
+    </div>
+
+    <!-- Right visual -->
+    <div class="hero-visual">
+      <div class="photo-frame">
+        <img src="/images/campus.jpg" alt="L'entrée du lycée de l'Europe à Dunkerque, éclairée au petit matin" width="1024" height="682" fetchpriority="high" class="photo-img"/>
+        <div class="photo-overlay" aria-hidden="true"></div>
+        <div class="photo-top-bar" aria-hidden="true">
+          <span class="photo-label"><i></i> UN LIEU, TOUS LES POSSIBLES</span>
+          <span class="photo-code">01 / EUROPE</span>
+        </div>
+        <div class="photo-coords" aria-hidden="true">
+          <svg width="13" height="15" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 9c0 7-8 13-8 13S2 16 2 9a8 8 0 1 1 16 0Z"/><circle cx="10" cy="9" r="2.5"/></svg>
+          <span>51°N · 02°E<br/><strong>Dunkerque</strong></span>
+        </div>
+      </div>
+      <!-- Postcard -->
+      <div class="hero-postcard" aria-hidden="true">
+        <span class="postcard-glyph">✦</span>
+        <div>
+          <span class="postcard-label">TA PROCHAINE</span>
+          <strong class="postcard-main">grande aventure.</strong>
+        </div>
+        <NuxtLink to="/clubs" aria-label="Découvrir la vie lycéenne" tabindex="-1">↗</NuxtLink>
+      </div>
+      <!-- Index vertical -->
+      <span class="visual-index" aria-hidden="true">LYCÉE EUROPE / CAMPUS</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     MARQUEE — rupture rythme
+═══════════════════════════════════════ -->
+<div class="section-marquee" aria-hidden="true">
+  <div class="marquee-track marquee-acid">
+    <div class="marquee-inner">
+      <template v-for="i in 4" :key="i">
+        <span class="marquee-item">APPRENDRE<span>✦</span></span>
+        <span class="marquee-item">EXPLORER<span>✦</span></span>
+        <span class="marquee-item">CRÉER<span>✦</span></span>
+        <span class="marquee-item">DUNKERQUE<span>✦</span></span>
+        <span class="marquee-item">EUROPE<span>✦</span></span>
+      </template>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     QUICK LINKS
+═══════════════════════════════════════ -->
+<div class="quick-links-bar container">
+  <a href="https://0590072h.index-education.net/pronote/eleve.html?login=true" target="_blank" rel="noopener noreferrer" class="ql-item">
+    <span class="ql-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 2v6M16 2v6M4 11h16M8 15h3m2 0h3"/></svg></span>
+    <span class="ql-text">Pronote<small>Suivi scolaire</small></span>
+    <span class="ql-arrow" aria-hidden="true">↗</span>
+  </a>
+  <NuxtLink to="/chat" class="ql-item">
+    <span class="ql-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 16a2 2 0 0 1-2 2H9l-5 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/><path d="M8 9h8M8 13h5"/></svg></span>
+    <span class="ql-text">La communauté<small>Échanger & s'entraider</small></span>
+    <span class="ql-arrow" aria-hidden="true">↗</span>
+  </NuxtLink>
+  <NuxtLink to="/filieres" class="ql-item">
+    <span class="ql-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5c4-1 7 0 9 2 2-2 5-3 9-2v15c-4-1-7 0-9 2-2-2-5-3-9-2ZM12 7v15"/></svg></span>
+    <span class="ql-text">Mon orientation<small>Imaginer la suite</small></span>
+    <span class="ql-arrow" aria-hidden="true">↗</span>
+  </NuxtLink>
+  <NuxtLink to="/nexus" class="ql-item ql-accent">
+    <span class="ql-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 3v18M4 7.5l8 4.5 8-4.5"/></svg></span>
+    <span class="ql-text">Studio Nexus<small>Univers créatifs</small></span>
+    <span class="ql-arrow" aria-hidden="true">✦</span>
+  </NuxtLink>
+</div>
+
+<!-- ═══════════════════════════════════════
+     INTRO — l'esprit europe
+═══════════════════════════════════════ -->
+<section id="lycee" class="intro-section container" aria-labelledby="intro-title">
+  <div class="intro-index" aria-hidden="true">
+    <span class="text-label">L'esprit europe</span>
+    <span class="intro-number">02</span>
+  </div>
+  <div class="intro-body">
+    <h2 id="intro-title" class="intro-heading">
+      Bien plus qu'un lycée.<br>
+      <span class="text-outline">Un point</span> <em class="intro-em">de départ.</em>
+    </h2>
+    <div class="intro-bottom">
+      <p>On vient pour apprendre. On reste pour les rencontres, les projets et les déclics. À Europe, chacun peut trouver sa place et donner une nouvelle dimension à ses ambitions.</p>
+      <NuxtLink to="/clubs" class="intro-link">Vivre le lycée <span aria-hidden="true">↗</span></NuxtLink>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FORMATIONS — grille tracks
+═══════════════════════════════════════ -->
+<section class="pathways-section" aria-labelledby="paths-title">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <p class="text-label-acid">À chacun son parcours</p>
+        <h2 id="paths-title" class="section-title">Le bon chemin,<br>c'est <em class="text-acid">le tien.</em></h2>
+      </div>
+      <div class="section-aside">
+        <p class="text-body-sm">Des parcours différents.<br>La même envie d'aller plus loin.</p>
+        <NuxtLink to="/filieres" class="link-acid">Toutes nos formations <span aria-hidden="true">↗</span></NuxtLink>
+      </div>
+    </div>
+    <div class="paths-grid">
+      <NuxtLink v-for="track in tracks" :key="track.number" to="/filieres" class="track-card">
+        <div class="track-num" aria-hidden="true">{{track.number}}</div>
+        <div class="track-label text-label">{{track.label}}</div>
+        <div class="track-illustration" :class="track.icon" aria-hidden="true">
+          <svg v-if="track.icon==='orbit'" viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.2">
+            <ellipse cx="100" cy="70" rx="64" ry="23" transform="rotate(-35 100 70)"/>
+            <ellipse cx="100" cy="70" rx="64" ry="23" transform="rotate(35 100 70)"/>
+            <ellipse cx="100" cy="70" rx="64" ry="23" transform="rotate(90 100 70)"/>
+            <circle cx="100" cy="70" r="7" fill="currentColor"/>
+          </svg>
+          <svg v-else-if="track.icon==='cube'" viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="m100 12 55 32v62l-55 32-55-32V44Z M45 44l55 32 55-32 M100 76v62 M100 12v62"/>
+          </svg>
+          <svg v-else viewBox="0 0 200 140" fill="none" stroke="currentColor" stroke-width="1.2">
+            <path d="M45 120V87h35V54h35V21h38v99ZM45 120 153 21M111 21h42v42"/>
+          </svg>
+        </div>
+        <h3 class="track-title">{{track.title}}</h3>
+        <p class="track-desc">{{track.description}}</p>
+        <div class="track-footer">
+          <span class="track-tag text-label">{{track.tag}}</span>
+          <span class="track-go" aria-hidden="true">↗</span>
+        </div>
+      </NuxtLink>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     VIE LYCÉENNE — section contrastée
+═══════════════════════════════════════ -->
+<section class="life-section container" aria-labelledby="life-title">
+  <div class="life-art" aria-hidden="true">
+    <div class="life-art-label">
+      <span>LA VIE EN GRAND</span>
+      <span>EUROPE / COLLECTIF</span>
+    </div>
+    <div class="life-art-word">À toi<br>de <em>jouer.</em></div>
+    <svg class="life-art-star" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+      <path d="M100 0v200M0 100h200M29 29l142 142M29 171 171 29" stroke="var(--void)" stroke-width="44" stroke-opacity=".3"/>
+    </svg>
+    <div class="life-tags" aria-hidden="true">
+      <span>Culture</span><span>Sport</span><span>Engagement</span><span>Rencontres</span>
+    </div>
+  </div>
+  <div class="life-copy">
+    <p class="text-label-acid">La vie ne s'arrête pas aux cours</p>
+    <h2 id="life-title" class="life-heading">Des passions.<br>Des rencontres.<br><em class="text-acid">Tes années lycée.</em></h2>
+    <p class="text-body life-desc">Une scène, un terrain, une idée à partager. Les clubs et les projets sont là pour sortir du cadre, essayer autre chose et faire bouger le lycée.</p>
+    <div class="life-facts">
+      <div class="life-fact">
+        <span class="life-fact-num">01</span>
+        <div><strong>Trouve ton collectif</strong>Du sport à la création, des envies à partager.</div>
+      </div>
+      <div class="life-fact">
+        <span class="life-fact-num">02</span>
+        <div><strong>Fais entendre ta voix</strong>Avec la Maison des lycéens et le CVL.</div>
+      </div>
+    </div>
+    <NuxtLink to="/clubs" class="btn-acid">Explorer la vie lycéenne <span aria-hidden="true">↗</span></NuxtLink>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     MARQUEE rupture
+═══════════════════════════════════════ -->
+<div class="section-marquee" aria-hidden="true">
+  <div class="marquee-track marquee-void">
+    <div class="marquee-inner">
+      <template v-for="i in 4" :key="i">
+        <span class="marquee-item">PROJETS<span>✦</span></span>
+        <span class="marquee-item">ACTUALITÉS<span>✦</span></span>
+        <span class="marquee-item">LE LYCÉE EN MOUVEMENT<span>✦</span></span>
+        <span class="marquee-item">SAVOIR-FAIRE<span>✦</span></span>
+      </template>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ACTUALITÉS
+═══════════════════════════════════════ -->
+<section id="actualites" class="news-section container" aria-labelledby="news-title">
+  <div class="section-header">
+    <div>
+      <p class="text-label-acid">Les projets à Europe</p>
+      <h2 id="news-title" class="section-title">Le lycée<br><em class="text-acid">en mouvement.</em></h2>
+    </div>
+    <a class="link-acid" href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer">Le journal de l'établissement <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="news-filters" aria-label="Filtrer les actualités">
+    <button v-for="filter in ['Tout','Savoir-faire','Ouverture','Culture']"
+      :key="filter"
+      :class="{selected:newsFilter===filter}"
+      :aria-pressed="newsFilter===filter"
+      @click="newsFilter=filter">{{filter}}</button>
+    <span class="news-count text-label">{{filteredNews.length}} {{filteredNews.length>1?'histoires':'histoire'}}</span>
+  </div>
+  <div class="news-grid" aria-live="polite">
+    <a v-for="(item,i) in filteredNews" :key="item.title"
+      href="https://www.lycee-europe-dunkerque.fr/"
+      class="news-card"
+      :class="{featured: i===0}"
+      target="_blank" rel="noopener noreferrer">
+      <div class="news-media">
+        <img v-if="item.image" :src="item.image" :alt="item.alt" loading="lazy" width="600" height="400" class="news-img"/>
+        <div v-else class="news-cinema" aria-hidden="true">
+          <span>SÉRIES<br><em>MANIA</em><small>LE MONDE FAIT SON CINÉMA.</small></span>
+          <span class="cinema-star">✦</span>
+        </div>
+        <span class="news-cat badge-acid">{{item.category}}</span>
+        <span class="news-go" aria-hidden="true">↗</span>
+      </div>
+      <div class="news-body">
+        <p class="news-tag text-label">{{item.tag}}</p>
+        <h3 class="news-title">{{item.title}}</h3>
+        <p class="news-desc">{{item.description}}</p>
+      </div>
+    </a>
+  </div>
+  <p class="news-source text-label">Sélection de projets présentés sur le <a href="https://www.lycee-europe-dunkerque.fr/" target="_blank" rel="noopener noreferrer">site de l'établissement ↗</a></p>
+</section>
+
+<!-- ═══════════════════════════════════════
+     COMMUNAUTÉ — invitation
+═══════════════════════════════════════ -->
+<section class="community-section container" aria-labelledby="community-title">
+  <div class="community-inner">
+    <div class="community-copy">
+      <p class="text-label-acid">On avance mieux ensemble</p>
+      <h2 id="community-title" class="community-heading">Ton lycée.<br><em class="text-outline-acid">Ton espace.</em></h2>
+      <p class="text-body">Une question sur un cours ? Une idée à partager ?<br>Retrouve la communauté dans ton espace élève.</p>
+      <NuxtLink to="/login" class="btn-acid btn-acid-lg" style="margin-top:28px">Rejoindre mon espace <span aria-hidden="true">↗</span></NuxtLink>
+    </div>
+    <div class="community-visual" aria-hidden="true">
+      <!-- Chat preview card -->
+      <div class="chat-preview">
+        <div class="chat-preview-top">
+          <span class="chat-brand">europe<span>✦</span></span>
+          <span class="text-label">L'ESPACE QUI NOUS RASSEMBLE</span>
+        </div>
+        <div v-for="(room,i) in [{name:'général',desc:'La vie du lycée, ensemble.'},{name:'entraide',desc:'Un coup de main fait la différence.'},{name:'détente',desc:'On fait une pause ?'}]" :key="room.name" class="chat-room">
+          <span class="chat-hash" :class="'hash-'+i">#</span>
+          <div><strong>{{room.name}}</strong><small>{{room.desc}}</small></div>
+          <span class="chat-arr">↗</span>
+        </div>
+        <span class="chat-label text-label">UN ESPACE POUR CHACUN</span>
+      </div>
+      <!-- Decorative shapes -->
+      <div class="comm-ring ring-1"></div>
+      <div class="comm-ring ring-2"></div>
+      <span class="comm-star">✦</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     CONTACT
+═══════════════════════════════════════ -->
+<section id="contact" class="contact-section container" aria-labelledby="contact-title">
+  <div class="contact-intro">
+    <p class="text-label-acid">Et si on se rencontrait ?</p>
+    <h2 id="contact-title" class="section-title">Tout commence<br>par un <em class="text-acid">premier pas.</em></h2>
+    <a href="mailto:ce.0590072h@ac-lille.fr" class="link-acid">Écrire à l'établissement <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="contact-cards">
+    <div class="contact-card">
+      <span class="text-label">Nous trouver</span>
+      <p>809, rue du Banc Vert<br>59640 Dunkerque</p>
+      <a href="https://www.google.com/maps/search/?api=1&query=Lyc%C3%A9e+de+l%27Europe+809+rue+du+Banc+Vert+Dunkerque" target="_blank" rel="noopener noreferrer" class="link-acid-sm">Voir l'itinéraire ↗</a>
+    </div>
+    <div class="contact-card">
+      <span class="text-label">Nous contacter</span>
+      <a href="tel:+33328587210" class="contact-phone">03 28 58 72 10</a>
+      <a href="mailto:ce.0590072h@ac-lille.fr" class="link-acid-sm">ce.0590072h@ac-lille.fr ↗</a>
+      <small class="text-label">Coordonnées de l'établissement</small>
+    </div>
+  </div>
+</section>
+
 </main></template>
+
 <style scoped>
-.hero{display:grid;grid-template-columns:1.04fr 1fr;gap:56px;padding-top:61px;padding-bottom:61px;align-items:center}.hero-copy>.eyebrow{font-size:9px;letter-spacing:.15em}.hero h1{font-size:clamp(60px,6.9vw,99px);font-weight:550;line-height:.99;letter-spacing:-.07em;margin-top:25px}.hero-final{display:flex;align-items:center;gap:58px;margin-top:5px}.hero h1 .serif{color:var(--blue);font-size:1.15em;line-height:1}.hero-spark{color:var(--blue);width:69px;height:69px;margin-top:6px;transform:rotate(8deg)}.hero-description{font-size:13px;color:#5c6a6e;line-height:1.9;margin-top:25px}.hero-buttons{display:flex;align-items:center;gap:26px;margin-top:26px}.discover-link{display:flex;gap:21px;font-size:11px;font-weight:600;align-items:center}.discover-link span{font-size:18px}.hero-note{display:flex;align-items:center;gap:10px;margin-top:35px}.hero-note>span{width:20px;height:1px;background:#89948e}.hero-note p{font-size:8px;letter-spacing:.09em;color:#74817e}.hero-visual{position:relative;padding-bottom:24px;padding-left:7px}.photo-frame{height:510px;border-radius:100px 11px 11px 11px;overflow:hidden;position:relative;background:#235664}.photo-frame>img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;filter:saturate(.8)}.photo-frame::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#132a4330,transparent 35%,#08262575);pointer-events:none}.photo-top{position:absolute;z-index:1;top:26px;right:22px;left:50px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px}.photo-label{font-size:7px;font-weight:650;letter-spacing:.06em;display:flex;align-items:center;gap:7px}.photo-label>i{width:5px;height:5px;background:var(--lime);border-radius:50%}.photo-number{font-size:7px;letter-spacing:.09em;opacity:.75}.photo-location{position:absolute;right:25px;bottom:26px;color:#fff;display:flex;align-items:center;gap:10px;z-index:1}.photo-location>span{font-size:8px;letter-spacing:.07em;line-height:1.8}.photo-location strong{font-size:10px;font-weight:500;letter-spacing:0}.photo-credit{position:absolute;z-index:1;left:20px;bottom:10px;font-size:7px;color:#e7e6dd}.hero-postcard{position:absolute;left:-30px;bottom:54px;background:var(--lime);display:flex;gap:15px;align-items:center;padding:20px 18px;transform:rotate(-5deg);box-shadow:0 10px 30px #162b3220;z-index:2;border-radius:3px}.postcard-spark{font-size:37px;line-height:1}.hero-postcard>span:nth-child(2){font-size:12px;line-height:1.5}.hero-postcard strong{font-weight:600}.hero-postcard>a{border:1px solid #9da954;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;margin-left:15px;font-size:16px}.visual-caption{position:absolute;bottom:3px;right:0;font-size:7px;letter-spacing:.12em;color:#6e7c78}.quick-links{display:grid;grid-template-columns:.68fr 1fr 1fr 1fr;align-items:center;padding-top:24px;padding-bottom:24px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.quick-title{font-size:9px;letter-spacing:.08em;line-height:1.6}.quick-title strong{font-weight:650}.quick-links>a{display:flex;align-items:center;gap:17px;border-left:1px solid var(--line);padding-left:32px;min-height:46px}.quick-links>a>svg{width:23px;height:23px;color:var(--blue)}.quick-links>a>span:nth-child(2){font-size:11px;font-weight:650}.quick-links small{display:block;font-size:9px;font-weight:400;color:#687673;margin-top:4px}.quick-arrow{margin-left:auto;margin-right:32px;font-size:16px}.quick-links>a:last-child .quick-arrow{margin-right:0}.quick-links a:hover{color:var(--blue)}.intro-section{display:grid;grid-template-columns:.55fr 1fr;gap:75px;padding-top:98px;padding-bottom:95px}.intro-label{display:flex;flex-direction:column;justify-content:space-between;align-items:start}.intro-label>span{font-size:8px;letter-spacing:.09em;color:#77817c;line-height:1.7}.intro-section h2{font-size:clamp(32px,3.7vw,49px);line-height:1.2}.intro-section h2 .serif{color:var(--blue)}.intro-bottom{display:flex;align-items:end;gap:45px;margin-top:25px}.intro-bottom p{font-size:12px;color:var(--muted);max-width:395px}.intro-bottom a{white-space:nowrap;font-size:10px;gap:15px;margin-bottom:4px}.pathways-section{background:#ecefe6;padding:78px 0 83px}.section-top{display:flex;align-items:end;justify-content:space-between;gap:35px;margin-bottom:40px}.section-top .eyebrow{margin-bottom:18px}.section-aside{text-align:right}.section-aside>p{font-size:12px;color:var(--muted);margin-bottom:21px}.pathways-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:19px}.track-card{background:var(--paper);padding:25px 28px 19px;border:1px solid #dce1d5;border-radius:9px;transition:transform .25s,box-shadow .25s}.track-card:hover{transform:translateY(-6px);box-shadow:0 12px 30px #162b3210}.track-top{display:flex;align-items:center;justify-content:space-between;font-size:8px;letter-spacing:.09em;color:#617067}.track-top>span:last-child{font-size:11px}.track-illustration{width:150px;height:133px;margin:16px auto 20px;color:var(--blue)}.track-illustration svg{height:100%;width:100%}.track-card:nth-child(2) .track-illustration{color:#627546}.track-card:nth-child(3) .track-illustration{color:#966740}.track-card h3{font-size:23px;letter-spacing:-.045em;font-weight:650}.track-card>p{font-size:11px;color:var(--muted);margin-top:12px;min-height:40px;max-width:260px}.track-bottom{border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;margin-top:28px;padding-top:17px;gap:10px}.track-bottom>span:first-child{font-size:8px;color:#60716b}.track-go{background:#eaece1;width:30px;height:30px;border-radius:50%;display:grid;place-items:center}.track-card:hover .track-go{background:var(--blue);color:#fff}.life-section{display:grid;grid-template-columns:1fr 1fr;gap:105px;padding-top:105px;padding-bottom:105px;align-items:center}.life-art{height:495px;background:var(--blue);color:white;border-radius:10px;position:relative;overflow:hidden;padding:32px}.life-art-label{display:flex;justify-content:space-between;font-size:7px;letter-spacing:.12em;position:relative;z-index:2}.life-art-label>span:last-child{opacity:.65}.life-art-title{font-size:76px;line-height:1.03;letter-spacing:-.06em;font-family:var(--font-display);font-weight:500;margin-top:39px;position:relative;z-index:2}.life-art-title em{color:var(--lime)}.life-shape{position:absolute;width:325px;height:325px;right:-95px;bottom:35px;transform:rotate(16deg)}.life-tags{position:absolute;left:32px;right:32px;bottom:32px;display:flex;flex-wrap:wrap;gap:8px}.life-tags>span{border:1px solid #ffffff55;padding:7px 12px;border-radius:50px;font-size:8px;background:#2748df55;backdrop-filter:blur(10px)}.life-copy>.eyebrow{margin-bottom:20px}.life-copy h2{font-size:46px}.life-description{font-size:12px;color:var(--muted);margin-top:22px;max-width:390px}.life-facts{margin:27px 0;display:grid;gap:16px}.life-facts>div{display:flex;gap:15px;align-items:center}.life-facts>div>span{background:#eeeee5;border-radius:50%;height:33px;width:33px;display:grid;place-items:center;font-size:9px}.life-facts p{font-size:10px;color:var(--muted)}.life-facts p strong{display:block;font-size:11px;color:var(--ink);font-weight:650;margin-bottom:1px}.life-copy .button{font-size:10px}.news-section{padding-top:30px;padding-bottom:85px}.news-section .section-top{margin-bottom:28px}.news-section .section-heading{font-size:43px}.news-filters{display:flex;align-items:center;gap:7px;margin-bottom:26px}.news-filters button{border:1px solid var(--line);border-radius:40px;background:transparent;font-size:10px;padding:8px 15px;transition:background .2s}.news-filters button.selected{background:var(--ink);border-color:var(--ink);color:white}.news-filters>span{margin-left:auto;font-size:9px;color:var(--muted)}.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:23px}.news-image{aspect-ratio:1.55;border-radius:8px;overflow:hidden;position:relative;background:#e1e6df}.news-image>img{width:100%;height:100%;object-fit:cover;transition:transform .45s}.news-card:hover .news-image>img{transform:scale(1.045)}.news-category{position:absolute;top:13px;left:13px;background:var(--paper);padding:6px 10px;border-radius:4px;font-size:8px}.news-image-go{position:absolute;bottom:12px;right:12px;background:var(--paper);width:31px;height:31px;border-radius:50%;display:grid;place-items:center}.news-label{font-size:7px;letter-spacing:.13em;color:#687772;margin:19px 0 8px}.news-card h3{font-size:22px;line-height:1.24;max-width:290px}.news-description{font-size:11px;color:var(--muted);margin-top:11px;line-height:1.8;max-width:320px}.cinema-art{background:#e6bdcf;height:100%;padding:30px;display:flex;align-items:center;position:relative;overflow:hidden}.cinema-art>span:first-child{font-family:var(--font-display);font-weight:800;font-size:39px;line-height:1;letter-spacing:-.06em;transform:rotate(-6deg);color:#423243}.cinema-art em{font-family:Georgia;font-weight:400}.cinema-art small{display:block;font-size:6px;letter-spacing:.03em;margin-top:12px}.cinema-asterisk{position:absolute;right:5px;bottom:0;font-size:145px;color:#e55a40;line-height:1;transform:rotate(10deg)}.news-source{font-size:9px;color:var(--muted);margin-top:30px}.news-source a{text-decoration:underline;text-underline-offset:3px}.community-section{padding-bottom:90px}.community-banner{background:var(--ink);border-radius:12px;padding:55px 64px;color:white;display:grid;grid-template-columns:1fr 1fr;gap:40px;overflow:hidden}.community-banner .eyebrow{font-size:8px;color:#cdd8d9}.community-banner .eyebrow::before{background:var(--lime)}.community-banner h2{font-size:60px;line-height:1.05;margin-top:22px;font-weight:500}.community-banner h2 .serif{color:var(--lime)}.community-banner p:not(.eyebrow){font-size:11px;color:#c0ced0;margin-top:21px;margin-bottom:24px}.community-banner .button{font-size:10px}.community-visual{position:relative;display:flex;align-items:center;justify-content:center}.chat-visual-card{background:#f8f7f2;width:290px;padding:22px 22px 13px;border-radius:10px;transform:rotate(6deg);color:var(--ink);box-shadow:0 20px 50px #0003;z-index:1}.chat-mini-brand{font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:-.08em;display:flex;align-items:center;justify-content:space-between}.chat-mini-brand>span{color:var(--blue);font-size:33px;font-weight:400}.chat-mini-label{font-size:6px;letter-spacing:.11em;display:block;margin:13px 0 15px;color:var(--muted)}.chat-mini-room{display:flex;align-items:center;gap:11px;background:#efeee8;border-radius:5px;padding:12px 10px;margin-top:7px}.room-symbol{background:#e1dce8;color:#715d84;height:33px;width:33px;display:grid;place-items:center;border-radius:5px;font-size:21px;font-family:Georgia}.symbol-1{background:#dce1f4;color:var(--blue)}.symbol-2{background:#e2e9cb;color:#657641}.chat-mini-room strong{font-size:10px;font-weight:650}.chat-mini-room small{display:block;font-size:7px;color:var(--muted);margin-top:4px}.chat-mini-room>span:last-child{margin-left:auto;font-size:12px;color:#7b8583}.chat-mini-footer{display:block;text-align:center;font-size:6px;letter-spacing:.08em;margin-top:19px;color:var(--muted)}.community-orbit{position:absolute;border:1px solid #7e969144;border-radius:50%;width:350px;height:350px;transform:rotate(-20deg)}.orbit-two{width:430px;height:250px;transform:rotate(-50deg)}.community-star{position:absolute;right:0;top:1px;color:var(--lime);z-index:2;font-size:95px;line-height:1;transform:rotate(13deg)}.contact-section{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-bottom:95px}.contact-section .eyebrow{margin-bottom:18px}.contact-section h2{font-size:42px}.contact-section>div>.text-link{margin-top:28px;font-size:11px}.contact-info{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}.contact-info>div{display:flex;flex-direction:column;align-items:start;gap:15px}.contact-info>div>span{font-size:8px;font-weight:650;letter-spacing:.13em;color:var(--muted)}.contact-info p,.contact-phone{font-size:15px!important;line-height:1.6}.contact-info a{font-size:11px}.contact-info a:hover{color:var(--blue)}.contact-info small{font-size:9px;color:var(--muted)}
-@media(min-width:1450px){.photo-frame{height:560px}.hero{gap:75px;padding-block:70px}.hero h1{font-size:103px}.hero-description{font-size:14px}}
-@media(max-width:1100px){.hero{gap:30px}.hero h1{font-size:74px}.photo-frame{height:480px}.hero-postcard{left:-15px;padding:17px 13px}.hero-postcard>span:nth-child(2){font-size:11px}.hero-spark{width:52px}.photo-top{left:38px;right:15px}.photo-number{display:none}.hero-description{font-size:12px}.hero-buttons{gap:18px}.hero .button{padding:14px 16px;font-size:11px}.discover-link{gap:12px;font-size:10px}.hero-note p{font-size:7px}.intro-section{gap:45px}.intro-bottom{gap:24px;flex-wrap:wrap}.track-card{padding:23px 20px 18px}.track-card h3{font-size:21px}.life-section{gap:55px}.life-copy h2{font-size:40px}.community-banner{padding:48px 45px}.community-star{right:-20px}.contact-info{gap:20px}.contact-info a{font-size:10px}.quick-links>a{padding-left:20px;gap:12px}.quick-arrow{margin-right:18px}}
-@media(max-width:800px){.hero{gap:25px;padding-block:42px}.hero h1{font-size:60px}.hero-final{gap:25px}.hero-description{font-size:11px}.hero-buttons{align-items:start;flex-direction:column;gap:20px}.hero-note{margin-top:25px}.hero-note p{font-size:6px}.hero-spark{width:44px;height:44px}.photo-frame{height:425px;border-top-left-radius:80px}.hero-postcard{left:-22px;bottom:45px;gap:10px}.hero-postcard>a{margin-left:4px;width:25px;height:25px}.postcard-spark{font-size:30px}.photo-location{bottom:100px;right:15px}.quick-links{grid-template-columns:repeat(3,1fr)}.quick-title{display:none}.quick-links>a{padding-left:18px}.quick-links>a:first-of-type{border-left:0;padding-left:0}.quick-links>a>span:nth-child(2){font-size:10px}.quick-links small{font-size:8px}.quick-arrow{margin-right:12px}.intro-section{grid-template-columns:1fr;padding-block:65px;gap:23px}.intro-label>span{display:none}.intro-bottom{flex-wrap:nowrap}.intro-section h2{font-size:41px}.pathways-section{padding:58px 0}.track-card{padding:20px 17px 16px}.track-top{font-size:6px}.track-illustration{width:125px;height:115px}.track-card h3{font-size:19px}.track-card>p{font-size:10px;min-height:55px}.track-bottom>span:first-child{font-size:7px}.track-go{width:26px;height:26px;flex-shrink:0}.life-section{padding-block:65px;gap:35px}.life-art{height:460px;padding:23px}.life-art-title{font-size:64px}.life-art-label{font-size:6px}.life-art-label>span:last-child{display:none}.life-tags{left:23px;right:23px}.life-shape{width:250px;right:-120px;bottom:90px}.life-copy h2{font-size:35px}.life-copy>.eyebrow{font-size:8px}.news-section .section-heading{font-size:36px}.news-section .section-top{align-items:start;flex-direction:column;gap:22px}.news-grid{gap:15px}.news-card h3{font-size:20px}.cinema-art{padding:15px}.cinema-art>span:first-child{font-size:29px}.cinema-asterisk{font-size:90px;right:-15px}.news-description{font-size:10px}.community-banner{padding:40px 30px;gap:20px}.community-banner h2{font-size:50px}.chat-visual-card{width:250px;padding:18px}.community-star{font-size:68px;right:-10px;top:25px}.contact-section{grid-template-columns:1fr;gap:40px;padding-bottom:70px}.contact-info{max-width:550px}.news-section{padding-bottom:60px}.community-section{padding-bottom:65px}}
-@media(max-width:600px){.hero{grid-template-columns:1fr;padding-top:35px;padding-bottom:33px;gap:35px}.hero h1{font-size:clamp(65px,15.5vw,88px);margin-top:21px}.hero-final{gap:45px}.hero-copy>.eyebrow{font-size:8px}.hero-description{font-size:13px;margin-top:20px}.desktop-br{display:none}.hero-spark{width:59px;height:59px}.hero-buttons{flex-direction:row;align-items:center;gap:26px;margin-top:24px}.hero .button{padding:14px 19px;font-size:11px}.discover-link{font-size:10px}.hero-note{display:none}.hero-visual{padding-left:0;padding-bottom:23px}.photo-frame{height:350px;border-top-left-radius:75px}.photo-location{bottom:28px;right:16px}.photo-top{left:42px;right:20px}.photo-number{display:block}.hero-postcard{left:-6px;bottom:57px;padding:15px;gap:12px}.hero-postcard>span:nth-child(2){font-size:11px}.hero-postcard>a{margin-left:10px}.photo-credit{font-size:6px;bottom:8px}.quick-links{padding-block:20px;gap:0}.quick-links>a{flex-direction:column;align-items:start;gap:10px;padding-left:17px;position:relative}.quick-links>a>svg{width:20px;height:20px}.quick-links>a>span:nth-child(2){font-size:9px}.quick-links small{font-size:7px}.quick-arrow{position:absolute;top:4px;right:4px;font-size:13px}.quick-links>a:last-child .quick-arrow{right:0}.intro-section{padding-block:56px;gap:22px}.intro-section h2{font-size:36px}.intro-bottom{display:block;margin-top:22px}.intro-bottom p{font-size:12px}.intro-bottom a{margin-top:22px}.pathways-section{padding-block:50px}.section-top{flex-direction:column;align-items:start;gap:22px;margin-bottom:28px}.section-aside{text-align:left}.section-aside>p{display:none}.section-aside .text-link{font-size:11px}.section-top .eyebrow{font-size:9px;margin-bottom:14px}.pathways-grid{grid-template-columns:1fr;gap:15px}.track-card{padding:25px;position:relative}.track-top{font-size:8px}.track-top>span:last-child{font-size:10px}.track-illustration{position:absolute;right:15px;top:40px;width:100px;height:100px;margin:0;opacity:.7}.track-card h3{font-size:23px;margin-top:34px;max-width:210px;padding-right:10px;min-height:50px}.track-card>p{font-size:11px;max-width:220px;min-height:auto}.track-bottom{margin-top:24px;padding-top:15px}.track-bottom>span:first-child{font-size:9px}.track-go{width:30px;height:30px}.life-section{grid-template-columns:1fr;gap:38px;padding-block:55px}.life-art{height:360px;padding:28px}.life-art-title{font-size:72px;margin-top:28px}.life-art-label{font-size:7px}.life-art-label>span:last-child{display:block}.life-shape{width:270px;right:-65px;bottom:12px}.life-tags{bottom:25px;left:28px;right:20px}.life-tags>span{font-size:8px}.life-copy h2{font-size:40px}.life-copy>.eyebrow{font-size:9px}.life-copy .button{font-size:11px}.life-description{font-size:12px}.news-section{padding-top:12px}.news-section .section-heading{font-size:34px}.news-filters{flex-wrap:wrap;gap:6px}.news-filters button{font-size:9px;padding:8px 12px}.news-filters>span{display:none}.news-grid{grid-template-columns:1fr;gap:30px}.news-image{aspect-ratio:1.65}.news-card h3{font-size:24px;max-width:100%}.news-description{font-size:12px;max-width:100%}.news-label{margin-top:17px;font-size:8px}.news-category{font-size:9px}.cinema-art{padding:35px}.cinema-art>span:first-child{font-size:46px}.cinema-asterisk{font-size:165px;right:8px}.news-source{font-size:8px}.community-banner{grid-template-columns:1fr;padding:35px 26px 30px;gap:30px}.community-banner h2{font-size:57px}.community-banner p:not(.eyebrow){font-size:11px}.community-banner .button{font-size:11px}.community-visual{min-height:325px}.chat-visual-card{width:255px}.community-star{top:0;right:0;font-size:73px}.community-orbit{width:270px;height:270px}.orbit-two{width:320px;height:200px}.contact-section h2{font-size:37px}.contact-info{gap:20px;grid-template-columns:1fr 1fr}.contact-info a{font-size:9px}.contact-info p,.contact-phone{font-size:13px!important}.contact-info>div{gap:12px}.contact-info>div>span{font-size:7px}.contact-info small{font-size:8px}}
-.hero-copy,.hero-visual{min-width:0}
-@media(max-width:360px){.hero h1{font-size:53px}.hero-buttons{gap:15px}.hero .button{padding-inline:14px}.discover-link{gap:9px}.photo-number{display:none}.hero-postcard{padding:12px;gap:10px}.postcard-spark{font-size:28px}.hero-postcard>a{margin-left:2px}.photo-location{bottom:130px}.contact-info{grid-template-columns:1fr;gap:30px}}
+/* ── Base ─────────────────────────────────────────────────────── */
+.home{background:var(--void);color:var(--white)}
+.section-marquee{overflow:hidden;margin:0}
+.section-title{font-family:var(--font-display);font-size:clamp(36px,5vw,72px);font-weight:800;line-height:1.0;letter-spacing:-.04em}
+.section-title em{font-style:normal}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;margin-bottom:48px}
+.section-aside{text-align:right;flex-shrink:0;max-width:280px}
+.link-acid{font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--acid);display:inline-flex;align-items:center;gap:8px;transition:opacity var(--t-fast)}
+.link-acid:hover{opacity:.7}
+.link-acid-sm{font-size:11px;color:var(--acid);font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:opacity var(--t-fast)}
+.link-acid-sm:hover{opacity:.7}
+
+/* ── Hero ────────────────────────────────────────────────────── */
+.hero{position:relative;overflow:hidden;padding-bottom:0}
+.hero-shapes{position:absolute;inset:0;pointer-events:none;z-index:0}
+.shape-ring-lg{position:absolute;width:700px;height:700px;top:-200px;right:-200px;opacity:.4}
+.shape-star-hero{position:absolute;width:90px;height:90px;top:60px;right:80px}
+.hero-blob-acid{
+  position:absolute;width:600px;height:600px;
+  background:radial-gradient(circle,rgba(204,255,0,.08) 0%,transparent 65%);
+  top:-100px;left:-100px;pointer-events:none;filter:blur(40px);
+}
+.hero-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(32px,5vw,80px);
+  padding-top:clamp(48px,7vh,96px);
+  padding-bottom:clamp(48px,7vh,80px);
+  align-items:center;position:relative;z-index:1;
+}
+.hero-copy{min-width:0}
+.hero-eyebrow{display:block;margin-bottom:20px}
+.hero-title{
+  font-family:var(--font-display);font-weight:800;
+  font-size:clamp(52px,6.5vw,96px);
+  line-height:.92;letter-spacing:-.05em;
+  margin-bottom:28px;
+}
+.ht-line{display:block}
+.ht-outline{-webkit-text-stroke:1.5px var(--white);color:transparent}
+.ht-acid{color:var(--acid);display:flex;align-items:center;gap:20px}
+.hero-star-inline{font-size:.5em;line-height:1;vertical-align:middle}
+.hero-desc{font-size:14px;color:var(--white-dim);line-height:1.8;margin-bottom:32px}
+.desktop-br{}
+.hero-actions{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.hero-discover{
+  font-family:var(--font-display);font-size:12px;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase;
+  color:var(--white-muted);
+  display:inline-flex;align-items:center;gap:10px;
+  transition:color var(--t-fast);
+}
+.hero-discover:hover{color:var(--white)}
+.hero-meta{display:flex;align-items:center;gap:12px;margin-top:28px}
+.hero-meta>span:first-child{width:20px;height:1px;background:rgba(250,250,250,.2);flex-shrink:0}
+
+/* Photo frame */
+.hero-visual{position:relative;padding-bottom:32px}
+.photo-frame{
+  border-radius:80px 8px 8px 8px;
+  overflow:hidden;height:clamp(360px,50vh,540px);
+  position:relative;background:var(--onyx-2);
+}
+.photo-img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;filter:saturate(.85) brightness(.95)}
+.photo-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.3) 0%,transparent 40%,rgba(0,0,0,.5) 100%);
+}
+.photo-top-bar{
+  position:absolute;z-index:1;top:24px;left:36px;right:20px;
+  color:#fff;display:flex;justify-content:space-between;align-items:center;
+}
+.photo-label{font-family:var(--font-mono);font-size:8px;letter-spacing:.14em;display:flex;align-items:center;gap:8px}
+.photo-label>i{width:5px;height:5px;background:var(--acid);border-radius:50%;font-style:normal}
+.photo-code{font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;opacity:.65}
+.photo-coords{
+  position:absolute;z-index:1;right:20px;bottom:22px;
+  color:#fff;display:flex;align-items:center;gap:10px;
+}
+.photo-coords>span{font-family:var(--font-mono);font-size:8px;letter-spacing:.08em;line-height:1.7}
+.photo-coords strong{font-size:10px;font-weight:500;letter-spacing:0}
+
+/* Postcard */
+.hero-postcard{
+  position:absolute;left:-24px;bottom:50px;
+  background:var(--acid);color:var(--void);
+  display:flex;align-items:center;gap:14px;
+  padding:18px 16px;
+  transform:rotate(-4deg);
+  border-radius:2px;
+  box-shadow:0 12px 40px rgba(0,0,0,.4);
+  z-index:2;
+}
+.postcard-glyph{font-size:30px;line-height:1}
+.postcard-label{font-family:var(--font-mono);font-size:7px;letter-spacing:.15em;display:block;margin-bottom:4px}
+.postcard-main{font-family:var(--font-display);font-size:13px;font-weight:700}
+.hero-postcard>a{
+  border:1px solid rgba(0,0,0,.2);width:28px;height:28px;
+  border-radius:50%;display:grid;place-items:center;font-size:14px;
+  margin-left:8px;flex-shrink:0;
+}
+.visual-index{
+  position:absolute;bottom:6px;right:0;
+  font-family:var(--font-mono);font-size:7px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--white-muted);
+  writing-mode:horizontal-tb;
+}
+
+/* ── Quick links ─────────────────────────────────────────────── */
+.quick-links-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid rgba(250,250,250,.08);
+  border-bottom:1px solid rgba(250,250,250,.08);
+}
+.ql-item{
+  display:flex;align-items:center;gap:14px;
+  padding:20px 24px;
+  border-right:1px solid rgba(250,250,250,.08);
+  transition:background var(--t-fast),color var(--t-fast);
+}
+.ql-item:last-child{border-right:0}
+.ql-item:hover{background:rgba(250,250,250,.04)}
+.ql-icon{width:22px;height:22px;flex-shrink:0;color:var(--white-muted)}
+.ql-icon svg{width:100%;height:100%}
+.ql-text{font-family:var(--font-display);font-size:11px;font-weight:700;line-height:1.2}
+.ql-text small{display:block;font-family:var(--font-body);font-size:9px;font-weight:400;color:var(--white-muted);margin-top:3px}
+.ql-arrow{margin-left:auto;font-size:16px;color:var(--white-muted)}
+.ql-accent{background:rgba(204,255,0,.05)}
+.ql-accent .ql-icon,.ql-accent .ql-arrow{color:var(--acid)}
+.ql-accent .ql-text{color:var(--acid)}
+.ql-accent:hover{background:rgba(204,255,0,.1)}
+
+/* ── Intro ───────────────────────────────────────────────────── */
+.intro-section{
+  display:grid;grid-template-columns:.4fr 1fr;gap:clamp(40px,7vw,120px);
+  padding-top:clamp(72px,10vh,120px);padding-bottom:clamp(72px,10vh,120px);
+  align-items:end;
+}
+.intro-index{display:flex;flex-direction:column;gap:40px;justify-content:space-between}
+.intro-number{
+  font-family:var(--font-display);font-size:clamp(72px,10vw,148px);
+  font-weight:800;color:var(--onyx-3);line-height:1;letter-spacing:-.06em;
+  -webkit-text-stroke:1px rgba(250,250,250,.15);
+}
+.intro-heading{
+  font-family:var(--font-display);font-size:clamp(36px,5vw,64px);
+  font-weight:800;line-height:1.05;letter-spacing:-.04em;margin-bottom:28px;
+}
+.intro-heading .text-outline{-webkit-text-stroke:1.5px var(--white)}
+.intro-em{font-style:normal;color:var(--acid)}
+.intro-bottom{display:flex;align-items:flex-end;gap:40px}
+.intro-bottom p{font-size:14px;line-height:1.8;color:var(--white-dim);max-width:380px}
+.intro-link{font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--acid);white-space:nowrap;transition:opacity var(--t-fast)}
+.intro-link:hover{opacity:.7}
+
+/* ── Formations ──────────────────────────────────────────────── */
+.pathways-section{
+  background:var(--onyx);
+  padding:clamp(64px,10vh,112px) 0;
+  border-top:1px solid rgba(250,250,250,.07);
+  border-bottom:1px solid rgba(250,250,250,.07);
+}
+.paths-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border:1px solid rgba(250,250,250,.08)}
+.track-card{
+  background:var(--onyx);padding:32px 28px 24px;
+  border-right:1px solid rgba(250,250,250,.07);
+  display:flex;flex-direction:column;
+  transition:background var(--t-base);
+  position:relative;overflow:hidden;
+}
+.track-card:last-child{border-right:0}
+.track-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(204,255,0,.05),transparent);
+  opacity:0;transition:opacity var(--t-base);
+}
+.track-card:hover{background:var(--onyx-2)}
+.track-card:hover::before{opacity:1}
+.track-num{
+  font-family:var(--font-display);font-size:clamp(48px,6vw,80px);
+  font-weight:800;color:var(--onyx-3);letter-spacing:-.06em;
+  line-height:1;margin-bottom:8px;
+  -webkit-text-stroke:1px rgba(250,250,250,.12);
+}
+.track-label{margin-bottom:16px}
+.track-illustration{height:130px;display:flex;align-items:center;justify-content:center;margin:16px 0 24px;color:var(--acid)}
+.track-illustration svg{height:100%;width:auto;max-width:100%}
+.track-card:nth-child(2) .track-illustration{color:var(--ice)}
+.track-card:nth-child(3) .track-illustration{color:var(--hyper)}
+.track-title{font-family:var(--font-display);font-size:clamp(18px,2.2vw,26px);font-weight:800;letter-spacing:-.03em;margin-bottom:10px}
+.track-desc{font-size:12px;color:var(--white-muted);line-height:1.75;flex:1;margin-bottom:20px}
+.track-footer{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:16px;border-top:1px solid rgba(250,250,250,.07);
+}
+.track-tag{}
+.track-go{
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid rgba(250,250,250,.1);
+  display:grid;place-items:center;font-size:14px;color:var(--white-muted);
+  transition:all var(--t-base);flex-shrink:0;
+}
+.track-card:hover .track-go{background:var(--acid);border-color:var(--acid);color:var(--void)}
+
+/* ── Vie lycéenne ────────────────────────────────────────────── */
+.life-section{
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,7vw,100px);
+  padding-top:clamp(72px,12vh,130px);padding-bottom:clamp(72px,12vh,130px);
+  align-items:center;
+}
+.life-art{
+  height:clamp(380px,50vh,520px);
+  background:var(--acid);color:var(--void);
+  border-radius:8px;position:relative;overflow:hidden;
+  padding:28px;
+}
+.life-art-label{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:7px;letter-spacing:.18em;position:relative;z-index:2}
+.life-art-label>span:last-child{opacity:.55}
+.life-art-word{
+  font-family:var(--font-display);font-size:clamp(56px,7vw,88px);
+  font-weight:800;line-height:1.0;letter-spacing:-.06em;
+  margin-top:clamp(24px,4vh,48px);position:relative;z-index:2;
+}
+.life-art-word em{font-style:normal;display:block;-webkit-text-stroke:2px var(--void);color:transparent}
+.life-art-star{
+  position:absolute;width:300px;height:300px;
+  right:-80px;bottom:20px;transform:rotate(15deg);
+  opacity:.5;
+}
+.life-tags{position:absolute;left:28px;bottom:28px;right:28px;display:flex;flex-wrap:wrap;gap:6px;z-index:2}
+.life-tags>span{
+  border:1px solid rgba(0,0,0,.25);padding:6px 12px;border-radius:50px;
+  font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;
+  background:rgba(0,0,0,.15);
+}
+.life-heading{
+  font-family:var(--font-display);font-size:clamp(32px,4.5vw,58px);
+  font-weight:800;line-height:1.05;letter-spacing:-.04em;
+  margin:16px 0 20px;
+}
+.life-heading em{font-style:normal}
+.life-desc{max-width:380px;margin-bottom:28px}
+.life-facts{display:grid;gap:16px;margin-bottom:32px}
+.life-fact{display:flex;gap:16px;align-items:flex-start}
+.life-fact-num{
+  font-family:var(--font-display);font-size:11px;font-weight:800;
+  color:var(--acid);width:32px;height:32px;flex-shrink:0;
+  border:1px solid rgba(204,255,0,.25);border-radius:50%;
+  display:grid;place-items:center;letter-spacing:-.02em;
+}
+.life-fact strong{display:block;font-size:13px;font-weight:700;margin-bottom:3px}
+.life-fact div{font-size:12px;color:var(--white-muted);line-height:1.6}
+
+/* ── Actualités ──────────────────────────────────────────────── */
+.news-section{
+  padding-top:clamp(56px,8vh,96px);
+  padding-bottom:clamp(56px,8vh,96px);
+}
+.news-filters{display:flex;align-items:center;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.news-filters button{
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;
+  border:1px solid rgba(250,250,250,.1);border-radius:50px;
+  padding:8px 16px;color:var(--white-muted);
+  transition:all var(--t-fast);
+}
+.news-filters button.selected{background:var(--acid);border-color:var(--acid);color:var(--void)}
+.news-filters button:hover:not(.selected){border-color:rgba(250,250,250,.3);color:var(--white)}
+.news-count{margin-left:auto}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(250,250,250,.07);border:1px solid rgba(250,250,250,.07)}
+.news-card{background:var(--void);display:flex;flex-direction:column;transition:background var(--t-fast)}
+.news-card:hover{background:var(--onyx)}
+.news-card.featured{grid-column:1/3}
+.news-media{
+  aspect-ratio:1.6;overflow:hidden;position:relative;
+  background:var(--onyx-2);
+}
+.news-card.featured .news-media{aspect-ratio:2}
+.news-img{width:100%;height:100%;object-fit:cover;transition:transform .5s;filter:saturate(.8)}
+.news-card:hover .news-img{transform:scale(1.04)}
+.news-cat{position:absolute;top:12px;left:12px;z-index:1}
+.news-go{
+  position:absolute;bottom:12px;right:12px;z-index:1;
+  width:30px;height:30px;border-radius:50%;
+  background:var(--acid);color:var(--void);
+  display:grid;place-items:center;font-size:14px;font-weight:700;
+}
+.news-body{padding:20px 20px 24px;flex:1;display:flex;flex-direction:column}
+.news-tag{margin-bottom:10px;display:block}
+.news-title{
+  font-family:var(--font-display);font-size:clamp(16px,2vw,22px);
+  font-weight:800;letter-spacing:-.03em;line-height:1.2;
+  margin-bottom:10px;
+}
+.news-desc{font-size:12px;color:var(--white-muted);line-height:1.75;flex:1}
+.news-cinema{
+  width:100%;height:100%;background:var(--onyx-2);
+  padding:24px;display:flex;align-items:center;position:relative;overflow:hidden;
+}
+.news-cinema>span:first-child{
+  font-family:var(--font-display);font-weight:800;
+  font-size:clamp(28px,5vw,48px);
+  line-height:1;letter-spacing:-.06em;color:var(--white);
+}
+.news-cinema em{font-family:Georgia;font-weight:400;font-style:italic}
+.news-cinema small{display:block;font-family:var(--font-mono);font-size:6px;letter-spacing:.1em;margin-top:12px;color:var(--white-muted)}
+.cinema-star{position:absolute;right:0;bottom:-10px;font-size:120px;color:var(--acid);line-height:1;opacity:.4}
+.news-source{font-size:10px;color:var(--white-muted);margin-top:24px}
+.news-source a{color:var(--acid);transition:opacity var(--t-fast)}
+.news-source a:hover{opacity:.7}
+
+/* ── Communauté ──────────────────────────────────────────────── */
+.community-section{padding-bottom:clamp(64px,10vh,120px)}
+.community-inner{
+  background:var(--onyx);border:1px solid rgba(250,250,250,.07);
+  border-radius:var(--r-lg);padding:clamp(40px,6vw,80px);
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);
+  overflow:hidden;position:relative;
+}
+.community-inner::before{
+  content:'';position:absolute;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(204,255,0,.06),transparent 70%);
+  top:-100px;left:-100px;pointer-events:none;
+}
+.community-heading{
+  font-family:var(--font-display);font-size:clamp(40px,6vw,80px);
+  font-weight:800;line-height:.95;letter-spacing:-.05em;
+  margin:16px 0 20px;
+}
+.text-outline-acid{-webkit-text-stroke:2px var(--acid);color:transparent}
+.community-visual{position:relative;display:flex;align-items:center;justify-content:center}
+.chat-preview{
+  background:var(--onyx-2);border:1px solid rgba(250,250,250,.1);
+  border-radius:var(--r-md);padding:20px;
+  width:100%;max-width:300px;position:relative;z-index:1;
+  transform:rotate(4deg);
+  box-shadow:0 24px 64px rgba(0,0,0,.5);
+}
+.chat-preview-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.chat-brand{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:-.06em}
+.chat-brand>span{color:var(--acid)}
+.chat-room{
+  display:flex;align-items:center;gap:10px;
+  background:var(--onyx-3);border-radius:var(--r-sm);
+  padding:10px 12px;margin-top:6px;
+}
+.chat-hash{
+  width:30px;height:30px;display:grid;place-items:center;
+  border-radius:var(--r-sm);font-size:18px;font-family:Georgia;
+  flex-shrink:0;
+  background:var(--onyx);color:var(--white-muted);
+}
+.hash-0{color:var(--hyper);background:rgba(255,0,255,.1)}
+.hash-1{color:var(--ice);background:rgba(0,240,255,.1)}
+.hash-2{color:var(--acid);background:rgba(204,255,0,.1)}
+.chat-room strong{font-size:11px;font-weight:700;display:block}
+.chat-room small{font-size:9px;color:var(--white-muted);display:block;margin-top:2px}
+.chat-arr{margin-left:auto;color:var(--white-muted);font-size:12px}
+.chat-label{display:block;text-align:center;margin-top:14px}
+.comm-ring{position:absolute;border:1px solid rgba(250,250,250,.06);border-radius:50%}
+.ring-1{width:320px;height:320px}
+.ring-2{width:420px;height:260px;transform:rotate(-45deg)}
+.comm-star{
+  position:absolute;right:0;top:0;
+  font-size:80px;color:var(--acid);
+  line-height:1;z-index:0;opacity:.4;
+}
+
+/* ── Contact ─────────────────────────────────────────────────── */
+.contact-section{
+  display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,7vw,100px);
+  padding-bottom:clamp(72px,10vh,120px);align-items:start;
+}
+.contact-intro{}
+.contact-intro .section-title{margin:12px 0 24px}
+.contact-cards{display:grid;gap:2px;align-self:center}
+.contact-card{
+  background:var(--onyx);border:1px solid rgba(250,250,250,.07);
+  padding:28px 32px;display:flex;flex-direction:column;gap:12px;
+}
+.contact-card>span.text-label{margin-bottom:4px}
+.contact-phone{font-family:var(--font-display);font-size:28px;font-weight:800;letter-spacing:-.04em;transition:color var(--t-fast)}
+.contact-phone:hover{color:var(--acid)}
+.contact-card a{transition:color var(--t-fast)}
+.contact-card a:hover{color:var(--acid)}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media(max-width:1100px){
+  .hero-grid{gap:32px}
+  .hero-title{font-size:clamp(48px,7.5vw,88px)}
+  .quick-links-bar{grid-template-columns:repeat(2,1fr)}
+  .ql-item:nth-child(2){border-right:0}
+  .ql-item:nth-child(3){border-top:1px solid rgba(250,250,250,.08)}
+  .intro-section{grid-template-columns:1fr;gap:24px}
+  .intro-index{flex-direction:row;align-items:center;gap:24px}
+  .intro-number{font-size:72px}
+  .intro-bottom{flex-direction:column;align-items:flex-start;gap:16px}
+  .paths-grid{grid-template-columns:1fr 1fr}
+  .track-card:last-child{grid-column:1/-1;flex-direction:row;gap:24px;align-items:center;border-right:0;border-top:1px solid rgba(250,250,250,.07)}
+  .track-card:last-child .track-illustration{flex-shrink:0;width:120px}
+  .track-card:last-child .track-num{font-size:56px}
+  .life-section{gap:40px}
+  .news-card.featured{grid-column:auto}
+  .community-inner{grid-template-columns:1fr}
+  .community-visual{min-height:280px}
+  .contact-section{grid-template-columns:1fr}
+  .section-header{flex-direction:column;align-items:flex-start}
+  .section-aside{text-align:left;max-width:none}
+}
+@media(max-width:760px){
+  .hero-grid{grid-template-columns:1fr;padding-top:36px;padding-bottom:32px;gap:32px}
+  .hero-title{font-size:clamp(50px,12vw,80px)}
+  .ht-outline{-webkit-text-stroke:1px var(--white)}
+  .desktop-br{display:none}
+  .photo-frame{border-top-left-radius:60px;height:300px}
+  .hero-postcard{left:-10px;bottom:50px}
+  .quick-links-bar{grid-template-columns:1fr;border-bottom:0}
+  .ql-item{border-right:0;border-bottom:1px solid rgba(250,250,250,.08)}
+  .ql-item:nth-child(3){border-top:0}
+  .paths-grid{grid-template-columns:1fr}
+  .track-card:last-child{grid-column:auto;flex-direction:column}
+  .track-card:last-child .track-num{font-size:clamp(48px,10vw,72px)}
+  .life-section{grid-template-columns:1fr;gap:40px}
+  .news-grid{grid-template-columns:1fr}
+  .news-card.featured{grid-column:auto}
+  .contact-cards{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  .hero-title{font-size:clamp(42px,14vw,72px)}
+  .hero-star-inline{font-size:.4em}
+  .hero-actions{flex-direction:column;align-items:flex-start;gap:16px}
+  .hero-postcard{left:-4px;padding:14px}
+  .postcard-main{font-size:11px}
+  .life-art-word{font-size:clamp(48px,13vw,72px)}
+  .contact-cards{grid-template-columns:1fr}
+  .community-inner{padding:28px 20px}
+  .news-grid{gap:0}
+}
 </style>
