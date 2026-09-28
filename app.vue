@@ -117,13 +117,18 @@ watch([siteTheme, siteColor, motionEnabled], ([theme,color,motion]) => {
   syncSuitWorld()
   try { localStorage.setItem('europe-site-theme',theme); localStorage.setItem('europe-site-color',color); localStorage.setItem('europe-motion',String(motion)) } catch {}
 })
-useHead({ titleTemplate: '%s — Lycée Europe', link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }] })
+const runtimeConfig = useRuntimeConfig()
+const base = computed(() => {
+  const b = runtimeConfig.app.baseURL || '/'
+  return b.endsWith('/') ? b : b + '/'
+})
+useHead({ titleTemplate: '%s — Lycée Europe', link: [{ rel: 'icon', type: 'image/svg+xml', href: `${runtimeConfig.app.baseURL || '/'}favicon.svg` }] })
 </script>
 
 <template>
   <div ref="shell" class="site-shell" :class="{ 'immersive-shell': route.path === '/', 'mini-chat-shell': miniChat, 'visor-page-shell': visorPanel }" :data-theme="siteTheme" :data-motion="motionEnabled" :data-hud="hudVisible" :data-target="helmetTarget" :style="accentStyle">
     <a class="skip-link" href="#contenu">Aller au contenu</a>
-    <div class="suit-world" aria-hidden="true"><video ref="suitWorldVideo" class="suit-world-video" src="/hero-stars.mp4" muted loop playsinline preload="metadata" /><div class="suit-world-grid"></div></div>
+    <div class="suit-world" aria-hidden="true"><video ref="suitWorldVideo" class="suit-world-video" :src="`${base}hero-stars.mp4`" muted loop playsinline preload="metadata" /><div class="suit-world-grid"></div></div>
     <div v-if="hudVisible" class="suit-visor" aria-hidden="true">
       <div class="visor-corner visor-corner-tl"></div><div class="visor-corner visor-corner-tr"></div><div class="visor-corner visor-corner-bl"></div><div class="visor-corner visor-corner-br"></div>
       <div class="visor-cap"><span>EUROPE EXO-SUIT <i>MK · 01</i></span><span class="visor-crosshair">+</span><span><i class="visor-online"></i> INTERFACE {{ helmetTarget ? 'CIBLE VERROUILLÉE' : 'EN LIGNE' }}</span></div>
@@ -134,7 +139,7 @@ useHead({ titleTemplate: '%s — Lycée Europe', link: [{ rel: 'icon', type: 'im
     </div>
     <header class="site-header">
       <div class="container nav-inner">
-        <NuxtLink to="/" class="brand" aria-label="Lycée Europe — accueil"><img src="/europe-orbit.svg" width="42" height="42" alt="" /><span>LYCÉE<strong>EUROPE<span>®</span></strong><small>EXO-SUIT / MK·01</small></span></NuxtLink>
+        <NuxtLink to="/" class="brand" aria-label="Lycée Europe — accueil"><img :src="`${base}europe-orbit.svg`" width="42" height="42" alt="" /><span>LYCÉE<strong>EUROPE<span>®</span></strong><small>EXO-SUIT / MK·01</small></span></NuxtLink>
         <nav class="desktop-nav" aria-label="Navigation principale">
           <NuxtLink to="/#lycee">Le lycée</NuxtLink><NuxtLink to="/filieres" active-class="active">Formations</NuxtLink><NuxtLink to="/clubs" active-class="active">Vie lycéenne</NuxtLink><NuxtLink to="/nexus" active-class="active">Nexus <span>✳</span></NuxtLink>
         </nav>

@@ -37,6 +37,7 @@ export default defineNuxtConfig({
 
   // App head global
   app: {
+    baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {
       htmlAttrs: { lang: 'fr' },
       meta: [

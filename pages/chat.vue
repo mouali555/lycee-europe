@@ -2,7 +2,7 @@
   <main class="community-page" :class="{ 'mini-chat': miniChat }">
     <button v-if="sidebarOpen" class="sidebar-overlay" aria-label="Fermer les salons" tabindex="-1" @click="setSidebar(false)"></button>
     <aside id="community-sidebar" ref="sidebarPanel" class="community-sidebar" :class="{ 'is-open': sidebarOpen }" :role="isMobile && sidebarOpen ? 'dialog' : undefined" :aria-modal="isMobile && sidebarOpen ? true : undefined" aria-label="Les salons du collectif">
-      <div class="brand-row"><NuxtLink to="/" class="community-brand" aria-label="Lycée Europe — Accueil"><span class="brand-mark" aria-hidden="true"><img src="/europe-orbit.svg" alt="" /></span><span>lycée<br><strong>europe.</strong></span></NuxtLink><button class="icon-button mobile-only" aria-label="Fermer les salons" @click="setSidebar(false)">×</button></div>
+      <div class="brand-row"><NuxtLink to="/" class="community-brand" aria-label="Lycée Europe — Accueil"><span class="brand-mark" aria-hidden="true"><img :src="`${base}europe-orbit.svg`" alt="" /></span><span>lycée<br><strong>europe.</strong></span></NuxtLink><button class="icon-button mobile-only" aria-label="Fermer les salons" @click="setSidebar(false)">×</button></div>
       <NuxtLink to="/" class="back-to-site"><span aria-hidden="true">←</span> Retour au site</NuxtLink>
       <div class="sidebar-divider"></div>
       <div class="workspace-label"><span class="workspace-symbol" aria-hidden="true">✳</span><div><strong>Le collectif</strong><span>L’espace des élèves</span></div><span class="workspace-dot" aria-hidden="true"></span></div>
@@ -30,7 +30,7 @@
       <div ref="messagesArea" class="messages-area" @scroll="handleScroll">
         <div v-if="!authReady || messagesLoading" class="state-panel" role="status"><span class="loading-ring" aria-hidden="true"></span><h2>On vous ouvre la porte…</h2><p>Chargement de votre espace.</p></div>
           <div v-else-if="!currentUser" class="welcome-state">
-          <div class="welcome-illustration" aria-hidden="true"><img src="/europe-orbit.svg" alt="" /><span class="welcome-star">✳</span><span class="bubble bubble-one">Une idée à partager ?<i>↗</i></span><span class="bubble bubble-two">On en parle ensemble.<i>✧</i></span></div>
+          <div class="welcome-illustration" aria-hidden="true"><img :src="`${base}europe-orbit.svg`" alt="" /><span class="welcome-star">✳</span><span class="bubble bubble-one">Une idée à partager ?<i>↗</i></span><span class="bubble bubble-two">On en parle ensemble.<i>✧</i></span></div>
           <span class="welcome-kicker">BIENVENUE DANS #{{ activeRoom.name.toUpperCase() }}</span><h2>{{ activeRoom.welcome }}<br><em>ensemble.</em></h2><p>{{ activeRoom.intro }} Connectez-vous pour retrouver les messages et rejoindre la conversation.</p><NuxtLink to="/login" class="primary-link">Rejoindre les échanges <span aria-hidden="true">↗</span></NuxtLink><span class="preview-label">Aperçu de l’espace · Aucun message affiché hors connexion</span>
         </div>
         <div v-else-if="messagesError" class="state-panel error-state" role="alert"><span class="state-symbol" aria-hidden="true">↻</span><h2>La conversation fait une pause.</h2><p>{{ messagesError }}</p><button class="primary-link" @click="subscribeToMessages">Réessayer <span aria-hidden="true">↻</span></button></div>
@@ -78,6 +78,8 @@ useHead({ title: 'Le collectif' })
 const route = useRoute()
 const miniChat = computed(() => route.query.mini === '1')
 const { $firebase, $firebaseConfigured } = useNuxtApp()
+const runtimeConfig = useRuntimeConfig()
+const base = (runtimeConfig.app.baseURL || '/').endsWith('/') ? (runtimeConfig.app.baseURL || '/') : (runtimeConfig.app.baseURL || '/') + '/'
 const rooms = [
   { id: 'general', name: 'général', short: 'La vie du lycée', description: 'Les idées se rencontrent ici.', welcome: 'Faisons connaissance,', intro: 'Le rendez-vous de tous les élèves : les nouvelles du lycée, les bonnes idées et les questions du quotidien.' },
   { id: 'entraide', name: 'entraide', short: 'Apprendre ensemble', description: 'Une question. Plusieurs façons d’avancer.', welcome: 'Allons plus loin,', intro: 'Un exercice qui résiste, une méthode à partager ou une révision à organiser ? Ici, on s’aide à avancer.' },

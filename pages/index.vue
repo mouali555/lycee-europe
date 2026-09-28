@@ -4,14 +4,23 @@ const activePanel = ref(null)
 const nearby = ref(null)
 const movement = ref({ x: 0, z: 7, yaw: 0, walking: false })
 const hudOpen = ref(true)
-const visited = ref([])
-const panel = computed(() => ({
-  chat: { title: 'LE COLLECTIF', src: '/chat?mini=1', icon: '◉' },
-  formations: { title: 'FORMATIONS', src: '/filieres?visor=1', icon: '01' },
-  clubs: { title: 'VIE LYCÉENNE', src: '/clubs?visor=1', icon: '02' },
-  nexus: { title: 'NEXUS STUDIO', src: '/nexus?visor=1', icon: '03' },
-  informations: { title: 'INFORMATIONS', src: '/informations?visor=1', icon: '04' },
-}[activePanel.value] || null))
+const runtimeConfig = useRuntimeConfig()
+const base = computed(() => {
+  const b = runtimeConfig.app.baseURL || '/'
+  return b.endsWith('/') ? b : b + '/'
+})
+const panel = computed(() => {
+  if (!activePanel.value) return null
+  const b = base.value
+  const panels = {
+    chat: { title: 'LE COLLECTIF', src: `${b}chat?mini=1`, icon: '◉' },
+    formations: { title: 'FORMATIONS', src: `${b}filieres?visor=1`, icon: '01' },
+    clubs: { title: 'VIE LYCÉENNE', src: `${b}clubs?visor=1`, icon: '02' },
+    nexus: { title: 'NEXUS STUDIO', src: `${b}nexus?visor=1`, icon: '03' },
+    informations: { title: 'INFORMATIONS', src: `${b}informations?visor=1`, icon: '04' },
+  }
+  return panels[activePanel.value] || null
+})
 const position = computed(() => ({ x: Math.max(0, Math.min(100, 50 + movement.value.x * 5.5)), y: Math.max(7, Math.min(92, 10 + (7 - movement.value.z) * 1.42)) }))
 function enterDoor(destination) {
   if (!destination?.id) return

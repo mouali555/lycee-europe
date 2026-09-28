@@ -2,7 +2,7 @@
   <main class="auth-page">
     <section class="auth-story" aria-labelledby="story-title">
       <NuxtLink to="/" class="auth-brand" aria-label="Lycée Europe — Accueil">
-        <span class="brand-mark" aria-hidden="true"><img src="/europe-orbit.svg" alt="" /></span>
+        <span class="brand-mark" aria-hidden="true"><img :src="`${base}europe-orbit.svg`" alt="" /></span>
         <span>lycée<br><strong>europe.</strong></span>
       </NuxtLink>
       <div class="story-copy">
@@ -13,7 +13,7 @@
       <div class="community-art" aria-hidden="true">
         <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
         <span class="art-star">✳</span>
-        <img class="community-emblem" src="/europe-orbit.svg" alt="" />
+        <img class="community-emblem" :src="`${base}europe-orbit.svg`" alt="" />
         <span class="art-coordinate">EUROPE / LE COLLECTIF</span>
       </div>
       <div class="story-bottom"><span>Votre lycée. Votre communauté.</span><span>EST. EUROPE ↗</span></div>
@@ -68,6 +68,8 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWith
 
 useHead({ title: 'Votre espace' })
 const { $firebase, $firebaseConfigured } = useNuxtApp()
+const runtimeConfig = useRuntimeConfig()
+const base = (runtimeConfig.app.baseURL || '/').endsWith('/') ? (runtimeConfig.app.baseURL || '/') : (runtimeConfig.app.baseURL || '/') + '/'
 const activeTab = ref('login')
 const name = ref('')
 const email = ref('')

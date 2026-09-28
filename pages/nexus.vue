@@ -64,10 +64,13 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 useHead({ title: 'Nexus, le studio créatif', meta: [{ name: 'description', content: 'Explorez Nexus, le studio créatif du Lycée Europe : trois ambiances visuelles entre ville nocturne, imaginaire et espace.' }] })
 
+const runtimeConfig = useRuntimeConfig()
+const base = (runtimeConfig.app.baseURL || '/').endsWith('/') ? (runtimeConfig.app.baseURL || '/') : (runtimeConfig.app.baseURL || '/') + '/'
+
 const universes = [
-  { id: 'submerge', name: 'Submerge', tag: 'Les nuits électriques', caption: 'La ville comme un rêve éveillé.', description: 'Au rythme des lumières, la ville devient un paysage à contempler. Laissez-vous emporter par cette échappée urbaine.', video: '/nexus-city.mp4' },
-  { id: 'chivalry', name: 'Chivalry', tag: 'L’écho des légendes', caption: 'Une échappée hors du temps.', description: 'Une atmosphère de légende, entre ombre et lumière. Plongez dans une vision cinématographique de l’imaginaire médiéval.', video: '/nexus-fantasy.mp4' },
-  { id: 'stardust', name: 'Stardust', tag: 'L’espace en mouvement', caption: 'Des étoiles, un autre horizon.', description: 'Un champ d’étoiles qui dérive dans le silence. Prenez le temps de regarder autrement.', video: '/hero-stars.mp4' }
+  { id: 'submerge', name: 'Submerge', tag: 'Les nuits électriques', caption: 'La ville comme un rêve éveillé.', description: 'Au rythme des lumières, la ville devient un paysage à contempler. Laissez-vous emporter par cette échappée urbaine.', video: `${base}nexus-city.mp4` },
+  { id: 'chivalry', name: 'Chivalry', tag: 'L’écho des légendes', caption: 'Une échappée hors du temps.', description: 'Une atmosphère de légende, entre ombre et lumière. Plongez dans une vision cinématographique de l’imaginaire médiéval.', video: `${base}nexus-fantasy.mp4` },
+  { id: 'stardust', name: 'Stardust', tag: 'L’espace en mouvement', caption: 'Des étoiles, un autre horizon.', description: 'Un champ d’étoiles qui dérive dans le silence. Prenez le temps de regarder autrement.', video: `${base}hero-stars.mp4` }
 ]
 
 const viewer = ref(null)
