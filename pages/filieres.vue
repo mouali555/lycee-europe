@@ -1,1190 +1,219 @@
 <script setup>
 import { computed, ref } from 'vue'
-
-useHead({
-  title: 'Nos Formations — Parcours & Spécialités',
-  meta: [
-    {
-      name: 'description',
-      content: 'Voie générale, bac technologique STI2D, BTS industriels et classes préparatoires : explorez l’excellence académique et technique du Lycée Europe à Dunkerque.'
-    }
-  ]
-})
-
+useHead({ title: 'Nos formations', meta: [{ name: 'description', content: 'Explorez la voie générale, le bac STI2D, les BTS et les classes préparatoires du Lycée de l’Europe à Dunkerque.' }] })
 const activeFilter = ref('Tous les parcours')
 const search = ref('')
 const filters = ['Tous les parcours', 'Générale', 'STI2D', 'BTS', 'Prépas']
-
 const pathways = [
   {
-    id: 'generale',
-    category: 'Générale',
-    number: '01',
-    title: 'Cultiver la curiosité.',
-    name: 'La voie générale',
-    description: 'Approfondir ses connaissances, affûter son esprit critique et bâtir son projet vers l’enseignement supérieur.',
-    tags: ['Sciences', 'Langues', 'Humanités', 'Numérique'],
-    theme: 'sage',
-    items: [
-      'Mathématiques',
-      'Physique-chimie',
-      'Sciences de la vie et de la Terre (SVT)',
-      'Sciences de l’ingénieur (SI)',
-      'Numérique et sciences informatiques (NSI)',
-      'Sciences économiques et sociales (SES)',
-      'Histoire-géographie, géopolitique et sciences politiques (HGGSP)',
-      'Humanités, littérature et philosophie (HLP)',
-      'Langues, littératures et cultures étrangères : anglais, espagnol, anglais monde contemporain'
+    "id": "generale",
+    "category": "Générale",
+    "number": "01",
+    "title": "Cultiver la curiosité.",
+    "name": "La voie générale",
+    "description": "Approfondir ses connaissances, développer son esprit critique et construire son projet d’études supérieures.",
+    "tags": [
+      "Sciences",
+      "Langues",
+      "Humanités"
     ],
-    detail: 'Des spécialités scientifiques, littéraires et linguistiques pointues pour composer un parcours sur-mesure. Les combinaisons d’enseignements sont à affiner avec l’équipe pédagogique.',
-    prompt: 'Les 9 spécialités à explorer',
-    source: 'https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe/classe-de-1re-generale'
+    "theme": "sage",
+    "items": [
+      "Mathématiques",
+      "Physique-chimie",
+      "Sciences de la vie et de la Terre (SVT)",
+      "Sciences de l’ingénieur (SI)",
+      "Numérique et sciences informatiques (NSI)",
+      "Sciences économiques et sociales (SES)",
+      "Histoire-géographie, géopolitique et sciences politiques (HGGSP)",
+      "Humanités, littérature et philosophie (HLP)",
+      "Langues, littératures et cultures étrangères : anglais, espagnol, anglais monde contemporain"
+    ],
+    "detail": "Des spécialités scientifiques, littéraires et linguistiques pour construire un parcours en accord avec vos centres d’intérêt. Les combinaisons possibles sont à préciser avec l’établissement.",
+    "prompt": "Les spécialités à découvrir",
+    "source": "https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe/classe-de-1re-generale"
   },
   {
-    id: 'technologique',
-    category: 'STI2D',
-    number: '02',
-    title: 'Comprendre en faisant.',
-    name: 'Le bac technologique STI2D',
-    description: 'Relier les concepts théoriques aux applications concrètes, prototyper, innover et apprendre par le projet réel.',
-    tags: ['Innovation', 'Industrie 4.0', 'Éco-conception', 'Systèmes'],
-    theme: 'blue',
-    items: [
-      'Architecture et construction (AC)',
-      'Énergies et environnement (EE)',
-      'Innovation technologique et éco-conception (ITEC)',
-      'Systèmes d’information et numérique (SIN)'
+    "id": "technologique",
+    "category": "STI2D",
+    "number": "02",
+    "title": "Comprendre en faisant.",
+    "name": "Le bac technologique STI2D",
+    "description": "Relier les connaissances aux applications concrètes, expérimenter et apprendre par le projet.",
+    "tags": [
+      "Innovation",
+      "Industrie",
+      "Développement durable"
     ],
-    detail: 'Le baccalauréat STI2D conjugue sciences appliquées, technologies de pointe et transition écologique. Ces quatre enseignements spécifiques arment les élèves pour l’ingénierie moderne.',
-    prompt: 'Les 4 enseignements spécifiques',
-    source: 'https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe'
+    "theme": "blue",
+    "items": [
+      "Architecture et construction (AC)",
+      "Énergies et environnement (EE)",
+      "Innovation technologique et éco-conception (ITEC)",
+      "Systèmes d’information et numérique (SIN)"
+    ],
+    "detail": "Le bac STI2D associe sciences, technologies de l’industrie et développement durable. Ces quatre enseignements spécifiques sont répertoriés pour le lycée dans la fiche Onisep.",
+    "prompt": "Les enseignements spécifiques",
+    "source": "https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe"
   },
   {
-    id: 'bts',
-    category: 'BTS',
-    number: '03',
-    title: 'Donner vie au savoir-faire.',
-    name: 'Les BTS industriels & numériques',
-    description: 'Après le bac, acquérir une expertise opérationnelle recherchée dans le numérique, les automatismes, l’énergie et l’industrie de pointe.',
-    tags: ['Bac +2', 'Industrie', 'Cybersécurité', 'Apprentissage'],
-    theme: 'peach',
-    items: [
-      'BTS Électrotechnique',
-      'BTS CIEL — Cybersécurité, informatique et réseaux, électronique · option A informatique et réseaux',
-      'BTS CRSA — Conception et réalisation de systèmes automatiques',
-      'BTS CRCI — Conception et réalisation en chaudronnerie industrielle',
-      'BTS CPRP — Conception des processus de réalisation de produits · option B production sérielle',
-      'BTS Pilotage de procédés'
+    "id": "bts",
+    "category": "BTS",
+    "number": "03",
+    "title": "Donner vie au savoir-faire.",
+    "name": "Les BTS industriels",
+    "description": "Après le bac, acquérir une expertise concrète dans le numérique, l’énergie, les procédés et les systèmes industriels.",
+    "tags": [
+      "Bac + 2",
+      "Industrie",
+      "Apprentissage"
     ],
-    detail: 'Six filières BTS reconnues par les entreprises du bassin dunkerquois et des Hauts-de-France. Les cursus sont accessibles sous statut scolaire ou en contrat d’apprentissage.',
-    prompt: 'Les 6 brevets de technicien supérieur',
-    source: 'https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe'
+    "theme": "peach",
+    "items": [
+      "BTS Électrotechnique",
+      "BTS CIEL — Cybersécurité, informatique et réseaux, électronique · option A informatique et réseaux",
+      "BTS CRSA — Conception et réalisation de systèmes automatiques",
+      "BTS CRCI — Conception et réalisation en chaudronnerie industrielle",
+      "BTS CPRP — Conception des processus de réalisation de produits · option B production sérielle",
+      "BTS Pilotage de procédés"
+    ],
+    "detail": "Six BTS sont répertoriés par l’Onisep. Les modalités de formation, notamment l’apprentissage, et les conditions d’accès sont à consulter pour chaque diplôme.",
+    "prompt": "Les diplômes à découvrir",
+    "source": "https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe"
   },
   {
-    id: 'prepas',
-    category: 'Prépas',
-    number: '04',
-    title: 'Viser l’excellence.',
-    name: 'Les classes préparatoires aux grandes écoles',
-    description: 'Développer une puissance de travail, approfondir les sciences fondamentales et réussir les concours des plus grandes écoles d’ingénieurs.',
-    tags: ['PTSI', 'PT', 'ATS', 'Grandes Écoles'],
-    theme: 'lilac',
-    items: [
-      'PTSI — Physique, technologie et sciences de l’ingénieur · première année',
-      'PT — Physique et technologie · deuxième année',
-      'ATS — Ingénierie industrielle · classe préparatoire en un an après BTS/BUT'
+    "id": "prepas",
+    "category": "Prépas",
+    "number": "04",
+    "title": "Voir encore plus loin.",
+    "name": "Les classes préparatoires",
+    "description": "Approfondir les sciences et les méthodes de travail pour préparer la poursuite d’études en école d’ingénieurs.",
+    "tags": [
+      "PTSI",
+      "PT",
+      "ATS"
     ],
-    detail: 'La filière PTSI–PT et la classe ATS forment un pôle d’excellence régional avec des taux d’admission remarquables aux écoles d’ingénieurs nationales (Arts et Métiers, Centrales, Mines).',
-    prompt: 'Les promotions préparatoires',
-    source: 'https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe'
+    "theme": "lilac",
+    "items": [
+      "PTSI — Physique, technologie et sciences de l’ingénieur · première année",
+      "PT — Physique et technologie · deuxième année",
+      "ATS — Ingénierie industrielle"
+    ],
+    "detail": "La filière PTSI–PT et la classe ATS correspondent à des points d’entrée différents. Consultez la fiche de chaque formation pour identifier les conditions d’admission adaptées à votre parcours.",
+    "prompt": "Les classes proposées",
+    "source": "https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe"
   }
 ]
-
-const normalize = value =>
-  value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-
-const filteredPathways = computed(() =>
-  pathways.filter(pathway => {
-    const matchesCategory =
-      activeFilter.value === 'Tous les parcours' || activeFilter.value === pathway.category
-    const haystack = normalize(
-      [pathway.name, pathway.title, pathway.description, ...pathway.tags, ...pathway.items].join(' ')
-    )
-    return matchesCategory && haystack.includes(normalize(search.value.trim()))
-  })
-)
-
-function resetFilters() {
-  activeFilter.value = 'Tous les parcours'
-  search.value = ''
-}
+const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
+const filteredPathways = computed(() => pathways.filter(pathway => {
+  const matchesCategory = activeFilter.value === 'Tous les parcours' || activeFilter.value === pathway.category
+  const haystack = normalize([pathway.category, pathway.name, pathway.title, pathway.description, ...pathway.tags, ...pathway.items].join(' '))
+  return matchesCategory && normalize(search.value).split(' ').every(term => haystack.includes(term))
+}))
+function resetFilters() { activeFilter.value = 'Tous les parcours'; search.value = '' }
 </script>
 
 <template>
   <div class="formations-page">
-    <!-- ══════════════════════════════════════════
-         HERO SECTION
-    ══════════════════════════════════════════ -->
-    <section class="formation-hero container">
-      <!-- Glow & Ambient background -->
-      <div class="hero-ambient" aria-hidden="true">
-        <div class="glow-orb glow-ice"></div>
-        <div class="glow-orb glow-acid"></div>
-      </div>
-
-      <div class="hero-copy">
-        <p class="hero-eyebrow text-label-acid">
-          <span class="eyebrow-dot"></span> 01 / OFFRE DE FORMATION
-        </p>
-        <h1 class="hero-title">
-          <span>À CHACUN</span>
-          <span class="ht-outline">SON PROPRE</span>
-          <span class="ht-acid">HORIZON.<span class="hero-star" aria-hidden="true">✦</span></span>
-        </h1>
-        <p class="hero-intro">
-          De la classe de seconde aux formations d’ingénierie supérieure.
-          Découvrez des voies pensées pour éveiller votre curiosité, structurer votre pensée et propulser vos ambitions.
-        </p>
-        <div class="hero-actions">
-          <a class="btn-acid btn-acid-lg" href="#parcours">
-            Explorer les filières <span aria-hidden="true">↗</span>
-          </a>
-          <a class="hero-sublink" href="#methodologie">
-            Méthode d'orientation <span aria-hidden="true">↓</span>
-          </a>
+    <section class="formation-hero">
+      <div class="container hero-grid">
+        <div class="formation-hero-copy">
+          <p class="eyebrow"><span class="hero-spark" aria-hidden="true">✦</span> LES FORMATIONS / LYCÉE EUROPE</p>
+          <h1>À CHACUN<br>SON <em>HORIZON.</em></h1>
+          <p class="hero-intro">Des premières découvertes aux grandes ambitions. Trouvez le parcours qui fait écho à votre curiosité.</p>
+          <a class="page-button" href="#parcours"><span>EXPLORER LES FORMATIONS</span><b aria-hidden="true">↘</b></a>
+          <div class="hero-index"><span>01 — 04</span><span>QUATRE FAÇONS<br>D’ALLER PLUS LOIN.</span></div>
         </div>
-      </div>
-
-      <!-- Right Visual Widget: Cyber Path Matrix -->
-      <div class="path-visual" aria-hidden="true">
-        <div class="pv-grid-overlay"></div>
-        <div class="pv-top">
-          <span class="pv-badge">CYCLE D'ÉTUDES</span>
-          <span class="pv-meta">DE LA 2NDE AU BAC+3</span>
-        </div>
-
-        <div class="pv-circuit">
-          <svg viewBox="0 0 460 300" fill="none" class="circuit-svg">
-            <!-- Bus lines -->
-            <path d="M20 250H150C220 250 200 60 300 60H440" stroke="var(--acid)" stroke-width="2.5" stroke-dasharray="6 4" opacity="0.9"/>
-            <path d="M20 250H160C230 250 220 120 310 120H440" stroke="var(--ice)" stroke-width="2.5" opacity="0.8"/>
-            <path d="M20 250H170C240 250 240 180 320 180H440" stroke="var(--hyper)" stroke-width="2" opacity="0.7"/>
-            <path d="M20 250H180C250 250 260 240 330 240H440" stroke="rgba(250,250,250,0.4)" stroke-width="1.5"/>
-
-            <!-- Node Points -->
-            <circle cx="120" cy="250" r="7" fill="var(--acid)" stroke="var(--void)" stroke-width="2"/>
-            <circle cx="300" cy="60" r="5" fill="var(--acid)"/>
-            <circle cx="310" cy="120" r="5" fill="var(--ice)"/>
-            <circle cx="320" cy="180" r="5" fill="var(--hyper)"/>
-            <circle cx="330" cy="240" r="5" fill="var(--white)"/>
-
-            <!-- Terminal arrows -->
-            <path d="M430 55l6 5-6 5" stroke="var(--acid)" stroke-width="2" stroke-linecap="round"/>
-            <path d="M430 115l6 5-6 5" stroke="var(--ice)" stroke-width="2" stroke-linecap="round"/>
-            <path d="M430 175l6 5-6 5" stroke="var(--hyper)" stroke-width="2" stroke-linecap="round"/>
-            <path d="M430 235l6 5-6 5" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
+        <div class="path-art" aria-hidden="true">
+          <span class="art-kicker">LE FUTUR A PLUSIEURS DIRECTIONS.</span>
+          <svg viewBox="0 0 560 460" fill="none">
+            <defs>
+              <linearGradient id="formation-ribbon" x1="110" y1="340" x2="480" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#7134e0"/><stop offset=".27" stop-color="#a980ff"/><stop offset=".5" stop-color="#f5ddff"/><stop offset=".7" stop-color="#a980ff"/><stop offset="1" stop-color="#6933db"/></linearGradient>
+              <linearGradient id="formation-edge" x1="100" y1="80" x2="410" y2="365" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset=".35" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#d3bcff"/></linearGradient>
+            </defs>
+            <g class="ribbon-lines" stroke="url(#formation-ribbon)" stroke-width="36" stroke-linecap="square">
+              <path d="M-10 350H133C215 350 202 83 311 83H465"/>
+              <path d="M-10 350H137C222 350 241 164 337 164H492"/>
+              <path d="M-10 350H146C239 350 269 246 364 246H465"/>
+              <path d="M-10 350H151C249 350 293 329 388 329H492"/>
+            </g>
+            <g stroke="url(#formation-edge)" stroke-width="1.5" opacity=".8"><path d="M-10 332H131C192 332 189 65 311 65H465"/><path d="M-10 332H137C207 332 228 146 337 146H492"/><path d="M-10 332H146C227 332 257 228 364 228H465"/><path d="M-10 332H151C237 332 280 311 388 311H492"/></g>
+            <g fill="#0c061d" font-size="11" font-family="monospace" font-weight="700"><text x="341" y="87">GÉNÉRALE</text><text x="390" y="168">STI2D</text><text x="386" y="250">BTS</text><text x="385" y="333">PRÉPAS</text></g>
+            <g stroke="#0c061d" stroke-width="2"><path d="m441 77 6 6-6 6M469 158l6 6-6 6m-28 76 6 6-6 6m28 71 6 6-6 6"/></g>
+            <circle cx="95" cy="350" r="7" fill="#dfff78"/><path d="M467 36v22m-11-11h22" stroke="#dfff78" stroke-width="2"/>
           </svg>
-        </div>
-
-        <div class="pv-bottom">
-          <span>POINT DE DÉPART : DUNKERQUE</span>
-          <span class="pv-star">✦ VOTE FUTUR</span>
+          <div class="art-bottom"><span>VOTRE POINT DE DÉPART.</span><span>VOTRE AVENIR ↗</span></div>
         </div>
       </div>
+      <div class="hero-foot container"><span>LA CURIOSITÉ COMME POINT COMMUN.</span><span>DÉFILER POUR EXPLORER ↓</span></div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         CATALOG SECTION (SEARCH & PATHWAYS)
-    ══════════════════════════════════════════ -->
-    <section id="parcours" class="catalog-section">
+    <section class="catalog-section" id="parcours">
       <div class="container">
-        <div class="section-header">
-          <div>
-            <p class="section-tag text-label-acid">02 / CATALOGUE DES CYCLES</p>
-            <h2 class="section-title">
-              Des parcours.<br>
-              <span class="ht-outline">Autant de</span> <span class="ht-acid">possibles.</span>
-            </h2>
-          </div>
-          <p class="section-lead">
-            Sciences fondamentales, technologies industrielles, informatique ou management technique :
-            chaque voie est conçue comme un tremplin d'excellence vers l'avenir.
-          </p>
+        <div class="catalog-heading">
+          <div><p class="eyebrow">01 / TROUVER SA DIRECTION</p><h2>DES PARCOURS.<br><em>AUTANT DE POSSIBLES.</em></h2></div>
+          <p>Sciences, innovation, savoir-faire : chaque parcours est une façon de construire la suite.</p>
         </div>
-
-        <!-- Search Bar -->
-        <div class="search-wrap">
+        <div class="catalog-tools">
           <div class="search-box">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" class="search-icon">
-              <circle cx="10.5" cy="10.5" r="6.5"/>
-              <path d="m16 16 5 5"/>
-            </svg>
-            <label for="formation-search" class="visually-hidden">Rechercher une formation ou une matière</label>
-            <input
-              id="formation-search"
-              v-model="search"
-              type="search"
-              placeholder="Rechercher une matière, une spécialité, un diplôme (ex: NSI, BTS, STI2D, Maths)..."
-              autocomplete="off"
-            >
-            <button v-if="search" type="button" class="search-clear" aria-label="Effacer la recherche" @click="search = ''">
-              ✕
-            </button>
-            <span class="search-badge" aria-hidden="true">INDEX ONISEP</span>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
+            <label for="formation-search" class="visually-hidden">Rechercher une formation ou une spécialité</label>
+            <input id="formation-search" v-model="search" type="search" placeholder="Une matière, une envie, une formation…" autocomplete="off">
+            <button v-if="search" class="clear-search" type="button" aria-label="Effacer la recherche" @click="search = ''">×</button>
+            <span v-else class="search-hint">EX. NUMÉRIQUE, BTS, SCIENCES</span>
+          </div>
+          <div class="filters-and-count">
+            <div class="filter-list" role="group" aria-label="Filtrer les formations par parcours"><button v-for="filter in filters" :key="filter" type="button" class="filter-button" :class="{ active: activeFilter === filter }" :aria-pressed="activeFilter === filter" @click="activeFilter = filter">{{ filter }}</button></div>
+            <span class="result-count" role="status">{{ filteredPathways.length }} parcours {{ filteredPathways.length > 1 ? 'disponibles' : 'disponible' }}</span>
           </div>
         </div>
-
-        <!-- Filter Pills & Result Count -->
-        <div class="filters-and-count">
-          <div class="filter-list" role="group" aria-label="Filtrer les formations par parcours">
-            <button
-              v-for="filter in filters"
-              :key="filter"
-              type="button"
-              class="filter-pill"
-              :class="{ active: activeFilter === filter }"
-              :aria-pressed="activeFilter === filter"
-              @click="activeFilter = filter"
-            >
-              {{ filter }}
-            </button>
-          </div>
-          <span class="result-count" aria-live="polite">
-            {{ filteredPathways.length }} cycle{{ filteredPathways.length > 1 ? 's' : '' }} répertorié{{ filteredPathways.length > 1 ? 's' : '' }}
-          </span>
-        </div>
-
-        <!-- Pathways Grid -->
         <div v-if="filteredPathways.length" class="pathway-grid">
-          <article
-            v-for="pathway in filteredPathways"
-            :id="pathway.id"
-            :key="pathway.id"
-            class="pathway-card"
-            :class="`theme-${pathway.theme}`"
-          >
-            <div class="card-top">
-              <span class="pathway-category-pill">{{ pathway.category }}</span>
-              <span class="pathway-number">{{ pathway.number }} //</span>
+          <article v-for="pathway in filteredPathways" :id="pathway.id" :key="pathway.id" class="pathway-card" :class="pathway.theme">
+            <div class="card-top"><span class="pathway-number">{{ pathway.number }}</span><span class="pathway-label">{{ pathway.name }}</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+            <div class="pathway-symbol" aria-hidden="true">
+              <svg v-if="pathway.id === 'generale'" viewBox="0 0 72 72"><circle cx="36" cy="36" r="25"/><path d="M11 36h50M36 11v50"/><ellipse cx="36" cy="36" rx="11" ry="25"/></svg>
+              <svg v-else-if="pathway.id === 'technologique'" viewBox="0 0 72 72"><path d="M24 11h24M29 11v22L15 55a5 5 0 0 0 4 7h34a5 5 0 0 0 4-7L43 33V11M23 43h27"/><circle cx="36" cy="52" r="2"/></svg>
+              <svg v-else-if="pathway.id === 'bts'" viewBox="0 0 72 72"><path d="m36 8 25 14v28L36 64 11 50V22L36 8Zm0 28L11 22m25 14 25-14M36 36v28M24 15l25 14v14"/></svg>
+              <svg v-else viewBox="0 0 72 72"><path d="M12 59h48M19 58V40h11v18M30 58V28h12v30M42 58V16h12v42M13 29 42 9m-11 0h11v11"/></svg>
             </div>
-
-            <!-- Header Symbol & Title -->
-            <div class="card-identity">
-              <div class="pathway-symbol" aria-hidden="true">
-                <svg v-if="pathway.id === 'generale'" viewBox="0 0 64 64">
-                  <circle cx="32" cy="32" r="26" stroke="var(--acid)" stroke-width="1.8" fill="none"/>
-                  <path d="M6 32h52M32 6v52" stroke="var(--acid)" stroke-width="1.5" opacity="0.6"/>
-                  <ellipse cx="32" cy="32" rx="12" ry="26" stroke="var(--acid)" stroke-width="1.8" fill="none"/>
-                </svg>
-                <svg v-else-if="pathway.id === 'technologique'" viewBox="0 0 64 64">
-                  <path d="M22 10h20M26 10v20L14 48a4 4 0 0 0 3 6h30a4 4 0 0 0 3-6L38 30V10M20 38h24" stroke="var(--ice)" stroke-width="1.8" fill="none"/>
-                  <circle cx="32" cy="46" r="2" fill="var(--ice)"/>
-                </svg>
-                <svg v-else-if="pathway.id === 'bts'" viewBox="0 0 64 64">
-                  <path d="M32 8l22 12v24L32 56 10 44V20L32 8z" stroke="var(--hyper)" stroke-width="1.8" fill="none"/>
-                  <path d="M32 32L10 20M32 32l22-12M32 32v24" stroke="var(--hyper)" stroke-width="1.5" opacity="0.7"/>
-                </svg>
-                <svg v-else viewBox="0 0 64 64">
-                  <path d="M10 52h44M18 52V36h10v16M28 52V26h10v26M38 52V16h10v36M12 26l28-18 8 5" stroke="var(--white)" stroke-width="1.8" fill="none"/>
-                </svg>
-              </div>
-
-              <div>
-                <span class="pathway-subtitle">{{ pathway.name }}</span>
-                <h3 class="pathway-headline">{{ pathway.title }}</h3>
-              </div>
-            </div>
-
+            <h3>{{ pathway.title }}</h3>
             <p class="pathway-description">{{ pathway.description }}</p>
-
-            <div class="tag-list">
-              <span v-for="tag in pathway.tags" :key="tag" class="tag-chip">
-                {{ tag }}
-              </span>
-            </div>
-
+            <div class="tag-list"><span v-for="tag in pathway.tags" :key="tag">{{ tag }}</span></div>
             <details class="pathway-details">
-              <summary>
-                <span>{{ pathway.prompt }}</span>
-                <span class="toggle-icon" aria-hidden="true">+</span>
-              </summary>
-              <div class="detail-content">
-                <ul class="items-list">
-                  <li v-for="item in pathway.items" :key="item">
-                    <span class="item-bullet" aria-hidden="true">✦</span>
-                    <span>{{ item }}</span>
-                  </li>
-                </ul>
-                <p class="detail-paragraph">{{ pathway.detail }}</p>
-                <a class="source-link" :href="pathway.source" target="_blank" rel="noopener noreferrer">
-                  Consulter la fiche officielle Onisep <span aria-hidden="true">↗</span>
-                </a>
-              </div>
+              <summary><span>Découvrir ce parcours</span><span class="detail-plus" aria-hidden="true">+</span></summary>
+              <div class="detail-content"><h4>{{ pathway.prompt }}</h4><ul><li v-for="item in pathway.items" :key="item">{{ item }}</li></ul><p>{{ pathway.detail }}</p><a class="source-link" :href="pathway.source" target="_blank" rel="noopener noreferrer">Consulter la fiche Onisep <span aria-hidden="true">↗</span><span class="visually-hidden"> (nouvel onglet)</span></a></div>
             </details>
           </article>
         </div>
-
-        <!-- Empty search state -->
-        <div v-else class="empty-state">
-          <div class="empty-glyph" aria-hidden="true">∅</div>
-          <h3>Aucun cycle ne correspond à cette recherche</h3>
-          <p>Essayez un mot clé plus large comme « sciences », « BTS », « numérique » ou « STI2D ».</p>
-          <button type="button" class="btn-acid" @click="resetFilters">
-            Réinitialiser les filtres
-          </button>
-        </div>
+        <div v-else class="empty-state"><span aria-hidden="true">↗</span><h3>UNE AUTRE PISTE ?</h3><p>Aucun parcours ne correspond à votre recherche et au filtre choisi. Essayez « sciences », « numérique » ou « BTS ».</p><button class="page-button" type="button" @click="resetFilters"><span>AFFICHER TOUS LES PARCOURS</span><b aria-hidden="true">↗</b></button></div>
+        <p class="formation-reference">Formations, admissions et modalités actualisées : <a href="https://www.onisep.fr/ressources/structures-enseignement/hauts-de-france/nord/lycee-de-l-europe" target="_blank" rel="noopener noreferrer">consulter la fiche du lycée sur l’Onisep ↗<span class="visually-hidden"> (nouvel onglet)</span></a></p>
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         ORIENTATION METHODOLOGY
-    ══════════════════════════════════════════ -->
-    <section id="methodologie" class="container orientation-section">
-      <div class="orientation-intro">
-        <p class="section-tag text-label-acid">MÉTHODOLOGIE D’ORIENTATION</p>
-        <h2 class="orientation-title">
-          Votre projet se<br>
-          <span class="ht-outline">construit</span> <span class="ht-acid">pas à pas.</span>
-        </h2>
-        <p class="orientation-lead">
-          Nul besoin d’avoir une trajectoire figée dès la classe de seconde. L’important est de développer
-          sa curiosité, de tester ses affinités et d’échanger avec l’équipe éducative pour affiner son parcours.
-        </p>
-      </div>
-
-      <ol class="orientation-steps">
-        <li class="step-card">
-          <div class="step-num">01</div>
-          <div class="step-copy">
-            <h3>Partir de ce qui vous anime.</h3>
-            <p>Identifiez les matières où votre engagement est naturel, vos centres d’intérêt personnels et vos projets d’avenir.</p>
-          </div>
-        </li>
-        <li class="step-card">
-          <div class="step-num">02</div>
-          <div class="step-copy">
-            <h3>Comparer les démarches pédagogiques.</h3>
-            <p>Approche théorique, modélisation conceptuelle, travaux pratiques ou projets d’ingénierie en équipe : trouvez votre façon d’apprendre.</p>
-          </div>
-        </li>
-        <li class="step-card">
-          <div class="step-num">03</div>
-          <div class="step-copy">
-            <h3>Bénéficier d’un accompagnement dédié.</h3>
-            <p>Professeurs principaux, psychologues de l’Éducation nationale et journées portes ouvertes sont à vos côtés à chaque étape.</p>
-          </div>
-        </li>
-      </ol>
-    </section>
-
-    <!-- ══════════════════════════════════════════
-         BOTTOM CALLOUT (VIE LYCÉENNE LINK)
-    ══════════════════════════════════════════ -->
-    <section class="container bottom-callout">
-      <div class="callout-card">
-        <div class="callout-glow" aria-hidden="true"></div>
-        <div>
-          <p class="section-tag text-label-acid">AU-DELÀ DES COURS</p>
-          <h2 class="callout-title">
-            Un lycée à vivre,<br>
-            <span class="ht-outline">autant qu’à</span> <span class="ht-acid">apprendre.</span>
-          </h2>
-          <p class="callout-desc">
-            Explorez les clubs de sport, l'audiovisuel, le foyer des élèves et les projets menés par la Maison des Lycéens.
-          </p>
-        </div>
-        <NuxtLink to="/clubs" class="btn-acid btn-acid-lg">
-          Découvrir la vie lycéenne <span aria-hidden="true">↗</span>
-        </NuxtLink>
+    <section class="orientation-section">
+      <div class="container orientation-grid">
+        <div class="orientation-intro"><p class="eyebrow">02 / CONSTRUIRE LA SUITE</p><h2>UN PROJET.<br><em>UN PAS APRÈS<br>L’AUTRE.</em></h2><p>Vous n’avez pas besoin d’avoir toutes les réponses pour commencer à vous orienter.</p><span class="orientation-star" aria-hidden="true">✳</span></div>
+        <ol class="orientation-steps">
+          <li><span>01</span><div><h3>Partez de ce qui vous anime.</h3><p>Les matières que vous aimez, vos projets, les sujets qui éveillent votre curiosité.</p></div><b aria-hidden="true">↗</b></li>
+          <li><span>02</span><div><h3>Comparez les approches.</h3><p>Théorie, expérimentation, pratique : explorez les différentes façons d’apprendre.</p></div><b aria-hidden="true">↗</b></li>
+          <li><span>03</span><div><h3>Parlez-en avec l’équipe.</h3><p>Votre professeur principal et les personnes chargées de l’orientation peuvent vous accompagner dans vos choix.</p></div><b aria-hidden="true">↗</b></li>
+        </ol>
       </div>
     </section>
+    <section class="bottom-callout"><div class="container bottom-callout-inner"><div><p class="eyebrow">ET AU-DELÀ DES COURS ?</p><h2>UN LYCÉE À VIVRE.<br><em>VRAIMENT.</em></h2></div><NuxtLink to="/clubs" class="page-button"><span>DÉCOUVRIR LA VIE LYCÉENNE</span><b aria-hidden="true">↗</b></NuxtLink></div></section>
   </div>
 </template>
 
 <style scoped>
-/* ── Container & Global Reset ───────────────────────────────── */
-.formations-page {
-  background: var(--void);
-  color: var(--white);
-  min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
-  padding-bottom: 96px;
-}
-
-/* ── Hero Section ───────────────────────────────────────────── */
-.formation-hero {
-  display: grid;
-  grid-template-columns: 1.15fr 0.95fr;
-  gap: clamp(40px, 6vw, 80px);
-  align-items: center;
-  padding-top: clamp(60px, 8vw, 110px);
-  padding-bottom: clamp(60px, 7vw, 100px);
-  position: relative;
-}
-
-.hero-ambient {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.glow-orb {
-  position: absolute;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.12;
-}
-
-.glow-ice {
-  background: var(--ice);
-  top: 5%;
-  left: -5%;
-}
-
-.glow-acid {
-  background: var(--acid);
-  bottom: 5%;
-  right: 10%;
-  opacity: 0.14;
-}
-
-.hero-copy {
-  position: relative;
-  z-index: 2;
-}
-
-.hero-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--acid);
-  margin-bottom: 20px;
-}
-
-.eyebrow-dot {
-  width: 7px;
-  height: 7px;
-  background: var(--acid);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--acid);
-}
-
-.hero-title {
-  font-family: var(--font-display);
-  font-size: clamp(48px, 6.2vw, 84px);
-  font-weight: 800;
-  line-height: 0.98;
-  letter-spacing: -0.05em;
-  margin: 0 0 28px;
-  display: flex;
-  flex-direction: column;
-}
-
-.ht-outline {
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(250, 250, 250, 0.4);
-}
-
-.ht-acid {
-  color: var(--acid);
-  text-shadow: 0 0 30px rgba(204, 255, 0, 0.25);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.hero-star {
-  font-size: 0.6em;
-  color: var(--acid);
-  animation: pulse-star 3s ease-in-out infinite;
-}
-
-@keyframes pulse-star {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.85); }
-}
-
-.hero-intro {
-  font-size: clamp(15px, 1.2vw, 17px);
-  line-height: 1.75;
-  color: var(--white-dim);
-  max-width: 520px;
-  margin: 0 0 36px;
-}
-
-.hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-
-.hero-sublink {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--white-muted);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: color var(--t-fast);
-}
-
-.hero-sublink:hover {
-  color: var(--acid);
-}
-
-/* ── Path Visual Widget (Right) ─────────────────────────────── */
-.path-visual {
-  position: relative;
-  background: var(--onyx-2);
-  border: 1px solid rgba(250, 250, 250, 0.1);
-  border-radius: var(--r-md);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 380px;
-  overflow: hidden;
-  isolation: isolate;
-}
-
-.pv-grid-overlay {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(250, 250, 250, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(250, 250, 250, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-  pointer-events: none;
-}
-
-.pv-top,
-.pv-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--white-muted);
-  z-index: 2;
-}
-
-.pv-badge {
-  color: var(--acid);
-}
-
-.pv-circuit {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 0;
-}
-
-.circuit-svg {
-  width: 100%;
-  height: auto;
-}
-
-.pv-star {
-  color: var(--acid);
-}
-
-/* ── Catalog Section ────────────────────────────────────────── */
-.catalog-section {
-  background: var(--onyx);
-  border-top: 1px solid rgba(250, 250, 250, 0.07);
-  border-bottom: 1px solid rgba(250, 250, 250, 0.07);
-  padding: clamp(70px, 9vw, 110px) 0;
-  scroll-margin-top: 100px;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 40px;
-  margin-bottom: 46px;
-}
-
-.section-tag {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--acid);
-  margin-bottom: 12px;
-}
-
-.section-title {
-  font-family: var(--font-display);
-  font-size: clamp(34px, 4.2vw, 54px);
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-  margin: 0;
-}
-
-.section-lead {
-  font-size: clamp(14px, 1.1vw, 16px);
-  line-height: 1.75;
-  color: var(--white-dim);
-  max-width: 440px;
-  margin: 0;
-}
-
-/* ── Search Bar ─────────────────────────────────────────────── */
-.search-wrap {
-  margin-bottom: 24px;
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 24px;
-  background: var(--onyx-2);
-  border: 1px solid rgba(250, 250, 250, 0.12);
-  border-radius: var(--r-md);
-  transition: border-color var(--t-fast), box-shadow var(--t-fast);
-}
-
-.search-box:focus-within {
-  border-color: var(--acid);
-  box-shadow: 0 0 20px rgba(204, 255, 0, 0.15);
-}
-
-.search-icon {
-  color: var(--acid);
-  flex-shrink: 0;
-}
-
-.search-box input {
-  background: transparent;
-  border: none;
-  outline: none;
-  flex: 1;
-  color: var(--white);
-  font-family: var(--font-body);
-  font-size: 14px;
-}
-
-.search-box input::placeholder {
-  color: var(--white-muted);
-}
-
-.search-clear {
-  background: none;
-  border: none;
-  color: var(--white-muted);
-  cursor: pointer;
-  padding: 4px;
-  font-size: 14px;
-}
-
-.search-clear:hover {
-  color: var(--white);
-}
-
-.search-badge {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  color: var(--white-muted);
-  border: 1px solid rgba(250, 250, 250, 0.1);
-  padding: 4px 8px;
-  border-radius: var(--r-xs);
-}
-
-/* ── Filters and Counter ────────────────────────────────────── */
-.filters-and-count {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 36px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(250, 250, 250, 0.08);
-}
-
-.filter-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.filter-pill {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 10px 20px;
-  border-radius: var(--r-full);
-  background: var(--onyx-2);
-  border: 1px solid rgba(250, 250, 250, 0.12);
-  color: var(--white-muted);
-  cursor: pointer;
-  transition: all var(--t-fast);
-}
-
-.filter-pill:hover {
-  background: var(--onyx-3);
-  color: var(--white);
-  border-color: rgba(250, 250, 250, 0.25);
-}
-
-.filter-pill.active {
-  background: var(--acid);
-  border-color: var(--acid);
-  color: var(--void);
-  font-weight: 700;
-  box-shadow: 0 0 15px rgba(204, 255, 0, 0.3);
-}
-
-.result-count {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--white-muted);
-  white-space: nowrap;
-}
-
-/* ── Pathway Cards Grid ─────────────────────────────────────── */
-.pathway-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
-}
-
-.pathway-card {
-  background: var(--onyx-2);
-  border: 1px solid rgba(250, 250, 250, 0.08);
-  border-radius: var(--r-md);
-  padding: 36px 32px 28px;
-  display: flex;
-  flex-direction: column;
-  transition: transform var(--t-fast), border-color var(--t-fast);
-  scroll-margin-top: 120px;
-}
-
-.pathway-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(250, 250, 250, 0.2);
-}
-
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.pathway-category-pill {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--acid);
-  background: rgba(204, 255, 0, 0.1);
-  padding: 4px 12px;
-  border-radius: var(--r-full);
-}
-
-.pathway-number {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  color: var(--white-muted);
-}
-
-.card-identity {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 18px;
-}
-
-.pathway-symbol {
-  width: 58px;
-  height: 58px;
-  border-radius: var(--r-sm);
-  background: var(--onyx-3);
-  border: 1px solid rgba(250, 250, 250, 0.08);
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-
-.pathway-symbol svg {
-  width: 36px;
-  height: 36px;
-}
-
-.pathway-subtitle {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--white-muted);
-  display: block;
-  margin-bottom: 4px;
-}
-
-.pathway-headline {
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
-  margin: 0;
-  color: var(--white);
-}
-
-.pathway-description {
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--white-dim);
-  margin: 0 0 24px;
-}
-
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 28px;
-}
-
-.tag-chip {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 5px 12px;
-  border-radius: var(--r-full);
-  background: rgba(250, 250, 250, 0.04);
-  border: 1px solid rgba(250, 250, 250, 0.08);
-  color: var(--white-dim);
-}
-
-/* ── Pathway Expandable Details ─────────────────────────────── */
-.pathway-details {
-  border-top: 1px solid rgba(250, 250, 250, 0.08);
-  margin-top: auto;
-  padding-top: 20px;
-}
-
-.pathway-details summary {
-  cursor: pointer;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--white);
-  font-weight: 700;
-  user-select: none;
-}
-
-.pathway-details summary::-webkit-details-marker {
-  display: none;
-}
-
-.toggle-icon {
-  font-size: 20px;
-  color: var(--acid);
-  transition: transform var(--t-fast);
-}
-
-.pathway-details[open] .toggle-icon {
-  transform: rotate(45deg);
-}
-
-.detail-content {
-  padding-top: 18px;
-}
-
-.items-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 18px;
-}
-
-.items-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(250, 250, 250, 0.05);
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--white-dim);
-}
-
-.item-bullet {
-  color: var(--acid);
-  font-size: 10px;
-  margin-top: 2px;
-}
-
-.detail-paragraph {
-  font-size: 12px;
-  line-height: 1.75;
-  color: var(--white-muted);
-  margin: 0 0 16px;
-}
-
-.source-link {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--acid);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: opacity var(--t-fast);
-}
-
-.source-link:hover {
-  opacity: 0.8;
-}
-
-/* ── Empty State ────────────────────────────────────────────── */
-.empty-state {
-  text-align: center;
-  padding: 60px 24px;
-  background: var(--onyx-2);
-  border: 1px solid rgba(250, 250, 250, 0.1);
-  border-radius: var(--r-md);
-}
-
-.empty-glyph {
-  font-size: 48px;
-  color: var(--acid);
-  margin-bottom: 16px;
-}
-
-.empty-state h3 {
-  font-family: var(--font-display);
-  font-size: 22px;
-  margin: 0 0 12px;
-}
-
-.empty-state p {
-  color: var(--white-dim);
-  font-size: 14px;
-  margin: 0 0 24px;
-}
-
-/* ── Orientation Steps ──────────────────────────────────────── */
-.orientation-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(40px, 7vw, 90px);
-  padding-top: clamp(70px, 9vw, 110px);
-  padding-bottom: clamp(60px, 8vw, 100px);
-  align-items: start;
-}
-
-.orientation-intro {
-  position: sticky;
-  top: 100px;
-}
-
-.orientation-title {
-  font-family: var(--font-display);
-  font-size: clamp(34px, 4.2vw, 54px);
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  margin: 0 0 24px;
-}
-
-.orientation-lead {
-  font-size: 15px;
-  line-height: 1.8;
-  color: var(--white-dim);
-  margin: 0;
-}
-
-.orientation-steps {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.step-card {
-  background: var(--onyx-2);
-  border: 1px solid rgba(250, 250, 250, 0.08);
-  border-radius: var(--r-md);
-  padding: 28px 30px;
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  transition: transform var(--t-fast), border-color var(--t-fast);
-}
-
-.step-card:hover {
-  transform: translateX(6px);
-  border-color: var(--acid);
-}
-
-.step-num {
-  font-family: var(--font-mono);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--acid);
-  background: rgba(204, 255, 0, 0.1);
-  width: 44px;
-  height: 44px;
-  border-radius: var(--r-sm);
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-}
-
-.step-copy h3 {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 8px;
-  color: var(--white);
-}
-
-.step-copy p {
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--white-dim);
-  margin: 0;
-}
-
-/* ── Bottom Callout ─────────────────────────────────────────── */
-.bottom-callout {
-  padding-top: 20px;
-  padding-bottom: 40px;
-}
-
-.callout-card {
-  background: var(--onyx);
-  border: 1px solid rgba(250, 250, 250, 0.1);
-  border-radius: var(--r-lg);
-  padding: clamp(36px, 6vw, 60px);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 40px;
-}
-
-.callout-glow {
-  position: absolute;
-  top: -40%;
-  right: -10%;
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 240, 255, 0.12) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.callout-title {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 3.4vw, 44px);
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-  margin: 0 0 14px;
-}
-
-.callout-desc {
-  font-size: 14px;
-  line-height: 1.75;
-  color: var(--white-dim);
-  margin: 0;
-  max-width: 520px;
-}
-
-/* ── Focus States ───────────────────────────────────────────── */
-a:focus-visible,
-button:focus-visible,
-summary:focus-visible,
-input:focus-visible {
-  outline: 2px solid var(--acid);
-  outline-offset: 4px;
-  border-radius: var(--r-xs);
-}
-
-/* ── Responsive ─────────────────────────────────────────────── */
-@media (max-width: 1024px) {
-  .formation-hero {
-    grid-template-columns: 1fr;
-    gap: 50px;
-  }
-  .path-visual {
-    max-width: 540px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  .pathway-grid {
-    grid-template-columns: 1fr;
-  }
-  .orientation-section {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  .orientation-intro {
-    position: static;
-  }
-  .callout-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 768px) {
-  .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-  .filters-and-count {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .hero-actions {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
-}
+.formations-page{--page-dark:#0c061d;--page-light:#f0edf7;--page-text:#1b102d;--page-muted:#655b73;--page-line:#24133730;background:var(--page-dark);color:#fff}
+h1,h2,h3,h4,p{margin:0}h1,h2,h3{font-family:var(--font-display,'Space Grotesk',sans-serif)}em{font:inherit;color:var(--accent,#a980ff)}.eyebrow{font-size:10px;line-height:1.5;font-weight:700;letter-spacing:.13em;color:inherit}.formation-hero{overflow:hidden;background:radial-gradient(ellipse at 82% 49%,#7134dd22,transparent 48%),var(--page-dark)}.hero-grid{display:grid;grid-template-columns:1.08fr 1fr;align-items:center;gap:34px;padding-top:90px;padding-bottom:70px}.formation-hero-copy{position:relative;z-index:1}.formation-hero-copy .eyebrow{display:flex;align-items:center;gap:12px;color:#e4dcf3}.hero-spark{color:var(--acid,#dfff78);font-size:24px}h1{font-weight:700;font-size:clamp(52px,6.7vw,100px);line-height:.97;letter-spacing:-.065em;margin:26px 0}.hero-intro{max-width:410px;font-size:15px;line-height:1.85;color:#c4b9d4;margin-bottom:30px}.page-button{display:inline-flex;align-items:stretch;max-width:100%;border:1px solid #a980ff80;background:transparent;color:#fff;font:700 10px/1.5 var(--font-sans,Inter,sans-serif);letter-spacing:.05em;cursor:pointer;text-decoration:none;transition:background .2s,transform .2s}.page-button>span{align-self:center;padding:15px 20px}.page-button>b{display:grid;place-items:center;min-width:54px;padding:8px;background:var(--acid,#dfff78);color:#180c2d;font-size:26px;line-height:1;font-weight:400;transition:background .2s}.page-button:hover{background:#a980ff18;transform:translateY(-2px)}.page-button:hover>b{background:#edffb7}.hero-index{display:flex;align-items:center;gap:18px;margin-top:44px;color:#a99dbb;font-size:9px;line-height:1.6;letter-spacing:.09em}.hero-index>span:first-child{font-family:var(--font-display);font-size:22px;color:#fff;letter-spacing:-.06em;border-right:1px solid #ffffff30;padding-right:18px}.path-art{position:relative;min-width:0;padding:35px 0 25px;transform:rotate(-6deg)}.path-art:before{content:'';position:absolute;inset:12% 8%;background:radial-gradient(ellipse,#9d56ff36,transparent 65%);filter:blur(12px)}.art-kicker,.art-bottom{position:relative;font-size:8px;letter-spacing:.14em;color:#c7b5e7}.art-kicker{display:block;text-align:right;padding-right:15px}.path-art svg{position:relative;width:115%;max-width:none;display:block;margin-left:-5%;filter:drop-shadow(0 12px 22px #7e3be555)}.art-bottom{display:flex;justify-content:space-between;padding:0 18px;gap:12px}.hero-foot{display:flex;justify-content:space-between;gap:16px;border-top:1px solid #ffffff25;padding-top:20px;padding-bottom:23px;color:#b1a0c7;font-size:8px;letter-spacing:.13em}
+.catalog-section{background:radial-gradient(ellipse at 98% 100%,#a980ff33,transparent 38%),var(--page-light);color:var(--page-text);padding:86px 0 56px;scroll-margin-top:90px}.catalog-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:50px;margin-bottom:40px}.catalog-heading h2,.orientation-intro h2,.bottom-callout h2{font-size:clamp(32px,4.3vw,60px);line-height:1.03;letter-spacing:-.055em;font-weight:700;margin-top:19px}.catalog-heading h2 em{color:#776188}.catalog-heading>p{font-size:14px;line-height:1.85;color:var(--page-muted);max-width:310px;padding-bottom:3px}.catalog-tools{margin-bottom:30px}.search-box{display:flex;align-items:center;gap:16px;min-height:66px;border:1px solid var(--page-line);background:#ffffff60;padding:8px 22px}.search-box:focus-within{outline:2px solid #7544ba;outline-offset:3px}.search-box svg{flex-shrink:0}.search-box input{background:none;border:0;outline:none;color:var(--page-text);width:100%;min-width:0;font:inherit;font-size:14px;min-height:46px}.search-box input::-webkit-search-cancel-button{display:none}.search-box input::placeholder{color:#756980;opacity:1}.search-hint{white-space:nowrap;font-size:8px;letter-spacing:.05em;color:#786b85}.clear-search{border:0;background:#ddd5e9;width:40px;height:40px;flex-shrink:0;color:#321849;cursor:pointer;font-size:24px}.filters-and-count{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:15px}.filter-list{display:flex;gap:7px;flex-wrap:wrap}.filter-button{font:600 11px var(--font-sans);min-height:43px;padding:11px 17px;cursor:pointer;border:1px solid var(--page-line);background:transparent;color:var(--page-muted);transition:color .2s,background .2s}.filter-button:hover{background:#e2d8f1;color:var(--page-text)}.filter-button.active{background:var(--page-dark);color:#fff;border-color:var(--page-dark)}.result-count{font-size:10px;white-space:nowrap;color:var(--page-muted)}
+.pathway-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}.pathway-card{position:relative;background:#f9f7fc;border:1px solid var(--page-line);padding:24px 30px 0;display:flex;flex-direction:column;scroll-margin-top:105px;transition:background .3s,border-color .3s}.pathway-card:hover{background:#fff;border-color:#977bb3}.card-top{display:flex;align-items:center;gap:13px}.pathway-number{font:500 13px var(--font-display);color:#8f739f}.pathway-label{font-size:10px;line-height:1.5;text-transform:uppercase;letter-spacing:.07em;font-weight:700}.card-arrow{margin-left:auto;font-size:26px;line-height:1;color:#7d648f}.pathway-symbol{width:74px;height:74px;background:#e5dbf3;color:#4f267e;display:grid;place-items:center;margin:31px 0 22px}.blue .pathway-symbol{background:#dfff78;color:#344500}.peach .pathway-symbol{background:#cfb4f8;color:#351159}.lilac .pathway-symbol{background:#170c2b;color:#e6d6ff}.pathway-symbol svg{width:57px;height:57px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linejoin:round;stroke-linecap:round}.pathway-card h3{font-size:clamp(27px,2.8vw,39px);line-height:1.07;font-weight:600;letter-spacing:-.045em;max-width:400px}.pathway-description{font-size:13px;line-height:1.85;color:var(--page-muted);margin-top:16px;min-height:72px;max-width:450px}.tag-list{display:flex;flex-wrap:wrap;gap:7px;margin:25px 0 30px}.tag-list span{font-size:9px;line-height:1.4;padding:6px 9px;border:1px solid var(--page-line);color:#61526f}.pathway-details{margin-top:auto;border-top:1px solid var(--page-line)}.pathway-details summary{display:flex;align-items:center;justify-content:space-between;gap:20px;list-style:none;cursor:pointer;padding:18px 0;font-size:12px;font-weight:700}.pathway-details summary::-webkit-details-marker{display:none}.detail-plus{display:grid;place-items:center;width:30px;height:30px;background:#e9e2f2;font-size:23px;line-height:1;font-weight:400;transition:transform .2s}.pathway-details[open] .detail-plus{transform:rotate(45deg)}.detail-content{padding:8px 0 29px}.detail-content h4{font-size:12px;margin-bottom:13px}.detail-content ul{list-style:none;padding:0;margin:0}.detail-content li{position:relative;padding:10px 0 10px 16px;border-bottom:1px solid #2b144514;font-size:12px;line-height:1.7}.detail-content li:before{position:absolute;left:0;top:19px;content:'';width:4px;height:4px;background:#8551bb}.detail-content p{font-size:12px;line-height:1.8;color:var(--page-muted);margin-top:18px}.source-link{display:inline-flex;align-items:center;gap:12px;font-size:11px;font-weight:600;margin-top:19px;color:#63399a;text-decoration:underline;text-underline-offset:4px}.empty-state{text-align:center;border:1px solid var(--page-line);padding:45px 24px;background:#ffffff60}.empty-state>span{font-size:44px;color:#8857c0}.empty-state h3{font-size:32px;letter-spacing:-.04em}.empty-state p{max-width:520px;margin:15px auto 25px;font-size:14px;line-height:1.8;color:var(--page-muted)}.empty-state .page-button{color:var(--page-text);border-color:var(--page-line)}.formation-reference{font-size:11px;line-height:1.8;color:var(--page-muted);margin-top:26px}.formation-reference a{color:#51306e;text-decoration:underline;text-underline-offset:3px}
+.orientation-section{padding:88px 0;background:var(--page-dark)}.orientation-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:90px}.orientation-intro .eyebrow{color:#a980ff}.orientation-intro>p:last-of-type{max-width:330px;font-size:14px;line-height:1.85;color:#baaecb;margin-top:25px}.orientation-star{display:block;color:var(--acid,#dfff78);font-size:79px;line-height:1;margin-top:25px}.orientation-steps{list-style:none;padding:0;margin:0}.orientation-steps li{display:grid;grid-template-columns:28px 1fr 22px;gap:18px;border-top:1px solid #ffffff30;padding:29px 0}.orientation-steps li:last-child{border-bottom:1px solid #ffffff30}.orientation-steps li>span{font-size:10px;color:var(--accent,#a980ff);padding-top:5px}.orientation-steps li>b{font-size:22px;font-weight:400;color:#ac89eb}.orientation-steps h3{font-size:23px;line-height:1.2;font-weight:500;letter-spacing:-.03em}.orientation-steps p{font-size:13px;line-height:1.9;color:#baaecb;margin-top:13px}.bottom-callout{background:var(--acid,#dfff78);color:var(--page-text);padding:52px 0}.bottom-callout-inner{display:flex;justify-content:space-between;align-items:center;gap:35px}.bottom-callout h2{font-size:clamp(32px,4vw,51px);margin-top:13px}.bottom-callout h2 em{color:#69773c}.bottom-callout .page-button{color:var(--page-text);border-color:#24300970}.bottom-callout .page-button>b{background:var(--page-dark);color:#fff}.bottom-callout .page-button:hover{background:#ffffff30}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #8c5ccc;outline-offset:5px}.formation-hero a:focus-visible,.orientation-section a:focus-visible{outline-color:var(--acid,#dfff78)}
+@media(min-width:701px) and (prefers-reduced-motion:no-preference){.path-art{animation:path-float 8s ease-in-out infinite}@keyframes path-float{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-13px) rotate(-3deg)}}}
+@supports(animation-timeline:view()){ @media(prefers-reduced-motion:no-preference){.pathway-card,.orientation-steps li{animation:formation-enter both linear;animation-timeline:view();animation-range:entry 0% entry 22%}@keyframes formation-enter{from{opacity:.35;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}}}
+@media(max-width:1000px){.hero-grid{gap:15px;padding-top:65px;padding-bottom:55px}h1{font-size:clamp(48px,7vw,74px)}.hero-intro{font-size:14px;max-width:350px}.hero-index{margin-top:30px}.search-hint{display:none}.catalog-heading{gap:25px}.catalog-heading>p{max-width:250px}.pathway-card{padding:24px 24px 0}.orientation-grid{gap:45px}.pathway-description{min-height:96px}.bottom-callout .page-button>span{padding-inline:13px}}
+@media(max-width:700px){.hero-grid{grid-template-columns:1fr;gap:22px;padding-top:46px;padding-bottom:33px}h1{font-size:clamp(49px,10.8vw,76px);margin:24px 0}.formation-hero-copy .eyebrow{font-size:8px}.hero-intro{max-width:400px;font-size:14px;margin-bottom:25px}.hero-index{display:none}.path-art{max-width:420px;justify-self:center;width:100%;padding:12px 4px}.path-art svg{width:105%;margin-left:0;margin-top:-15px}.art-kicker{font-size:7px}.art-bottom{font-size:7px;margin-top:-15px;padding-inline:10px}.hero-foot{font-size:7px;letter-spacing:.05em;gap:20px;padding-top:16px;padding-bottom:17px}.hero-foot>span:first-child{max-width:145px}.hero-foot>span:last-child{text-align:right;max-width:135px}.catalog-section{padding:54px 0 38px}.catalog-heading{display:block;margin-bottom:28px}.catalog-heading h2{font-size:clamp(29px,7.8vw,45px)}.catalog-heading>p{max-width:100%;margin-top:20px;font-size:13px}.search-box{padding-inline:15px;gap:12px;min-height:60px}.search-box input{font-size:12px}.filters-and-count{display:block}.filter-list{gap:6px}.filter-button{font-size:10px;padding-inline:12px}.result-count{display:block;margin-top:15px}.pathway-grid{grid-template-columns:1fr;gap:16px}.pathway-card{padding:22px 22px 0}.pathway-card h3{font-size:34px}.pathway-description{min-height:0;max-width:100%}.pathway-symbol{margin-top:27px}.pathway-label{font-size:9px}.orientation-section{padding:55px 0}.orientation-grid{grid-template-columns:1fr;gap:32px}.orientation-intro{position:relative}.orientation-intro h2{font-size:42px}.orientation-intro>p:last-of-type{max-width:290px}.orientation-star{position:absolute;right:2px;top:25px;font-size:65px}.orientation-steps h3{font-size:21px}.orientation-steps li{gap:12px;padding:24px 0}.bottom-callout{padding:42px 0}.bottom-callout-inner{display:block}.bottom-callout h2{font-size:39px}.bottom-callout .page-button{margin-top:27px}.page-button>span{padding:14px 15px;font-size:9px}.page-button>b{min-width:47px}.formation-reference{font-size:10px}.empty-state{padding-inline:18px}}
+@media(max-width:360px){h1{font-size:46px}.orientation-star{font-size:44px;top:31px}.pathway-card h3{font-size:30px}.pathway-card{padding-inline:18px}.page-button>span{font-size:8px}}
 </style>
