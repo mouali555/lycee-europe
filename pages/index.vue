@@ -4,6 +4,7 @@ const activePanel = ref(null)
 const nearby = ref(null)
 const movement = ref({ x: 0, z: 7, yaw: 0, walking: false })
 const hudOpen = ref(true)
+const visited = ref([])
 const runtimeConfig = useRuntimeConfig()
 const base = computed(() => {
   const b = runtimeConfig.app.baseURL || '/'
@@ -57,7 +58,7 @@ onUnmounted(() => window.removeEventListener('keydown', onGlobalKeys))
         <div class="mini-chat-bar"><span class="mini-chat-signal"><i></i> VISIÈRE · {{ panel.title }}</span><div><a v-if="activePanel === 'chat'" href="/chat" target="_top" aria-label="Ouvrir le chat complet">↗</a><button aria-label="Fermer le panneau" @click="activePanel = null">×</button></div></div>
         <div class="mini-chat-content"><div class="mini-chat-title"><span>{{ panel.icon }} / {{ panel.title }} <small>{{ activePanel === 'chat' ? 'EN DIRECT' : 'HOLOGRAMME INTERACTIF' }}</small></span><a v-if="activePanel === 'chat'" href="/chat" target="_top">OUVRIR ↗</a></div><iframe :key="panel.src" :title="panel.title + ' — panneau de visière'" :src="panel.src" loading="eager" allow="clipboard-read; clipboard-write" referrerpolicy="same-origin"></iframe></div>
       </aside>
-      <div v-if="hudOpen" class="helmet-map" aria-label="Plan simplifié du lycée"><span>PLAN DU CAMPUS</span><div class="map-hall"><i class="map-player" :style="{ left: position.x + '%', top: position.y + '%' }"></i><b v-for="door in [{id:'formations',x:16,y:30},{id:'clubs',x:84,y:47},{id:'nexus',x:16,y:67},{id:'chat',x:84,y:84}]" :key="door.id" class="map-door" :class="{ visited: visited.includes(door.id) }" :style="{ left: door.x + '%', top: door.y + '%' }"></b></div><small>◉ {{ visited.length }} / 4 ACCÈS DÉCOUVERTS</small></div>
+      <div v-if="hudOpen" class="helmet-map" aria-label="Plan simplifié du lycée"><span>PLAN DU CAMPUS</span><div class="map-hall"><i class="map-player" :style="{ left: position.x + '%', top: position.y + '%' }"></i><b v-for="door in [{id:'formations',x:16,y:30},{id:'clubs',x:84,y:47},{id:'nexus',x:16,y:67},{id:'chat',x:84,y:84}]" :key="door.id" class="map-door" :class="{ visited: visited?.includes(door.id) }" :style="{ left: door.x + '%', top: door.y + '%' }"></b></div><small>◉ {{ visited?.length || 0 }} / 4 ACCÈS DÉCOUVERTS</small></div>
       <footer class="helmet-controls"><span><kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd> <i>MARCHER</i></span><span><kbd>CLIC</kbd> <i>REGARD · ÉCHAP POUR LIBÉRER</i></span><span><kbd>SHIFT</kbd> <i>SPRINT</i></span><span><kbd>E</kbd> <i>INTERAGIR</i></span><span><kbd>C</kbd> <i>CHAT</i></span><span class="walk-state"><i :class="{ active: movement.walking }"></i>{{ movement.walking ? 'DÉPLACEMENT' : 'À L’ARRÊT' }}</span></footer>
     </div>
     <div v-if="!hudOpen" class="hud-restore"><button @click="hudOpen = true">RÉACTIVER LA VISIÈRE <kbd>H</kbd></button></div>
